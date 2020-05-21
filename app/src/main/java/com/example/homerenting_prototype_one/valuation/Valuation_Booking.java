@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one.order;
+package com.example.homerenting_prototype_one.valuation;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -10,14 +10,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.example.homerenting_prototype_one.Valuation_Cancel;
+import com.example.homerenting_prototype_one.Valuation_MatchMaking;
+import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.order.Order_Detail;
 import com.example.homerenting_prototype_one.show.show_user_data;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,43 +38,45 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class Order extends AppCompatActivity {
+public class Valuation_Booking extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
-    String TAG = "Order";
-    private final String PHP = "/user_data.php";
+    String TAG = "Valuation_Booking";
+
+    public ListView self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order);
-
-        Button order = findViewById(R.id.order_btn);
-        Button booking_order = findViewById(R.id.bookingOrder_btn);
-        Button today_order = findViewById(R.id.todayOrder_btn);
-        Button cancel_order = findViewById(R.id.cancelOrder_btn);
+        setContentView(R.layout.activity_valuation__booking);
+        self_evaluation = findViewById(R.id.selfEvaluation_listView);
+        booking_evaluation = findViewById(R.id.bookingEvaluation_listView);
+        matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
+        cancel_evaluation = findViewById(R.id.cancelEvaluation_listView);
+        Button self_btn = findViewById(R.id.selfEvaluation_btn);
+        Button booking_btn = findViewById(R.id.bookingEvaluation_btn);
+        Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
+        Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
         ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        LinearLayout first_order = findViewById(R.id.firstTodayOrder_layout);
+        LinearLayout first_booking = findViewById(R.id.firstBooking_layout);
 
-
-        final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
+        final LinearLayout orderL = findViewById(R.id.LinearValuationDetail);
 
         //傳至網頁的值，傳function_name
-        String function_name = "order_member";
+        String function_name = "valuation_member";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
-                .add("status", "scheduled")
+                .add("status", "booking")
                 .build();
 
         //連線要求
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
+                .url("http://54.166.177.4/user_data.php")
                 .post(body)
                 .build();
-        //http://54.166.177.4/user_data.php
 
         //連線
         Call call = okHttpClient.newCall(request);
@@ -85,7 +90,7 @@ public class Order extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Order.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Valuation_Booking.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -109,8 +114,7 @@ public class Order extends AppCompatActivity {
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
-                        //final String datetime = member.getString("moving_date");
-                        final String datetime = member.getString("move_date")+" "+member.getString("move_time");
+                        final String datetime = member.getString("moving_date");
                         final String name = member.getString("name");
                         final String nameTitle;
                         if(member.getString("gender").equals("female")) nameTitle = "小姐";
@@ -122,24 +126,23 @@ public class Order extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                show_user_data show = new show_user_data(Order.this, orderL.getContext());
+                                show_user_data show = new show_user_data(Valuation_Booking.this, orderL.getContext());
                                 orderL.addView(show.create_view()); //分隔線
 
                                 //新增客戶資料
                                 ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, nameTitle, phone, contact_address, true);
+                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, nameTitle, phone, contact_address, false);
 
                                 //切換頁面的功能
                                 CustomerInfo.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         Intent intent = new Intent();
-                                        intent.setClass(Order.this, Order_Detail.class);
+                                        intent.setClass(Valuation_Booking.this, ValuationBooking_Detail.class);
 
                                         //交給其他頁面的變數
                                         Bundle bundle = new Bundle();
                                         bundle.putString("order_id", order_id);
-                                        bundle.putBoolean("btn", true);
                                         intent.putExtras(bundle);
 
                                         startActivity(intent);
@@ -155,7 +158,7 @@ public class Order extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -166,81 +169,75 @@ public class Order extends AppCompatActivity {
 
 
 
-        //第一欄資料
-        first_order.setOnClickListener(new View.OnClickListener() {
+
+        first_booking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent detail_intent = new Intent(Order.this, Order_Detail.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("order_id", "1");
-                detail_intent.putExtras(bundle);
-                startActivity(detail_intent);
+                Intent bookingDetail_intent = new Intent(Valuation_Booking.this, ValuationBooking_Detail.class);
+                startActivity(bookingDetail_intent);
             }
         });
+        self_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent selfValuation_intent = new Intent(Valuation_Booking.this, Valuation.class);
+                startActivity(selfValuation_intent);
+            }
+        });
+        booking_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent bookingValuation_intent = new Intent(Valuation_Booking.this, Valuation_Booking.class);
+//                startActivity(bookingValuation_intent);
+            }
+        });
+        matchMaking_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent matchMakingValuation_intent = new Intent(Valuation_Booking.this, Valuation_MatchMaking.class);
+                startActivity(matchMakingValuation_intent);
+            }
+        });
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cancelValuation_intent = new Intent(Valuation_Booking.this, Valuation_Cancel.class);
+                startActivity(cancelValuation_intent);
 
-        //上方nav
-//        order.setOnClickListener(new View.OnClickListener() {
+            }
+        });
+//        valuation_btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent order_intent = new Intent(Order.this, Order.class);
-//                startActivity(order_intent);
+//                Intent valuation_intent = new Intent(Valuation.this, Valuation.class);
+//                startActivity(valuation_intent);
 //            }
 //        });
-        booking_order.setOnClickListener(new View.OnClickListener() {
+        order_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
-                startActivity(bookingOrder_intent);
+                Intent order_intent = new Intent(Valuation_Booking.this, Order.class);
+                startActivity(order_intent);
             }
         });
-        today_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
-                startActivity(todayOrder_intent);
-            }
-        });
-        cancel_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
-                startActivity(cancelOrder_intent);
-            }
-        });
-
-        //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Order.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-//        order_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent order_intent = new Intent(Order.this, Order.class);
-//                startActivity(order_intent);
-//            }
-//        });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent calender_intent = new Intent(Order.this, Calendar.class);
+                Intent calender_intent = new Intent(Valuation_Booking.this, Calendar.class);
                 startActivity(calender_intent);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent system_intent = new Intent(Order.this, System.class);
+                Intent system_intent = new Intent(Valuation_Booking.this, System.class);
                 startActivity(system_intent);
             }
         });
         setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent setting_intent = new Intent(Order.this, Setting.class);
+                Intent setting_intent = new Intent(Valuation_Booking.this, Setting.class);
                 startActivity(setting_intent);
             }
         });

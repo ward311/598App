@@ -12,6 +12,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "SERVER_URL", '"http://140.117.71.91/598/app_api"'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

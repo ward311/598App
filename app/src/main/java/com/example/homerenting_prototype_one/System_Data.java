@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import java.util.ArrayList;
 import java.util.List;

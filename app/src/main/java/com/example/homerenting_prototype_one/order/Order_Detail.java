@@ -14,13 +14,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.Furniture_Location;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.System_Schedule;
-import com.example.homerenting_prototype_one.Valuation;
+import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -37,8 +38,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getTime;
+
 public class Order_Detail extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
+
     TextView nameText;
     TextView nameTitleText;
     TextView phoneText;
@@ -62,6 +67,11 @@ public class Order_Detail extends AppCompatActivity {
     String worktime;
     String fee;
 
+    Button check_btn;
+
+    String TAG = "Order_Detail";
+    private final String PHP = "/user_data.php";
+
     public ListView furniture_list;
     public String[] furnitures = {"1 單人沙發   2    ","2 兩人沙發   1    ","3 三人沙發   1    ","4 L型沙發   1    ",
             "5 沙發桌   3    ","6 傳統電視   1    ","7 液晶電視37吋以下   1    ","8 液晶電視40吋以上   1    ","9 電視櫃   1    ",
@@ -76,7 +86,7 @@ public class Order_Detail extends AppCompatActivity {
         Button call_btn = findViewById(R.id.call_btn);
         //furniture_list = findViewById(R.id.furniture_listView);
         Button detail_btn = findViewById(R.id.furniture_btn);
-        Button check_btn = findViewById(R.id.check_order_btn);
+
         ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
@@ -87,8 +97,11 @@ public class Order_Detail extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         String order_id = bundle.getString("order_id");
+        Boolean btn = bundle.getBoolean("btn");
 
         linking(); //將xml裡的元件連至此java
+        if(btn) check_btn.setVisibility(View.VISIBLE);
+        else check_btn.setVisibility(View.GONE);
 
         //傳值
         String function_name = "order_detail";
@@ -96,9 +109,10 @@ public class Order_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .build();
+        Log.d(TAG, "order_id:"+order_id);
 
         Request request = new Request.Builder()
-                .url("http://54.166.177.4/user_data.php")
+                .url(BuildConfig.SERVER_URL+PHP)
                 .post(body)
                 .build();
 
@@ -107,7 +121,7 @@ public class Order_Detail extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -120,25 +134,28 @@ public class Order_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d("responseData", responseData); //顯示資料
+                Log.d(TAG,"responseData"+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
-                    Log.i("JSONObject", "order:"+order);
+                    Log.i(TAG,"JSONObject of order:"+order);
 
                     //取得資料
                     name = order.getString("name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
-                    movingTime = order.getString("moving_date") + " " + order.getString("moving_time");
+                    //movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
+                    movingTime = order.getString("move_date")+" "+order.getString("move_time");
                     fromAddress = order.getString("moveout_address");
                     toAddress = order.getString("movein_address");
                     remainder = order.getString("additional");
-                    car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
-                    worktime = order.getString("estimate_worktime");
-                    fee = order.getString("fee");
+                    if(!order.getString("vehicle_id").equals("null"))
+                        car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
+                    else car = "尚未安排車輛";
+                    worktime = order.getString("estimate_worktime")+"小時";
+                    fee = order.getString("fee")+"元";
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
@@ -252,5 +269,6 @@ public class Order_Detail extends AppCompatActivity {
         carText = findViewById(R.id.car_OD);
         worktimeText = findViewById(R.id.worktime_OD);
         feeText = findViewById(R.id.price_OD);
+        check_btn = findViewById(R.id.check_order_btn);
     }
 }

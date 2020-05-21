@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.valuation.Valuation;
 
 public class Add_Order extends AppCompatActivity {
     public EditText name_edit, phone_edit, moveOut_edit, moveIn_edit,

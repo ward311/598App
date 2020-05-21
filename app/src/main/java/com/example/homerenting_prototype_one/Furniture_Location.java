@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Detail;
+import com.example.homerenting_prototype_one.order.Today_Detail;
+import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,7 @@ public class Furniture_Location extends AppCompatActivity {
                     startActivity( back_intent );
                 }
                 else if (key.matches( "today" )){
-                    Intent back_intent = new Intent(Furniture_Location.this,Today_Detail.class);
+                    Intent back_intent = new Intent(Furniture_Location.this, Today_Detail.class);
                     startActivity( back_intent );
                 }
             }

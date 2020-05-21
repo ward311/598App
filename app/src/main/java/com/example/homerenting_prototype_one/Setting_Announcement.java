@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.valuation.Valuation;
 
 public class Setting_Announcement extends AppCompatActivity {
 

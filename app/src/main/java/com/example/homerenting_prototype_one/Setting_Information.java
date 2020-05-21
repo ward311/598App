@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.valuation.Valuation;
 
 public class Setting_Information extends AppCompatActivity {
     public TextView address_txt, phone_txt, number_txt, url_txt, email_text,line_text,idea_txt;

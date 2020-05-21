@@ -5,40 +5,37 @@ import android.graphics.Color;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Guideline;
 
-import com.example.homerenting_prototype_one.R;
+public class show_valuation_data extends show_data {
 
-public class show_canceled_user_data extends show_data {
-
-    public show_canceled_user_data(Context page, Context maxLayout) {
+    public show_valuation_data(Context page, Context maxLayout) {
         super(page, maxLayout);
     }
 
-    public ConstraintLayout newCustomerInfoLayout(String datetime, String name, String nametitle, String phone, String address){
+    public ConstraintLayout newCustomerInfoLayout(final String name, String nametitle, String phone, String address, boolean icon){
         CustomerInfo = new ConstraintLayout(page);
-        createTimeSection(datetime);
         createMainSection(name, nametitle, phone, address);
+        if(icon) createIconSection(CustomerInfo);
         return CustomerInfo;
     }
 
     @Override
     protected int setNameSpace(){
-        return 2;
+        return 1;
     }
 
     @Override
-    protected int setTimeColor(){
-        return Color.rgb(152, 152, 152);
+    protected int setTimeColor() {
+        return 0;
     }
 
     @Override
     protected int setNameColor(){
-        return Color.rgb(112, 112, 112);
+        return Color.rgb(25, 176, 237);
     }
 
     @Override
     protected int setNoFormatColor(TextView T){
-        return Color.rgb(152, 152, 152);
+        return T.getCurrentTextColor();
     }
 }

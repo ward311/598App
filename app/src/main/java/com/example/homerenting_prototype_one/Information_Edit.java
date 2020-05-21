@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.valuation.Valuation;
 
 public class Information_Edit extends AppCompatActivity {
     public EditText address_edit, phone_edit, number_edit, url_edit, idea_edit;

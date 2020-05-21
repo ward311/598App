@@ -35,16 +35,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class Order extends AppCompatActivity {
+public class Order_Today extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
-    String TAG = "Order";
+    String TAG = "Order_Today";
     private final String PHP = "/user_data.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order);
-
+        setContentView(R.layout.activity_order__today);
         Button order = findViewById(R.id.order_btn);
         Button booking_order = findViewById(R.id.bookingOrder_btn);
         Button today_order = findViewById(R.id.todayOrder_btn);
@@ -54,16 +53,14 @@ public class Order extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        LinearLayout first_order = findViewById(R.id.firstTodayOrder_layout);
-
+        LinearLayout first_todayOrder = findViewById(R.id.firstTodayOrder_layout);
 
         final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
 
         //傳至網頁的值，傳function_name
-        String function_name = "order_member";
+        String function_name = "order_member_today";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
-                .add("status", "scheduled")
                 .build();
 
         //連線要求
@@ -71,7 +68,6 @@ public class Order extends AppCompatActivity {
                 .url(BuildConfig.SERVER_URL+PHP)
                 .post(body)
                 .build();
-        //http://54.166.177.4/user_data.php
 
         //連線
         Call call = okHttpClient.newCall(request);
@@ -85,7 +81,7 @@ public class Order extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Order.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Order_Today.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -94,7 +90,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData"+responseData); //顯示資料
+                Log.d("responseData", responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -122,24 +118,23 @@ public class Order extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                show_user_data show = new show_user_data(Order.this, orderL.getContext());
+                                show_user_data show = new show_user_data(Order_Today.this, orderL.getContext());
                                 orderL.addView(show.create_view()); //分隔線
 
                                 //新增客戶資料
                                 ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, nameTitle, phone, contact_address, true);
+                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, nameTitle, phone, contact_address, false);
 
                                 //切換頁面的功能
                                 CustomerInfo.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         Intent intent = new Intent();
-                                        intent.setClass(Order.this, Order_Detail.class);
+                                        intent.setClass(Order_Today.this, Today_Detail.class); //Today_Detail
 
                                         //交給其他頁面的變數
                                         Bundle bundle = new Bundle();
                                         bundle.putString("order_id", order_id);
-                                        bundle.putBoolean("btn", true);
                                         intent.putExtras(bundle);
 
                                         startActivity(intent);
@@ -155,7 +150,7 @@ public class Order extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Order_Today.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -163,47 +158,44 @@ public class Order extends AppCompatActivity {
         });
 
 
-
-
-
         //第一欄資料
-        first_order.setOnClickListener(new View.OnClickListener() {
+        first_todayOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent detail_intent = new Intent(Order.this, Order_Detail.class);
+                Intent todayOrder_detail = new Intent(Order_Today.this, Today_Detail.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("order_id", "1");
-                detail_intent.putExtras(bundle);
-                startActivity(detail_intent);
+                todayOrder_detail.putExtras(bundle);
+                startActivity(todayOrder_detail);
             }
         });
 
         //上方nav
-//        order.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent order_intent = new Intent(Order.this, Order.class);
-//                startActivity(order_intent);
-//            }
-//        });
+        order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(Order_Today.this, Order.class);
+                startActivity(order_intent);
+            }
+        });
         booking_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
+                Intent bookingOrder_intent = new Intent(Order_Today.this, Order_Booking.class);
                 startActivity(bookingOrder_intent);
             }
         });
-        today_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
-                startActivity(todayOrder_intent);
-            }
-        });
+//        today_order.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent todayOrder_intent = new Intent(Order_Today.this, Order_Today.class);
+//                startActivity(todayOrder_intent);
+//            }
+//        });
         cancel_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
+                Intent cancelOrder_intent = new Intent(Order_Today.this, Order_Cancel.class);
                 startActivity(cancelOrder_intent);
             }
         });
@@ -212,7 +204,7 @@ public class Order extends AppCompatActivity {
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent valuation_intent = new Intent(Order.this, Valuation.class);
+                Intent valuation_intent = new Intent(Order_Today.this, Valuation.class);
                 startActivity(valuation_intent);
             }
         });
@@ -226,21 +218,21 @@ public class Order extends AppCompatActivity {
         calendar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent calender_intent = new Intent(Order.this, Calendar.class);
+                Intent calender_intent = new Intent(Order_Today.this, Calendar.class);
                 startActivity(calender_intent);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent system_intent = new Intent(Order.this, System.class);
+                Intent system_intent = new Intent(Order_Today.this, System.class);
                 startActivity(system_intent);
             }
         });
         setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent setting_intent = new Intent(Order.this, Setting.class);
+                Intent setting_intent = new Intent(Order_Today.this, Setting.class);
                 startActivity(setting_intent);
             }
         });

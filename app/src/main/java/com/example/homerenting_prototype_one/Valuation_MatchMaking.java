@@ -11,6 +11,8 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.example.homerenting_prototype_one.valuation.Valuation_Booking;
 
 public class Valuation_MatchMaking extends AppCompatActivity {
     public ListView self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;

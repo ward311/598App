@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.valuation;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -19,6 +19,11 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.Calendar;
+import com.example.homerenting_prototype_one.Furniture_Detail;
+import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
 
 import java.util.GregorianCalendar;
@@ -48,7 +53,19 @@ public class Valuation_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         final GregorianCalendar calendar = new GregorianCalendar();
-        Context context;
+
+
+
+
+
+
+
+
+
+
+
+
+
         ArrayAdapter furniture_adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,furnitures);
         //furniture_list.setAdapter(furniture_adapter);
         phoneCall_btn.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +85,7 @@ public class Valuation_Detail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent detail_intent = new Intent(  );
-                detail_intent.setClass( Valuation_Detail.this,Furniture_Detail.class );
+                detail_intent.setClass( Valuation_Detail.this, Furniture_Detail.class );
                 Bundle detail_bundle = new Bundle();
                 detail_bundle.putString( "key","valuation" );
                 detail_intent.putExtras( detail_bundle );

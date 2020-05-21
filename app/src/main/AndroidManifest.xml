@@ -24,22 +24,28 @@
         <activity android:name=".Schedule_Detail" />
         <activity android:name=".Distribution_Detail" />
         <activity android:name=".Evaluation_Detail" />
-        <activity android:name=".Today_Detail" />
-        <activity android:name=".order.Order_Detail" />
         <activity android:name=".Edit_Furniture" />
-        <activity android:name=".ValuationBooking_Detail" />
-        <activity android:name=".Valuation_Detail" />
         <activity android:name=".Bonus_List" />
         <activity android:name=".Bonus_Distribution" />
         <activity android:name=".Bonus_View" />
         <activity android:name=".Service_Edit" />
         <activity android:name=".Information_Edit" />
-        <activity android:name=".order.Order" />
-        <activity android:name=".Order_Today" />
-        <activity android:name=".Order_Booking" />
+
+        <!--Order-->
+        <activity android:name=".order.Order_Booking"/>
+        <activity android:name=".order.Order_Today"/>
+        <activity android:name=".order.Order_Cancel"/>
+        <activity android:name=".order.Today_Detail"/>
+        <activity android:name=".order.Order_Detail"/>
+
+        <!--Valuation-->
+        <activity android:name=".valuation.Valuation" />
+        <activity android:name=".valuation.Valuation_Booking"/>
         <activity android:name=".Valuation_Cancel" />
         <activity android:name=".Valuation_MatchMaking" />
-        <activity android:name=".Valuation_Booking" />
+        <activity android:name=".valuation.ValuationBooking_Detail" />
+        <activity android:name=".valuation.Valuation_Detail" />
+
         <activity android:name=".Setting_Record" />
         <activity android:name=".Setting_Announcement" />
         <activity android:name=".Setting_Evaluation" />
@@ -53,12 +59,11 @@
         <activity android:name=".Setting" />
         <activity android:name=".System" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".Valuation" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Calendar" />
         <activity android:name=".Register" />
         <activity android:name=".Login" />
-        <activity android:name=".order.Order_Cancel">
+        <activity android:name=".order.Order">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

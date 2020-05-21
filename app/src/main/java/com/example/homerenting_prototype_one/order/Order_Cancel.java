@@ -12,13 +12,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.Order_Booking;
-import com.example.homerenting_prototype_one.Order_Today;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.Valuation;
+import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.show.show_canceled_user_data;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +37,8 @@ import okhttp3.Response;
 
 public class Order_Cancel extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
+    String TAG = "Order_Cancel";
+    private final String PHP = "/user_data.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +59,12 @@ public class Order_Cancel extends AppCompatActivity {
         String function_name = "order_member";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
-                .add("status", "scheduled")
+                .add("status", "cancel")
                 .build();
 
         //連線要求
         Request request = new Request.Builder()
-                .url("http://54.166.177.4/user_data.php")
+                .url(BuildConfig.SERVER_URL+PHP)
                 .post(body)
                 .build();
 
@@ -74,7 +75,7 @@ public class Order_Cancel extends AppCompatActivity {
             @Override
            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -88,22 +89,27 @@ public class Order_Cancel extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d("responseData", responseData); //顯示資料
+                Log.d(TAG,"responseData"+responseData); //顯示資料
 
                try {
                     //轉換成json格式，array或object
                     final JSONArray responseArr = new JSONArray(responseData);
                     //final JSONObject responseObj = new JSONObject(responseData);
-                    Log.d("JSONObject ","responseObj: "+ responseArr);
+                    Log.d(TAG,"responseObj: "+ responseArr);
 
                     //一筆一筆的取JSONArray中的json資料
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject member = responseArr.getJSONObject(i);
+                        Log.d(TAG,"member:"+member);
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
+                        //final String datetime = member.getString("moving_date");
+                        final String datetime = member.getString("move_date")+" "+member.getString("move_time");
                         final String name = member.getString("name");
-                        final String gender = member.getString("gender");
+                        final String nameTitle;
+                        if(member.getString("gender").equals("female")) nameTitle = "小姐";
+                        else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
 
@@ -116,9 +122,7 @@ public class Order_Cancel extends AppCompatActivity {
 
                                 //新增客戶資料
                                 ConstraintLayout CustomerInfo;
-                                if(gender.equals("female"))
-                                    CustomerInfo = show.newCustomerInfoLayout("01/01", "01:23", name, "小姐", phone, contact_address);
-                                else CustomerInfo = show.newCustomerInfoLayout("01/01", "01:23", name, "先生", phone, contact_address);
+                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, nameTitle, phone, contact_address);
 
                                 //切換頁面的功能
                                 CustomerInfo.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +134,7 @@ public class Order_Cancel extends AppCompatActivity {
                                         //交給其他頁面的變數
                                         Bundle bundle = new Bundle();
                                         bundle.putString("order_id", order_id);
+                                        bundle.putBoolean("btn", false);
                                         intent.putExtras(bundle);
 
                                         startActivity(intent);
@@ -156,7 +161,7 @@ public class Order_Cancel extends AppCompatActivity {
 
 
 
-
+        //上方nav
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,13 +183,15 @@ public class Order_Cancel extends AppCompatActivity {
                 startActivity(todayOrder_intent);
             }
         });
-        cancel_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cancelOrder_intent = new Intent(Order_Cancel.this, Order_Cancel.class);
-                startActivity(cancelOrder_intent);
-            }
-        });
+//        cancel_order.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent cancelOrder_intent = new Intent(Order_Cancel.this, Order_Cancel.class);
+//                startActivity(cancelOrder_intent);
+//            }
+//        });
+
+        //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,13 +199,13 @@ public class Order_Cancel extends AppCompatActivity {
                 startActivity(valuation_intent);
             }
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        order_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
 //                Intent order_intent = new Intent(Order.this, Order.class);
 //                startActivity(order_intent);
-            }
-        });
+//            }
+//        });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,4 +228,5 @@ public class Order_Cancel extends AppCompatActivity {
             }
         });
     }
+
 }

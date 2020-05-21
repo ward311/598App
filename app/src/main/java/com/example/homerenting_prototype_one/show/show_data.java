@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -25,13 +26,13 @@ public abstract class show_data {
     private void setPage(Context page){ this.page = page;}
     private void setMaxLayout(Context maxLayout){ this.maxLayout = maxLayout;}
 
-    protected void createTimeSection(String datetime, String time){
+    protected void createTimeSection(String datetime){
         ConstraintSet s = new ConstraintSet();
         Guideline timeG = newGuideline(1);
         CustomerInfo.addView(timeG);
-        TextView dtText = newdtText(datetime);
+        TextView dtText = newdtText(getDate(datetime));
         CustomerInfo.addView(dtText);
-        TextView tText = newtText(time);
+        TextView tText = newtText(getTime(datetime));
         CustomerInfo.addView(tText);
         s.clone(CustomerInfo);
         s.connect(dtText.getId(), ConstraintSet.START, timeG.getId(), ConstraintSet.START, 0);
@@ -65,6 +66,19 @@ public abstract class show_data {
         s.applyTo(CustomerInfo);
     }
 
+    protected void createIconSection(ConstraintLayout peopleDetail){
+        ConstraintSet s = new ConstraintSet();
+        Guideline iconG = newGuideline(3);
+        peopleDetail.addView(iconG);
+        ImageView icImage = newIconImage();
+        peopleDetail.addView(icImage);
+        s.clone(peopleDetail);
+        s.connect(icImage.getId(), ConstraintSet.START, iconG.getId(), ConstraintSet.START, 0);
+        s.connect(icImage.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
+        s.connect(icImage.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
+        s.applyTo(peopleDetail);
+    }
+
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale);
@@ -86,7 +100,8 @@ public abstract class show_data {
         }
         else if(kind == 2){
             G.setId(R.id.name_guideline_id);
-            p.guidePercent = 0.22f;
+            if(setNameSpace()==1) p.guideBegin = dip2px(maxLayout, 10);
+            else p.guidePercent = 0.22f;
         }
         else if(kind == 3){
             G.setId(R.id.icon_guideline_id);
@@ -96,9 +111,22 @@ public abstract class show_data {
         G.setLayoutParams(p);
         return G;
     }
+    protected abstract int setNameSpace();
 
-    protected TextView newdtText(String datetime){
-        TextView dtText = new TextView(page);//日期
+    public static String getDate(String datetime){ //從datetime中取出日期部分
+        String[] token = datetime.split(" ");
+        String[] date_token = token[0].split("-");
+        return date_token[1]+"/"+date_token[2];
+    }
+
+    public static String getTime(String datetime){ //從datetime中取出時間部分
+        String[] token = datetime.split(" ");
+        String[] time_token = token[1].split(":");
+        return time_token[0]+":"+time_token[1];
+    }
+
+    protected TextView newdtText(String datetime){//日期
+        TextView dtText = new TextView(page);
 
         dtText.setId(R.id.datetime_id);
         dtText.setText(datetime);
@@ -109,8 +137,8 @@ public abstract class show_data {
         return dtText;
     }
 
-    protected TextView newtText(String time){
-        TextView tText = new TextView(page);//時間
+    protected TextView newtText(String time){//時間
+        TextView tText = new TextView(page);
 
         tText.setId(R.id.time_id);
         tText.setText(time);
@@ -121,8 +149,8 @@ public abstract class show_data {
     }
     protected abstract int setTimeColor();
 
-    protected TextView newNameText(String name){
-        TextView nText = new TextView(page);//人名
+    protected TextView newNameText(String name){//人名
+        TextView nText = new TextView(page);
 
         nText.setId(R.id.name_id);
         nText.setText(name);
@@ -143,4 +171,25 @@ public abstract class show_data {
         return T;
     }
     protected abstract int setNoFormatColor(TextView T);
+
+    private ImageView newIconImage(){
+        ImageView icImage = new ImageView(page);//New標誌
+
+        icImage.setId(R.id.icon_id);
+        int dp50 = dip2px(maxLayout, 50);
+        ConstraintLayout.LayoutParams pI = new ConstraintLayout.LayoutParams(dp50,dp50);
+        icImage.setLayoutParams(pI);
+        icImage.setImageResource(R.drawable.new_icon);
+
+        return icImage;
+    }
+
+    public boolean setIcon(String datetime){
+        String[] token = datetime.split(" ");
+        String[] date_token = token[0].split("-");
+        int month = Integer.parseInt(date_token[1]);
+        int day = Integer.parseInt(date_token[2]);
+        if(month == 5 && day > 16 && day < 26) return true;
+        return false;
+    }
 }
