@@ -146,8 +146,8 @@ public class Order_Detail extends AppCompatActivity {
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
-                    //movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
-                    movingTime = order.getString("move_date")+" "+order.getString("move_time");
+                    movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
+                    //movingTime = order.getString("move_date")+" "+order.getString("move_time");
                     fromAddress = order.getString("moveout_address");
                     toAddress = order.getString("movein_address");
                     remainder = order.getString("additional");

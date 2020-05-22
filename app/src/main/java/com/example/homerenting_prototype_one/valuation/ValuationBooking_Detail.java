@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,19 +18,60 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.Edit_Furniture;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.order.Order_Detail;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.GregorianCalendar;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getTime;
+
 public class ValuationBooking_Detail extends AppCompatActivity {
+    OkHttpClient okHttpClient = new OkHttpClient();
+
+    TextView nameText;
+    TextView nameTitleText;
+    TextView phoneText;
+    TextView valuationTimeText;
+    TextView fromAddressText;
+    TextView toAddressText;
+    TextView remainderText;
+
+    String name;
+    String gender;
+    String phone;
+    String valuationTime;
+    String fromAddress;
+    String toAddress;
+    String remainder;
+
+    String TAG = "Valuation_Booking_Detail";
+    private final String PHP = "/user_data.php";
+
 //    public ListView furniture_list;
     public String[] furnitures = {"1 單人沙發   2    ","2 兩人沙發   1    ","3 三人沙發   1    ","4 L型沙發   1    ",
             "5 沙發桌   3    ","6 傳統電視   1    ","7 液晶電視37吋以下   1    ","8 液晶電視40吋以上   1    ","9 電視櫃   1    ",
@@ -42,7 +84,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         Button phoneCall_btn = findViewById(R.id.call_btn);
         Button change_btn = findViewById(R.id.edit_furniture_btn);
 //        furniture_list = findViewById(R.id.furniture_listView);
-        EditText notice_edit = findViewById(R.id.booking_notice_edit);
+        //EditText notice_edit = findViewById(R.id.notice_VBD);
         final EditText pickDate_edit = findViewById(R.id.pickDate_editText);
         final EditText pickTime_edit = findViewById(R.id.pickTime_editText);
         EditText pickCar_edit = findViewById(R.id.pickCar_editText);
@@ -58,6 +100,88 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
 
 
+        Bundle bundle = getIntent().getExtras();
+        String order_id = bundle.getString("order_id");
+
+        linking(); //將xml裡的元件連至此java
+
+        //傳至網頁的值，傳function_name
+        String function_name = "valuation_detail";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .build();
+        Log.d(TAG, "order_id: "+order_id);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(ValuationBooking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    JSONObject order = responseArr.getJSONObject(0);
+                    Log.i(TAG,"JSONObject of order:"+order);
+
+                    //取得資料
+                    name = order.getString("name");
+                    gender = order.getString("gender");
+                    phone = order.getString("phone");
+                    valuationTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
+                    /*String date = order.getString("move_date");
+                    String[] date_token = date.split(" ");
+                    valuationTime = date_token[1]+" "+order.getString("move_time");*/
+                    fromAddress = order.getString("moveout_address");
+                    toAddress = order.getString("movein_address");
+                    remainder = order.getString("additional");
+
+                    //顯示資料
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            nameText.setText(name);
+                            if(gender.equals("female")) nameTitleText.setText("小姐");
+                            else if(gender.equals("male")) nameTitleText.setText("先生");
+                            else nameTitleText.setText("");
+                            phoneText.setText(phone);
+                            valuationTimeText.setText(valuationTime);
+                            fromAddressText.setText(fromAddress);
+                            toAddressText.setText(toAddress);
+                            remainderText.setText(remainder);
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ValuationBooking_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
 
 
 
@@ -238,5 +362,15 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
+    }
+
+    public void linking(){
+        nameText = findViewById(R.id.name_VBD);
+        nameTitleText = findViewById(R.id.nameTitle_VBD);
+        phoneText = findViewById(R.id.phone_VBD);
+        valuationTimeText = findViewById(R.id.valuationTime_VBD);
+        fromAddressText = findViewById(R.id.FromAddress_VBD);
+        toAddressText = findViewById(R.id.ToAddress_VBD);
+        remainderText = findViewById(R.id.notice_VBD);
     }
 }

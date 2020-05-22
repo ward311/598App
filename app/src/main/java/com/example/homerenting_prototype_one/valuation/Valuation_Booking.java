@@ -13,14 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.Valuation_Cancel;
-import com.example.homerenting_prototype_one.Valuation_MatchMaking;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.order.Order_Detail;
 import com.example.homerenting_prototype_one.show.show_user_data;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +40,7 @@ import okhttp3.Response;
 public class Valuation_Booking extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation_Booking";
+    private final String PHP = "/user_data.php";
 
     public ListView self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
 
@@ -61,7 +61,6 @@ public class Valuation_Booking extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        LinearLayout first_booking = findViewById(R.id.firstBooking_layout);
 
         final LinearLayout orderL = findViewById(R.id.LinearValuationDetail);
 
@@ -74,7 +73,7 @@ public class Valuation_Booking extends AppCompatActivity {
 
         //連線要求
         Request request = new Request.Builder()
-                .url("http://54.166.177.4/user_data.php")
+                .url(BuildConfig.SERVER_URL+PHP)
                 .post(body)
                 .build();
 
@@ -114,10 +113,14 @@ public class Valuation_Booking extends AppCompatActivity {
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
-                        final String datetime = member.getString("moving_date");
+                        //final String datetime = member.getString("moving_date");
+                        String date = member.getString("move_date");
+                        String[] date_token = date.split(" ");
+                        final String datetime = date_token[1]+ " " +member.getString("move_time");
                         final String name = member.getString("name");
                         final String nameTitle;
                         if(member.getString("gender").equals("female")) nameTitle = "小姐";
+                        //if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
@@ -168,15 +171,6 @@ public class Valuation_Booking extends AppCompatActivity {
 
 
 
-
-
-        first_booking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent bookingDetail_intent = new Intent(Valuation_Booking.this, ValuationBooking_Detail.class);
-                startActivity(bookingDetail_intent);
-            }
-        });
         self_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

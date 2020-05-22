@@ -54,7 +54,6 @@ public class Order extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        LinearLayout first_order = findViewById(R.id.firstTodayOrder_layout);
 
 
         final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
@@ -109,11 +108,12 @@ public class Order extends AppCompatActivity {
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
-                        //final String datetime = member.getString("moving_date");
-                        final String datetime = member.getString("move_date")+" "+member.getString("move_time");
+                        final String datetime = member.getString("moving_date");
+                        //final String datetime = member.getString("move_date")+" "+member.getString("move_time");
                         final String name = member.getString("name");
                         final String nameTitle;
                         if(member.getString("gender").equals("female")) nameTitle = "小姐";
+                        //if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
@@ -165,18 +165,6 @@ public class Order extends AppCompatActivity {
 
 
 
-
-        //第一欄資料
-        first_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_intent = new Intent(Order.this, Order_Detail.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("order_id", "1");
-                detail_intent.putExtras(bundle);
-                startActivity(detail_intent);
-            }
-        });
 
         //上方nav
 //        order.setOnClickListener(new View.OnClickListener() {

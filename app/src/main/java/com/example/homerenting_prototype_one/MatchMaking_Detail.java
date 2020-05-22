@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.example.homerenting_prototype_one.valuation.Valuation_MatchMaking;
 
 public class MatchMaking_Detail extends AppCompatActivity {
 
@@ -30,7 +31,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
         back_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent back_intent = new Intent(MatchMaking_Detail.this,Valuation_MatchMaking.class);
+                Intent back_intent = new Intent(MatchMaking_Detail.this, Valuation_MatchMaking.class);
                 startActivity( back_intent );
             }
         } );

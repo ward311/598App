@@ -53,7 +53,6 @@ public class Order_Today extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        LinearLayout first_todayOrder = findViewById(R.id.firstTodayOrder_layout);
 
         final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
 
@@ -109,7 +108,8 @@ public class Order_Today extends AppCompatActivity {
                         final String datetime = member.getString("move_date")+" "+member.getString("move_time");
                         final String name = member.getString("name");
                         final String nameTitle;
-                        if(member.getString("gender").equals("female")) nameTitle = "小姐";
+                        //if(member.getString("gender").equals("female")) nameTitle = "小姐";
+                        if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
@@ -158,17 +158,6 @@ public class Order_Today extends AppCompatActivity {
         });
 
 
-        //第一欄資料
-        first_todayOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent todayOrder_detail = new Intent(Order_Today.this, Today_Detail.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("order_id", "1");
-                todayOrder_detail.putExtras(bundle);
-                startActivity(todayOrder_detail);
-            }
-        });
 
         //上方nav
         order.setOnClickListener(new View.OnClickListener() {

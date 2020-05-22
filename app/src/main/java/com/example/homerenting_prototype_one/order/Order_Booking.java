@@ -37,6 +37,7 @@ import okhttp3.Response;
 
 public class Order_Booking extends AppCompatActivity {
     private final String PHP = "/user_data.php";
+    String TAG = "Order_Booking";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,24 +84,24 @@ public class Order_Booking extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d("responseData", responseData);
+                Log.d(TAG,"responseData"+responseData);
 
                 try {
                     final JSONArray responseArr = new JSONArray(responseData);
 
                     for (int i = 0; i < responseArr.length(); i++) {
-                        JSONObject one = responseArr.getJSONObject(i);
-                        final String order_id = one.getString("order_id");
-                        final String name = one.getString("name");
-                        //final String datetime = member.getString("moving_date");
-                        final String datetime = one.getString("move_date")+" "+one.getString("move_time");
-                        String gender = one.getString("gender");
-                        if (gender.equals("female"))
-                            gender ="小姐";
+                        JSONObject member = responseArr.getJSONObject(i);
+                        final String order_id = member.getString("order_id");
+                        final String name = member.getString("name");
+                        final String datetime = member.getString("moving_date");
+                        //final String datetime = member.getString("move_date")+" "+member.getString("move_time");
+                        String gender = member.getString("gender");
+                        if (gender.equals("female")) gender ="小姐";
+                        //if (gender.equals("女")) gender ="小姐";
                         else gender = "先生";
-                        final String phone = one.getString("phone");
-                        final String contact_address = one.getString("contact_address");
-                        Log.d("order_id", order_id);
+                        final String phone = member.getString("phone");
+                        final String contact_address = member.getString("contact_address");
+                        Log.d(TAG,"order_id"+order_id);
 
                         //0517
                         final String finalGender = gender;

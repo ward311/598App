@@ -32,6 +32,7 @@
         <activity android:name=".Information_Edit" />
 
         <!--Order-->
+        <activity android:name=".valuation.Valuation_Booking" />
         <activity android:name=".order.Order_Booking"/>
         <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Order_Cancel"/>
@@ -40,9 +41,8 @@
 
         <!--Valuation-->
         <activity android:name=".valuation.Valuation" />
-        <activity android:name=".valuation.Valuation_Booking"/>
+        <activity android:name=".valuation.Valuation_MatchMaking"/>
         <activity android:name=".Valuation_Cancel" />
-        <activity android:name=".Valuation_MatchMaking" />
         <activity android:name=".valuation.ValuationBooking_Detail" />
         <activity android:name=".valuation.Valuation_Detail" />
 

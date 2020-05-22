@@ -20,7 +20,6 @@
         android:layout_margin="15dp"
         android:textStyle="bold"/>
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
@@ -41,17 +40,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
+                        android:id="@+id/name_VBD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="唐文心"
-                        android:textSize="20sp"
-                        android:textColor="#19B0ED"/>
+                        android:textColor="#19B0ED"
+                        android:textSize="20sp" />
+
                     <TextView
+                        android:id="@+id/nameTitle_VBD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="小姐"/>
+                        android:text="小姐" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -63,11 +66,13 @@
                         android:layout_weight="1"
                         android:text="連絡電話"
                         android:textColor="#000000"/>
+
                     <TextView
+                        android:id="@+id/phone_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:text="0933669877"/>
+                        android:text="0933669877" />
                     <Button
                         android:id="@+id/call_btn"
                         android:layout_width="0dp"
@@ -88,11 +93,13 @@
                         android:layout_weight="1"
                         android:text="估價時間"
                         android:textColor="#000000"/>
+
                     <TextView
+                        android:id="@+id/valuationTime_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="2019/10/02 10:30"/>
+                        android:text="2019/10/02 10:30" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -104,11 +111,13 @@
                         android:layout_weight="1"
                         android:text="搬出地址"
                         android:textColor="#000000"/>
+
                     <TextView
+                        android:id="@+id/FromAddress_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="高雄市三民區建國二路15號"/>
+                        android:text="高雄市三民區建國二路15號" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -120,11 +129,13 @@
                         android:layout_weight="1"
                         android:text="搬入地址"
                         android:textColor="#000000"/>
+
                     <TextView
+                        android:id="@+id/ToAddress_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="高雄市大社區中山路5號"/>
+                        android:text="高雄市大社區中山路5號" />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -164,13 +175,13 @@
                         android:layout_weight="1"
                         android:text="注意事項"
                         android:textColor="#000000"/>
-                    <EditText
-                        android:id="@+id/booking_notice_edit"
+
+                    <TextView
+                        android:id="@+id/notice_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:inputType="text"
-                        android:hint="1.鋼琴從後面搬入\n2.花瓶易碎需多加防護\n3.多加5個箱子備用\n4.多帶5個氣泡布" />
+                        android:layout_weight="3" />
+
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -183,20 +194,22 @@
                         android:text="搬家日期"
                         android:gravity="center_vertical"
                         android:textColor="#000000"/>
+
                     <EditText
                         android:id="@+id/pickDate_editText"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
-                        android:inputType="datetime"
-                        android:hint="2019/10/01"/>
+                        android:hint="2019-10-01"
+                        android:inputType="datetime" />
+
                     <EditText
                         android:id="@+id/pickTime_editText"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
-                        android:inputType="time"
-                        android:hint="9:00"/>
+                        android:hint="09:00"
+                        android:inputType="time" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

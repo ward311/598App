@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.valuation;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,9 +10,13 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.Calendar;
+import com.example.homerenting_prototype_one.MatchMaking_Detail;
+import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.Valuation_Cancel;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.valuation.Valuation;
-import com.example.homerenting_prototype_one.valuation.Valuation_Booking;
 
 public class Valuation_MatchMaking extends AppCompatActivity {
     public ListView self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
@@ -34,10 +38,14 @@ public class Valuation_MatchMaking extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         LinearLayout first_layout = findViewById(R.id.first_matchMaking_layout);
+
+
+
+
         first_layout.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent detail_intent = new Intent(Valuation_MatchMaking.this,MatchMaking_Detail.class);
+                Intent detail_intent = new Intent(Valuation_MatchMaking.this, MatchMaking_Detail.class);
                 startActivity(detail_intent);
             }
         } );

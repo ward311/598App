@@ -3,6 +3,7 @@ package com.example.homerenting_prototype_one.show;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ public abstract class show_data {
     Context page;
     Context maxLayout;
     ConstraintLayout CustomerInfo;
+    private static final String TAG = "show_data";
 
     public show_data(Context page, Context maxLayout){
         setPage(page);
