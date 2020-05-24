@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.example.homerenting_prototype_one.valuation.ValuationCancel_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation_Detail;
 
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class Furniture_Detail extends AppCompatActivity {
                     startActivity( back_intent );
                 }
                 else if (key.matches( "cancel" )){
-                    Intent back_intent = new Intent(Furniture_Detail.this,ValuationCancel_Detail.class);
+                    Intent back_intent = new Intent(Furniture_Detail.this, ValuationCancel_Detail.class);
                     startActivity( back_intent );
                 }
                 else {

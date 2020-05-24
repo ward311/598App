@@ -15,7 +15,6 @@ import com.example.homerenting_prototype_one.MatchMaking_Detail;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.Valuation_Cancel;
 import com.example.homerenting_prototype_one.order.Order;
 
 public class Valuation_MatchMaking extends AppCompatActivity {

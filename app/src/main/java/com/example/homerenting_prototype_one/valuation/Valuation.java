@@ -22,7 +22,6 @@ import com.example.homerenting_prototype_one.ListAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.Valuation_Cancel;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.show.show_valuation_data;
 

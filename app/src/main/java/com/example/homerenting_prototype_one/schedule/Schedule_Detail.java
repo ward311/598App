@@ -41,9 +41,9 @@ public class Schedule_Detail extends AppCompatActivity {
             public void onClick(View v) {
                 String result = "";
                 /*
-                * 連線至資料庫
-                * 輸入function和需要變數
-                * 取得回傳的response
+                * 連線至資料庫(v)
+                * 輸入function和需要變數(V)
+                * 取得回傳的response(V)
                 * (確認資料已被改變)
                 * */
 

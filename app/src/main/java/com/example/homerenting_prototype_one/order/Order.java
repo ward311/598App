@@ -6,10 +6,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -93,18 +95,17 @@ public class Order extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData"+responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
                     final JSONArray responseArr = new JSONArray(responseData);
-                    //final JSONObject responseObj = new JSONObject(responseData);
-                    Log.d(TAG,"responseObj: "+ responseArr);
+                    //Log.d(TAG,"responseObj: "+ responseArr);
 
                     //一筆一筆的取JSONArray中的json資料
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject member = responseArr.getJSONObject(i);
-                        Log.d(TAG,"member:"+member);
+                        Log.d(TAG,"member: "+member);
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
@@ -155,7 +156,16 @@ public class Order extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            if(responseData.equals("null")){
+                                Toast.makeText(Order.this, "responseDate is null", Toast.LENGTH_LONG).show();
+                                TextView noData = new TextView(Order.this);
+                                noData.setText("現在沒有資料");
+                                noData.setTextSize(25);
+                                noData.setGravity(Gravity.CENTER);
+                                noData.setPadding(0,50,0,0);
+                                orderL.addView(noData);
+                            }
+                            else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
