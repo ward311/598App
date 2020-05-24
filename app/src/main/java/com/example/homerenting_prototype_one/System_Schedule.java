@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 public class System_Schedule extends AppCompatActivity {

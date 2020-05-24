@@ -98,7 +98,7 @@ public class Valuation_Booking extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData"+responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -113,15 +113,19 @@ public class Valuation_Booking extends AppCompatActivity {
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
-                        //final String datetime = member.getString("moving_date");
-                        String date = member.getString("move_date");
-                        String[] date_token = date.split(" ");
-                        final String datetime = date_token[1]+ " " +member.getString("move_time");
+
+                        final String datetime = member.getString("moving_date");
+//                        String date = member.getString("move_date");
+//                        String[] date_token = date.split(" ");
+//                        final String datetime = date_token[1]+ " " +member.getString("move_time");
+
                         final String name = member.getString("name");
                         final String nameTitle;
+
                         if(member.getString("gender").equals("female")) nameTitle = "小姐";
                         //if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
+
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
 

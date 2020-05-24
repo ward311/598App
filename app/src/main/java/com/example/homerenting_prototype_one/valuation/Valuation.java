@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.CustomAdapter;
 import com.example.homerenting_prototype_one.DataModel;
@@ -44,6 +45,8 @@ import okhttp3.Response;
 
 public class Valuation extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
+    String TAG = "Valuation";
+    private final String PHP = "/user_data.php";
 
     ArrayList<DataModel> dataModels;
     public ListView evaluation_list, self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
@@ -71,15 +74,15 @@ public class Valuation extends AppCompatActivity {
         final LinearLayout orderL = findViewById(R.id.LinearValuationDetail);
 
         //傳至網頁的值，傳function_name
-        String function_name = "order_member";
+        String function_name = "valuation_member";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
-                .add("status", "evaluating")
+                .add("status", "self")
                 .build();
 
         //連線要求
         Request request = new Request.Builder()
-                .url("http://54.166.177.4/user_data.php")
+                .url(BuildConfig.SERVER_URL+PHP)
                 .post(body)
                 .build();
 
@@ -90,7 +93,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -104,17 +107,19 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d("responseData", responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
                     final JSONArray responseArr = new JSONArray(responseData);
                     //final JSONObject responseObj = new JSONObject(responseData);
                     Log.d("JSONObject ","responseObj: "+ responseArr);
+                    //Log.d(TAG,"responseObj: " + responseArr);
 
                     //一筆一筆的取JSONArray中的json資料
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject member = responseArr.getJSONObject(i);
+                        Log.d(TAG,"member:" + member);
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");

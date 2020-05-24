@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Schedule_Detail">
+    tools:context=".schedule.Schedule_Detail">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal"
         android:background="#FFFFFF">
+
         <ImageButton
             android:id="@+id/back_imgBtn"
             android:layout_width="30dp"
@@ -19,16 +21,36 @@
             android:src="@drawable/back"
             android:background="#FFFFFFFF"
             android:layout_gravity="center"/>
+
         <TextView
             android:id="@+id/schedule_date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="95dp"
+            android:layout_weight="3.5"
+            android:gravity="center"
             android:text="派遣行事曆"
             android:textColor="#19B0ED"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:layout_marginLeft="95dp"
-            android:layout_gravity="center"/>
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/check_btn_SD"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/roundedbutton"
+            android:text="人車派遣"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/price_OD" />
+
     </LinearLayout>
 <!--    <CalendarView-->
 <!--        android:id="@+id/schedule_calendar"-->

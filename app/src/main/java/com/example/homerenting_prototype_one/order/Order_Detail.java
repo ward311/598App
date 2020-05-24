@@ -18,9 +18,9 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.Furniture_Location;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.System_Schedule;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -134,7 +134,7 @@ public class Order_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData"+responseData); //顯示資料
+                //Log.d(TAG,"responseData"+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -187,6 +187,19 @@ public class Order_Detail extends AppCompatActivity {
             }
         });
 
+        check_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Order_Detail.this, Schedule_Detail.class);
+                Bundle detail_bundle = new Bundle();
+                detail_bundle.putInt("year",2020);
+                detail_bundle.putInt("month", 5);
+                detail_bundle.putInt("date", 15);
+                intent.putExtras(detail_bundle);
+                startActivity(intent);
+            }
+        });
+
 
 
 
@@ -214,13 +227,6 @@ public class Order_Detail extends AppCompatActivity {
                 startActivity( detail_intent);
             }
         } );
-        check_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent back_order_intent = new Intent(Order_Detail.this, System_Schedule.class);
-                startActivity(back_order_intent);
-            }
-        });
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
