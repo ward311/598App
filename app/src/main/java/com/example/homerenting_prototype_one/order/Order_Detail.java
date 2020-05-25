@@ -100,7 +100,7 @@ public class Order_Detail extends AppCompatActivity {
 
 
         Bundle bundle = getIntent().getExtras();
-        String order_id = bundle.getString("order_id");
+        final String order_id = bundle.getString("order_id");
         Boolean btn = bundle.getBoolean("btn");
 
         linking(); //將xml裡的元件連至此java
@@ -196,11 +196,12 @@ public class Order_Detail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Order_Detail.this, Schedule_Detail.class);
-                Bundle detail_bundle = new Bundle();
-                detail_bundle.putInt("year", Integer.parseInt(getYear(movingDatetime)));
-                detail_bundle.putInt("month", Integer.parseInt(getMonth(movingDatetime)));
-                detail_bundle.putInt("date", Integer.parseInt(getDay(movingDatetime)));
-                intent.putExtras(detail_bundle);
+                Bundle bundle = new Bundle();
+                bundle.putInt("year", Integer.parseInt(getYear(movingDatetime)));
+                bundle.putInt("month", Integer.parseInt(getMonth(movingDatetime)));
+                bundle.putInt("date", Integer.parseInt(getDay(movingDatetime)));
+                bundle.putString("order_id", order_id);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
