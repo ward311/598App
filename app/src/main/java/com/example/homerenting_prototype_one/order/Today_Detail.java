@@ -77,11 +77,11 @@ public class Today_Detail extends AppCompatActivity {
 
     Button addPriceBtn;
     Button minusPriceBtn;
-
+    Button check_btn;
 
     String TAG = "Today_Detail";
-    private final String PHP = "/user_data.php";
-
+    String PHP = "/user_data.php";
+    String PHP2 = "/functional.php";
 
     public ListView furniture_list;
     public String[] furnitures = {"1 單人沙發   2    ","2 兩人沙發   1    ","3 三人沙發   1    ","4 L型沙發   1    ",
@@ -100,7 +100,6 @@ public class Today_Detail extends AppCompatActivity {
         //final int price = Integer.parseInt(total_price.getText().toString());
         Button detail_btn = findViewById(R.id.furniture_btn);
         //EditText ps_edit = findViewById(R.id.PSEdit_OTD);
-        final Button check_btn = findViewById(R.id.check_btn_OTD);
 
         ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
@@ -110,9 +109,8 @@ public class Today_Detail extends AppCompatActivity {
 
 
 
-
         Bundle bundle = getIntent().getExtras();
-        String order_id = bundle.getString("order_id");
+        final String order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
 
@@ -205,7 +203,51 @@ public class Today_Detail extends AppCompatActivity {
             }
         });
 
+        check_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String function_name = "change_status";
+                RequestBody body = new FormBody.Builder()
+                        .add("function_name", function_name)
+                        .add("table","orders" )
+                        .add("order_id", order_id)
+                        .add("status","done")
+                        .build();
 
+                Request request = new Request.Builder()
+                        .url(BuildConfig.SERVER_URL+PHP2)
+                        .post(body)
+                        .build();
+
+                Call call = okHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Today_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        final String responseData = response.body().string();
+                        Log.d(TAG, "responseData: " + responseData);
+                    }
+                });
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Today_Detail.this, "收款成功", Toast.LENGTH_LONG).show();
+                    }
+                });
+                Intent order_today_intent = new Intent(Today_Detail.this,Order_Today.class);
+                startActivity(order_today_intent);
+            }
+        });
 
 
 
@@ -260,23 +302,25 @@ public class Today_Detail extends AppCompatActivity {
 //                }
 //            }
 //        } );
-        check_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(Today_Detail.this)
-                        .setTitle("收款")
-                        .setMessage("確認家具完好無缺後，向您\n收搬家金額"+String.valueOf( price )+"元。\n通知已寄給您的信箱，完成後請您給我們意見回饋，感謝好評。")
-                        .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                check_btn.setText("完成當日工單");
-                                check_btn.setOnClickListener( new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent next_intent = new Intent(Today_Detail.this, Order_Today.class);
-                                        startActivity( next_intent );
-                                    }
-                                } );
+
+        //收款按鈕
+//        check_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                new AlertDialog.Builder(Today_Detail.this)
+//                        .setTitle("收款")
+//                        .setMessage("確認家具完好無缺後，向您\n收搬家金額"+String.valueOf( price )+"元。\n通知已寄給您的信箱，完成後請您給我們意見回饋，感謝好評。")
+//                        .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                check_btn.setText("完成當日工單");
+//                                check_btn.setOnClickListener( new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        Intent next_intent = new Intent(Today_Detail.this, Order_Today.class);
+//                                        startActivity( next_intent );
+//                                    }
+//                                } );
 //                                new AlertDialog.Builder(Today_Detail.this)
 //                                        .setTitle("確認工單後顧客簽名")
 //                                        .setView(check_edit)
@@ -317,12 +361,12 @@ public class Today_Detail extends AppCompatActivity {
 //                                            }
 //                                        }).setNegativeButton("取消",null).create()
 //                                        .show();
-                            }
-                        } )
-                        .setNegativeButton("取消",null).create()
-                        .show();
-            }
-        });
+//                            }
+//                        } )
+//                        .setNegativeButton("取消",null).create()
+//                        .show();
+//            }
+//        });
 
         //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
@@ -398,5 +442,6 @@ public class Today_Detail extends AppCompatActivity {
         notice_edit = findViewById(R.id.PSEdit_OTD);
         addPriceBtn = findViewById(R.id.add_price_btn);
         minusPriceBtn = findViewById(R.id.minus_price_btn);
+        check_btn = findViewById(R.id.check_btn_OTD);
     }
 }

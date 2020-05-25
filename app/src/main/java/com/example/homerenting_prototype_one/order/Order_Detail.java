@@ -39,7 +39,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getDay;
+import static com.example.homerenting_prototype_one.show.show_data.getMonth;
 import static com.example.homerenting_prototype_one.show.show_data.getTime;
+import static com.example.homerenting_prototype_one.show.show_data.getYear;
 
 public class Order_Detail extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -59,6 +62,7 @@ public class Order_Detail extends AppCompatActivity {
     String gender;
     String phone;
     String contact_address;
+    String movingDatetime;
     String movingTime;
     String fromAddress;
     String toAddress;
@@ -146,7 +150,8 @@ public class Order_Detail extends AppCompatActivity {
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
-                    movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
+                    movingDatetime = order.getString("moving_date");
+                    movingTime = getDate(movingDatetime)+" "+getTime(movingDatetime);
                     //movingTime = order.getString("move_date")+" "+order.getString("move_time");
                     fromAddress = order.getString("moveout_address");
                     toAddress = order.getString("movein_address");
@@ -192,9 +197,9 @@ public class Order_Detail extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Order_Detail.this, Schedule_Detail.class);
                 Bundle detail_bundle = new Bundle();
-                detail_bundle.putInt("year",2020);
-                detail_bundle.putInt("month", 5);
-                detail_bundle.putInt("date", 15);
+                detail_bundle.putInt("year", Integer.parseInt(getYear(movingDatetime)));
+                detail_bundle.putInt("month", Integer.parseInt(getMonth(movingDatetime)));
+                detail_bundle.putInt("date", Integer.parseInt(getDay(movingDatetime)));
                 intent.putExtras(detail_bundle);
                 startActivity(intent);
             }

@@ -193,4 +193,22 @@ public abstract class show_data {
         if(month == 5 && day > 16 && day < 26) return true;
         return false;
     }
+
+    public static String getYear(String datetime){ //從datetime中取出年部分
+        String[] token = datetime.split(" ");
+        String[] date_token = token[0].split("-");
+        return date_token[0];
+    }
+
+    public static String getMonth(String datetime){ //從datetime中取出月部分
+        String[] token = datetime.split(" ");
+        String[] date_token = token[0].split("-");
+        return date_token[1];
+    }
+
+    public static String getDay(String datetime){ //從datetime中取出日部分
+        String[] token = datetime.split(" ");
+        String[] date_token = token[0].split("-");
+        return date_token[2];
+    }
 }
