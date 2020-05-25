@@ -17,6 +17,7 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.show.show_noData;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.show.show_user_data;
 
@@ -150,7 +151,9 @@ public class Order_Today extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Order_Today.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            show_noData show = new show_noData(Order_Today.this, orderL.getContext());
+                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+                            else Toast.makeText(Order_Today.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

@@ -18,7 +18,6 @@ public abstract class show_data {
     Context page;
     Context maxLayout;
     ConstraintLayout CustomerInfo;
-    private static final String TAG = "show_data";
 
     public show_data(Context page, Context maxLayout){
         setPage(page);

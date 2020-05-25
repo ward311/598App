@@ -11,6 +11,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.valuation.MatchMaking_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.valuation.ValuationCancel_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation_Detail;
@@ -82,7 +83,7 @@ public class Furniture_Detail extends AppCompatActivity {
 //                Intent back_intent = new Intent(Furniture_Detail.this,Valuation_Detail.class);
 //                startActivity( back_intent );
                 if (key.matches( "match" )){
-                    Intent back_intent = new Intent(Furniture_Detail.this,MatchMaking_Detail.class);
+                    Intent back_intent = new Intent(Furniture_Detail.this, MatchMaking_Detail.class);
                     startActivity( back_intent );
                 }
                 else if (key.matches( "cancel" )){

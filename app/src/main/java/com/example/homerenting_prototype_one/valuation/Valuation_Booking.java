@@ -19,6 +19,7 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.show.show_noData;
 import com.example.homerenting_prototype_one.show.show_user_data;
 
 import org.jetbrains.annotations.NotNull;
@@ -163,7 +164,9 @@ public class Valuation_Booking extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            show_noData show = new show_noData(Valuation_Booking.this, orderL.getContext());
+                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+                            else Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

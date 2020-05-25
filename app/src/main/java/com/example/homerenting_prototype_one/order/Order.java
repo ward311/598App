@@ -19,6 +19,7 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.show.show_noData;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.show.show_user_data;
 
@@ -95,7 +96,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData); //顯示資料
+                //Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -156,15 +157,8 @@ public class Order extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(responseData.equals("null")){
-                                Toast.makeText(Order.this, "responseDate is null", Toast.LENGTH_LONG).show();
-                                TextView noData = new TextView(Order.this);
-                                noData.setText("現在沒有資料");
-                                noData.setTextSize(25);
-                                noData.setGravity(Gravity.CENTER);
-                                noData.setPadding(0,50,0,0);
-                                orderL.addView(noData);
-                            }
+                            show_noData show = new show_noData(Order.this, orderL.getContext());
+                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
                             else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });

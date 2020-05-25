@@ -1,23 +1,48 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.MatchMaking_Detail;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.show.show_noData;
+import com.example.homerenting_prototype_one.show.show_valuation_data;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Valuation_MatchMaking extends AppCompatActivity {
+    OkHttpClient okHttpClient = new OkHttpClient();
+    String TAG = "Valuation_MatchMaking";
+    private final String PHP = "/user_data.php";
+
     public ListView self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,20 +52,110 @@ public class Valuation_MatchMaking extends AppCompatActivity {
         booking_evaluation = findViewById(R.id.bookingEvaluation_listView);
         matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
         cancel_evaluation = findViewById(R.id.cancelEvaluation_listView);
-        Button self_btn = findViewById(R.id.selfEvaluation_btn);
-        Button booking_btn = findViewById(R.id.bookingEvaluation_btn);
-        Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
-        Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        final LinearLayout valuationL = findViewById(R.id.LinearValuationMatchMakingDetail);
+
+        String function_name = "valuation_member";
+        String status = "match";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("status", status)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        final ProgressDialog dialog = ProgressDialog.show(this,"讀取中","請稍候",true);
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Valuation_MatchMaking.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                //Log.d(TAG, "responseData" + responseData);
+
+
+                try {
+                    final JSONArray responseArr = new JSONArray(responseData);
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject member = responseArr.getJSONObject(i);
+                        Log.d(TAG, "member: " + member);
+
+                        final String order_id = member.getString("order_id");
+                        final String name = member.getString("name");
+                        final String nameTitle;
+                        if(member.getString("gender").equals("female")) nameTitle = "小姐";
+                        else nameTitle = "先生";
+                        final String phone = member.getString("phone");
+                        final String contact_address = member.getString("contact_address");
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                                show_valuation_data show = new show_valuation_data(Valuation_MatchMaking.this, valuationL.getContext());
+                                valuationL.addView(show.create_view()); //分隔線
+
+                                //新增客戶資料
+                                ConstraintLayout CustomerInfo;
+                                CustomerInfo = show.newCustomerInfoLayout( name, nameTitle, phone, contact_address, false);
+
+                                //切換頁面的功能
+                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent();
+                                        intent.setClass(Valuation_MatchMaking.this, MatchMaking_Detail.class);
+
+                                        //交給其他頁面的變數
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("order_id", order_id);
+                                        intent.putExtras(bundle);
+
+                                        startActivity(intent);
+                                    }
+                                });
+
+                                valuationL.addView(CustomerInfo); //加入原本的畫面中
+                            }
+                        });
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            show_noData show = new show_noData(Valuation_MatchMaking.this, valuationL.getContext());
+                            if(responseData.equals("null")) valuationL.addView(show.noDataMessage());
+                            else Toast.makeText(Valuation_MatchMaking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
+
+
+
+
+
+
+
+
         LinearLayout first_layout = findViewById(R.id.first_matchMaking_layout);
-
-
-
-
         first_layout.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +163,12 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                 startActivity(detail_intent);
             }
         } );
+
+        //上方nav
+        Button self_btn = findViewById(R.id.selfEvaluation_btn);
+        Button booking_btn = findViewById(R.id.bookingEvaluation_btn);
+        Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
+        Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
         self_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,13 +183,13 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                 startActivity(bookingValuation_intent);
             }
         });
-        matchMaking_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        matchMaking_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
 //                Intent matchMakingValuation_intent = new Intent(Valuation_MatchMaking.this, Valuation_MatchMaking.class);
 //                startActivity(matchMakingValuation_intent);
-            }
-        });
+//            }
+//        });
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +198,13 @@ public class Valuation_MatchMaking extends AppCompatActivity {
 
             }
         });
+
+        //底下nav
+        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 //        valuation_btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
