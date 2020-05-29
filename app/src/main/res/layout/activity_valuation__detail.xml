@@ -346,7 +346,7 @@
                     app:layout_constraintTop_toTopOf="@+id/pickDate_editText" />
 
                 <Button
-                    android:id="@+id/check_date_btn"
+                    android:id="@+id/check_date_btn_VD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundedbutton"
@@ -366,7 +366,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/check_date_btn" />
+                    app:layout_constraintTop_toBottomOf="@+id/check_date_btn_VD" />
 
 
                 <TextView
@@ -410,7 +410,7 @@
                     app:layout_constraintTop_toTopOf="@+id/valPriceText" />
 
                 <Button
-                    android:id="@+id/check_price_btn"
+                    android:id="@+id/check_price_btn_VD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"

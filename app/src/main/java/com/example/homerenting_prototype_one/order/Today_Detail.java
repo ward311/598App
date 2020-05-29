@@ -235,15 +235,16 @@ public class Today_Detail extends AppCompatActivity {
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         final String responseData = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Today_Detail.this, "收款成功", Toast.LENGTH_LONG).show();
+                            }
+                        });
                         Log.d(TAG, "responseData: " + responseData);
                     }
                 });
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Today_Detail.this, "收款成功", Toast.LENGTH_LONG).show();
-                    }
-                });
+
                 Intent order_today_intent = new Intent(Today_Detail.this,Order_Today.class);
                 startActivity(order_today_intent);
             }

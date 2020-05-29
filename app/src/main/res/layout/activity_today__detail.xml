@@ -310,11 +310,14 @@
                     app:layout_constraintStart_toStartOf="@+id/GL_V1"
                     app:layout_constraintTop_toBottomOf="@+id/worktimeText" />
 
-                <TextView
+                <EditText
                     android:id="@+id/price_OTD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="費用"
+                    android:layout_width="42dp"
+                    android:layout_height="40dp"
+                    android:ems="10"
+                    android:hint="費用"
+                    android:inputType="number"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/priceText"
                     app:layout_constraintStart_toStartOf="@+id/GL_V2"
                     app:layout_constraintTop_toTopOf="@+id/priceText" />
@@ -326,9 +329,10 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:text="+"
-                    app:layout_constraintBottom_toBottomOf="@+id/price_OTD"
-                    app:layout_constraintStart_toEndOf="@+id/price_OTD"
-                    app:layout_constraintTop_toTopOf="@+id/price_OTD" />
+                    app:layout_constraintBottom_toBottomOf="@+id/priceText"
+                    app:layout_constraintStart_toEndOf="@+id/priceUnitText"
+                    app:layout_constraintTop_toTopOf="@+id/priceText"
+                    app:layout_constraintVertical_bias="0.555" />
 
                 <Button
                     android:id="@+id/minus_price_btn"
@@ -384,6 +388,15 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.890511" />
+
+                <TextView
+                    android:id="@+id/priceUnitText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="元"
+                    app:layout_constraintBottom_toBottomOf="@+id/price_OTD"
+                    app:layout_constraintStart_toEndOf="@+id/price_OTD"
+                    app:layout_constraintTop_toTopOf="@+id/price_OTD" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

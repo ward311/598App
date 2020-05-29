@@ -113,17 +113,10 @@ public class Valuation_Booking extends AppCompatActivity {
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
-
-                        final String datetime = member.getString("moving_date");
-//                        String date = member.getString("move_date");
-//                        String[] date_token = date.split(" ");
-//                        final String datetime = date_token[1]+ " " +member.getString("move_time");
-
+                        final String datetime = member.getString("valuation_time");
                         final String name = member.getString("name");
-
                         final String nameTitle;
                         if(member.getString("gender").equals("female")) nameTitle = "小姐";
-                        //if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");

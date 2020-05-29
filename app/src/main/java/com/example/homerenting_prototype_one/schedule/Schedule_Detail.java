@@ -19,11 +19,15 @@ import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.System_Schedule;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Booking;
+import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -54,20 +58,43 @@ public class Schedule_Detail extends AppCompatActivity {
         int year = bundle.getInt("year");
         int month = bundle.getInt("month");
         int date = bundle.getInt("date");
+        final String order_id = bundle.getString("order_id");
+        Log.d(TAG, "order_id: " + order_id);
         date_text.setText(year+"/"+month+"/"+date);
+
+        /*車子派遣資訊
+        final ArrayList<JSONObject> arrayList = new ArrayList<JSONObject>();
+        JSONObject obj = new JSONObject();
+        for(int i=1; i<3; i++){
+            try {
+                obj.put("vehicle_id", 1);
+                obj.put("num", i);
+                arrayList.add(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.d(TAG, "arrayList: " + arrayList);
+         */
 
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String order_id = bundle.getString("order_id");
                 String function_name = "change_status";
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
-                        .add("table","orders" )
+                        .add("table","orders")
                         .add("order_id", order_id)
                         .add("status","assigned")
                         .build();
-                Log.d(TAG,"order_id: " + order_id);
+                /*車子派遣資訊 request
+                RequestBody body = new FormBody.Builder()
+                        .add("function_name", "update_vehicleAssignment")
+                        .add("order_id", "2")
+                        .add("vehicle_assign", String.valueOf(arrayList))
+                        .build();
+
+                 */
 
                 Request request = new Request.Builder()
                         .url(BuildConfig.SERVER_URL+PHP)
@@ -91,11 +118,17 @@ public class Schedule_Detail extends AppCompatActivity {
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         final String responseData = response.body().string();
                         Log.d(TAG, "responseData: " + responseData);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Schedule_Detail.this, "派遣成功", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
 
-                Intent intent = new Intent(Schedule_Detail.this, Order_Booking.class);
-                startActivity(intent);
+//                Intent intent = new Intent(Schedule_Detail.this, Order_Booking.class);
+//                startActivity(intent);
             }
         });
 

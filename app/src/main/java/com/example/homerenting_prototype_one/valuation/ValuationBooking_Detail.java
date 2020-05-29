@@ -2,7 +2,6 @@ package com.example.homerenting_prototype_one.valuation;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,7 +28,6 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.order.Order_Detail;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -60,6 +58,16 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     TextView fromAddressText;
     TextView toAddressText;
     TextView remainderText;
+    TextView movingDateText;
+    TextView movingTimeText;
+
+    EditText carNumEdit;
+    EditText carWeightEdit;
+    EditText carTypeEdit;
+    EditText worktimeEdit;
+    EditText priceEdit;
+
+    Button check_btn;
 
     String name;
     String gender;
@@ -85,12 +93,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         Button change_btn = findViewById(R.id.edit_furniture_btn);
 //        furniture_list = findViewById(R.id.furniture_listView);
         //EditText notice_edit = findViewById(R.id.notice_VBD);
-        final EditText pickDate_edit = findViewById(R.id.pickDate_editText);
-        final EditText pickTime_edit = findViewById(R.id.pickTime_editText);
-        EditText pickCar_edit = findViewById(R.id.pickCar_editText);
-        EditText hour_edit = findViewById(R.id.hour_editText);
-        EditText price_edit = findViewById( R.id.price_editText );
-        Button check_btn = findViewById(R.id.check_evaluation_btn);
+        EditText hour_edit = findViewById(R.id.worktime_VBD);
         ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
@@ -101,7 +104,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
 
         Bundle bundle = getIntent().getExtras();
-        String order_id = bundle.getString("order_id");
+        final String order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
 
@@ -148,10 +151,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     name = order.getString("name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
-                    valuationTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
-                    /*String date = order.getString("move_date");
-                    String[] date_token = date.split(" ");
-                    valuationTime = date_token[1]+" "+order.getString("move_time");*/
+                    valuationTime = getDate(order.getString("valuation_time"))+" "+getTime(order.getString("valuation_time"));
                     fromAddress = order.getString("moveout_address");
                     toAddress = order.getString("movein_address");
                     remainder = order.getString("additional");
@@ -183,7 +183,99 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             }
         });
 
+        movingDateText.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog date_picker = new DatePickerDialog( ValuationBooking_Detail.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        movingDateText.setText(String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth));
+                    }
+                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+                date_picker.show();
+            }
+        } );
 
+        movingTimeText.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog time_picker = new TimePickerDialog( ValuationBooking_Detail.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        movingTimeText.setText(hourOfDay+":"+minute);
+                    }
+                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+                time_picker.show();
+            }
+        } );
+
+
+        check_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String moving_date = movingDateText.getText().toString().trim() + " " +
+                                     movingTimeText.getText().toString().trim();
+                String num = carNumEdit.getText().toString().trim();
+                String weight = carWeightEdit.getText().toString().trim();
+                String type = carTypeEdit.getText().toString().trim();
+                String estimate_worktime = worktimeEdit.getText().toString().trim();
+                String fee = priceEdit.getText().toString().trim();
+                String function_name = "update_bookingValuation";
+                RequestBody body = new FormBody.Builder()
+                        .add("function_name", function_name)
+                        .add("order_id", order_id)
+                        .add("moving_date",moving_date+":00")
+                        .add("num", num)
+                        .add("weight", weight)
+                        .add("type", type)
+                        .add("estimate_worktime", estimate_worktime)
+                        .build();
+                Log.d(TAG, "check_btn, ");
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.SERVER_URL+"/functional.php")
+                        .post(body)
+                        .build();
+
+                Call call = okHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ValuationBooking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        final String responseData = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ValuationBooking_Detail.this, "估價單已完成", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        Log.d(TAG, "responseData: " + responseData);
+                    }
+                });
+
+                new AlertDialog.Builder(ValuationBooking_Detail.this)
+                        .setTitle("媒合中")
+                        .setMessage("到府估價單媒合中，成功媒\n合會成為訂單，請公司注意\n新訂單通知。")
+                        .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent checked_intent = new Intent(ValuationBooking_Detail.this, Valuation_Booking.class);
+                                startActivity(checked_intent);
+                            }
+                        } )
+                        .show();
+            }
+        });
 
 
 
@@ -204,51 +296,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 startActivity(change_intent);
             }
         });
-        check_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(ValuationBooking_Detail.this)
-                        .setTitle("媒合中")
-                        .setMessage("到府估價單媒合中，成功媒\n合會成為訂單，請公司注意\n新訂單通知。")
-                        .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent checked_intent = new Intent(ValuationBooking_Detail.this, Valuation_Booking.class);
-                                startActivity(checked_intent);
-                            }
-                        } )
-                        .show();
-            }
-        });
-        pickDate_edit.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog date_picker = new DatePickerDialog( ValuationBooking_Detail.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        pickDate_edit.setText( String.valueOf( year )+"/"+String.valueOf( month+1 )+"/"+String.valueOf( dayOfMonth )  );
-                    }
-                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH ) );
-                date_picker.show();
-            }
-        } );
-        pickTime_edit.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog time_picker = new TimePickerDialog( ValuationBooking_Detail.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        pickTime_edit.setText( (hourOfDay>12? hourOfDay-12:hourOfDay)+":"+minute+""+(hourOfDay>12? "PM":"AM"));
-                    }
-                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),false );
-                time_picker.show();
-            }
-        } );
         final Context context = this;
-        pickCar_edit.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Dialog dialog = new Dialog(context);
+//        pickCar_edit.setOnClickListener( new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+                /*final Dialog dialog = new Dialog(context);
                 dialog.setTitle("請輸入安排車輛");
                 dialog.setContentView(R.layout.car_dialog);
                 Button done_btn = dialog.findViewById( R.id.done_btn );
@@ -314,19 +366,19 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     }
                 } );
                 dialog.show();
-                dialog.getWindow().setLayout( 1400,2000 );
-//                new AlertDialog.Builder( ValuationBooking_Detail.this )
-//                        .setTitle( "請輸入安排車輛" )
-//                        .setPositiveButton( "確定", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//
-//                            }
-//                        } )
-//                        .setNegativeButton( "取消",null ).create()
-//                        .show();
-            }
-        } );
+                dialog.getWindow().setLayout( 1400,2000 );*/
+                /*new AlertDialog.Builder( ValuationBooking_Detail.this )
+                        .setTitle( "請輸入安排車輛" )
+                        .setPositiveButton( "確定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        } )
+                        .setNegativeButton( "取消",null ).create()
+                        .show();*/
+//            }
+//        } );
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -372,5 +424,13 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         fromAddressText = findViewById(R.id.FromAddress_VBD);
         toAddressText = findViewById(R.id.ToAddress_VBD);
         remainderText = findViewById(R.id.notice_VBD);
+        movingDateText = findViewById(R.id.movingDate_VBD);
+        movingTimeText = findViewById(R.id.movingTime_VBD);
+        carNumEdit = findViewById(R.id.num_VBD);
+        carWeightEdit = findViewById(R.id.weight_VBD);
+        carTypeEdit = findViewById(R.id.type_VBD);
+        worktimeEdit = findViewById(R.id.worktime_VBD);
+        priceEdit = findViewById( R.id.price_VBD);
+        check_btn = findViewById(R.id.check_evaluation_btn);
     }
 }

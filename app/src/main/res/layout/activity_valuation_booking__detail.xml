@@ -190,28 +190,31 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="搬家日期"
                         android:gravity="center_vertical"
-                        android:textColor="#000000"/>
+                        android:text="搬家日期"
+                        android:textColor="#000000" />
 
-                    <EditText
-                        android:id="@+id/pickDate_editText"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/movingDate_VBD"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:hint="2019-10-01"
-                        android:inputType="datetime" />
+                        android:layout_weight="2.5"
+                        android:gravity="center"
+                        android:hint="選擇日期"
+                        android:inputType="date" />
 
-                    <EditText
-                        android:id="@+id/pickTime_editText"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/movingTime_VBD"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:hint="09:00"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:hint="選擇時間"
                         android:inputType="time" />
                 </LinearLayout>
                 <LinearLayout
@@ -226,12 +229,28 @@
                         android:gravity="center_vertical"
                         android:textColor="#000000"/>
                     <EditText
-                        android:id="@+id/pickCar_editText"
+                        android:id="@+id/num_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:inputType="text"
-                        android:hint="1輛3.5噸平斗車"/>
+                        android:layout_weight="1"
+                        android:hint="數量"
+                        android:inputType="text" />
+
+                    <EditText
+                        android:id="@+id/weight_VBD"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="噸位"
+                        android:inputType="text" />
+
+                    <EditText
+                        android:id="@+id/type_VBD"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="車種"
+                        android:inputType="text" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -245,7 +264,7 @@
                         android:gravity="center_vertical"
                         android:textColor="#000000"/>
                     <EditText
-                        android:id="@+id/hour_editText"
+                        android:id="@+id/worktime_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
@@ -264,7 +283,7 @@
                         android:gravity="center_vertical"
                         android:textColor="#000000"/>
                     <EditText
-                        android:id="@+id/price_editText"
+                        android:id="@+id/price_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
