@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.Furniture_Location;
+import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 import com.example.homerenting_prototype_one.Setting;
@@ -91,7 +91,7 @@ public class Order_Detail extends AppCompatActivity {
         //furniture_list = findViewById(R.id.furniture_listView);
         Button detail_btn = findViewById(R.id.furniture_btn);
 
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

@@ -56,7 +56,7 @@ public class Valuation_Cancel extends AppCompatActivity {
         Button booking_btn = findViewById(R.id.bookingEvaluation_btn);
         Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
         Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

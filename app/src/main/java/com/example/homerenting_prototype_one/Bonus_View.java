@@ -32,7 +32,7 @@ public class Bonus_View extends AppCompatActivity {
         employee_list = findViewById(R.id.employee_list);
         salary_list = findViewById(R.id.employee_salary_list);
         date_salary_list = findViewById(R.id.date_salary_listview);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

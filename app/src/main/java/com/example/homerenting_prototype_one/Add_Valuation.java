@@ -25,7 +25,7 @@ public class Add_Valuation extends AppCompatActivity {
         //final EditText pick_date_edit = findViewById(R.id.pickDate_valuate_edit);
         final TextView pick_date_text = findViewById( R.id.pickDate_valuate_text );
         Button finish_btn = findViewById(R.id.finish_evaluation_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

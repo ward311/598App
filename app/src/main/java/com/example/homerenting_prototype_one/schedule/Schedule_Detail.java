@@ -18,16 +18,11 @@ import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.System_Schedule;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.order.Order_Booking;
-import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -139,7 +134,7 @@ public class Schedule_Detail extends AppCompatActivity {
 
         //以下為切換頁面之按鈕，包括底下nav
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

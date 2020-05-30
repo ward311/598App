@@ -26,7 +26,7 @@ public class Record_Detail extends AppCompatActivity {
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
         TextView title_text = findViewById( R.id.title_text );
         Button export_btn = findViewById(R.id.export_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

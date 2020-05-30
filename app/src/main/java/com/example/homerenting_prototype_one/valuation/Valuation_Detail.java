@@ -1,6 +1,5 @@
 package com.example.homerenting_prototype_one.valuation;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -23,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.Furniture_Detail;
+import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
@@ -61,6 +60,7 @@ public class Valuation_Detail extends AppCompatActivity {
     EditText pickDate_edit;
     EditText pickTime_edit;
 
+    Button furniture_btn;
     Button check_date_btn;
     Button check_price_btn;
 
@@ -92,17 +92,16 @@ public class Valuation_Detail extends AppCompatActivity {
         setContentView(R.layout.activity_valuation__detail);
         Button phoneCall_btn = findViewById(R.id.call_btn);
         //furniture_list = findViewById(R.id.furniture_listView);
-        final Button detail_btn = findViewById(R.id.furniture_btn_VD);
         //final TextView pickDate_text = findViewById( R.id.pickDate_text );
         //final TextView pickTime_text = findViewById( R.id.pickTime_text );
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         final GregorianCalendar calendar = new GregorianCalendar();
 
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
         Log.d(TAG, "order_id: " + order_id);
 
@@ -114,7 +113,6 @@ public class Valuation_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .build();
-        Log.d(TAG,"order_id: " + order_id);
 
         //連線要求
         Request request = new Request.Builder()
@@ -186,31 +184,40 @@ public class Valuation_Detail extends AppCompatActivity {
             }
         });
 
+        furniture_btn.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent detail_intent = new Intent(  );
+                detail_intent.setClass( Valuation_Detail.this, Furniture_Detail.class );
+                bundle.putString("key","valuation");
+                detail_intent.putExtras(bundle);
+                startActivity( detail_intent );
+            }
+        } );
+
         pickDate_edit.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog picker = new DatePickerDialog( Valuation_Detail.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog date_picker = new DatePickerDialog( Valuation_Detail.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        //pickDate_text.setText( String.valueOf( year )+"/"+String.valueOf( month+1 )+"/"+String.valueOf( dayOfMonth ) );
-                        pickDate_edit.setHint(String.valueOf( year )+"/"+String.valueOf( month+1 )+"/"+String.valueOf( dayOfMonth )  );
+                        pickDate_edit.setText(String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth));
                     }
-                },calendar.get(GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH ) );
-                picker.show();
+                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+                date_picker.show();
             }
         } );
 
         pickTime_edit.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                @SuppressLint("WrongConstant") TimePickerDialog timePicker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        //pickTime_text.setText( (hourOfDay>12? hourOfDay-12:hourOfDay)+":"+minute+""+(hourOfDay>12? "PM":"AM") );
-                        pickTime_edit.setHint( (hourOfDay>12? hourOfDay-12:hourOfDay)+":"+minute+""+(hourOfDay>12? "PM":"AM") );
+                        pickTime_edit.setText(hourOfDay+":"+minute);
                     }
-                },calendar.get( GregorianCalendar.DAY_OF_MONTH),calendar.get( android.icu.util.GregorianCalendar.MINUTE ),false);
-                timePicker.show();
+                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+                time_picker.show();
             }
         } );
 
@@ -218,8 +225,15 @@ public class Valuation_Detail extends AppCompatActivity {
         check_price_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(Valuation_Detail.this, Valuation.class);
+                startActivity(intent);
+            }
+        } );
+
+        check_date_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 String valTime = pickDate_edit.getText().toString() + " " + pickTime_edit.getText().toString();
-                Log.d(TAG,"check_price_btn, valtime" + valTime);
 
                 String function_name = "update_selfValuation";
                 RequestBody body = new FormBody.Builder()
@@ -227,7 +241,7 @@ public class Valuation_Detail extends AppCompatActivity {
                         .add("order_id",order_id)
                         .add("valuation_time", valTime + ":00")
                         .build();
-                Log.d(TAG,"check_price_btn, order_id: " + order_id + ", valuation_time: " + valTime + ":00");
+                Log.d(TAG,"check_price_btn: order_id: " + order_id + ", valuation_time: " + valTime + ":00");
 
                 Request request = new Request.Builder()
                         .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -263,9 +277,7 @@ public class Valuation_Detail extends AppCompatActivity {
                 Intent intent = new Intent(Valuation_Detail.this, Valuation.class);
                 startActivity(intent);
             }
-        } );
-
-
+        });
 
 
 
@@ -288,29 +300,8 @@ public class Valuation_Detail extends AppCompatActivity {
                 startActivity(call_intent);
             }
         });
-        detail_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_intent = new Intent(  );
-                detail_intent.setClass( Valuation_Detail.this, Furniture_Detail.class );
-                Bundle detail_bundle = new Bundle();
-                detail_bundle.putString( "key","valuation" );
-                detail_intent.putExtras( detail_bundle );
-                startActivity( detail_intent );
-            }
-        } );
 
-//        check_date_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                pickDate_edit.setVisibility( View.GONE );
-//                pickDate_text.setVisibility( View.VISIBLE );
-//                pickTime_edit.setVisibility( View.GONE );
-//                pickTime_text.setVisibility( View.VISIBLE );
-//                Intent checked_intent = new Intent(Valuation_Detail.this, Valuation.class);
-//                startActivity(checked_intent);
-//            }
-//        });
+
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -355,6 +346,7 @@ public class Valuation_Detail extends AppCompatActivity {
         selfValTimeText = findViewById(R.id.selfValTime_VD);
         fromAddressText = findViewById(R.id.FromAddress_VD);
         toAddressText = findViewById(R.id.ToAddress_VD);
+        furniture_btn = findViewById(R.id.furniture_btn_VD);
         contactTimeText = findViewById(R.id.contactTime_VD);
         cusValTimeText = findViewById(R.id.cusValTime_VD);
         noticeText = findViewById(R.id.notice_VD);

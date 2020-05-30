@@ -56,7 +56,7 @@ public class Valuation_Booking extends AppCompatActivity {
         Button booking_btn = findViewById(R.id.bookingEvaluation_btn);
         Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
         Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
@@ -98,13 +98,13 @@ public class Valuation_Booking extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData); //顯示資料
+                //Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
                     final JSONArray responseArr = new JSONArray(responseData);
                     //final JSONObject responseObj = new JSONObject(responseData);
-                    Log.d(TAG,"responseObj: "+ responseArr);
+                    //Log.d(TAG,"responseObj: "+ responseArr);
 
                     //一筆一筆的取JSONArray中的json資料
                     for (int i = 0; i < responseArr.length(); i++) {

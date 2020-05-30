@@ -1,15 +1,10 @@
 package com.example.homerenting_prototype_one.order;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.Furniture_Location;
+import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
@@ -33,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -57,10 +53,11 @@ public class Today_Detail extends AppCompatActivity {
     TextView toAddressText;
     TextView remainderText;
     TextView carText;
+    TextView staffText;
     TextView worktimeText;
-    TextView feeText;
 
-    EditText notice_edit;
+    EditText feeEdit;
+    EditText memoEdit;
 
     String name;
     String gender;
@@ -70,9 +67,13 @@ public class Today_Detail extends AppCompatActivity {
     String fromAddress;
     String toAddress;
     String remainder;
+    ArrayList<String> carArr;
     String car;
+    String staff;
     String worktime;
-    //String fee;
+    String fee;
+    String memo;
+
     int price;
 
     Button addPriceBtn;
@@ -96,12 +97,9 @@ public class Today_Detail extends AppCompatActivity {
 //        Button edit_btn = findViewById(R.id.edit_order_btn);
         Button call_btn = findViewById(R.id.call_btn);
         //furniture_list = findViewById(R.id.furniture_listView);
-        //final TextView total_price = findViewById(R.id.price_OTD);
-        //final int price = Integer.parseInt(total_price.getText().toString());
         Button detail_btn = findViewById(R.id.furniture_btn);
-        //EditText ps_edit = findViewById(R.id.PSEdit_OTD);
 
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
@@ -150,7 +148,7 @@ public class Today_Detail extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
-                    Log.i(TAG,"JSONObject of order:"+order);
+                    Log.i(TAG,"order:"+order);
 
                     //取得資料
                     name = order.getString("name");
@@ -158,16 +156,36 @@ public class Today_Detail extends AppCompatActivity {
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
-                    //movingTime = order.getString("move_date")+" "+order.getString("move_time");
                     fromAddress = order.getString("moveout_address");
                     toAddress = order.getString("movein_address");
                     remainder = order.getString("additional");
-                    if(!order.getString("vehicle_id").equals("null"))
-                        car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
-                    else car = "尚未安排車輛";
                     worktime = order.getString("estimate_worktime")+"小時";
-                    price = Integer.parseInt(order.getString("fee"));
+                    fee = order.getString("fee");
+                    memo = order.getString("memo");
 
+                    int i;
+                    carArr = new ArrayList<>();
+                    for (i = 1; i < responseArr.length(); i++) {
+                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
+                        if(!vehicle_assign.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle:" + vehicle_assign);
+                        car = vehicle_assign.getString("num")+"輛"
+                                +vehicle_assign.getString("vehicle_weight")+"噸"
+                                +vehicle_assign.getString("vehicle_type");
+                        carArr.add(car);
+                    }
+                    if(i == 1){
+                        car = "尚未安排車輛";
+                        carArr.add(car);
+                    }
+
+                    if(responseArr.length()-i < 1) staff = "尚未安排人員";
+                    else staff = "";
+                    for (; i < responseArr.length(); i++) {
+                        JSONObject staff_assign = responseArr.getJSONObject(i);
+                        Log.i(TAG, "staff:" + staff_assign);
+                        staff = staff+staff_assign.getString("staff_name")+" ";
+                    }
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
@@ -182,9 +200,11 @@ public class Today_Detail extends AppCompatActivity {
                             fromAddressText.setText(fromAddress);
                             toAddressText.setText(toAddress);
                             remainderText.setText(remainder);
-                            carText.setText(car);
+                            carText.setText(carArr.get(0));
+                            staffText.setText(staff);
                             worktimeText.setText(worktime);
-                            feeText.setText(price+"元");
+                            feeEdit.setText(fee);
+                            memoEdit.setText(memo);
 
                             //改變搬家費用的按鈕，有無存在的必要?
                             addPrice();
@@ -206,16 +226,20 @@ public class Today_Detail extends AppCompatActivity {
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String function_name = "change_status";
+                fee = feeEdit.getText().toString();
+                memo = memoEdit.getText().toString();
+                Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+
+                String function_name = "update_todayOrder";
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
-                        .add("table","orders" )
                         .add("order_id", order_id)
-                        .add("status","done")
+                        .add("fee", fee)
+                        .add("memo", memo)
                         .build();
 
                 Request request = new Request.Builder()
-                        .url(BuildConfig.SERVER_URL+PHP2)
+                        .url(BuildConfig.SERVER_URL+"/functional.php")
                         .post(body)
                         .build();
 
@@ -411,8 +435,9 @@ public class Today_Detail extends AppCompatActivity {
         addPriceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                price = Integer.parseInt(feeEdit.getText().toString());
                 price = price + 10;
-                feeText.setText(price+"元");
+                feeEdit.setText(String.valueOf(price));
             }
         });
     }
@@ -422,8 +447,9 @@ public class Today_Detail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(price > 9){
+                    price = Integer.parseInt(feeEdit.getText().toString());
                     price = price - 10;
-                    feeText.setText(price+"元");
+                    feeEdit.setText(String.valueOf(price));
                 }
             }
         });
@@ -438,9 +464,10 @@ public class Today_Detail extends AppCompatActivity {
         toAddressText = findViewById(R.id.ToAddress_OTD);
         remainderText = findViewById(R.id.notice_OTD);
         carText = findViewById(R.id.car_OTD);
+        staffText = findViewById(R.id.staff_OTD);
         worktimeText = findViewById(R.id.worktime_OTD);
-        feeText = findViewById(R.id.price_OTD);
-        notice_edit = findViewById(R.id.PSEdit_OTD);
+        feeEdit = findViewById(R.id.price_OTD);
+        memoEdit = findViewById(R.id.PS_OTD);
         addPriceBtn = findViewById(R.id.add_price_btn);
         minusPriceBtn = findViewById(R.id.minus_price_btn);
         check_btn = findViewById(R.id.check_btn_OTD);

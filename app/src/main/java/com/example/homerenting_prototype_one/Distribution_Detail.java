@@ -29,7 +29,7 @@ public class Distribution_Detail extends AppCompatActivity {
         Button input_one = findViewById(R.id.input_btn_one);
         Button input_two = findViewById(R.id.input_btn_two);
         Button check_btn = findViewById(R.id.check_bonus_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

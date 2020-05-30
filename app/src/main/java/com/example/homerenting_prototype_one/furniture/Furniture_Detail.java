@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.furniture;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,11 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.Calendar;
+import com.example.homerenting_prototype_one.DetailAdapter;
+import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.MatchMaking_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -19,24 +24,34 @@ import com.example.homerenting_prototype_one.valuation.Valuation_Detail;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.homerenting_prototype_one.R.*;
+
 public class Furniture_Detail extends AppCompatActivity {
+    ImageButton valuation_btn;
+    ImageButton order_btn;
+    ImageButton calendar_btn;
+    ImageButton system_btn;
+    ImageButton setting_btn;
+
     private ListView detail_list;
     private List<String> data,amount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_furniture__detail );
-        ImageButton back_btn = findViewById( R.id.back_imgBtn );
-        Button check_btn = findViewById(R.id.check_furniture_detail_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        data = new ArrayList<>();
+        setContentView( layout.activity_furniture__detail );
+        ImageButton back_btn = findViewById( id.back_imgBtn );
+        Button check_btn = findViewById(id.check_furniture_detail_btn);
+
+        Bundle detail_bundle = getIntent().getExtras();
+        final String key = detail_bundle.getString("key");
+        String order_id = detail_bundle.getString("order_id");
+
+
 //        amount = new ArrayList<>();
         Context context;
-        detail_list = findViewById( R.id.furniture_detail_listView );
+        detail_list = findViewById( id.furniture_detail_listView );
+
+        data = new ArrayList<>();
         data.add("單人沙發");
         data.add("兩人沙發");
         data.add("三人沙發");
@@ -73,10 +88,10 @@ public class Furniture_Detail extends AppCompatActivity {
 //        amount.add( "1" );
 //        amount.add( "1" );
 //        amount.add( "5" );
+
         DetailAdapter detail_adapter = new DetailAdapter( data);
         detail_list.setAdapter( detail_adapter );
-        Bundle detail_bundle = getIntent().getExtras();
-        final String key = detail_bundle.getString( "key" );
+
         back_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +111,7 @@ public class Furniture_Detail extends AppCompatActivity {
                 }
             }
         } );
+
         check_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,6 +131,8 @@ public class Furniture_Detail extends AppCompatActivity {
                 }
             }
         } );
+
+        //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,5 +168,13 @@ public class Furniture_Detail extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
+    }
+
+    public void linking(){
+        valuation_btn = findViewById(id.valuation_imgBtn);
+        order_btn = findViewById(id.order_imgBtn);
+        calendar_btn = findViewById(id.calendar_imgBtn);
+        system_btn = findViewById(id.system_imgBtn);
+        setting_btn = findViewById(id.setting_imgBtn);
     }
 }

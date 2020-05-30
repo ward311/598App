@@ -23,7 +23,7 @@ public class Setting extends AppCompatActivity {
         LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_linearLayout);
         LinearLayout system_announcement = findViewById(R.id.systemAnnouncement_linearLayout);
         LinearLayout history_record = findViewById(R.id.historyRecord_linearLayout);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

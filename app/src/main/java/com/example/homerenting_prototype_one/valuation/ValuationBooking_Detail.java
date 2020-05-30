@@ -94,7 +94,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 //        furniture_list = findViewById(R.id.furniture_listView);
         //EditText notice_edit = findViewById(R.id.notice_VBD);
         EditText hour_edit = findViewById(R.id.worktime_VBD);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
@@ -229,8 +229,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         .add("weight", weight)
                         .add("type", type)
                         .add("estimate_worktime", estimate_worktime)
+                        .add("fee", fee)
                         .build();
-                Log.d(TAG, "check_btn, ");
+                Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date: "+moving_date+":00"+
+                        ", num: "+num+", weight: "+weight+", type: "+type+
+                        ", estimate_worktime: "+estimate_worktime+", fee: "+fee);
 
                 Request request = new Request.Builder()
                         .url(BuildConfig.SERVER_URL+"/functional.php")

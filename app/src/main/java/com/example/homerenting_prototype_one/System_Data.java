@@ -42,7 +42,7 @@ public class System_Data extends AppCompatActivity {
         TextView car_text = findViewById(R.id.car_bar);
         Button addEmployee_btn = findViewById(R.id.add_employee_btn);
         Button addCar_btn = findViewById(R.id.add_car_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

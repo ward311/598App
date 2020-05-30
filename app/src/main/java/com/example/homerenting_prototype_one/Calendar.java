@@ -57,7 +57,7 @@ public class Calendar extends AppCompatActivity {
 //        final Button orderList_btn = findViewById(R.id.order_list_btn);
 //        final Button valuationList_clickBtn = findViewById(R.id.valuation_list_click_btn);
 //        final Button orderList_clickBtn = findViewById(R.id.order_list_click_btn);
-        final ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        final ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

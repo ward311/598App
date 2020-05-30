@@ -27,7 +27,7 @@ public class CalendarView extends LinearLayout {
         header_layout = findViewById( R.id.header_layout );
         left_btn = findViewById( R.id.previous_btn );
         right_btn = findViewById( R.id.next_btn );
-        valuation_btn = findViewById( R.id.valuation_imgBtn );
+        valuation_btn = findViewById( R.id.valuationBlue_Btn);
         order_btn = findViewById(R.id.order_imgBtn);
         calendar_btn = findViewById(R.id.calendar_imgBtn);
         system_btn = findViewById(R.id.system_imgBtn);

@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.furniture;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,11 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.Calendar;
+import com.example.homerenting_prototype_one.LocationAdapter;
+import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Detail;
 import com.example.homerenting_prototype_one.order.Today_Detail;
@@ -26,7 +31,7 @@ public class Furniture_Location extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_furniture__location );
         ImageButton back_btn = findViewById( R.id.back_imgBtn );
-        ListView location_list = findViewById( R.id.furniture_location_listView );
+        ListView location_list = findViewById( R.id.furniture_location_listView);
         Button check_btn = findViewById(R.id.check_furniture_location_btn);
         ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
@@ -44,8 +49,12 @@ public class Furniture_Location extends AppCompatActivity {
         location_data.add( "三人沙發" );
         location_data.add( "按摩椅" );
         location_data.add( "電視" );
+
+
         LocationAdapter location_adapter = new LocationAdapter( location_data );
         location_list.setAdapter( location_adapter );
+
+
         Bundle location_bundle = getIntent().getExtras();
         final String key = location_bundle.getString( "key" );
         back_btn.setOnClickListener( new View.OnClickListener() {

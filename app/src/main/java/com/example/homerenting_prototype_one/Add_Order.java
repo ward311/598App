@@ -28,7 +28,7 @@ public class Add_Order extends AppCompatActivity {
         final Button pick_date_btn = findViewById(R.id.pickDate_order_btn);
         final TextView pick_date_text = findViewById( R.id.pickDate_order_text );
         Button finish_btn = findViewById(R.id.finish_order_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);

@@ -157,7 +157,7 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/valuation_imgBtn"
+                android:id="@+id/valuationBlue_Btn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="#00000000"
