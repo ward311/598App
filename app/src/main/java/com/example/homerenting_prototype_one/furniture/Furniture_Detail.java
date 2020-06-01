@@ -9,23 +9,45 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
+import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.DetailAdapter;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.order.Order_Booking;
 import com.example.homerenting_prototype_one.valuation.MatchMaking_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.valuation.ValuationCancel_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation_Detail;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 import static com.example.homerenting_prototype_one.R.*;
+import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getTime;
 
 public class Furniture_Detail extends AppCompatActivity {
     ImageButton valuation_btn;
@@ -38,6 +60,9 @@ public class Furniture_Detail extends AppCompatActivity {
 
     private ListView detail_list;
     ArrayList<String[]> data;
+
+    private final String PHP = "/furniture.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -48,31 +73,97 @@ public class Furniture_Detail extends AppCompatActivity {
         linking();
 
         Bundle detail_bundle = getIntent().getExtras();
-        //final String key = detail_bundle.getString("key");
-        //String order_id = detail_bundle.getString("order_id");
+//        final String key = detail_bundle.getString("key");
+        String order_id = detail_bundle.getString("order_id");
         final String key = "valuation";
-        String order_id = "6";
-        Log.d(TAG, "key: "+key+", order_id: "+order_id);
+//        String order_id = "6";
+        Log.d(TAG, "key: " + key + ", order_id: " + order_id);
 
         detail_list = findViewById( id.furniture_detail_listView );
 
         data = new ArrayList<>();
 
+        String function_name = "furniture_each_detail";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Furniture_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData: "+responseData);
+
+                try {
+                    final JSONArray responseArr = new JSONArray(responseData);
+
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject furniture = responseArr.getJSONObject(i);
+                        final String furniture_name = furniture.getString("furniture_name");
+                        final String num = furniture.getString("num");
+                        final String furniture_memo = furniture.getString("furniture_memo");
+
+                        String[] row_data = {furniture_name, num, furniture_memo};
+                        data.add(row_data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            show_noData show = new show_noData(Order_Booking.this, orderL.getContext());
+//                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+//                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+//                        }
+//                    });
+                }
+
+                //顯示資訊
+                for(int i = 0; i < data.size(); i++)
+                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DetailAdapter detail_adapter = new DetailAdapter(data);
+                        detail_list.setAdapter(detail_adapter);
+                    }
+                });
+
+            }
+        });
+
 //        String[][] datas = {{"test1", "100"}, {"test2", "200"}};
 //        data.add(datas[0]);
 //        data.add(datas[1]);
 
-        ArrayList<String[]> datas = new ArrayList<>();
-        for(int i = 0; i < 2; i++){
-            String[] row_data = {"test"+(i+1), String.valueOf(i+1)};
-            datas.add(row_data);
-        }
-        data.add(datas.get(0));
-        data.add(datas.get(1));
+        //ArrayList<String[]> datas = new ArrayList<>();
 
-        DetailAdapter detail_adapter = new DetailAdapter(data);
-        detail_list.setAdapter(detail_adapter);
+//        for(int i = 0; i < 2; i++){
+//            String[] row_data = {"test" + (i+1), String.valueOf(i+1)};
+//            data.add(row_data);
+//        }
 
+        //data.add(datas.get(0));
+        //data.add(datas.get(1));
 
 
         back_btn.setOnClickListener( new View.OnClickListener() {
