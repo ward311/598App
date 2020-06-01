@@ -164,6 +164,9 @@ public class Valuation_Cancel extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent detail_layout = new Intent(Valuation_Cancel.this, ValuationCancel_Detail.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("order_id", "9");
+                detail_layout.putExtras(bundle);
                 startActivity( detail_layout );
             }
         } );

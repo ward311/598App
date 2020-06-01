@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -17,6 +18,7 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.show.show_noData;
 import com.example.homerenting_prototype_one.show.show_user_data;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -27,6 +29,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,7 +40,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getTime;
+
 public class Order_Booking extends AppCompatActivity {
+    ArrayList<String[]> data;
+
     private final String PHP = "/user_data.php";
     String TAG = "Order_Booking";
 
@@ -54,8 +63,8 @@ public class Order_Booking extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
-
+        //final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
+        data = new ArrayList<>();
 
         String function_name = "order_member";
         RequestBody body = new FormBody.Builder()
@@ -85,7 +94,7 @@ public class Order_Booking extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData"+responseData);
+                Log.d(TAG,"responseData: "+responseData);
 
                 try {
                     final JSONArray responseArr = new JSONArray(responseData);
@@ -95,59 +104,42 @@ public class Order_Booking extends AppCompatActivity {
                         final String order_id = member.getString("order_id");
                         final String name = member.getString("name");
                         final String datetime = member.getString("moving_date");
-                        //final String datetime = member.getString("move_date")+" "+member.getString("move_time");
                         String gender = member.getString("gender");
                         if (gender.equals("female")) gender ="小姐";
-                        //if (gender.equals("女")) gender ="小姐";
                         else gender = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
-                        Log.d(TAG,"order_id"+order_id);
+                        Log.d(TAG,"order_id: "+order_id);
 
                         //0517
-                        final String finalGender = gender;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                show_user_data show = new show_user_data(Order_Booking.this, orderL.getContext());
-                                orderL.addView(show.create_view()); //分隔線
-
-                                //新增客戶資料
-                                ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, finalGender, phone, contact_address, false);
-
-                                //切換頁面的功能
-                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent();
-                                        intent.setClass(Order_Booking.this, Order_Detail.class);
-
-                                        //交給其他頁面的變數
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("order_id", order_id);
-                                        bundle.putBoolean("btn", false);
-                                        intent.putExtras(bundle);
-
-                                        startActivity(intent);
-                                    }
-                                });
-
-                                orderL.addView(CustomerInfo); //加入原本的畫面中
-                            }
-                        });
+                        final String nameTitle = gender;
+                        String[] row_data = {getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, "false"};
+                        data.add(row_data);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            show_noData show = new show_noData(Order_Booking.this, orderL.getContext());
-                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
-                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            show_noData show = new show_noData(Order_Booking.this, orderL.getContext());
+//                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+//                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+//                        }
+//                    });
                 }
+
+                //顯示資訊
+                for(int i=0; i < data.size(); i++)
+                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                final ListView orderList = findViewById(R.id.order_listView_OB);
+                final ListAdapter listAdapter = new ListAdapter(data);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        orderList.setAdapter(listAdapter);
+                    }
+                });
+
             }
         });
 

@@ -139,7 +139,13 @@
             android:id="@+id/LinearOrderDetail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"/>
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/order_listView_O"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </ScrollView>
 
     <LinearLayout

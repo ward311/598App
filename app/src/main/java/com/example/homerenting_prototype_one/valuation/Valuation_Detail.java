@@ -120,7 +120,7 @@ public class Valuation_Detail extends AppCompatActivity {
                 .post(body)
                 .build();
 
-        final ProgressDialog dialog = ProgressDialog.show(this,"讀取中","請稍候",true);
+        //final ProgressDialog dialog = ProgressDialog.show(this,"讀取中","請稍候",true);
 
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -158,7 +158,7 @@ public class Valuation_Detail extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            dialog.dismiss();
+                            //dialog.dismiss();
                             nameText.setText(name);
                             if(gender.equals("female")) nameTitleText.setText("小姐");
                             else if(gender.equals("male")) nameTitleText.setText("先生");

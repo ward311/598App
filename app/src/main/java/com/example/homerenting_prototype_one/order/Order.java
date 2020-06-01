@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -17,6 +18,7 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.show.show_noData;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.show.show_user_data;
@@ -27,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,6 +38,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getTime;
 
 public class Order extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -109,16 +115,32 @@ public class Order extends AppCompatActivity {
                         //取欄位資料
                         final String order_id = member.getString("order_id");
                         final String datetime = member.getString("moving_date");
-                        //final String datetime = member.getString("move_date")+" "+member.getString("move_time");
                         final String name = member.getString("name");
                         final String nameTitle;
                         if(member.getString("gender").equals("female")) nameTitle = "小姐";
-                        //if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
 
                         //呈現在app上
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                ListView orderList = findViewById(R.id.order_listView_O);
+//                                ArrayList<String> data = new ArrayList<>();
+//                                data.add(getDate(datetime));
+//                                data.add(getTime(datetime));
+//                                data.add(name);
+//                                data.add(nameTitle);
+//                                data.add(phone);
+//                                data.add(contact_address);
+//                                data.add("false");
+//                                ListAdapter listAdapter = new ListAdapter(data);
+//                                orderList.setAdapter(listAdapter);
+//                            }
+//                        });
+
+                        /*
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -149,6 +171,7 @@ public class Order extends AppCompatActivity {
                                 orderL.addView(CustomerInfo); //加入原本的畫面中
                             }
                         });
+                        */
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();

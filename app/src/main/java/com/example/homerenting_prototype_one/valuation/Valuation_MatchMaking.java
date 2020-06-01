@@ -160,6 +160,9 @@ public class Valuation_MatchMaking extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent detail_intent = new Intent(Valuation_MatchMaking.this, MatchMaking_Detail.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("order_id","8");
+                detail_intent.putExtras(bundle);
                 startActivity(detail_intent);
             }
         } );

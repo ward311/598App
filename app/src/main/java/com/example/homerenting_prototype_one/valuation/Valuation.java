@@ -18,7 +18,7 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.CustomAdapter;
 import com.example.homerenting_prototype_one.DataModel;
-import com.example.homerenting_prototype_one.ListAdapter;
+import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
@@ -188,7 +188,7 @@ public class Valuation extends AppCompatActivity {
             public void onClick(View v) {
                 Intent detail_intent = new Intent(Valuation.this, Valuation_Detail.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("order_id", "1");
+                bundle.putString("order_id", "6");
                 detail_intent.putExtras(bundle);
                 startActivity(detail_intent);
             }
@@ -215,7 +215,7 @@ public class Valuation extends AppCompatActivity {
         data.add("15. 健身器材");
 
 
-        ListAdapter adapter = new ListAdapter(data);
+        //ListAdapter adapter = new ListAdapter(data);
         evaluation_list.setAdapter(adapter);
         evaluation_list.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override

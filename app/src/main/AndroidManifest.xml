@@ -13,8 +13,6 @@
         android:theme="@style/AppTheme"
         android:networkSecurityConfig="@xml/network_security_config">
         <activity android:name=".Bonus_List_Detail"/>
-        <activity android:name=".furniture.Furniture_Location" />
-        <activity android:name=".furniture.Furniture_Detail" />
         <activity android:name=".Record_Detail"/>
         <activity android:name=".Register_Company"/>
         <activity android:name=".Add_Valuation"/>
@@ -29,14 +27,14 @@
         <activity android:name=".Information_Edit" />
 
         <!--Order-->
-        <activity android:name=".order.Order" />
         <activity android:name=".order.Order_Booking"/>
+        <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Order_Cancel"/>
         <activity android:name=".order.Today_Detail"/>
         <activity android:name=".order.Order_Detail"/>
 
         <!--Valuation-->
-        <activity android:name=".valuation.Valuation"/>
+        <activity android:name=".valuation.Valuation" />
         <activity android:name=".valuation.Valuation_Booking" />
         <activity android:name=".valuation.Valuation_MatchMaking"/>
         <activity android:name=".valuation.Valuation_Cancel" />
@@ -44,6 +42,10 @@
         <activity android:name=".valuation.ValuationBooking_Detail" />
         <activity android:name=".valuation.MatchMaking_Detail" />
         <activity android:name=".valuation.ValuationCancel_Detail" />
+
+        <!--Furniture-->
+        <activity android:name=".furniture.Furniture_Detail" />
+        <activity android:name=".furniture.Furniture_Location" />
 
         <!--Schedule-->
         <activity android:name=".schedule.Schedule_Detail" />
@@ -65,7 +67,7 @@
         <activity android:name=".Calendar" />
         <activity android:name=".Register" />
         <activity android:name=".Login" />
-        <activity android:name=".order.Order_Today">
+        <activity android:name=".order.Order">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

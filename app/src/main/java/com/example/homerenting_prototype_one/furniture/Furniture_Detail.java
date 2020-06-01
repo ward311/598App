@@ -3,7 +3,9 @@ package com.example.homerenting_prototype_one.furniture;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -11,8 +13,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.DetailAdapter;
-import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.DetailAdapter;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
@@ -33,8 +34,10 @@ public class Furniture_Detail extends AppCompatActivity {
     ImageButton system_btn;
     ImageButton setting_btn;
 
+    String TAG = "Furniture_Detail";
+
     private ListView detail_list;
-    private List<String> data,amount;
+    ArrayList<String[]> data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -42,55 +45,35 @@ public class Furniture_Detail extends AppCompatActivity {
         ImageButton back_btn = findViewById( id.back_imgBtn );
         Button check_btn = findViewById(id.check_furniture_detail_btn);
 
+        linking();
+
         Bundle detail_bundle = getIntent().getExtras();
-        final String key = detail_bundle.getString("key");
-        String order_id = detail_bundle.getString("order_id");
+        //final String key = detail_bundle.getString("key");
+        //String order_id = detail_bundle.getString("order_id");
+        final String key = "valuation";
+        String order_id = "6";
+        Log.d(TAG, "key: "+key+", order_id: "+order_id);
 
-
-//        amount = new ArrayList<>();
-        Context context;
         detail_list = findViewById( id.furniture_detail_listView );
 
         data = new ArrayList<>();
-        data.add("單人沙發");
-        data.add("兩人沙發");
-        data.add("三人沙發");
-        data.add("L型沙發");
-        data.add("沙發桌");
-        data.add("傳統電視");
-        data.add("液晶電視37吋以下");
-        data.add("液晶電視40吋以上");
-        data.add("電視櫃");
-        data.add("酒櫃");
-        data.add("鞋櫃");
-        data.add("按摩椅");
-        data.add("佛桌");
-        data.add("鋼琴");
-        data.add("健身器材");
-        data.add( "日用品裝箱" );
-        data.add( "壁畫" );
-        data.add( "電腦" );
-//        amount.add( "2" );
-//        amount.add( "1" );
-//        amount.add( "1" );
-//        amount.add( "1" );
-//        amount.add( "3" );
-//        amount.add( "1" );
-//        amount.add( "1" );
-//        amount.add( "1" );
-//        amount.add( "1" );
-//        amount.add( "2" );
-//        amount.add( "2" );
-//        amount.add( "1" );
-//        amount.add( "1" );
-//        amount.add( "1" );
-//        amount.add( "3" );
-//        amount.add( "1" );
-//        amount.add( "1" );
-//        amount.add( "5" );
 
-        DetailAdapter detail_adapter = new DetailAdapter( data);
-        detail_list.setAdapter( detail_adapter );
+//        String[][] datas = {{"test1", "100"}, {"test2", "200"}};
+//        data.add(datas[0]);
+//        data.add(datas[1]);
+
+        ArrayList<String[]> datas = new ArrayList<>();
+        for(int i = 0; i < 2; i++){
+            String[] row_data = {"test"+(i+1), String.valueOf(i+1)};
+            datas.add(row_data);
+        }
+        data.add(datas.get(0));
+        data.add(datas.get(1));
+
+        DetailAdapter detail_adapter = new DetailAdapter(data);
+        detail_list.setAdapter(detail_adapter);
+
+
 
         back_btn.setOnClickListener( new View.OnClickListener() {
             @Override
