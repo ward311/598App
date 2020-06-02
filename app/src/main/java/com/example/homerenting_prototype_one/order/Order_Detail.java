@@ -99,7 +99,7 @@ public class Order_Detail extends AppCompatActivity {
 
 
 
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
         Boolean btn = bundle.getBoolean("btn");
 
@@ -227,9 +227,8 @@ public class Order_Detail extends AppCompatActivity {
             public void onClick(View v) {
                 Intent detail_intent = new Intent();
                 detail_intent.setClass( Order_Detail.this, Furniture_Location.class);
-                Bundle order_bundle = new Bundle();
-                order_bundle.putString( "key","order" );
-                detail_intent.putExtras( order_bundle );
+                bundle.putString( "key","order" );
+                detail_intent.putExtras( bundle );
                 startActivity( detail_intent);
             }
         } );

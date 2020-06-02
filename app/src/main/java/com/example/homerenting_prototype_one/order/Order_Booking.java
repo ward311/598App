@@ -132,7 +132,7 @@ public class Order_Booking extends AppCompatActivity {
                 }
 
                 //顯示資訊
-                for(int i=0; i < data.size(); i++)
+                for(int i = 0; i < data.size(); i++)
                     Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                 final ListAdapter listAdapter = new ListAdapter(data);
                 runOnUiThread(new Runnable() {
