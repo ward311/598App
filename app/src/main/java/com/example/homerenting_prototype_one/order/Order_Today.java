@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -17,7 +19,8 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.show.show_noData;
+import com.example.homerenting_prototype_one.adapter.ListAdapter;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.show.show_user_data;
 
@@ -27,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,7 +41,14 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getTime;
+
 public class Order_Today extends AppCompatActivity {
+    ArrayList<String[]> data;
+
+    ListView orderList;
+
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Order_Today";
     private final String PHP = "/user_data.php";
@@ -45,6 +57,8 @@ public class Order_Today extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__today);
+        orderList = findViewById(R.id.order_listView_OT);
+
         Button order = findViewById(R.id.order_btn);
         Button booking_order = findViewById(R.id.bookingOrder_btn);
         Button today_order = findViewById(R.id.todayOrder_btn);
@@ -55,7 +69,7 @@ public class Order_Today extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
+        data = new ArrayList<>();
 
         //傳至網頁的值，傳function_name
         String function_name = "order_member_today";
@@ -106,59 +120,62 @@ public class Order_Today extends AppCompatActivity {
                         //取欄位資料
                         final String order_id = member.getString("order_id");
                         final String datetime = member.getString("moving_date");
-                        //final String datetime = member.getString("move_date")+" "+member.getString("move_time");
                         final String name = member.getString("name");
                         final String nameTitle;
                         if(member.getString("gender").equals("female")) nameTitle = "小姐";
-                        //if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
 
-                        //呈現在app上
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                show_user_data show = new show_user_data(Order_Today.this, orderL.getContext());
-                                orderL.addView(show.create_view()); //分隔線
-
-                                //新增客戶資料
-                                ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, nameTitle, phone, contact_address, false);
-
-                                //切換頁面的功能
-                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent();
-                                        intent.setClass(Order_Today.this, Today_Detail.class); //Today_Detail
-
-                                        //交給其他頁面的變數
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("order_id", order_id);
-                                        intent.putExtras(bundle);
-
-                                        startActivity(intent);
-                                    }
-                                });
-
-                                orderL.addView(CustomerInfo); //加入原本的畫面中
-                            }
-                        });
+                        //將資料放入陣列
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, "false"};
+                        data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            show_noData show = new show_noData(Order_Today.this, orderL.getContext());
-                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+                            if(responseData.equals("null")){
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
+                            }
                             else Toast.makeText(Order_Today.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
+                //顯示資訊
+                for(int i=0; i < data.size(); i++)
+                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                final ListAdapter listAdapter = new ListAdapter(data);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        orderList.setAdapter(listAdapter);
+                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[])parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                String order_id = row_data[0];
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
+                                bundle.putBoolean("btn", false);
+
+                                Intent intent = new Intent();
+                                intent.setClass(Order_Today.this, Order_Detail.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                });
             }
         });
+
+
+
 
 
 

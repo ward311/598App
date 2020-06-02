@@ -23,8 +23,7 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.show.show_noData;
-import com.example.homerenting_prototype_one.show.show_valuation_data;
+
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;

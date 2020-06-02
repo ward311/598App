@@ -82,8 +82,8 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         viewHolder.address_text.setTag(R.id.address_text,position);
         viewHolder.icon_img.setTag(R.id.new_icon_img,position);
 
-        int i = 0;
-        if(data.get(position).length >= 7){
+        int i = 1;
+        if(data.get(position).length >= 8){
             Log.i(TAG, "date: "+data.get(position)[i]);
             viewHolder.date_text.setText(data.get(position)[i++]);
             Log.i(TAG, "time: "+data.get(position)[i]);
