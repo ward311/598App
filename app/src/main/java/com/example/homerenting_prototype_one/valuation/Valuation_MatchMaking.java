@@ -19,6 +19,7 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.show.show_noData;
 import com.example.homerenting_prototype_one.show.show_valuation_data;
@@ -29,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,6 +42,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Valuation_MatchMaking extends AppCompatActivity {
+    ArrayList<String[]> data;
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation_MatchMaking";
     private final String PHP = "/user_data.php";
@@ -53,7 +57,8 @@ public class Valuation_MatchMaking extends AppCompatActivity {
         matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
         cancel_evaluation = findViewById(R.id.cancelEvaluation_listView);
 
-        final LinearLayout valuationL = findViewById(R.id.LinearValuationMatchMakingDetail);
+        //final LinearLayout valuationL = findViewById(R.id.LinearValuationMatchMakingDetail);
+        data = new ArrayList<>();
 
         String function_name = "valuation_member";
         String status = "match";
@@ -67,7 +72,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                 .post(body)
                 .build();
 
-        final ProgressDialog dialog = ProgressDialog.show(this,"讀取中","請稍候",true);
+        //final ProgressDialog dialog = ProgressDialog.show(this,"讀取中","請稍候",true);
 
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -101,58 +106,25 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                                show_valuation_data show = new show_valuation_data(Valuation_MatchMaking.this, valuationL.getContext());
-                                valuationL.addView(show.create_view()); //分隔線
-
-                                //新增客戶資料
-                                ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout( name, nameTitle, phone, contact_address, false);
-
-                                //切換頁面的功能
-                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent();
-                                        intent.setClass(Valuation_MatchMaking.this, MatchMaking_Detail.class);
-
-                                        //交給其他頁面的變數
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("order_id", order_id);
-                                        intent.putExtras(bundle);
-
-                                        startActivity(intent);
-                                    }
-                                });
-
-                                valuationL.addView(CustomerInfo); //加入原本的畫面中
-                            }
-                        });
-
+                        String[] row_data = { name, nameTitle, phone, contact_address, "true"};
+                        data.add(row_data);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            show_noData show = new show_noData(Valuation_MatchMaking.this, valuationL.getContext());
-                            if(responseData.equals("null")) valuationL.addView(show.noDataMessage());
-                            else Toast.makeText(Valuation_MatchMaking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
                 }
+                //顯示資訊
+                for(int i = 0; i < data.size(); i++)
+                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                final ListView orderList = findViewById(R.id.valuation_listView_VM);
+                final ListAdapter listAdapter = new ListAdapter(data);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        orderList.setAdapter(listAdapter);
+                    }
+                });
             }
         });
-
-
-
-
-
-
 
 
         LinearLayout first_layout = findViewById(R.id.first_matchMaking_layout);

@@ -108,11 +108,17 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#989898"/>
+    <ListView
+        android:id="@+id/valuation_listView_VM"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7" />
     <ScrollView
         android:id="@+id/selfEvaluation_scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7">
+        android:layout_weight="7"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/LinearValuationMatchMakingDetail"
