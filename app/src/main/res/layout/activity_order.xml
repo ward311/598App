@@ -129,11 +129,18 @@
         android:layout_height="1dp"
         android:background="#989898" />
 
+    <ListView
+        android:id="@+id/order_listView_O"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7" />
+
     <ScrollView
         android:id="@+id/order_scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7">
+        android:layout_weight="7"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/LinearOrderDetail"
@@ -141,10 +148,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ListView
-                android:id="@+id/order_listView_O"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
         </LinearLayout>
     </ScrollView>
 

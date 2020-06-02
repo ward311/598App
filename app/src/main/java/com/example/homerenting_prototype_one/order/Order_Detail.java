@@ -156,9 +156,9 @@ public class Order_Detail extends AppCompatActivity {
                     fromAddress = order.getString("moveout_address");
                     toAddress = order.getString("movein_address");
                     remainder = order.getString("additional");
-                    if(!order.getString("vehicle_id").equals("null"))
-                        car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
-                    else car = "尚未安排車輛";
+//                    if(!order.getString("vehicle_id").equals("null"))
+//                        car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
+//                    else car = "尚未安排車輛";
                     worktime = order.getString("estimate_worktime")+"小時";
                     fee = order.getString("fee")+"元";
 
