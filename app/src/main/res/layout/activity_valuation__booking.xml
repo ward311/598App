@@ -108,6 +108,12 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#989898"/>
+
+    <ListView
+        android:id="@+id/order_listView_VB"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
     <ScrollView
         android:id="@+id/bookingEvaluation_scrollView"
         android:layout_width="match_parent"

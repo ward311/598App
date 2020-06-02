@@ -18,8 +18,8 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.show.show_noData;
 import com.example.homerenting_prototype_one.show.show_user_data;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +38,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Valuation_Booking extends AppCompatActivity {
+    ListView orderList;
+
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation_Booking";
     private final String PHP = "/user_data.php";
@@ -48,6 +50,8 @@ public class Valuation_Booking extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation__booking);
+        orderList = findViewById(R.id.order_listView_VB);
+
         self_evaluation = findViewById(R.id.selfEvaluation_listView);
         booking_evaluation = findViewById(R.id.bookingEvaluation_listView);
         matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
@@ -157,8 +161,10 @@ public class Valuation_Booking extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            show_noData show = new show_noData(Valuation_Booking.this, orderL.getContext());
-                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+                            if(responseData.equals("null")){
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
+                            }
                             else Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
