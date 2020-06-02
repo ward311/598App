@@ -70,7 +70,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_match_making__detail );
 
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
         String order_id = bundle.getString("order_id");
         Log.d(TAG, "order_id: " + order_id);
 
@@ -183,9 +183,8 @@ public class MatchMaking_Detail extends AppCompatActivity {
             public void onClick(View v) {
                 Intent detail_intent = new Intent();
                 detail_intent.setClass( MatchMaking_Detail.this, Furniture_Detail.class );
-                Bundle detail_bundle = new Bundle();
-                detail_bundle.putString("key","match");
-                detail_intent.putExtras( detail_bundle );
+                bundle.putString("key","match");
+                detail_intent.putExtras( bundle );
                 startActivity( detail_intent );
             }
         } );

@@ -22,7 +22,10 @@ import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.order.Order_Booking;
+import com.example.homerenting_prototype_one.order.Order_Detail;
 
 
 import org.jetbrains.annotations.NotNull;
@@ -49,10 +52,11 @@ import static com.example.homerenting_prototype_one.show.show_data.getTime;
 public class Valuation extends AppCompatActivity {
 
     ArrayList<String[]> data;
-
+    ListView orderList;
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation";
     private final String PHP = "/user_data.php";
+
 
     ArrayList<DataModel> dataModels;
     public ListView evaluation_list, self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
@@ -62,6 +66,7 @@ public class Valuation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation);
+        orderList = findViewById(R.id.valuation_listView_V);
         self_evaluation = findViewById(R.id.selfEvaluation_listView);
         booking_evaluation = findViewById(R.id.bookingEvaluation_listView);
         matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
@@ -134,13 +139,13 @@ public class Valuation extends AppCompatActivity {
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
 
-                        String[] row_data = { name, nameTitle, phone, contact_address, "true"};
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, "true"};
                         data.add(row_data);
                         //呈現在app上
 //                        runOnUiThread(new Runnable() {
 //                            @Override
 //                            public void run() {
-//                                show_valuation_data show = new show_valuation_data(Valuation.this, orderL.getContext());
+//                                 show = new show_valuation_data(Valuation.this, orderL.getContext());
 //                                orderL.addView(show.create_view()); //分隔線
 //
 //                                //新增客戶資料
@@ -168,25 +173,42 @@ public class Valuation extends AppCompatActivity {
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            show_noData show = new show_noData(Valuation.this, orderL.getContext());
-//                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
-//                            else Toast.makeText(Valuation.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-//                        }
-//                    });
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {if(responseData.equals("null")){
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
+                            }
+                            else Toast.makeText(Valuation.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
                 //顯示資訊
                 for(int i = 0; i < data.size(); i++)
                     Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                final ListView orderList = findViewById(R.id.valuation_listView_V);
                 final ListAdapter listAdapter = new ListAdapter(data);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         orderList.setAdapter(listAdapter);
+                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[])parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                String order_id = row_data[0];
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
+                                bundle.putBoolean("btn", false);
+
+                                Intent intent = new Intent();
+                                intent.setClass(Valuation.this, Valuation_Detail.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
                     }
                 });
 

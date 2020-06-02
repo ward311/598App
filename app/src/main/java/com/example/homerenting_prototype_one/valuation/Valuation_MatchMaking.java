@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -20,7 +21,10 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.order.Order_Booking;
+import com.example.homerenting_prototype_one.order.Order_Detail;
 
 
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +45,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Valuation_MatchMaking extends AppCompatActivity {
+    ListView orderList;
     ArrayList<String[]> data;
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation_MatchMaking";
@@ -51,6 +56,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation__match_making);
+        orderList = findViewById(R.id.valuation_listView_VM);
         self_evaluation = findViewById(R.id.selfEvaluation_listView);
         booking_evaluation = findViewById(R.id.bookingEvaluation_listView);
         matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
@@ -105,11 +111,21 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
-                        String[] row_data = { name, nameTitle, phone, contact_address, "true"};
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, "true"};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("null")){
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
+                            }
+                            else Toast.makeText(Valuation_MatchMaking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
                 //顯示資訊
                 for(int i = 0; i < data.size(); i++)
@@ -120,6 +136,23 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                     @Override
                     public void run() {
                         orderList.setAdapter(listAdapter);
+                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[])parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                String order_id = row_data[0];
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
+                                bundle.putBoolean("btn", false);
+
+                                Intent intent = new Intent();
+                                intent.setClass(Valuation_MatchMaking.this, MatchMaking_Detail.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
                     }
                 });
             }
