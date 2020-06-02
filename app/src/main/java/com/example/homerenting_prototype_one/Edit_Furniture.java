@@ -2,68 +2,215 @@ package com.example.homerenting_prototype_one;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
+
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.valuation.ValuationBooking_Detail;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Edit_Furniture extends AppCompatActivity {
+    String TAG = "Edit_Furniture";
     private ListView list;
-    private List<String> data;
+    private ArrayList<String[]> data;
+
+    FurnitureAdapter adapter;
+
+
+    OkHttpClient okHttpClient = new OkHttpClient();
+    private final String PHP = "/furniture.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__furniture);
-        Button check_btn = findViewById(R.id.check_furniture_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+        final Button check_btn = findViewById(R.id.check_furniture_btn);
+        final Button add_btn = findViewById(R.id.add_furniture_btn);
+        final ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        final ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        final ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        final ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        final ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         data = new ArrayList<>();
         list = findViewById(R.id.furniture_listView);
-        data.add("1. 單人沙發");
-        data.add("2. 兩人沙發");
-        data.add("3. 三人沙發");
-        data.add("4. L型沙發");
-        data.add("5. 沙發桌");
-        data.add("6. 傳統電視");
-        data.add("7. 液晶電視37吋以下");
-        data.add("8. 液晶電視40吋以上");
-        data.add("9. 電視櫃");
-        data.add("10. 酒櫃");
-        data.add("11. 鞋櫃");
-        data.add("12. 按摩椅");
-        data.add("13. 佛桌");
-        data.add("14. 鋼琴");
-        data.add("15. 健身器材");
 
-        FurnitureAdapter adapter = new FurnitureAdapter(data);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new ListView.OnItemClickListener() {
+
+        final String TAG = "Edit_Furniture";
+
+
+        final Bundle bundle = getIntent().getExtras();
+        final String order_id = bundle.getString("order_id");
+
+        String function_name = "furniture_each_detail";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .build();
+        Log.d(TAG, "order_id: "+order_id);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+
+        call.enqueue(new Callback() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData: "+responseData);
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    //取得資料
+                    for(int i = 0 ; i < responseArr.length() ; i++) {
+                        JSONObject furniture = responseArr.getJSONObject(i);
+                        String furniture_id = furniture.getString("furniture_id");
+                        String name = furniture.getString("furniture_name");
+                        String num = furniture.getString("num");
+
+                        String[] row_data = {furniture_id,name, num};
+                        Log.d(TAG, "row_data: "+Arrays.toString(row_data));
+                        data.add(row_data);
+                    }
+                } catch (JSONException e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Edit_Furniture.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                Log.d(TAG, "data.size(): "+data.size());
+                for(int i=0; i < data.size(); i++)
+                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                adapter = new FurnitureAdapter(data);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        list.setAdapter(adapter);
+                        check_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                for(int i = 0 ; i < adapter.getCount() ; i++){
+                                    String[] row_data = (String[])adapter.getItem(i);
+                                    Log.d(TAG,"row_data:"+Arrays.toString(row_data));
+                                }
+
+                                //-------
+//                                String function_name = "update_furniture";
+//                                RequestBody body = new FormBody.Builder()
+//                                        .add("function_name", function_name)
+//                                        .add("order_id", )
+//                                        .build();
+//
+//                                Request request = new Request.Builder()
+//                                        .url(BuildConfig.SERVER_URL+PHP)
+//                                        .post(body)
+//                                        .build();
+//
+//                                Call call = okHttpClient.newCall(request);
+//                                call.enqueue(new Callback() {
+//                                    @Override
+//                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//                                        e.printStackTrace();
+//                                        runOnUiThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+//                                            }
+//                                        });
+//                                    }
+//
+//                                    @Override
+//                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//                                        final String responseData = response.body().string();
+//                                        runOnUiThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                Toast.makeText(Edit_Furniture.this, "修改家具完成", Toast.LENGTH_LONG).show();
+//                                            }
+//                                        });
+//                                        Log.d(TAG, "responseData: " + responseData);
+//                                    }
+//                                });
+                                //-------
+
+//                                finish();
+                            }
+                        });
+                    }
+                });
+            };
         });
-        check_btn.setOnClickListener(new View.OnClickListener() {
+//        list.setOnItemClickListener(new ListView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//            }
+//        });
+//
+        add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent finish_intent = new Intent(Edit_Furniture.this, ValuationBooking_Detail.class);
-                startActivity(finish_intent);
+                String[] row_data = {" ","0"};
+                data.add(row_data);
+                final FurnitureAdapter adapter = new FurnitureAdapter(data);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        list.setAdapter(adapter);
+                    }
+                });
             }
         });
+
+
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
