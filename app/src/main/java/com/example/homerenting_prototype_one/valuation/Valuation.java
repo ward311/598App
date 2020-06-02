@@ -175,7 +175,8 @@ public class Valuation extends AppCompatActivity {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
-                        public void run() {if(responseData.equals("null")){
+                        public void run() {
+                            if(responseData.equals("null")){
                                 NoDataAdapter noData = new NoDataAdapter();
                                 orderList.setAdapter(noData);
                             }
