@@ -120,8 +120,8 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
+//                                NoDataAdapter noData = new NoDataAdapter();
+//                                orderList.setAdapter(noData);
                             }
                             else Toast.makeText(Valuation_MatchMaking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }

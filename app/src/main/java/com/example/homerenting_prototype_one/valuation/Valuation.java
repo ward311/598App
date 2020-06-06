@@ -119,7 +119,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -141,35 +141,6 @@ public class Valuation extends AppCompatActivity {
 
                         String[] row_data = {order_id, name, nameTitle, phone, contact_address, "true"};
                         data.add(row_data);
-                        //呈現在app上
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                 show = new show_valuation_data(Valuation.this, orderL.getContext());
-//                                orderL.addView(show.create_view()); //分隔線
-//
-//                                //新增客戶資料
-//                                ConstraintLayout CustomerInfo;
-//                                CustomerInfo = show.newCustomerInfoLayout(name, nameTitle, phone, contact_address, false);
-//
-//                                //切換頁面的功能
-//                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        Intent intent = new Intent();
-//                                        intent.setClass(Valuation.this, Valuation_Detail.class);
-//
-//                                        //交給其他頁面的變數
-//                                        Bundle bundle = new Bundle();
-//                                        bundle.putString("order_id", order_id);
-//                                        intent.putExtras(bundle);
-//
-//                                        startActivity(intent);
-//                                    }
-//                                });
-//                                orderL.addView(CustomerInfo); //加入原本的畫面中
-//                            }
-//                        })
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
@@ -177,8 +148,8 @@ public class Valuation extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
+//                                NoDataAdapter noData = new NoDataAdapter();
+//                                orderList.setAdapter(noData);
                             }
                             else Toast.makeText(Valuation.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }

@@ -12,7 +12,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.homerenting_prototype_one.R;
 
 public class NoDataAdapter extends BaseAdapter {
+    private String[] data;
     String TAG = "noDataAdapter";
+
+    //public NoDataAdapter(String[] data) { this.data=data;}
 
     @Override
     public int getCount() {

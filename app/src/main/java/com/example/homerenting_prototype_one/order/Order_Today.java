@@ -137,8 +137,8 @@ public class Order_Today extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
+                                //NoDataAdapter noData = new NoDataAdapter();
+                                //orderList.setAdapter(noData);
                             }
                             else Toast.makeText(Order_Today.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
@@ -164,7 +164,7 @@ public class Order_Today extends AppCompatActivity {
                                 bundle.putBoolean("btn", false);
 
                                 Intent intent = new Intent();
-                                intent.setClass(Order_Today.this, Order_Detail.class);
+                                intent.setClass(Order_Today.this, Today_Detail.class);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                             }

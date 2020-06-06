@@ -68,7 +68,6 @@ public class Furniture_Detail extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         setContentView( layout.activity_furniture__detail );
         ImageButton back_btn = findViewById( id.back_imgBtn );
-        Button check_btn = findViewById(id.check_furniture_detail_btn);
 
         linking();
 
@@ -186,25 +185,6 @@ public class Furniture_Detail extends AppCompatActivity {
             }
         } );
 
-        check_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent back_intent = new Intent(Furniture_Detail.this,Valuation_Detail.class);
-//                startActivity( back_intent );
-                if (key.matches( "match" )){
-                    Intent back_intent = new Intent(Furniture_Detail.this,MatchMaking_Detail.class);
-                    startActivity( back_intent );
-                }
-                else if (key.matches( "cancel" )){
-                    Intent back_intent = new Intent(Furniture_Detail.this,ValuationCancel_Detail.class);
-                    startActivity( back_intent );
-                }
-                else {
-                    Intent back_intent = new Intent(Furniture_Detail.this,Valuation_Detail.class);
-                    startActivity( back_intent );
-                }
-            }
-        } );
 
         //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {

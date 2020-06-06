@@ -160,15 +160,16 @@
                         android:layout_weight="1"
                         android:text="家具清單"
                         android:textColor="#000000"/>
+
                     <Button
-                        android:id="@+id/edit_furniture_btn"
+                        android:id="@+id/edit_furniture_btn_VBD"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="修改家具"
-                        android:textColor="#FB8527"
+                        android:background="#FFFFFFFF"
                         android:gravity="top|left"
-                        android:background="#FFFFFFFF"/>
+                        android:text="修改家具"
+                        android:textColor="#FB8527" />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"

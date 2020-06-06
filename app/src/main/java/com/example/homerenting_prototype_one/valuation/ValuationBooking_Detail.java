@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.Edit_Furniture;
+import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
@@ -68,6 +68,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     EditText priceEdit;
 
     Button check_btn;
+    Button furniture_btn;
 
     String name;
     String gender;
@@ -80,20 +81,13 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
 
-//    public ListView furniture_list;
-    public String[] furnitures = {"1 單人沙發   2    ","2 兩人沙發   1    ","3 三人沙發   1    ","4 L型沙發   1    ",
-            "5 沙發桌   3    ","6 傳統電視   1    ","7 液晶電視37吋以下   1    ","8 液晶電視40吋以上   1    ","9 電視櫃   1    ",
-            "10 酒櫃   2    ","11 鞋櫃   2    ","12 按摩椅   1    ","13 佛桌   1    ","14 鋼琴   1    ",
-            "15 健身器材   3    "};
+    Bundle bundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation_booking__detail);
         Button phoneCall_btn = findViewById(R.id.call_btn);
-        Button change_btn = findViewById(R.id.edit_furniture_btn);
-//        furniture_list = findViewById(R.id.furniture_listView);
-        //EditText notice_edit = findViewById(R.id.notice_VBD);
-        EditText hour_edit = findViewById(R.id.worktime_VBD);
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
@@ -103,7 +97,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
 
 
-        Bundle bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
@@ -180,6 +174,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+        furniture_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ValuationBooking_Detail.this, Edit_Furniture.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
@@ -281,9 +283,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         });
 
 
-
-        ArrayAdapter furniture_adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,furnitures);
-//        furniture_list.setAdapter(furniture_adapter);
         phoneCall_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -292,13 +291,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 startActivity(call_intent);
             }
         });
-        change_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent change_intent = new Intent(ValuationBooking_Detail.this, Edit_Furniture.class);
-                startActivity(change_intent);
-            }
-        });
+
         final Context context = this;
 //        pickCar_edit.setOnClickListener( new View.OnClickListener() {
 //            @Override
@@ -426,6 +419,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         valuationTimeText = findViewById(R.id.valuationTime_VBD);
         fromAddressText = findViewById(R.id.FromAddress_VBD);
         toAddressText = findViewById(R.id.ToAddress_VBD);
+        furniture_btn = findViewById(R.id.edit_furniture_btn_VBD);
         remainderText = findViewById(R.id.notice_VBD);
         movingDateText = findViewById(R.id.movingDate_VBD);
         movingTimeText = findViewById(R.id.movingTime_VBD);

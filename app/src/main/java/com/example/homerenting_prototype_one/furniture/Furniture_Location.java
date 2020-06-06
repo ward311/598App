@@ -1,6 +1,5 @@
 package com.example.homerenting_prototype_one.furniture;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,13 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.LocationAdapter;
+import com.example.homerenting_prototype_one.adapter.LocationAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.order.Order_Booking;
 import com.example.homerenting_prototype_one.order.Order_Detail;
 import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -33,7 +30,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,43 +39,27 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
-
 public class Furniture_Location extends AppCompatActivity {
 
     String TAG = "Furniture_Location";
     String PHP3 = "/furniture.php";
 
 
-//    private ListView location_list;
+    private ListView location_list;
     ArrayList<String[]> data;
 
-//    private Context context;
-//    private List<String[]> location_data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_furniture__location );
+        location_list = findViewById( R.id.furniture_location_listView);
         ImageButton back_btn = findViewById( R.id.back_imgBtn );
-        final ListView location_list = findViewById( R.id.furniture_location_listView);
-        Button check_btn = findViewById(R.id.check_furniture_location_btn);
+
         ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-//        location_data = new ArrayList<>();
-//        location_data.add( "單人沙發" );
-//        location_data.add( "兩人沙發" );
-//        location_data.add( "三人沙發" );
-//        location_data.add( "按摩椅" );
-//        location_data.add( "電視" );
-//        location_data.add( "單人沙發" );
-//        location_data.add( "兩人沙發" );
-//        location_data.add( "三人沙發" );
-//        location_data.add( "按摩椅" );
-//        location_data.add( "電視" );
 
         Bundle location_bundle = getIntent().getExtras();
         final String key = location_bundle.getString("key");
@@ -88,17 +68,6 @@ public class Furniture_Location extends AppCompatActivity {
 
 
         data = new ArrayList<>();
-
-//        ArrayList<String[]> datas = new ArrayList<>();
-//        for(int i = 0; i < 2; i++){
-//            String[] row_data = {"test"+(i+1), String.valueOf(i+1)};
-//            datas.add(row_data);
-//        }
-//        data.add(datas.get(0));
-//        data.add(datas.get(1));
-
-//        LocationAdapter location_adapter = new LocationAdapter( location_data );
-//        location_list.setAdapter( location_adapter );
 
         String function_name = "furniture_room_detail";
         RequestBody body = new FormBody.Builder()
@@ -184,19 +153,8 @@ public class Furniture_Location extends AppCompatActivity {
                 }
             }
         } );
-        check_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (key.matches( "order" )){
-                    Intent back_intent = new Intent(Furniture_Location.this,Order_Detail.class);
-                    startActivity( back_intent );
-                }
-                else if (key.matches( "today" )){
-                    Intent back_intent = new Intent(Furniture_Location.this,Today_Detail.class);
-                    startActivity( back_intent );
-                }
-            }
-        } );
+
+        //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

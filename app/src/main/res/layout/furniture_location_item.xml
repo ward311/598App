@@ -9,34 +9,34 @@
 
         <TextView
             android:id="@+id/location_floor"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:text="1樓"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="1樓 / "
             android:textColor="#000000" />
 
         <TextView
             android:id="@+id/location_room"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
             android:text="房間"
             android:textColor="#000000" />
 
         <TextView
             android:id="@+id/location_item"
-            android:layout_width="129dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="6"
             android:text="單人沙發" />
 
         <TextView
             android:id="@+id/location_total"
-            android:layout_width="50dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:text="1"
             android:textColor="#000000" />
 

@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.example.homerenting_prototype_one.R;
 
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class LocationAdapter extends BaseAdapter implements View.OnClickListener
         }
         viewHolder = (LocationViewHolder)convertView.getTag();
         viewHolder.floor_text.setTag( R.id.location_floor,position );
-        viewHolder.floor_text.setText(data.get(position)[0]+"樓");
+        viewHolder.floor_text.setText(data.get(position)[0]+"樓 / ");
         viewHolder.room_text.setTag( R.id.location_room,position );
         viewHolder.room_text.setText(data.get(position)[1]);
         viewHolder.item_text.setTag( R.id.location_item,position );

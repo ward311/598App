@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:id="@+id/timeLayout"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
@@ -33,7 +33,7 @@
 
     <LinearLayout
         android:id="@+id/mainLayout"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:orientation="vertical">
@@ -74,7 +74,7 @@
 
     <LinearLayout
         android:id="@+id/iconLayout"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">

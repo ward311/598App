@@ -137,8 +137,8 @@ public class Order_Cancel extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
+                                //NoDataAdapter noData = new NoDataAdapter();
+                                //orderList.setAdapter(noData);
                             }
                             else Toast.makeText(Order_Cancel.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }

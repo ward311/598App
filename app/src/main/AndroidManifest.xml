@@ -19,7 +19,6 @@
         <activity android:name=".Add_Order"/>
         <activity android:name=".Distribution_Detail" />
         <activity android:name=".Evaluation_Detail" />
-        <activity android:name=".Edit_Furniture" />
         <activity android:name=".Bonus_List" />
         <activity android:name=".Bonus_Distribution" />
         <activity android:name=".Bonus_View" />
@@ -27,7 +26,6 @@
         <activity android:name=".Information_Edit" />
 
         <!--Order-->
-        <activity android:name=".order.Order"/>
         <activity android:name=".order.Order_Booking"/>
         <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Order_Cancel"/>
@@ -35,7 +33,8 @@
         <activity android:name=".order.Order_Detail"/>
 
         <!--Valuation-->
-        <activity android:name=".valuation.Valuation" />
+        <activity android:name=".valuation.Valuation"/>
+        <activity android:name=".valuation.Valuation_Booking" />
         <activity android:name=".valuation.Valuation_MatchMaking"/>
         <activity android:name=".valuation.Valuation_Cancel" />
         <activity android:name=".valuation.Valuation_Detail" />
@@ -46,6 +45,7 @@
         <!--Furniture-->
         <activity android:name=".furniture.Furniture_Detail" />
         <activity android:name=".furniture.Furniture_Location" />
+        <activity android:name=".furniture.Edit_Furniture" />
 
         <!--Schedule-->
         <activity android:name=".schedule.Schedule_Detail" />
@@ -67,7 +67,7 @@
         <activity android:name=".Calendar" />
         <activity android:name=".Register" />
         <activity android:name=".Login" />
-        <activity android:name=".valuation.Valuation_Booking">
+        <activity android:name=".order.Order">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

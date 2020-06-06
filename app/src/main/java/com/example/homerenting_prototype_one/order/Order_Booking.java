@@ -132,33 +132,34 @@ public class Order_Booking extends AppCompatActivity {
                 }
 
                 //顯示資訊
-                for(int i = 0; i < data.size(); i++)
-                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                final ListAdapter listAdapter = new ListAdapter(data);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        orderList.setAdapter(listAdapter);
-                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                String[] row_data = (String[])parent.getItemAtPosition(position);
-                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                String order_id = row_data[0];
+                if(!responseData.equals("null")) {
+                    for (int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
+                    final ListAdapter listAdapter = new ListAdapter(data);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderList.setAdapter(listAdapter);
+                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
+                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
+                                    String order_id = row_data[0];
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("order_id", order_id);
-                                bundle.putBoolean("btn", false);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("order_id", order_id);
+                                    bundle.putBoolean("btn", false);
 
-                                Intent intent = new Intent();
-                                intent.setClass(Order_Booking.this, Order_Detail.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                });
-
+                                    Intent intent = new Intent();
+                                    intent.setClass(Order_Booking.this, Order_Detail.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
 
