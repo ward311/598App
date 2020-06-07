@@ -44,6 +44,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+
 public class Valuation_MatchMaking extends AppCompatActivity {
     ListView orderList;
     ArrayList<String[]> data;
@@ -111,7 +113,9 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
-                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, "true"};
+                        final String newicon = member.getString("new");
+
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {
@@ -120,41 +124,45 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-//                                NoDataAdapter noData = new NoDataAdapter();
-//                                orderList.setAdapter(noData);
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
                             }
                             else Toast.makeText(Valuation_MatchMaking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
                 //顯示資訊
-                for(int i = 0; i < data.size(); i++)
-                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                final ListView orderList = findViewById(R.id.valuation_listView_VM);
-                final ListAdapter listAdapter = new ListAdapter(data);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        orderList.setAdapter(listAdapter);
-                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                String[] row_data = (String[])parent.getItemAtPosition(position);
-                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                String order_id = row_data[0];
+                if(!responseData.equals("null")){
+                    for(int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                    final ListView orderList = findViewById(R.id.valuation_listView_VM);
+                    final ListAdapter listAdapter = new ListAdapter(data);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderList.setAdapter(listAdapter);
+                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String[] row_data = (String[])parent.getItemAtPosition(position);
+                                    Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                    String order_id = row_data[0];
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("order_id", order_id);
-                                bundle.putBoolean("btn", false);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("order_id", order_id);
 
-                                Intent intent = new Intent();
-                                intent.setClass(Valuation_MatchMaking.this, MatchMaking_Detail.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                });
+                                    removeNew(order_id, Valuation_MatchMaking.this);
+
+                                    Intent intent = new Intent();
+                                    intent.setClass(Valuation_MatchMaking.this, MatchMaking_Detail.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    });
+                }
+
             }
         });
 

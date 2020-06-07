@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -41,12 +42,18 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getwCount;
+import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+import static com.example.homerenting_prototype_one.show.global_function.setwCount;
+
 
 public class Order_Today extends AppCompatActivity {
     ArrayList<String[]> data;
 
+    TextView week_text;
     ListView orderList;
 
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -57,6 +64,7 @@ public class Order_Today extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__today);
+        week_text = findViewById(R.id.week_OT);
         orderList = findViewById(R.id.order_listView_OT);
 
         Button order = findViewById(R.id.order_btn);
@@ -70,6 +78,9 @@ public class Order_Today extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         data = new ArrayList<>();
+
+        setwCount(0);
+        week_text.setText(getWeek());
 
         //傳至網頁的值，傳function_name
         String function_name = "order_member_today";
@@ -126,9 +137,10 @@ public class Order_Today extends AppCompatActivity {
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
+                        final String newicon = member.getString("new");
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, "false"};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
@@ -137,40 +149,44 @@ public class Order_Today extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-                                //NoDataAdapter noData = new NoDataAdapter();
-                                //orderList.setAdapter(noData);
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
                             }
                             else Toast.makeText(Order_Today.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
                 //顯示資訊
-                for(int i=0; i < data.size(); i++)
-                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                final ListAdapter listAdapter = new ListAdapter(data);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        orderList.setAdapter(listAdapter);
-                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                String[] row_data = (String[])parent.getItemAtPosition(position);
-                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                String order_id = row_data[0];
+                if(!responseData.equals("null")) {
+                    for (int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
+                    final ListAdapter listAdapter = new ListAdapter(data);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderList.setAdapter(listAdapter);
+                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
+                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
+                                    String order_id = row_data[0];
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("order_id", order_id);
-                                bundle.putBoolean("btn", false);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("order_id", order_id);
+                                    bundle.putBoolean("btn", false);
 
-                                Intent intent = new Intent();
-                                intent.setClass(Order_Today.this, Today_Detail.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                });
+                                    removeNew(order_id, Order_Today.this);
+
+                                    Intent intent = new Intent();
+                                    intent.setClass(Order_Today.this, Today_Detail.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
+                         }
+                    });
+                }
             }
         });
 
@@ -245,5 +261,9 @@ public class Order_Today extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
+    }
+
+    private void getOrder(){
+
     }
 }

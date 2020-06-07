@@ -38,11 +38,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getDay;
-import static com.example.homerenting_prototype_one.show.show_data.getMonth;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
-import static com.example.homerenting_prototype_one.show.show_data.getYear;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getDay;
+import static com.example.homerenting_prototype_one.show.global_function.getMonth;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class Order_Detail extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();

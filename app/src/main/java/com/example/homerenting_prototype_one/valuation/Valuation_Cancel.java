@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -19,6 +20,7 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.show.show_valuation_cancel_data;
@@ -29,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,8 +42,14 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+
 public class Valuation_Cancel extends AppCompatActivity {
+    ArrayList<String[]> data;
     ListView orderList;
+    ListAdapter listAdapter;
 
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation_Cancel";
@@ -67,7 +77,8 @@ public class Valuation_Cancel extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         LinearLayout first_layout = findViewById(R.id.first_cancel_layout);
 
-        final LinearLayout valuationL = findViewById(R.id.LinearCancel);
+        data = new ArrayList<>();
+
         //將傳至網頁的值
         String function_name = "valuation_member";
         String status = "cancel";
@@ -81,8 +92,6 @@ public class Valuation_Cancel extends AppCompatActivity {
                 .url(BuildConfig.SERVER_URL+PHP)
                 .post(body)
                 .build();
-
-        final ProgressDialog dialog = ProgressDialog.show(this,"讀取中","請稍候",true);
 
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -111,42 +120,14 @@ public class Valuation_Cancel extends AppCompatActivity {
                         final String order_id = member.getString("order_id");
                         final String name = member.getString("name");
                         final String nameTitle;
-                        String gender = member.getString("gender");
                         if(member.getString("gender").equals("female")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
+                        final String newicon = member.getString("new");
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                                show_valuation_cancel_data show = new show_valuation_cancel_data(Valuation_Cancel.this, valuationL.getContext());
-                                valuationL.addView(show.create_view()); //分隔線
-
-                                //新增客戶資料
-                                ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout( name, nameTitle, phone, contact_address);
-
-                                //切換頁面的功能
-                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent();
-                                        intent.setClass(Valuation_Cancel.this, ValuationCancel_Detail.class);
-
-                                        //交給其他頁面的變數
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("order_id", order_id);
-                                        intent.putExtras(bundle);
-
-                                        startActivity(intent);
-                                    }
-                                });
-                                valuationL.addView(CustomerInfo); //加入原本的畫面中
-                            }
-                        });
-
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, newicon, "cancel"};
+                        data.add(row_data);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -154,10 +135,41 @@ public class Valuation_Cancel extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-//                                NoDataAdapter noData = new NoDataAdapter();
-//                                orderList.setAdapter(noData);
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
                             }
                             else Toast.makeText(Valuation_Cancel.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                //顯示資訊
+                if(!responseData.equals("null")) {
+                    for (int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
+                    listAdapter = new ListAdapter(data);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderList.setAdapter(listAdapter);
+                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
+                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
+                                    String order_id = row_data[0];
+
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("order_id", order_id);
+
+                                    removeNew(order_id, Valuation_Cancel.this);
+
+                                    Intent intent = new Intent();
+                                    intent.setClass(Valuation_Cancel.this, ValuationCancel_Detail.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
                         }
                     });
                 }

@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -38,12 +39,21 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getwCount;
+import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+import static com.example.homerenting_prototype_one.show.global_function.setwCount;
+
 
 public class Order_Booking extends AppCompatActivity {
     ArrayList<String[]> data;
 
+    TextView week_text;
+    ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
 
     private final String PHP = "/user_data.php";
@@ -53,6 +63,9 @@ public class Order_Booking extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__booking);
+        week_text = findViewById(R.id.week_OB);
+        lastWeek_btn = findViewById(R.id.lastWeek_btn_OB);
+        nextWeek_btn = findViewById(R.id.nextWeek_btn_OB);
         orderList = findViewById(R.id.order_listView_OB);
 
         Button order = findViewById(R.id.order_btn);
@@ -67,99 +80,28 @@ public class Order_Booking extends AppCompatActivity {
 
         data = new ArrayList<>();
 
-        String function_name = "order_member";
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("status", "assigned")
-                .build();
+        week_text.setText(getWeek());
+        getOrder();
 
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
-                .post(body)
-                .build();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
+        lastWeek_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Order_Booking.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+            public void onClick(View v) {
+                int wCount = getwCount();
+                setwCount(wCount-1);
+                week_text.setText(getWeek());
+                data.clear();
+                getOrder();
             }
+        });
 
+        nextWeek_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData);
-
-                try {
-                    final JSONArray responseArr = new JSONArray(responseData);
-
-                    for (int i = 0; i < responseArr.length(); i++) {
-                        JSONObject member = responseArr.getJSONObject(i);
-                        final String order_id = member.getString("order_id");
-                        final String name = member.getString("name");
-                        final String datetime = member.getString("moving_date");
-                        String gender = member.getString("gender");
-                        if (gender.equals("female")) gender ="小姐";
-                        else gender = "先生";
-                        final String nameTitle = gender;
-                        final String phone = member.getString("phone");
-                        final String contact_address = member.getString("contact_address");
-                        Log.d(TAG,"order_id: "+order_id);
-
-                        //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, "false"};
-                        data.add(row_data);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
-                            }
-                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-
-                //顯示資訊
-                if(!responseData.equals("null")) {
-                    for (int i = 0; i < data.size(); i++)
-                        Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
-                    final ListAdapter listAdapter = new ListAdapter(data);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            orderList.setAdapter(listAdapter);
-                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
-                                    String order_id = row_data[0];
-
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
-                                    bundle.putBoolean("btn", false);
-
-                                    Intent intent = new Intent();
-                                    intent.setClass(Order_Booking.this, Order_Detail.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
-                    });
-                }
+            public void onClick(View v) {
+                int wCount = getwCount();
+                setwCount(wCount+1);
+                week_text.setText(getWeek());
+                data.clear();
+                getOrder();
             }
         });
 
@@ -229,6 +171,112 @@ public class Order_Booking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Order_Booking.this, Setting.class);
                 startActivity(setting_intent);
+            }
+        });
+    }
+
+    private void getOrder(){
+        String function_name = "order_member";
+        String startDate =  getStartOfWeek();
+        String endDate = getEndOfWeek();
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("startDate", startDate)
+                .add("endDate", endDate)
+                .add("status", "assigned")
+                .build();
+        Log.i(TAG, "getOrder:\n"+"startDate:"+startDate+", endDate:"+endDate+", status:"+"scheduled");
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Order_Booking.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData: "+responseData);
+
+                try {
+                    final JSONArray responseArr = new JSONArray(responseData);
+
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject member = responseArr.getJSONObject(i);
+                        final String order_id = member.getString("order_id");
+                        final String name = member.getString("name");
+                        final String datetime = member.getString("moving_date");
+                        String gender = member.getString("gender");
+                        if (gender.equals("female")) gender ="小姐";
+                        else gender = "先生";
+                        final String nameTitle = gender;
+                        final String phone = member.getString("phone");
+                        final String contact_address = member.getString("contact_address");
+                        final String newicon = member.getString("new");
+                        Log.d(TAG,"order_id: "+order_id);
+
+                        //將資料放入陣列
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
+                        data.add(row_data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("null")){
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
+                            }
+                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                //顯示資訊
+                if(!responseData.equals("null")) {
+                    for (int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
+                    final ListAdapter listAdapter = new ListAdapter(data);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderList.setAdapter(listAdapter);
+                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
+                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
+                                    String order_id = row_data[0];
+
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("order_id", order_id);
+                                    bundle.putBoolean("btn", false);
+
+                                    removeNew(order_id, Order_Booking.this);
+
+                                    Intent intent = new Intent();
+                                    intent.setClass(Order_Booking.this, Order_Detail.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
     }

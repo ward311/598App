@@ -44,7 +44,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.show_data.dip2px;
+import static com.example.homerenting_prototype_one.show.global_function.dip2px;
+
 
 public class Edit_Furniture extends AppCompatActivity {
     String TAG = "Edit_Furniture";

@@ -46,8 +46,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.R.*;
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
 
 public class Furniture_Detail extends AppCompatActivity {
     ImageButton valuation_btn;

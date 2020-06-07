@@ -3,6 +3,7 @@ package com.example.homerenting_prototype_one.order;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,8 +40,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 public class Today_Detail extends AppCompatActivity {
 
@@ -269,8 +271,16 @@ public class Today_Detail extends AppCompatActivity {
                     }
                 });
 
-                Intent order_today_intent = new Intent(Today_Detail.this,Order_Today.class);
-                startActivity(order_today_intent);
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(Today_Detail.this,Order_Today.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                }, 1000);
             }
         });
 

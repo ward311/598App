@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -27,6 +28,8 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.order.Order_Booking;
+import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -274,8 +277,15 @@ public class Valuation_Detail extends AppCompatActivity {
                     }
                 });
 
-                Intent intent = new Intent(Valuation_Detail.this, Valuation.class);
-                startActivity(intent);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(Valuation_Detail.this, Valuation.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                }, 1000);
             }
         });
 
