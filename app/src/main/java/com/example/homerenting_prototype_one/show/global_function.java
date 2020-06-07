@@ -105,7 +105,7 @@ public class global_function {
         //Log.i(TAG, "week: "+week); //日:1、一:2、...、五:6、六:7
         c.add(Calendar.DATE, (1-week)+(wCount*7));   //取一週開頭日期
         startDate = c.getTime();
-        c.add(Calendar.DATE, 6);         //取一週結尾日期
+        c.add(Calendar.DATE, 6); //取一週結尾日期
         endDate = c.getTime();
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");

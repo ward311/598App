@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -43,12 +44,16 @@ import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getwCount;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+import static com.example.homerenting_prototype_one.show.global_function.setwCount;
 
 
 public class Order_Today extends AppCompatActivity {
     ArrayList<String[]> data;
 
+    TextView week_text;
     ListView orderList;
 
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -59,6 +64,7 @@ public class Order_Today extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__today);
+        week_text = findViewById(R.id.week_OT);
         orderList = findViewById(R.id.order_listView_OT);
 
         Button order = findViewById(R.id.order_btn);
@@ -72,6 +78,9 @@ public class Order_Today extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         data = new ArrayList<>();
+
+        setwCount(0);
+        week_text.setText(getWeek());
 
         //傳至網頁的值，傳function_name
         String function_name = "order_member_today";
@@ -252,5 +261,9 @@ public class Order_Today extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
+    }
+
+    private void getOrder(){
+
     }
 }

@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -39,13 +40,20 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getwCount;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+import static com.example.homerenting_prototype_one.show.global_function.setwCount;
 
 
 public class Order_Booking extends AppCompatActivity {
     ArrayList<String[]> data;
 
+    TextView week_text;
+    ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
 
     private final String PHP = "/user_data.php";
@@ -55,6 +63,9 @@ public class Order_Booking extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__booking);
+        week_text = findViewById(R.id.week_OB);
+        lastWeek_btn = findViewById(R.id.lastWeek_btn_OB);
+        nextWeek_btn = findViewById(R.id.nextWeek_btn_OB);
         orderList = findViewById(R.id.order_listView_OB);
 
         Button order = findViewById(R.id.order_btn);
@@ -69,11 +80,112 @@ public class Order_Booking extends AppCompatActivity {
 
         data = new ArrayList<>();
 
+        week_text.setText(getWeek());
+        getOrder();
+
+        lastWeek_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int wCount = getwCount();
+                setwCount(wCount-1);
+                week_text.setText(getWeek());
+                data.clear();
+                getOrder();
+            }
+        });
+
+        nextWeek_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int wCount = getwCount();
+                setwCount(wCount+1);
+                week_text.setText(getWeek());
+                data.clear();
+                getOrder();
+            }
+        });
+
+
+
+        //上方nav
+        order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(Order_Booking.this, Order.class);
+                startActivity(order_intent);
+            }
+        });
+//        booking_order.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent bookingOrder_intent = new Intent(Order_Booking.this, Order_Booking.class);
+//                startActivity(bookingOrder_intent);
+//            }
+//        });
+        today_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent todayOrder_intent = new Intent(Order_Booking.this, Order_Today.class);
+                startActivity(todayOrder_intent);
+            }
+        });
+        cancel_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cancelOrder_intent = new Intent(Order_Booking.this, Order_Cancel.class);
+                startActivity(cancelOrder_intent);
+            }
+        });
+
+        //下方nav
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(Order_Booking.this, Valuation.class);
+                startActivity(valuation_intent);
+            }
+        });
+//        order_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent order_intent = new Intent(Order.this, Order.class);
+//                startActivity(order_intent);
+//            }
+//        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(Order_Booking.this, Calendar.class);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(Order_Booking.this, System.class);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(Order_Booking.this, Setting.class);
+                startActivity(setting_intent);
+            }
+        });
+    }
+
+    private void getOrder(){
         String function_name = "order_member";
+        String startDate =  getStartOfWeek();
+        String endDate = getEndOfWeek();
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("startDate", startDate)
+                .add("endDate", endDate)
                 .add("status", "assigned")
                 .build();
+        Log.i(TAG, "getOrder:\n"+"startDate:"+startDate+", endDate:"+endDate+", status:"+"scheduled");
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+PHP)
@@ -165,75 +277,6 @@ public class Order_Booking extends AppCompatActivity {
                         }
                     });
                 }
-            }
-        });
-
-
-
-        //上方nav
-        order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Order_Booking.this, Order.class);
-                startActivity(order_intent);
-            }
-        });
-//        booking_order.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent bookingOrder_intent = new Intent(Order_Booking.this, Order_Booking.class);
-//                startActivity(bookingOrder_intent);
-//            }
-//        });
-        today_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent todayOrder_intent = new Intent(Order_Booking.this, Order_Today.class);
-                startActivity(todayOrder_intent);
-            }
-        });
-        cancel_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cancelOrder_intent = new Intent(Order_Booking.this, Order_Cancel.class);
-                startActivity(cancelOrder_intent);
-            }
-        });
-
-        //下方nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Order_Booking.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-//        order_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent order_intent = new Intent(Order.this, Order.class);
-//                startActivity(order_intent);
-//            }
-//        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Order_Booking.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Order_Booking.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Order_Booking.this, Setting.class);
-                startActivity(setting_intent);
             }
         });
     }

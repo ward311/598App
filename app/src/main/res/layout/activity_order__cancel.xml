@@ -24,33 +24,37 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
+
             <ImageButton
-                android:id="@+id/previous_btn"
+                android:id="@+id/lastWeek_btn_OC"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/back_white"
-                android:scaleType="centerCrop"
                 android:layout_gravity="center_vertical"
-                android:background="#19B0ED"/>
+                android:layout_weight="1"
+                android:background="#19B0ED"
+                android:scaleType="centerCrop"
+                android:src="@drawable/back_white" />
+
             <TextView
-                android:id="@+id/week_text"
+                android:id="@+id/week_OC"
                 android:layout_width="0dp"
-                android:layout_weight="9"
                 android:layout_height="wrap_content"
-                android:text="10.01-10.06"
                 android:layout_gravity="center"
+                android:layout_weight="9"
                 android:gravity="center"
+                android:text="10.01-10.06"
                 android:textColor="#FFFFFF"
-                android:textSize="30sp"/>
+                android:textSize="30sp" />
+
             <ImageButton
+                android:id="@+id/nextWeek_btn_OC"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/back_right"
-                android:scaleType="centerCrop"
                 android:layout_gravity="center_vertical"
-                android:background="#19B0ED"/>
+                android:layout_weight="1"
+                android:background="#19B0ED"
+                android:scaleType="centerCrop"
+                android:src="@drawable/back_right" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
