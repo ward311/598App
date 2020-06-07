@@ -131,7 +131,7 @@ public class Order_Cancel extends AppCompatActivity {
                         final String newicon = member.getString("new");
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon, "cancel"};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式

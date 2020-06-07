@@ -126,7 +126,7 @@ public class Valuation_Cancel extends AppCompatActivity {
                         final String contact_address = member.getString("contact_address");
                         final String newicon = member.getString("new");
 
-                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, newicon};
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, newicon, "cancel"};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {

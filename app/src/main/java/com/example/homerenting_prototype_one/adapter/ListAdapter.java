@@ -1,6 +1,7 @@
 package com.example.homerenting_prototype_one.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.homerenting_prototype_one.R;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.homerenting_prototype_one.show.global_function.dip2px;
@@ -105,8 +107,13 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         viewHolder.phone_text.setText(data.get(position)[i++]);
         Log.i(TAG, "address: "+data.get(position)[i]);
         viewHolder.address_text.setText(data.get(position)[i++]);
-        if(!data.get(position)[i].equals("1"))
+        if(!data.get(position)[i++].equals("1"))
             viewHolder.icon_img.setVisibility(View.INVISIBLE);
+        if(Arrays.asList(data.get(position)).contains("cancel")){
+            viewHolder.date_text.setTextColor(Color.rgb(152, 152, 152));
+            viewHolder.time_text.setTextColor(Color.rgb(152, 152, 152));
+            viewHolder.name_text.setTextColor(Color.rgb(112, 112, 112));
+        }
         return view;
     }
 }
