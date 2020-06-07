@@ -14,6 +14,8 @@ import com.example.homerenting_prototype_one.R;
 
 import java.util.List;
 
+import static com.example.homerenting_prototype_one.show.show_data.dip2px;
+
 public class ListAdapter extends BaseAdapter implements View.OnClickListener{
     private Context context;
     private List<String[]> data;
@@ -46,7 +48,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
 
     static class ViewHolder{
         LinearLayout item_layout;
-        LinearLayout time_layout;
+        LinearLayout time_layout, main_layout;
         TextView date_text, time_text, name_text, gender_text, phone_text, address_text;
         ImageView icon_img;
     }
@@ -62,6 +64,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
             viewHolder = new ViewHolder();
             viewHolder.item_layout = view.findViewById(R.id.row_layout);
             viewHolder.time_layout = view.findViewById(R.id.timeLayout);
+            viewHolder.main_layout = view.findViewById(R.id.mainLayout);
             viewHolder.date_text = view.findViewById(R.id.month_date_text);
             viewHolder.time_text = view.findViewById(R.id.time_text);
             viewHolder.name_text = view.findViewById(R.id.name_text);
@@ -82,8 +85,8 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         viewHolder.address_text.setTag(R.id.address_text,position);
         viewHolder.icon_img.setTag(R.id.new_icon_img,position);
 
-        int i = 0;
-        if(data.get(position).length >= 7){
+        int i = 1;
+        if(data.get(position).length >= 8){
             Log.i(TAG, "date: "+data.get(position)[i]);
             viewHolder.date_text.setText(data.get(position)[i++]);
             Log.i(TAG, "time: "+data.get(position)[i]);
@@ -91,6 +94,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         }
         else{
             viewHolder.time_layout.setVisibility(View.GONE);
+            viewHolder.main_layout.setPadding(dip2px(viewHolder.item_layout.getContext(), 10),0,0,0);
         }
         Log.i(TAG, "name: "+data.get(position)[i]);
         viewHolder.name_text.setText(data.get(position)[i++]);
@@ -100,7 +104,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         viewHolder.phone_text.setText(data.get(position)[i++]);
         Log.i(TAG, "address: "+data.get(position)[i]);
         viewHolder.address_text.setText(data.get(position)[i++]);
-        if(!data.get(position)[i].equals("true"))
+        if(!data.get(position)[i].equals("1"))
             viewHolder.icon_img.setVisibility(View.INVISIBLE);
         return view;
     }

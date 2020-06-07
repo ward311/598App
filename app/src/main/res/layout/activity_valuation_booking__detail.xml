@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -9,7 +10,15 @@
         android:layout_height="150dp"
         android:layout_gravity="top"
         android:orientation="vertical"
-        android:background="#00BFFF"/>
+        android:background="#00BFFF">
+
+        <ImageView
+            android:id="@+id/back_imgBtn"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:paddingLeft="16dp"
+            app:srcCompat="@drawable/back_white" />
+    </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -151,15 +160,16 @@
                         android:layout_weight="1"
                         android:text="家具清單"
                         android:textColor="#000000"/>
+
                     <Button
-                        android:id="@+id/edit_furniture_btn"
+                        android:id="@+id/edit_furniture_btn_VBD"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="修改家具"
-                        android:textColor="#FB8527"
+                        android:background="#FFFFFFFF"
                         android:gravity="top|left"
-                        android:background="#FFFFFFFF"/>
+                        android:text="修改家具"
+                        android:textColor="#FB8527" />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"

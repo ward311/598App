@@ -22,9 +22,11 @@ import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.show.show_noData;
-import com.example.homerenting_prototype_one.show.show_valuation_data;
+import com.example.homerenting_prototype_one.order.Order_Booking;
+import com.example.homerenting_prototype_one.order.Order_Detail;
+
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -33,6 +35,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.Call;
@@ -43,19 +46,27 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getTime;
+
 public class Valuation extends AppCompatActivity {
+
+    ArrayList<String[]> data;
+    ListView orderList;
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation";
     private final String PHP = "/user_data.php";
 
+
     ArrayList<DataModel> dataModels;
     public ListView evaluation_list, self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
-    private List<String> data;
+
     private static CustomAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation);
+        orderList = findViewById(R.id.valuation_listView_V);
         self_evaluation = findViewById(R.id.selfEvaluation_listView);
         booking_evaluation = findViewById(R.id.bookingEvaluation_listView);
         matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
@@ -71,7 +82,8 @@ public class Valuation extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
 
-        final LinearLayout orderL = findViewById(R.id.LinearValuationDetail);
+        //final LinearLayout orderL = findViewById(R.id.LinearValuationDetail);
+        data = new ArrayList<>();
 
         //傳至網頁的值，傳function_name
         String function_name = "valuation_member";
@@ -107,7 +119,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -127,57 +139,53 @@ public class Valuation extends AppCompatActivity {
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
 
-                        //呈現在app上
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                show_valuation_data show = new show_valuation_data(Valuation.this, orderL.getContext());
-                                orderL.addView(show.create_view()); //分隔線
-
-                                //新增客戶資料
-                                ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout(name, nameTitle, phone, contact_address, false);
-
-                                //切換頁面的功能
-                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent();
-                                        intent.setClass(Valuation.this, Valuation_Detail.class);
-
-                                        //交給其他頁面的變數
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("order_id", order_id);
-                                        intent.putExtras(bundle);
-
-                                        startActivity(intent);
-                                    }
-                                });
-                                orderL.addView(CustomerInfo); //加入原本的畫面中
-                            }
-                        });
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, "true"};
+                        data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            show_noData show = new show_noData(Valuation.this, orderL.getContext());
-                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+                            if(responseData.equals("null")){
+//                                NoDataAdapter noData = new NoDataAdapter();
+//                                orderList.setAdapter(noData);
+                            }
                             else Toast.makeText(Valuation.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
+
+                //顯示資訊
+                for(int i = 0; i < data.size(); i++)
+                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                final ListAdapter listAdapter = new ListAdapter(data);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        orderList.setAdapter(listAdapter);
+                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[])parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                String order_id = row_data[0];
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
+                                bundle.putBoolean("btn", false);
+
+                                Intent intent = new Intent();
+                                intent.setClass(Valuation.this, Valuation_Detail.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                });
+
             }
         });
-
-
-
-
-
-
-
-
 
 
 
@@ -196,34 +204,34 @@ public class Valuation extends AppCompatActivity {
 
 
         //試做切換list
-        data = new ArrayList<>();
-        evaluation_list = findViewById(R.id.evaluation_listView);
-        data.add("1. 單人沙發");
-        data.add("2. 兩人沙發");
-        data.add("3. 三人沙發");
-        data.add("4. L型沙發");
-        data.add("5. 沙發桌");
-        data.add("6. 傳統電視");
-        data.add("7. 液晶電視37吋以下");
-        data.add("8. 液晶電視40吋以上");
-        data.add("9. 電視櫃");
-        data.add("10. 酒櫃");
-        data.add("11. 鞋櫃");
-        data.add("12. 按摩椅");
-        data.add("13. 佛桌");
-        data.add("14. 鋼琴");
-        data.add("15. 健身器材");
+//        data = new ArrayList<>();
+//        evaluation_list = findViewById(R.id.evaluation_listView);
+//        data.add("1. 單人沙發");
+//        data.add("2. 兩人沙發");
+//        data.add("3. 三人沙發");
+//        data.add("4. L型沙發");
+//        data.add("5. 沙發桌");
+//        data.add("6. 傳統電視");
+//        data.add("7. 液晶電視37吋以下");
+//        data.add("8. 液晶電視40吋以上");
+//        data.add("9. 電視櫃");
+//        data.add("10. 酒櫃");
+//        data.add("11. 鞋櫃");
+//        data.add("12. 按摩椅");
+//        data.add("13. 佛桌");
+//        data.add("14. 鋼琴");
+//        data.add("15. 健身器材");
 
 
         //ListAdapter adapter = new ListAdapter(data);
-        evaluation_list.setAdapter(adapter);
-        evaluation_list.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent detail_intent = new Intent(Valuation.this, Valuation_Detail.class);
-                startActivity(detail_intent);
-            }
-        });
+        //evaluation_list.setAdapter(adapter);
+//        evaluation_list.setOnItemClickListener(new ListView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent detail_intent = new Intent(Valuation.this, Valuation_Detail.class);
+//                startActivity(detail_intent);
+//            }
+//        });
 
 //        dataModels = new ArrayList<>();
 //        dataModels.add(new DataModel("10/03","9:30","汪小飛","先生","0987777777","高雄市鹽埕區五福四路164號"));

@@ -1,12 +1,12 @@
 package com.example.homerenting_prototype_one.order;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -19,9 +19,8 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
-import com.example.homerenting_prototype_one.show.show_noData;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.valuation.Valuation;
-import com.example.homerenting_prototype_one.show.show_user_data;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -29,7 +28,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,19 +39,24 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import static com.example.homerenting_prototype_one.show.show_data.getDate;
 import static com.example.homerenting_prototype_one.show.show_data.getTime;
 
 public class Order extends AppCompatActivity {
+    ArrayList<String[]> data;
+    ListView orderList;
+    ListAdapter listAdapter;
+
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Order";
-    private final String PHP = "/user_data.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+        orderList = findViewById(R.id.order_listView_O);
 
         Button order = findViewById(R.id.order_btn);
         Button booking_order = findViewById(R.id.bookingOrder_btn);
@@ -62,6 +68,7 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
+        data = new ArrayList<>();
 
         final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
 
@@ -74,7 +81,7 @@ public class Order extends AppCompatActivity {
 
         //連線要求
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
                 .post(body)
                 .build();
         //http://54.166.177.4/user_data.php
@@ -100,7 +107,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -121,72 +128,61 @@ public class Order extends AppCompatActivity {
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
+                        final String newicon = member.getString("new");
 
-                        //呈現在app上
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                ListView orderList = findViewById(R.id.order_listView_O);
-//                                ArrayList<String> data = new ArrayList<>();
-//                                data.add(getDate(datetime));
-//                                data.add(getTime(datetime));
-//                                data.add(name);
-//                                data.add(nameTitle);
-//                                data.add(phone);
-//                                data.add(contact_address);
-//                                data.add("false");
-//                                ListAdapter listAdapter = new ListAdapter(data);
-//                                orderList.setAdapter(listAdapter);
-//                            }
-//                        });
-
-                        /*
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                show_user_data show = new show_user_data(Order.this, orderL.getContext());
-                                orderL.addView(show.create_view()); //分隔線
-
-                                //新增客戶資料
-                                ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, nameTitle, phone, contact_address, true);
-
-                                //切換頁面的功能
-                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent();
-                                        intent.setClass(Order.this, Order_Detail.class);
-
-                                        //交給其他頁面的變數
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("order_id", order_id);
-                                        bundle.putBoolean("btn", true);
-                                        intent.putExtras(bundle);
-
-                                        startActivity(intent);
-                                    }
-                                });
-
-                                orderL.addView(CustomerInfo); //加入原本的畫面中
-                            }
-                        });
-                        */
+                        //將資料存進陣列裡
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
+                        data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            show_noData show = new show_noData(Order.this, orderL.getContext());
-                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+                            if(responseData.equals("null")){
+                                Log.d(TAG, "NO DATA");
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
+                            }
                             else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                //顯示資訊
+                if(!responseData.equals("null")){
+                    for(int i=0; i < data.size(); i++)
+                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                    listAdapter = new ListAdapter(data);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderList.setAdapter(listAdapter);
+                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String[] row_data = (String[])parent.getItemAtPosition(position);
+                                    Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                    String order_id = row_data[0];
+
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("order_id", order_id);
+                                    bundle.putBoolean("btn", true);
+
+                                    removeNew(order_id);
+
+                                Intent intent = new Intent();
+                                intent.setClass(Order.this, Order_Detail.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                }
+                            });
                         }
                     });
                 }
             }
         });
-
 
 
 
@@ -203,6 +199,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
+                bookingOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(bookingOrder_intent);
             }
         });
@@ -210,6 +207,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
+                todayOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(todayOrder_intent);
             }
         });
@@ -217,6 +215,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
+                cancelOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(cancelOrder_intent);
             }
         });
@@ -226,6 +225,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent valuation_intent = new Intent(Order.this, Valuation.class);
+                valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(valuation_intent);
             }
         });
@@ -240,6 +240,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent calender_intent = new Intent(Order.this, Calendar.class);
+                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(calender_intent);
             }
         });
@@ -247,6 +248,7 @@ public class Order extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent system_intent = new Intent(Order.this, System.class);
+                system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(system_intent);
             }
         });
@@ -254,7 +256,42 @@ public class Order extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Order.this, Setting.class);
+                setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(setting_intent);
+            }
+        });
+    }
+
+    public void removeNew(String order_id){
+        Log.d(TAG, "removeNew");
+        String function_name = "update_new";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("new", "FALSE")
+                .build();
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Order.this, "new onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "new click success");
             }
         });
     }

@@ -1,15 +1,14 @@
 package com.example.homerenting_prototype_one.order;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,8 +18,7 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
-import com.example.homerenting_prototype_one.show.show_noData;
-import com.example.homerenting_prototype_one.show.show_user_data;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +44,8 @@ import static com.example.homerenting_prototype_one.show.show_data.getTime;
 public class Order_Booking extends AppCompatActivity {
     ArrayList<String[]> data;
 
+    ListView orderList;
+
     private final String PHP = "/user_data.php";
     String TAG = "Order_Booking";
 
@@ -53,6 +53,8 @@ public class Order_Booking extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__booking);
+        orderList = findViewById(R.id.order_listView_OB);
+
         Button order = findViewById(R.id.order_btn);
         Button booking_order = findViewById(R.id.bookingOrder_btn);
         Button today_order = findViewById(R.id.todayOrder_btn);
@@ -63,7 +65,6 @@ public class Order_Booking extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        //final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
         data = new ArrayList<>();
 
         String function_name = "order_member";
@@ -107,39 +108,58 @@ public class Order_Booking extends AppCompatActivity {
                         String gender = member.getString("gender");
                         if (gender.equals("female")) gender ="小姐";
                         else gender = "先生";
+                        final String nameTitle = gender;
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
                         Log.d(TAG,"order_id: "+order_id);
 
-                        //0517
-                        final String nameTitle = gender;
-                        String[] row_data = {getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, "false"};
+                        //將資料放入陣列
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, "false"};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            show_noData show = new show_noData(Order_Booking.this, orderL.getContext());
-//                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
-//                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-//                        }
-//                    });
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("null")){
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
+                            }
+                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
                 //顯示資訊
-                for(int i=0; i < data.size(); i++)
-                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                final ListView orderList = findViewById(R.id.order_listView_OB);
-                final ListAdapter listAdapter = new ListAdapter(data);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        orderList.setAdapter(listAdapter);
-                    }
-                });
+                if(!responseData.equals("null")) {
+                    for (int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
+                    final ListAdapter listAdapter = new ListAdapter(data);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderList.setAdapter(listAdapter);
+                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
+                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
+                                    String order_id = row_data[0];
 
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("order_id", order_id);
+                                    bundle.putBoolean("btn", false);
+
+                                    Intent intent = new Intent();
+                                    intent.setClass(Order_Booking.this, Order_Detail.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
 

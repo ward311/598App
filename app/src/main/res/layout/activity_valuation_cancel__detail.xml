@@ -449,5 +449,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Cnotice" />
 
+    <ImageView
+        android:id="@+id/back_imgBtn"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/order_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/order_detail"
+        app:srcCompat="@drawable/back_white" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -18,9 +19,12 @@ import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.ListAdapter;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.show.show_noData;
-import com.example.homerenting_prototype_one.show.show_user_data;
+import com.example.homerenting_prototype_one.order.Order_Booking;
+import com.example.homerenting_prototype_one.order.Order_Detail;
+
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -28,6 +32,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -37,17 +43,22 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class Valuation_Booking extends AppCompatActivity {
-    OkHttpClient okHttpClient = new OkHttpClient();
-    String TAG = "Valuation_Booking";
-    private final String PHP = "/user_data.php";
+import static com.example.homerenting_prototype_one.show.show_data.getDate;
+import static com.example.homerenting_prototype_one.show.show_data.getTime;
 
+public class Valuation_Booking extends AppCompatActivity {
+    ArrayList<String[]> data;
+    String TAG = "Valuation_Booking";
+    ListView orderList;
+    OkHttpClient okHttpClient = new OkHttpClient();
+    private final String PHP = "/user_data.php";
     public ListView self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation__booking);
+        orderList = findViewById(R.id.order_listView_VB);
         self_evaluation = findViewById(R.id.selfEvaluation_listView);
         booking_evaluation = findViewById(R.id.bookingEvaluation_listView);
         matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
@@ -62,7 +73,8 @@ public class Valuation_Booking extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        final LinearLayout orderL = findViewById(R.id.LinearValuationDetail);
+        //final LinearLayout orderL = findViewById(R.id.LinearValuationDetail);
+        data = new ArrayList<>();
 
         //傳至網頁的值，傳function_name
         String function_name = "valuation_member";
@@ -122,50 +134,51 @@ public class Valuation_Booking extends AppCompatActivity {
                         final String contact_address = member.getString("contact_address");
 
                         //呈現在app上
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                show_user_data show = new show_user_data(Valuation_Booking.this, orderL.getContext());
-                                orderL.addView(show.create_view()); //分隔線
-
-                                //新增客戶資料
-                                ConstraintLayout CustomerInfo;
-                                CustomerInfo = show.newCustomerInfoLayout(datetime, name, nameTitle, phone, contact_address, false);
-
-                                //切換頁面的功能
-                                CustomerInfo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent();
-                                        intent.setClass(Valuation_Booking.this, ValuationBooking_Detail.class);
-
-                                        //交給其他頁面的變數
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("order_id", order_id);
-                                        intent.putExtras(bundle);
-
-                                        startActivity(intent);
-                                    }
-                                });
-
-                                orderL.addView(CustomerInfo); //加入原本的畫面中
-                            }
-                        });
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, "true"};
+                        data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            show_noData show = new show_noData(Valuation_Booking.this, orderL.getContext());
-                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
+                            if(responseData.equals("null")){
+//                                NoDataAdapter noData = new NoDataAdapter();
+//                                orderList.setAdapter(noData);
+                            }
                             else Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
+                //顯示資訊
+                for(int i = 0; i < data.size(); i++)
+                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                final ListAdapter listAdapter = new ListAdapter(data);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        orderList.setAdapter(listAdapter);
+                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[])parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                String order_id = row_data[0];
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
+                                bundle.putBoolean("btn", false);
+
+                                Intent intent = new Intent();
+                                intent.setClass(Valuation_Booking.this, ValuationBooking_Detail.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                });
             }
         });
-
 
 
 

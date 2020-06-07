@@ -15,7 +15,7 @@
         android:background="#19B0ED"
         android:gravity="center_horizontal|center_vertical"
         android:padding="10dp"
-        android:text="訂單"
+        android:text="當日工單"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,6 +24,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
@@ -538,6 +539,17 @@
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_imgBtn" />
+
+    <ImageView
+        android:id="@+id/back_imgBtn"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/order_detail_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/order_detail_title"
+        app:srcCompat="@drawable/back_white" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
