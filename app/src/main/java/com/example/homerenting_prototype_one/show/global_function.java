@@ -107,6 +107,7 @@ public class global_function {
         startDate = c.getTime();
         c.add(Calendar.DATE, 6); //取一週結尾日期
         endDate = c.getTime();
+        Log.d(TAG, "month: "+c.get(Calendar.MONTH));
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
         String startStr = sdf.format(startDate);
@@ -133,4 +134,8 @@ public class global_function {
 
     public static void setwCount(int newWCount){ wCount = newWCount;}
     public static int getwCount(){ return wCount;}
+
+    public static void getMonth(){
+
+    }
 }
