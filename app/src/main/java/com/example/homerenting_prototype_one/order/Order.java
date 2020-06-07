@@ -39,10 +39,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.removeNew;
 
 public class Order extends AppCompatActivity {
     ArrayList<String[]> data;
@@ -69,8 +69,6 @@ public class Order extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         data = new ArrayList<>();
-
-        final LinearLayout orderL = findViewById(R.id.LinearOrderDetail);
 
         //傳至網頁的值，傳function_name
         String function_name = "order_member";
@@ -169,13 +167,13 @@ public class Order extends AppCompatActivity {
                                     bundle.putString("order_id", order_id);
                                     bundle.putBoolean("btn", true);
 
-                                    removeNew(order_id);
+                                    removeNew(order_id, Order.this);
 
-                                Intent intent = new Intent();
-                                intent.setClass(Order.this, Order_Detail.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
+                                    Intent intent = new Intent();
+                                    intent.setClass(Order.this, Order_Detail.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
                                 }
                             });
                         }
@@ -258,40 +256,6 @@ public class Order extends AppCompatActivity {
                 Intent setting_intent = new Intent(Order.this, Setting.class);
                 setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(setting_intent);
-            }
-        });
-    }
-
-    public void removeNew(String order_id){
-        Log.d(TAG, "removeNew");
-        String function_name = "update_new";
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("order_id", order_id)
-                .add("new", "FALSE")
-                .build();
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/functional.php")
-                .post(body)
-                .build();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Order.this, "new onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String responseData = response.body().string();
-                Log.d(TAG, "new click success");
             }
         });
     }

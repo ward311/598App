@@ -14,7 +14,8 @@ import com.example.homerenting_prototype_one.R;
 
 import java.util.List;
 
-import static com.example.homerenting_prototype_one.show.show_data.dip2px;
+import static com.example.homerenting_prototype_one.show.global_function.dip2px;
+
 
 public class ListAdapter extends BaseAdapter implements View.OnClickListener{
     private Context context;

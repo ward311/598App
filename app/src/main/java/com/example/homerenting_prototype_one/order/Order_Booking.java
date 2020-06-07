@@ -38,8 +38,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+
 
 public class Order_Booking extends AppCompatActivity {
     ArrayList<String[]> data;
@@ -111,10 +113,11 @@ public class Order_Booking extends AppCompatActivity {
                         final String nameTitle = gender;
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
+                        final String newicon = member.getString("new");
                         Log.d(TAG,"order_id: "+order_id);
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, "false"};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {
@@ -150,6 +153,8 @@ public class Order_Booking extends AppCompatActivity {
                                     Bundle bundle = new Bundle();
                                     bundle.putString("order_id", order_id);
                                     bundle.putBoolean("btn", false);
+
+                                    removeNew(order_id, Order_Booking.this);
 
                                     Intent intent = new Intent();
                                     intent.setClass(Order_Booking.this, Order_Detail.class);

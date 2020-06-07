@@ -46,8 +46,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.show_data.getDate;
-import static com.example.homerenting_prototype_one.show.show_data.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+
 
 public class Valuation extends AppCompatActivity {
 
@@ -138,8 +138,9 @@ public class Valuation extends AppCompatActivity {
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
+                        final String newicon = member.getString("new");
 
-                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, "true"};
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
@@ -148,8 +149,8 @@ public class Valuation extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-//                                NoDataAdapter noData = new NoDataAdapter();
-//                                orderList.setAdapter(noData);
+                                NoDataAdapter noData = new NoDataAdapter();
+                                orderList.setAdapter(noData);
                             }
                             else Toast.makeText(Valuation.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
@@ -157,32 +158,35 @@ public class Valuation extends AppCompatActivity {
                 }
 
                 //顯示資訊
-                for(int i = 0; i < data.size(); i++)
-                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                final ListAdapter listAdapter = new ListAdapter(data);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        orderList.setAdapter(listAdapter);
-                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                String[] row_data = (String[])parent.getItemAtPosition(position);
-                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                String order_id = row_data[0];
+                if(!responseData.equals("null")){
+                    for(int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                    final ListAdapter listAdapter = new ListAdapter(data);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderList.setAdapter(listAdapter);
+                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String[] row_data = (String[])parent.getItemAtPosition(position);
+                                    Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                    String order_id = row_data[0];
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("order_id", order_id);
-                                bundle.putBoolean("btn", false);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("order_id", order_id);
 
-                                Intent intent = new Intent();
-                                intent.setClass(Valuation.this, Valuation_Detail.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                });
+                                    removeNew(order_id, Valuation.this);
+
+                                    Intent intent = new Intent();
+                                    intent.setClass(Valuation.this, Valuation_Detail.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    });
+                }
 
             }
         });

@@ -14,6 +14,10 @@ import androidx.constraintlayout.widget.Guideline;
 
 import com.example.homerenting_prototype_one.R;
 
+import static com.example.homerenting_prototype_one.show.global_function.dip2px;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
+
 public abstract class show_data {
     Context page;
     Context maxLayout;
@@ -80,10 +84,7 @@ public abstract class show_data {
         s.applyTo(peopleDetail);
     }
 
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale);
-    }
+
 
     public View create_view(){
         View view = new View(page);
@@ -114,17 +115,7 @@ public abstract class show_data {
     }
     protected abstract int setNameSpace();
 
-    public static String getDate(String datetime){ //從datetime中取出日期部分
-        String[] token = datetime.split(" ");
-        String[] date_token = token[0].split("-");
-        return date_token[1]+"/"+date_token[2];
-    }
 
-    public static String getTime(String datetime){ //從datetime中取出時間部分
-        String[] token = datetime.split(" ");
-        String[] time_token = token[1].split(":");
-        return time_token[0]+":"+time_token[1];
-    }
 
     protected TextView newdtText(String datetime){//日期
         TextView dtText = new TextView(page);
@@ -194,21 +185,6 @@ public abstract class show_data {
         return false;
     }
 
-    public static String getYear(String datetime){ //從datetime中取出年部分
-        String[] token = datetime.split(" ");
-        String[] date_token = token[0].split("-");
-        return date_token[0];
-    }
 
-    public static String getMonth(String datetime){ //從datetime中取出月部分
-        String[] token = datetime.split(" ");
-        String[] date_token = token[0].split("-");
-        return date_token[1];
-    }
 
-    public static String getDay(String datetime){ //從datetime中取出日部分
-        String[] token = datetime.split(" ");
-        String[] date_token = token[0].split("-");
-        return date_token[2];
-    }
 }
