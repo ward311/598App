@@ -32,7 +32,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/previous_btn"
+                android:id="@+id/lastWeek_btn_O"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
@@ -42,7 +42,7 @@
                 android:src="@drawable/back_white" />
 
             <TextView
-                android:id="@+id/week_text"
+                android:id="@+id/week_O"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -53,6 +53,7 @@
                 android:textSize="30sp" />
 
             <ImageButton
+                android:id="@+id/nextWeek_btn_O"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"

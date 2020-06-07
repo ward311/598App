@@ -10,6 +10,9 @@ import com.example.homerenting_prototype_one.order.Order;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -20,6 +23,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class global_function {
+    private static int wCount = 0;
+    private static Date startDate;
+    private static Date endDate;
+
     private static String TAG = "global_function";
 
     static OkHttpClient okHttpClient = new OkHttpClient();
@@ -86,4 +93,44 @@ public class global_function {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale);
     }
+
+    public static String getWeek(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+
+        Date today = c.getTime();
+        Log.i(TAG, "today: "+today);
+
+        int week = c.get(Calendar.DAY_OF_WEEK);   //今天星期幾
+        //Log.i(TAG, "week: "+week); //日:1、一:2、...、五:6、六:7
+        c.add(Calendar.DATE, (1-week)+(wCount*7));   //取一週開頭日期
+        startDate = c.getTime();
+        c.add(Calendar.DATE, 6);         //取一週結尾日期
+        endDate = c.getTime();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
+        String startStr = sdf.format(startDate);
+        String endStr = sdf.format(endDate);
+        String weekDay = startStr+" ~ "+endStr;
+        Log.i(TAG, "week date: "+weekDay);
+
+        return weekDay;
+    }
+
+    public static String getStartOfWeek(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String startStr = sdf.format(startDate);
+        //Log.i(TAG, "startStr: "+startStr);
+        return startStr;
+    }
+
+    public static String getEndOfWeek(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String endStr = sdf.format(endDate);
+        //Log.i(TAG, "endStr: "+endStr);
+        return endStr;
+    }
+
+    public static void setwCount(int newWCount){ wCount = newWCount;}
+    public static int getwCount(){ return wCount;}
 }

@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -28,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -41,21 +40,34 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getwCount;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+import static com.example.homerenting_prototype_one.show.global_function.setwCount;
 
 public class Order extends AppCompatActivity {
-    ArrayList<String[]> data;
+
+    TextView week_text;
+    ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
+
+    ArrayList<String[]> data;
     ListAdapter listAdapter;
 
     OkHttpClient okHttpClient = new OkHttpClient();
+
     String TAG = "Order";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+        week_text = findViewById(R.id.week_O);
+        lastWeek_btn = findViewById(R.id.lastWeek_btn_O);
+        nextWeek_btn = findViewById(R.id.nextWeek_btn_O);
         orderList = findViewById(R.id.order_listView_O);
 
         Button order = findViewById(R.id.order_btn);
@@ -70,12 +82,121 @@ public class Order extends AppCompatActivity {
 
         data = new ArrayList<>();
 
+        week_text.setText(getWeek());
+        getOrder();
+
+        lastWeek_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int wCount = getwCount();
+                setwCount(wCount-1);
+                week_text.setText(getWeek());
+                data.clear();
+                getOrder();
+            }
+        });
+
+        nextWeek_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int wCount = getwCount();
+                setwCount(wCount+1);
+                week_text.setText(getWeek());
+                data.clear();
+                getOrder();
+            }
+        });
+
+
+
+
+        //上方nav
+//        order.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent order_intent = new Intent(Order.this, Order.class);
+//                startActivity(order_intent);
+//            }
+//        });
+        booking_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
+                bookingOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(bookingOrder_intent);
+            }
+        });
+        today_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
+                todayOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(todayOrder_intent);
+            }
+        });
+        cancel_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
+                cancelOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(cancelOrder_intent);
+            }
+        });
+
+        //底下nav
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(Order.this, Valuation.class);
+                valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(valuation_intent);
+            }
+        });
+//        order_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent order_intent = new Intent(Order.this, Order.class);
+//                startActivity(order_intent);
+//            }
+//        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(Order.this, Calendar.class);
+                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(Order.this, System.class);
+                system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(Order.this, Setting.class);
+                setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(setting_intent);
+            }
+        });
+    }
+
+    private void getOrder(){
         //傳至網頁的值，傳function_name
         String function_name = "order_member";
+        String startDate =  getStartOfWeek();
+        String endDate = getEndOfWeek();
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("startDate", startDate)
+                .add("endDate", endDate)
                 .add("status", "scheduled")
                 .build();
+        Log.i(TAG, "getOrder:\n"+"startDate:"+startDate+", endDate:"+endDate+", status:"+"scheduled");
 
         //連線要求
         Request request = new Request.Builder()
@@ -105,17 +226,17 @@ public class Order extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.i(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
                     final JSONArray responseArr = new JSONArray(responseData);
-                    //Log.d(TAG,"responseObj: "+ responseArr);
+                    //Log.i(TAG,"responseObj: "+ responseArr);
 
                     //一筆一筆的取JSONArray中的json資料
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject member = responseArr.getJSONObject(i);
-                        Log.d(TAG,"member: "+member);
+                        Log.i(TAG,"member: "+member);
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
@@ -179,83 +300,6 @@ public class Order extends AppCompatActivity {
                         }
                     });
                 }
-            }
-        });
-
-
-
-
-        //上方nav
-//        order.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent order_intent = new Intent(Order.this, Order.class);
-//                startActivity(order_intent);
-//            }
-//        });
-        booking_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
-                bookingOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(bookingOrder_intent);
-            }
-        });
-        today_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
-                todayOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(todayOrder_intent);
-            }
-        });
-        cancel_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
-                cancelOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(cancelOrder_intent);
-            }
-        });
-
-        //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Order.this, Valuation.class);
-                valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(valuation_intent);
-            }
-        });
-//        order_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent order_intent = new Intent(Order.this, Order.class);
-//                startActivity(order_intent);
-//            }
-//        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Order.this, Calendar.class);
-                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Order.this, System.class);
-                system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Order.this, Setting.class);
-                setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(setting_intent);
             }
         });
     }
