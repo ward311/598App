@@ -24,6 +24,7 @@ import okhttp3.Response;
 
 public class global_function {
     private static int wCount = 0;
+    private static int month;
     private static Date startDate;
     private static Date endDate;
 
@@ -107,6 +108,8 @@ public class global_function {
         startDate = c.getTime();
         c.add(Calendar.DATE, 6); //取一週結尾日期
         endDate = c.getTime();
+
+        month = c.get(Calendar.MONTH);
         Log.d(TAG, "month: "+c.get(Calendar.MONTH));
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
@@ -135,7 +138,48 @@ public class global_function {
     public static void setwCount(int newWCount){ wCount = newWCount;}
     public static int getwCount(){ return wCount;}
 
-    public static void getMonth(){
-
+    public static String getMonthStr(){
+        String m;
+        switch (month){
+            case 0:
+                m = "一月";
+                break;
+            case 1:
+                m = "二月";
+                break;
+            case 2:
+                m = "三月";
+                break;
+            case 3:
+                m = "四月";
+                break;
+            case 4:
+                m = "五月";
+                break;
+            case 5:
+                m = "六月";
+                break;
+            case 6:
+                m = "七月";
+                break;
+            case 7:
+                m = "八月";
+                break;
+            case 8:
+                m = "九月";
+                break;
+            case 9:
+                m = "十月";
+                break;
+            case 10:
+                m = "十一月";
+                break;
+            case 11:
+                m = "十二月";
+                break;
+            default:
+                m = "月分";
+        }
+        return m;
     }
 }

@@ -48,7 +48,7 @@
         <activity android:name=".furniture.Edit_Furniture" />
 
         <!--Schedule-->
-        <activity android:name=".schedule.Schedule_Detail" />
+        <activity android:name=".schedule.New_Schedule_Detail" />
 
         <activity android:name=".Setting_Record" />
         <activity android:name=".Setting_Announcement" />

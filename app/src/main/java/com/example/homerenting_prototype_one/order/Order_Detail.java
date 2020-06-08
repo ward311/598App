@@ -18,6 +18,7 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.schedule.New_Schedule_Detail;
 import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
@@ -195,7 +196,7 @@ public class Order_Detail extends AppCompatActivity {
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Order_Detail.this, Schedule_Detail.class);
+                Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("year", Integer.parseInt(getYear(movingDatetime)));
                 bundle.putInt("month", Integer.parseInt(getMonth(movingDatetime)));

@@ -41,6 +41,8 @@ import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getMonth;
+import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getWeek;
@@ -50,6 +52,7 @@ import static com.example.homerenting_prototype_one.show.global_function.setwCou
 
 public class Order extends AppCompatActivity {
 
+    TextView month_text;
     TextView week_text;
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
@@ -65,6 +68,7 @@ public class Order extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+        month_text = findViewById(R.id.month_O);
         week_text = findViewById(R.id.week_O);
         lastWeek_btn = findViewById(R.id.lastWeek_btn_O);
         nextWeek_btn = findViewById(R.id.nextWeek_btn_O);
@@ -80,9 +84,11 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
+
         data = new ArrayList<>();
 
         week_text.setText(getWeek());
+        month_text.setText(getMonthStr());
         getOrder();
 
         lastWeek_btn.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +97,7 @@ public class Order extends AppCompatActivity {
                 int wCount = getwCount();
                 setwCount(wCount-1);
                 week_text.setText(getWeek());
+                month_text.setText(getMonthStr());
                 data.clear();
                 getOrder();
             }
@@ -102,6 +109,7 @@ public class Order extends AppCompatActivity {
                 int wCount = getwCount();
                 setwCount(wCount+1);
                 week_text.setText(getWeek());
+                month_text.setText(getMonthStr());
                 data.clear();
                 getOrder();
             }
