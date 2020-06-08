@@ -1,7 +1,6 @@
-package com.example.homerenting_prototype_one.adapter;
+package com.example.homerenting_prototype_one;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,22 +8,17 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.homerenting_prototype_one.R;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
-
-
 
 public class FurnitureAdapter<total> extends BaseAdapter implements View.OnClickListener{
     private Context context;
-    private ArrayList<String[]> data;
-    String TAG = "DetailAdapter";
+    private List<String> data;
 
-    public FurnitureAdapter(ArrayList<String[]> data){
+    int[] total;
+
+    public FurnitureAdapter(List<String> data){
         this.data = data;
+        total = new int[data.size()];
     }
     @Override
     public void onClick(View v) {
@@ -38,23 +32,24 @@ public class FurnitureAdapter<total> extends BaseAdapter implements View.OnClick
 
     @Override
     public int getCount() {
+        //return 0;
         return data == null ? 0:data.size();
     }
 
     @Override
     public Object getItem(int position) {
+        //return null;
         return  data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
+        //return 0;
         return position;
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
-        Log.d(TAG,"position:"+position);
 
         ViewHolder viewHolder = null;
 
@@ -68,38 +63,49 @@ public class FurnitureAdapter<total> extends BaseAdapter implements View.OnClick
             viewHolder.minus_btn = convertView.findViewById(R.id.minus_btn);
             viewHolder.plus_btn = convertView.findViewById(R.id.plus_btn);
             convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder = (ViewHolder) convertView.getTag();
 
-        viewHolder.name.setTag(R.id.furniture_text,position);
-        viewHolder.name.setText(data.get(position)[1]);
-        Log.d(TAG, "name: "+data.get(position)[1]);
-        viewHolder.number.setTag(R.id.furniture_number_text,position);
-        viewHolder.number.setText(data.get(position)[2]);
-        Log.d(TAG, "number: "+data.get(position)[2]);
-//        viewHolder.minus_btn.setText("-");
-//        viewHolder.plus_btn.setText("+");
+        // viewHolder.minus_btn.setTag(R.id.minus_btn,position);
+        viewHolder.minus_btn.setText("-");
+        //final ViewHolder finalViewHolder = viewHolder;
+        //final int total = 0;
+//        final int[] total = new int[data.size()];
+        viewHolder.number.setText( String.valueOf( total ) );
+        viewHolder.plus_btn.setText("+");
+        viewHolder.name.setText(data.get(position));
+        viewHolder.number.setText(String.valueOf(0));
 
         final ViewHolder finalViewHolder = viewHolder;
-        viewHolder.minus_btn.setOnClickListener(new View.OnClickListener() {
+        viewHolder.minus_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int num = Integer.parseInt(data.get(position)[2]);
-                if(num > 0)
-                    data.get(position)[2] = String.valueOf(--num);
-                finalViewHolder.number.setText(data.get(position)[2]);
+                if (total[position] > 0) {
+                    total[position] = total[position] - 1;
+                }
+
+                finalViewHolder.number.setText( String.valueOf( total[position] ) );
             }
         });
+        // viewHolder.plus_btn.setTag(R.id.minus_btn,position);
 
-        viewHolder.plus_btn.setOnClickListener(new View.OnClickListener() {
+        // final ViewHolder finalViewHolder1 = viewHolder;
+        final ViewHolder finalViewHolder1 = viewHolder;
+        viewHolder.plus_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int num = Integer.parseInt(data.get(position)[2]);
-                data.get(position)[2] = String.valueOf(++num);
-                finalViewHolder.number.setText(data.get(position)[2]);
+                total[position] = total[position] + 1;
+                // TextView tv = v.findViewById( R.id.furniture_number_text );
+                finalViewHolder1.number.setText( String.valueOf( total[position] ) );
             }
         });
-
+        // viewHolder.name.setTag(R.id.furniture_text,position);
+        // viewHolder.name.setText(data.get(position));
+        //viewHolder.name.setOnClickListener(this);
+        // viewHolder.number.setTag(R.id.furniture_number_text,position);
+        // viewHolder.number.setText(String.valueOf(0));
+        //viewHolder.number.setOnClickListener(this);
         return convertView;
     }
 
