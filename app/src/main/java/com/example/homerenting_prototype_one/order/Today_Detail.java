@@ -95,10 +95,7 @@ public class Today_Detail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today__detail);
-
-//        Button edit_btn = findViewById(R.id.edit_order_btn);
         Button call_btn = findViewById(R.id.call_btn);
-        //furniture_list = findViewById(R.id.furniture_listView);
         Button detail_btn = findViewById(R.id.furniture_btn);
 
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);

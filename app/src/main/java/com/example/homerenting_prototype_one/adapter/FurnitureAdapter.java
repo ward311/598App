@@ -12,13 +12,9 @@ import android.widget.TextView;
 import com.example.homerenting_prototype_one.R;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 
-
-public class FurnitureAdapter<total> extends BaseAdapter implements View.OnClickListener{
+public class FurnitureAdapter extends BaseAdapter implements View.OnClickListener{
     private Context context;
     private ArrayList<String[]> data;
     String TAG = "DetailAdapter";
