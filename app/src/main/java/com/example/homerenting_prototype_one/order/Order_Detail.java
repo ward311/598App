@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -68,6 +69,7 @@ public class Order_Detail extends AppCompatActivity {
     String fromAddress;
     String toAddress;
     String remainder;
+    ArrayList<String> carArr;
     String car;
     String worktime;
     String fee;
@@ -153,15 +155,27 @@ public class Order_Detail extends AppCompatActivity {
                     contact_address = order.getString("contact_address");
                     movingDatetime = order.getString("moving_date");
                     movingTime = getDate(movingDatetime)+" "+getTime(movingDatetime);
-                    //movingTime = order.getString("move_date")+" "+order.getString("move_time");
                     fromAddress = order.getString("moveout_address");
                     toAddress = order.getString("movein_address");
                     remainder = order.getString("additional");
-//                    if(!order.getString("vehicle_id").equals("null"))
-//                        car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
-//                    else car = "尚未安排車輛";
                     worktime = order.getString("estimate_worktime")+"小時";
                     fee = order.getString("fee")+"元";
+
+                    int i;
+                    carArr = new ArrayList<>();
+                    for (i = 1; i < responseArr.length(); i++) {
+                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
+                        if(!vehicle_assign.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle:" + vehicle_assign);
+                        car = vehicle_assign.getString("num")+"輛"
+                                +vehicle_assign.getString("vehicle_weight")+"噸"
+                                +vehicle_assign.getString("vehicle_type");
+                        carArr.add(car);
+                    }
+                    if(i == 1){
+                        car = "尚未安排車輛";
+                        carArr.add(car);
+                    }
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
@@ -212,9 +226,6 @@ public class Order_Detail extends AppCompatActivity {
 
 
 
-
-        ArrayAdapter furniture_adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,furnitures);
-        //furniture_list.setAdapter(furniture_adapter);
         call_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
