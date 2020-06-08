@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:background="#19B0ED">
         <TextView
-            android:id="@+id/month_text"
+            android:id="@+id/month_OT"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -26,16 +26,6 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/lastWeek_btn_OT"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:background="#19B0ED"
-                android:scaleType="centerCrop"
-                android:src="@drawable/back_white" />
-
             <TextView
                 android:id="@+id/week_OT"
                 android:layout_width="0dp"
@@ -43,19 +33,10 @@
                 android:layout_gravity="center"
                 android:layout_weight="9"
                 android:gravity="center"
-                android:text="10.01-10.06"
+                android:text="10.03"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp" />
 
-            <ImageButton
-                android:id="@+id/nextWeek_btn_OT"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:background="#19B0ED"
-                android:scaleType="centerCrop"
-                android:src="@drawable/back_right" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout

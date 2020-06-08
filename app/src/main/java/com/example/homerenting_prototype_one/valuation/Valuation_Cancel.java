@@ -1,6 +1,5 @@
 package com.example.homerenting_prototype_one.valuation;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,12 +7,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
@@ -23,7 +21,6 @@ import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.show.show_valuation_cancel_data;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -42,48 +39,140 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.global_function.getDate;
-import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
+import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getwCount;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
+import static com.example.homerenting_prototype_one.show.global_function.setwCount;
 
 public class Valuation_Cancel extends AppCompatActivity {
-    ArrayList<String[]> data;
-    ListView orderList;
+
+    TextView month_text;
+    TextView week_text;
+    ImageButton lastWeek_btn, nextWeek_btn;
+    ListView valuationCancelList;
+
+    ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter;
 
     OkHttpClient okHttpClient = new OkHttpClient();
+
     String TAG = "Valuation_Cancel";
     private final String PHP = "/user_data.php";
 
-    public ListView self_evaluation, booking_evaluation, matchMaking_evaluation, cancel_evaluation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation__cancel);
-        orderList = findViewById(R.id.order_listView_VC);
+        month_text = findViewById(R.id.month_VC);
+        week_text = findViewById(R.id.week_VC);
+        lastWeek_btn = findViewById(R.id.lastWeek_btn_VC);
+        nextWeek_btn = findViewById(R.id.nextWeek_btn_VC);
+        valuationCancelList = findViewById(R.id.order_listView_VC);
 
-        self_evaluation = findViewById(R.id.selfEvaluation_listView);
-        booking_evaluation = findViewById(R.id.bookingEvaluation_listView);
-        matchMaking_evaluation = findViewById(R.id.matchMaking_Evaluation_listView);
-        cancel_evaluation = findViewById(R.id.cancelEvaluation_listView);
         Button self_btn = findViewById(R.id.selfEvaluation_btn);
         Button booking_btn = findViewById(R.id.bookingEvaluation_btn);
         Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
-        Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        LinearLayout first_layout = findViewById(R.id.first_cancel_layout);
 
-        data = new ArrayList<>();
 
+        week_text.setText(getWeek());
+        month_text.setText(getMonthStr());
+        getValuationCancel();
+
+        lastWeek_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int wCount = getwCount();
+                setwCount(wCount-1);
+                week_text.setText(getWeek());
+                month_text.setText(getMonthStr());
+                data.clear();
+                getValuationCancel();
+            }
+        });
+
+        nextWeek_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int wCount = getwCount();
+                setwCount(wCount+1);
+                week_text.setText(getWeek());
+                month_text.setText(getMonthStr());
+                data.clear();
+                getValuationCancel();
+            }
+        });
+
+        //上方nav
+        self_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent selfValuation_intent = new Intent(Valuation_Cancel.this, Valuation.class);
+                startActivity(selfValuation_intent);
+            }
+        });
+        booking_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent bookingValuation_intent = new Intent(Valuation_Cancel.this, Valuation_Booking.class);
+                startActivity(bookingValuation_intent);
+            }
+        });
+        matchMaking_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent matchMakingValuation_intent = new Intent(Valuation_Cancel.this, Valuation_MatchMaking.class);
+                startActivity(matchMakingValuation_intent);
+            }
+        });
+
+        //底下nav
+        order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(Valuation_Cancel.this, Order.class);
+                startActivity(order_intent);
+            }
+        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(Valuation_Cancel.this, Calendar.class);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(Valuation_Cancel.this, System.class);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(Valuation_Cancel.this, Setting.class);
+                startActivity(setting_intent);
+            }
+        });
+    }
+
+    private void getValuationCancel(){
         //將傳至網頁的值
         String function_name = "valuation_member";
+        String startDate =  getStartOfWeek();
+        String endDate = getEndOfWeek();
         String status = "cancel";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("startDate", startDate)
+                .add("endDate", endDate)
                 .add("status", status)
                 .build();
 
@@ -92,7 +181,9 @@ public class Valuation_Cancel extends AppCompatActivity {
                 .url(BuildConfig.SERVER_URL+PHP)
                 .post(body)
                 .build();
+        //http://54.166.177.4/user_data.php
 
+        //連線
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -136,7 +227,7 @@ public class Valuation_Cancel extends AppCompatActivity {
                         public void run() {
                             if(responseData.equals("null")){
                                 NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
+                                valuationCancelList.setAdapter(noData);
                             }
                             else Toast.makeText(Valuation_Cancel.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
@@ -151,8 +242,8 @@ public class Valuation_Cancel extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            orderList.setAdapter(listAdapter);
-                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            valuationCancelList.setAdapter(listAdapter);
+                            valuationCancelList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     String[] row_data = (String[]) parent.getItemAtPosition(position);
@@ -173,83 +264,6 @@ public class Valuation_Cancel extends AppCompatActivity {
                         }
                     });
                 }
-            }
-        });
-
-
-
-        first_layout.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_layout = new Intent(Valuation_Cancel.this, ValuationCancel_Detail.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("order_id", "9");
-                detail_layout.putExtras(bundle);
-                startActivity( detail_layout );
-            }
-        } );
-        self_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent selfValuation_intent = new Intent(Valuation_Cancel.this, Valuation.class);
-                startActivity(selfValuation_intent);
-            }
-        });
-        booking_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent bookingValuation_intent = new Intent(Valuation_Cancel.this, Valuation_Booking.class);
-                startActivity(bookingValuation_intent);
-            }
-        });
-        matchMaking_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent matchMakingValuation_intent = new Intent(Valuation_Cancel.this, Valuation_MatchMaking.class);
-                startActivity(matchMakingValuation_intent);
-            }
-        });
-        cancel_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent cancelValuation_intent = new Intent(Valuation_Cancel.this, Valuation_Cancel.class);
-//                startActivity(cancelValuation_intent);
-
-            }
-        });
-//        valuation_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent valuation_intent = new Intent(Valuation.this, Valuation.class);
-//                startActivity(valuation_intent);
-//            }
-//        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Valuation_Cancel.this, Order.class);
-                startActivity(order_intent);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Valuation_Cancel.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Valuation_Cancel.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Valuation_Cancel.this, Setting.class);
-                startActivity(setting_intent);
             }
         });
     }

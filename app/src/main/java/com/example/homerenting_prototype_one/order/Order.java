@@ -1,7 +1,5 @@
 package com.example.homerenting_prototype_one.order;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
@@ -41,7 +41,6 @@ import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
-import static com.example.homerenting_prototype_one.show.global_function.getMonth;
 import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
@@ -57,12 +56,13 @@ public class Order extends AppCompatActivity {
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
 
-    ArrayList<String[]> data;
+    ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter;
 
     OkHttpClient okHttpClient = new OkHttpClient();
 
     String TAG = "Order";
+    private final String PHP = "/user_data.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,18 +74,14 @@ public class Order extends AppCompatActivity {
         nextWeek_btn = findViewById(R.id.nextWeek_btn_O);
         orderList = findViewById(R.id.order_listView_O);
 
-        Button order = findViewById(R.id.order_btn);
         Button booking_order = findViewById(R.id.bookingOrder_btn);
         Button today_order = findViewById(R.id.todayOrder_btn);
         Button cancel_order = findViewById(R.id.cancelOrder_btn);
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-
-        data = new ArrayList<>();
 
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
@@ -115,17 +111,7 @@ public class Order extends AppCompatActivity {
             }
         });
 
-
-
-
         //上方nav
-//        order.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent order_intent = new Intent(Order.this, Order.class);
-//                startActivity(order_intent);
-//            }
-//        });
         booking_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,13 +146,6 @@ public class Order extends AppCompatActivity {
                 startActivity(valuation_intent);
             }
         });
-//        order_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent order_intent = new Intent(Order.this, Order.class);
-//                startActivity(order_intent);
-//            }
-//        });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,7 +173,7 @@ public class Order extends AppCompatActivity {
     }
 
     private void getOrder(){
-        //傳至網頁的值，傳function_name
+        //傳至網頁的值
         String function_name = "order_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
@@ -208,7 +187,7 @@ public class Order extends AppCompatActivity {
 
         //連線要求
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .url(BuildConfig.SERVER_URL + PHP)
                 .post(body)
                 .build();
         //http://54.166.177.4/user_data.php
