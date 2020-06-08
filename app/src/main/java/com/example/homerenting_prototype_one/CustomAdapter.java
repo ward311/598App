@@ -57,7 +57,7 @@ public class CustomAdapter extends ArrayAdapter<DataModel> implements View.OnCli
             convertView = inflater.inflate(R.layout.row_item, parent, false);
             viewHolder.txtDate = convertView.findViewById(R.id.data_text);
             viewHolder.txtTime = convertView.findViewById(R.id.time_text);
-            viewHolder.txtName = convertView.findViewById(R.id.name_text);
+            viewHolder.txtName = convertView.findViewById(R.id.name_SD);
             viewHolder.txtGender = convertView.findViewById(R.id.gender_text);
             viewHolder.txtPhone = convertView.findViewById(R.id.phone_text);
             viewHolder.txtAddress = convertView.findViewById(R.id.address_text);

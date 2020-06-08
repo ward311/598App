@@ -70,7 +70,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
             viewHolder.main_layout = view.findViewById(R.id.mainLayout);
             viewHolder.date_text = view.findViewById(R.id.month_date_text);
             viewHolder.time_text = view.findViewById(R.id.time_text);
-            viewHolder.name_text = view.findViewById(R.id.name_text);
+            viewHolder.name_text = view.findViewById(R.id.name_SD);
             viewHolder.gender_text = view.findViewById(R.id.gender_text);
             viewHolder.phone_text = view.findViewById(R.id.phone_text);
             viewHolder.address_text = view.findViewById(R.id.address_text);
@@ -82,7 +82,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         viewHolder.item_layout.setTag(R.id.row_layout,position);
         viewHolder.date_text.setTag(R.id.data_text,position);
         viewHolder.time_text.setTag(R.id.time_text,position);
-        viewHolder.name_text.setTag(R.id.name_text,position);
+        viewHolder.name_text.setTag(R.id.name_SD,position);
         viewHolder.gender_text.setTag(R.id.gender_text,position);
         viewHolder.phone_text.setTag(R.id.phone_text,position);
         viewHolder.address_text.setTag(R.id.address_text,position);

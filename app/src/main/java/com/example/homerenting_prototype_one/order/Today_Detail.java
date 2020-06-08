@@ -69,7 +69,6 @@ public class Today_Detail extends AppCompatActivity {
     String fromAddress;
     String toAddress;
     String remainder;
-    ArrayList<String> carArr;
     String car;
     String staff;
     String worktime;
@@ -163,20 +162,17 @@ public class Today_Detail extends AppCompatActivity {
                     memo = order.getString("memo");
 
                     int i;
-                    carArr = new ArrayList<>();
+                    car = "";
                     for (i = 1; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);
-                        car = vehicle_assign.getString("num")+"輛"
+                        car = car+
+                                vehicle_assign.getString("num")+"輛"
                                 +vehicle_assign.getString("vehicle_weight")+"噸"
                                 +vehicle_assign.getString("vehicle_type");
-                        carArr.add(car);
                     }
-                    if(i == 1){
-                        car = "尚未安排車輛";
-                        carArr.add(car);
-                    }
+                    if(i == 1) car = "尚未安排車輛";
 
                     if(responseArr.length()-i < 1) staff = "尚未安排人員";
                     else staff = "";
@@ -199,7 +195,7 @@ public class Today_Detail extends AppCompatActivity {
                             fromAddressText.setText(fromAddress);
                             toAddressText.setText(toAddress);
                             remainderText.setText(remainder);
-                            carText.setText(carArr.get(0));
+                            carText.setText(car);
                             staffText.setText(staff);
                             worktimeText.setText(worktime);
                             feeEdit.setText(fee);
