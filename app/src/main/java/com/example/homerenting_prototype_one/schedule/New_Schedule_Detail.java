@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -32,7 +31,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -46,8 +44,12 @@ import static com.example.homerenting_prototype_one.show.global_function.getDate
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 public class New_Schedule_Detail extends AppCompatActivity {
+    Bundle bundle;
+    String order_id;
+
     OkHttpClient okHttpClient = new OkHttpClient();
 
+    TextView titleText;
     TextView nameText;
     TextView nameTitleText;
     TextView movingDateText;
@@ -56,6 +58,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
     TextView staffText;
     TextView carText;
 
+    ImageButton backBtn;
+
+    String title;
     String name;
     String nameTitle;
     String contact_address;
@@ -68,29 +73,71 @@ public class New_Schedule_Detail extends AppCompatActivity {
     ChipGroup staffGroup;
     ChipGroup carGroup;
 
-    ArrayList<String> staffs;
-    ArrayList<String> cars;
+    ArrayList<String> staffs_text;
+    ArrayList<Integer> staffs;
+    ArrayList<String> cars_text;
+    ArrayList<Integer> cars;
 
     Context context;
 
     String TAG = "New_Schedule_Detail";
-    private final String PHP = "/user_data.php";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_schedule_detail);
+        staffs_text = new ArrayList<>();
         staffs = new ArrayList<>();
+        cars_text = new ArrayList<>();
         cars = new ArrayList<>();
         context = New_Schedule_Detail.this;
 
-        Bundle bundle = getIntent().getExtras();
-        final String order_id = bundle.getString("order_id");
+        bundle = getIntent().getExtras();
+        order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
 
-        getOrder(order_id);
+        getOrder();
         getChip();
 
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String function_name = "modify_vehicleAssignment";
+                RequestBody body = new FormBody.Builder()
+                        .add("function_name", function_name)
+                        .add("order_id", order_id)
+                        .add("vehicle_assign", String.valueOf(cars))
+                        .build();
+                Log.i(TAG, "order_id: "+order_id+", vehicle_assign: "+cars);
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.SERVER_URL+"/functional.php")
+                        .post(body)
+                        .build();
+
+                Call call = okHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //在app畫面上呈現錯誤訊息
+                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        final String responseData = response.body().string();
+                        Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
 
 
 
@@ -147,18 +194,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
     }
 
     private void linking() {
-        movingDateText = findViewById(R.id.Date_SD);
+        titleText = findViewById(R.id.title_SD);
         nameText = findViewById(R.id.name_SD);
         nameTitleText = findViewById(R.id.nameTitle_SD);
+        movingDateText = findViewById(R.id.date_SD);
         fromAddressText = findViewById(R.id.FromAddress_SD);
         toAddressText = findViewById(R.id.ToAddress_SD);
         staffText = findViewById(R.id.staff_SD);
         carText = findViewById(R.id.car_SD);
         staffGroup = findViewById(R.id.staffCG_SD);
         carGroup = findViewById(R.id.carCG_SD);
+        backBtn = findViewById(R.id.back_btn_SD);
     }
 
-    private void getOrder(String order_id){
+    private void getOrder(){
         String function_name = "order_detail";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -166,7 +215,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
                 .post(body)
                 .build();
 
@@ -202,7 +251,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     else if(gender.equals("male")) nameTitle = "先生";
                     else nameTitle = "";
                     contact_address = order.getString("contact_address");
-                    movingDate = getDate(order.getString("moving_date"));
+                    movingDate = getDate(order.getString("moving_date"))+getTime(order.getString("moving_date"));
                     fromAddress = order.getString("moveout_address");
                     toAddress = order.getString("movein_address");
 
@@ -257,7 +306,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
                 .post(body)
                 .build();
 
@@ -312,10 +361,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                         String sname = chip.getText().toString();
-                                        if(isChecked) staffs.add(sname);
-                                        else staffs.remove(sname);
+                                        if(isChecked) staffs_text.add(sname);
+                                        else staffs_text.remove(sname);
                                         Log.d(TAG, "click chip: " + sname);
-                                        Log.d(TAG, "staffs: " + staffs);
+                                        Log.d(TAG, "staffs: " + staffs_text);
                                         setStaffText();
                                     }
                                 });
@@ -346,11 +395,19 @@ public class New_Schedule_Detail extends AppCompatActivity {
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        int tag = (int) buttonView.getTag();
                                         String cname = chip.getText().toString();
-                                        if(isChecked) cars.add(cname);
-                                        else cars.remove(cname);
-                                        Log.d(TAG, "click chip: " + cname);
-                                        Log.d(TAG, "cars: " + cars);
+                                        if(isChecked){
+                                            cars.add(tag);
+                                            cars_text.add(cname);
+                                        }
+                                        else{
+                                            cars.remove(new Integer(tag));
+                                            cars_text.remove(cname);
+                                        }
+                                        Log.i(TAG, "click chip: " + cname);
+                                        Log.i(TAG, "cars_text: " + cars_text);
+                                        Log.i(TAG, "cars: " + cars);
                                         setCarText();
                                     }
                                 });
@@ -373,15 +430,15 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
     private void setStaffText(){
         staff = "";
-        for(int i = 0; i < staffs.size(); i++)
-            staff = staff + staffs.get(i) + " ";
+        for(int i = 0; i < staffs_text.size(); i++)
+            staff = staff + staffs_text.get(i) + " ";
         staffText.setText(staff);
     }
 
     private void setCarText(){
         car = "";
-        for(int i = 0; i < cars.size(); i++)
-            car = car + cars.get(i) + " ";
+        for(int i = 0; i < cars_text.size(); i++)
+            car = car + cars_text.get(i) + " ";
         carText.setText(car);
     }
 }

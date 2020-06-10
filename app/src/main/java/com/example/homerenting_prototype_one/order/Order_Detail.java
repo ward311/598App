@@ -162,20 +162,16 @@ public class Order_Detail extends AppCompatActivity {
                     fee = order.getString("fee")+"元";
 
                     int i;
-                    carArr = new ArrayList<>();
+                    car = "";
                     for (i = 1; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);
-                        car = vehicle_assign.getString("num")+"輛"
+                        car = car+vehicle_assign.getString("num")+"輛"
                                 +vehicle_assign.getString("vehicle_weight")+"噸"
-                                +vehicle_assign.getString("vehicle_type");
-                        carArr.add(car);
+                                +vehicle_assign.getString("vehicle_type")+"\n";
                     }
-                    if(i == 1){
-                        car = "尚未安排車輛";
-                        carArr.add(car);
-                    }
+                    if(i == 1) car = "尚未安排車輛";
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
