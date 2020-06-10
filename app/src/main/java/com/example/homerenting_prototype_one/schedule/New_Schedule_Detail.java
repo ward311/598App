@@ -133,7 +133,12 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         final String responseData = response.body().string();
-                        Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
             }
@@ -237,7 +242,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData"+responseData); //顯示資料
+                Log.d(TAG,"responseData"+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -269,6 +274,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     else staff = "";
                     for (; i < responseArr.length(); i++) {
                         JSONObject staff_assign = responseArr.getJSONObject(i);
+                        if(!staff_assign.has("staff_id")) break;
                         Log.i(TAG, "staff:" + staff_assign);
                         staff = staff+staff_assign.getString("staff_name")+" ";
                     }
