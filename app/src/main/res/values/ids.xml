@@ -10,4 +10,5 @@
     <item name="phone_id" type="id"/>
     <item name="address_id" type="id"/>
     <item name="icon_id" type="id"/>
+    <item name="chip_id" type="id"/>
 </resources>

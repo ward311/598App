@@ -354,6 +354,7 @@
 
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/staffCG_SD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:theme="@style/Theme.MaterialComponents.Light"
@@ -366,42 +367,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="test"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip2"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test2"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip3"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test3"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip4"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test4"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip5"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test5"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="18sp" />
 
@@ -432,6 +397,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3">
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/carCG_SD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:theme="@style/Theme.MaterialComponents.Light"
@@ -445,32 +411,6 @@
                 android:layout_height="wrap_content"
                 android:text="test6"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip7"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test7"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip8"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test8"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip9"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test9"
                 android:textSize="18sp" />
         </com.google.android.material.chip.ChipGroup>
 

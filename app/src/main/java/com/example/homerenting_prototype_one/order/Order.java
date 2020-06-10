@@ -82,7 +82,7 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-
+        setwCount(-4);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getOrder();
@@ -275,7 +275,9 @@ public class Order extends AppCompatActivity {
                                     bundle.putString("order_id", order_id);
                                     bundle.putBoolean("btn", true);
 
-                                    removeNew(order_id, Order.this);
+                                    String newicon = row_data[row_data.length-1];
+                                    if(newicon.equals("1"))
+                                        removeNew(order_id, Order.this);
 
                                     Intent intent = new Intent();
                                     intent.setClass(Order.this, Order_Detail.class);
