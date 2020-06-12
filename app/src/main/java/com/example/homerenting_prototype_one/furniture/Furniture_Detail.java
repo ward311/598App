@@ -20,6 +20,7 @@ import com.example.homerenting_prototype_one.adapter.DetailAdapter;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Booking;
 import com.example.homerenting_prototype_one.valuation.MatchMaking_Detail;
@@ -55,6 +56,7 @@ public class Furniture_Detail extends AppCompatActivity {
     ImageButton setting_btn;
 
     String TAG = "Furniture_Detail";
+    Context context;
 
     private ListView detail_list;
     ArrayList<String[]> data;
@@ -66,6 +68,8 @@ public class Furniture_Detail extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         setContentView( layout.activity_furniture__detail );
         ImageButton back_btn = findViewById( id.back_imgBtn );
+
+        context = Furniture_Detail.this;
 
         linking();
 
@@ -124,14 +128,17 @@ public class Furniture_Detail extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            show_noData show = new show_noData(Order_Booking.this, orderL.getContext());
-//                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
-//                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-//                        }
-//                    });
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("null")){
+                                Log.d(TAG, "NO DATA");
+                                NoDataAdapter noData = new NoDataAdapter();
+                                detail_list.setAdapter(noData);
+                            }
+                            else Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
                 //顯示資訊

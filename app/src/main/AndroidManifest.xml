@@ -67,6 +67,7 @@
         <activity android:name=".Calendar" />
         <activity android:name=".Register" />
         <activity android:name=".Login" />
+        <activity android:name=".schedule.New_Schedule_Detail"/>
         <activity android:name=".order.Order">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

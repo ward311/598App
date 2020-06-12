@@ -40,6 +40,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Furniture_Location extends AppCompatActivity {
+    String floor;
+    String room_name;
 
     String TAG = "Furniture_Location";
     String PHP3 = "/furniture.php";
@@ -104,11 +106,17 @@ public class Furniture_Location extends AppCompatActivity {
                     final JSONArray responseArr = new JSONArray(responseData);
 
                     for (int i = 0; i < responseArr.length(); i++) {
-                        JSONObject member = responseArr.getJSONObject(i);
-                        final String floor = member.getString("floor");
-                        final String room_name = member.getString("room_name");
-                        final String furniture_name = member.getString("furniture_name");
-                        final String num = member.getString("num");
+                        JSONObject furniture = responseArr.getJSONObject(i);
+                        if(furniture.getString("room_id") != null) {
+                            floor = furniture.getString("floor");
+                            room_name = furniture.getString("room_type") + furniture.getString("room_name");
+                        }
+                        else{
+                            floor = "";
+                            room_name = furniture.getString("furniture_type");
+                        }
+                        final String furniture_name = furniture.getString("furniture_name");
+                        final String num = furniture.getString("num");
                         String[] row_data = {floor,room_name,furniture_name,num};
                         data.add(row_data);
                     }
