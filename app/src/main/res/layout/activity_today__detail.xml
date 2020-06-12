@@ -311,40 +311,75 @@
                     app:layout_constraintStart_toStartOf="@+id/GL_V1"
                     app:layout_constraintTop_toBottomOf="@+id/worktimeText" />
 
-                <EditText
+                <TextView
                     android:id="@+id/price_OTD"
-                    android:layout_width="85dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="number"
                     android:text="0"
-                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/priceText"
                     app:layout_constraintStart_toStartOf="@+id/GL_V2"
                     app:layout_constraintTop_toTopOf="@+id/priceText" />
 
-                <Button
-                    android:id="@+id/add_price_btn"
-                    android:layout_width="35dp"
-                    android:layout_height="37dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:text="+"
+                <TextView
+                    android:id="@+id/toPrice_OTD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:text="->"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@+id/price_OTD"
+                    app:layout_constraintStart_toEndOf="@+id/price_OTD"
+                    app:layout_constraintTop_toTopOf="@+id/price_OTD"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/finalPrice_OTD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="0"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@+id/toPrice_OTD"
+                    app:layout_constraintStart_toEndOf="@+id/toPrice_OTD"
+                    app:layout_constraintTop_toTopOf="@+id/toPrice_OTD"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/priceUnitText_OTD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:text="元"
                     app:layout_constraintBottom_toBottomOf="@+id/priceText"
-                    app:layout_constraintStart_toEndOf="@+id/priceUnitText"
+                    app:layout_constraintStart_toEndOf="@+id/price_OTD"
                     app:layout_constraintTop_toTopOf="@+id/priceText"
-                    app:layout_constraintVertical_bias="0.555" />
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <Button
-                    android:id="@+id/minus_price_btn"
+                    android:id="@+id/changePrice_btn_OTD"
                     android:layout_width="35dp"
                     android:layout_height="37dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:text="-"
-                    app:layout_constraintBottom_toBottomOf="@+id/add_price_btn"
-                    app:layout_constraintStart_toEndOf="@+id/add_price_btn"
-                    app:layout_constraintTop_toTopOf="@+id/add_price_btn" />
+                    android:layout_marginStart="141dp"
+                    android:layout_marginLeft="141dp"
+                    android:text="+"
+                    app:layout_constraintBottom_toBottomOf="@+id/priceText"
+                    app:layout_constraintStart_toEndOf="@+id/priceText"
+                    app:layout_constraintTop_toTopOf="@+id/priceText" />
+
+                <EditText
+                    android:id="@+id/changePrice_OTD"
+                    android:layout_width="83dp"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="9dp"
+                    android:layout_marginLeft="9dp"
+                    android:ems="10"
+                    android:hint="0"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/changePrice_btn_OTD"
+                    app:layout_constraintStart_toEndOf="@+id/changePrice_btn_OTD"
+                    app:layout_constraintTop_toTopOf="@+id/changePrice_btn_OTD" />
 
                 <TextView
                     android:id="@+id/PS_Text"
@@ -389,15 +424,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.890511" />
-
-                <TextView
-                    android:id="@+id/priceUnitText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="元"
-                    app:layout_constraintBottom_toBottomOf="@+id/price_OTD"
-                    app:layout_constraintStart_toEndOf="@+id/price_OTD"
-                    app:layout_constraintTop_toTopOf="@+id/price_OTD" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

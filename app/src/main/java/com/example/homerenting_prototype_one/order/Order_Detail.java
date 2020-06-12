@@ -155,15 +155,20 @@ public class Order_Detail extends AppCompatActivity {
                     contact_address = order.getString("contact_address");
                     movingDatetime = order.getString("moving_date");
                     movingTime = getDate(movingDatetime)+" "+getTime(movingDatetime);
-                    fromAddress = order.getString("moveout_address");
-                    toAddress = order.getString("movein_address");
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
                     fee = order.getString("fee")+"元";
 
                     int i;
+                    for(i = 1; i < 3; i++){
+                        JSONObject address = responseArr.getJSONObject(i);
+                        if(address.getString("from_or_to").equals("from"))
+                            fromAddress = address.getString("address");
+                        else toAddress = address.getString("address");
+                    }
+
                     car = "";
-                    for (i = 1; i < responseArr.length(); i++) {
+                    for (i = 3; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);

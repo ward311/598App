@@ -220,7 +220,7 @@ public class Order_Booking extends AppCompatActivity {
                         final String name = member.getString("name");
                         final String datetime = member.getString("moving_date");
                         String gender = member.getString("gender");
-                        if (gender.equals("female")) gender ="小姐";
+                        if (gender.equals("女")) gender ="小姐";
                         else gender = "先生";
                         final String nameTitle = gender;
                         final String phone = member.getString("phone");

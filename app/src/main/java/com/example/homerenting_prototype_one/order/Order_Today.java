@@ -120,7 +120,6 @@ public class Order_Today extends AppCompatActivity {
                 try {
                     //轉換成json格式，array或object
                     final JSONArray responseArr = new JSONArray(responseData);
-                    //final JSONObject responseObj = new JSONObject(responseData);
                     Log.d(TAG,"responseObj: "+ responseArr);
 
                     //一筆一筆的取JSONArray中的json資料
@@ -133,7 +132,7 @@ public class Order_Today extends AppCompatActivity {
                         final String datetime = member.getString("moving_date");
                         final String name = member.getString("name");
                         final String nameTitle;
-                        if(member.getString("gender").equals("female")) nameTitle = "小姐";
+                        if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");

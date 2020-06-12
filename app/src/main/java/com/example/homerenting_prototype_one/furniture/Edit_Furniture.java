@@ -76,8 +76,7 @@ public class Edit_Furniture extends AppCompatActivity {
 
 
         final Bundle bundle = getIntent().getExtras();
-        //final String order_id = bundle.getString("order_id");
-        final String order_id = "6";
+        final String order_id = bundle.getString("order_id");
 
         String function_name = "furniture_each_detail";
         RequestBody body = new FormBody.Builder()
@@ -148,64 +147,59 @@ public class Edit_Furniture extends AppCompatActivity {
                         check_btn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                ArrayList<String[]> furniture_data = new ArrayList<>();
                                 for(int i = 0 ; i < adapter.getCount() ; i++){
                                     String[] row_data = (String[])adapter.getItem(i);
+                                    furniture_data.add(row_data);
                                     Log.d(TAG,"row_data:"+Arrays.toString(row_data));
                                 }
 
-                                //-------
-//                                String function_name = "update_furniture";
-//                                RequestBody body = new FormBody.Builder()
-//                                        .add("function_name", function_name)
-//                                        .add("order_id", )
-//                                        .build();
-//
-//                                Request request = new Request.Builder()
-//                                        .url(BuildConfig.SERVER_URL+PHP)
-//                                        .post(body)
-//                                        .build();
-//
-//                                Call call = okHttpClient.newCall(request);
-//                                call.enqueue(new Callback() {
-//                                    @Override
-//                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                                        e.printStackTrace();
-//                                        runOnUiThread(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-//                                            }
-//                                        });
-//                                    }
-//
-//                                    @Override
-//                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                                        final String responseData = response.body().string();
-//                                        runOnUiThread(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                Toast.makeText(Edit_Furniture.this, "修改家具完成", Toast.LENGTH_LONG).show();
-//                                            }
-//                                        });
-//                                        Log.d(TAG, "responseData: " + responseData);
-//                                    }
-//                                });
-                                //-------
+                                String function_name = "update_furniture";
+                                RequestBody body = new FormBody.Builder()
+                                        .add("function_name", function_name)
+                                        .add("order_id", order_id)
+                                        .add("furniture_data", String.valueOf(furniture_data))
+                                        .build();
 
-//                                finish();
+                                Request request = new Request.Builder()
+                                        .url(BuildConfig.SERVER_URL+PHP)
+                                        .post(body)
+                                        .build();
+
+                                Call call = okHttpClient.newCall(request);
+                                call.enqueue(new Callback() {
+                                    @Override
+                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                        e.printStackTrace();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                        final String responseData = response.body().string();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(Edit_Furniture.this, "修改家具完成", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                        Log.d(TAG, "responseData: " + responseData);
+                                    }
+                                });
+
+                                finish();
                             }
                         });
                     }
                 });
             }
         });
-//        list.setOnItemClickListener(new ListView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//            }
-//        });
-//
+
         add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

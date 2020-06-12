@@ -35,6 +35,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+
 public class MatchMaking_Detail extends AppCompatActivity {
     TextView nameText;
     TextView nameTitleText;
@@ -108,26 +110,34 @@ public class MatchMaking_Detail extends AppCompatActivity {
                 //Log.d(TAG, "responseData" + responseData); //顯示資料
 
                 try {
-                    JSONArray responseObj = new JSONArray(responseData);
-                    JSONObject order = responseObj.getJSONObject(0);
+                    JSONArray responseArr = new JSONArray(responseData);
+                    JSONObject order = responseArr.getJSONObject(0);
                     Log.d(TAG, "member:" + order);
                     name = order.getString("name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
-                    valuationTime = order.getString("valuation_time");
-                    fromAddress = order.getString("moveout_address");
-                    toAddress = order.getString("movein_address");
+                    valuationTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
                     notice = order.getString("additional");
                     movingTime = order.getString("moving_date");
                     car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     worktime = order.getString("estimate_worktime");
                     price = order.getString("fee");
+
+                    int i;
+                    for(i = 1; i < 3; i++){
+                        JSONObject address = responseArr.getJSONObject(i);
+                        if(address.getString("from_or_to").equals("from"))
+                            fromAddress = address.getString("address");
+                        else toAddress = address.getString("address");
+                    }
+
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             nameText.setText(name);
-                            if(gender.equals("female")) nameTitleText.setText("小姐");
-                            else if(gender.equals("male")) nameTitleText.setText("先生");
+                            if(gender.equals("女")) nameTitleText.setText("小姐");
+                            else if(gender.equals("男")) nameTitleText.setText("先生");
                             else nameTitleText.setText("");
                             phoneText.setText(phone);
                             valuationTimeText.setText(valuationTime);

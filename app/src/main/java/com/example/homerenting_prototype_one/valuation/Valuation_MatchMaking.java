@@ -214,7 +214,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         final String order_id = member.getString("order_id");
                         final String name = member.getString("name");
                         final String nameTitle;
-                        if(member.getString("gender").equals("female")) nameTitle = "小姐";
+                        if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");

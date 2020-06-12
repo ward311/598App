@@ -149,18 +149,24 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     name = order.getString("name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
-                    valuationTime = getDate(order.getString("valuation_time"))+" "+getTime(order.getString("valuation_time"));
-                    fromAddress = order.getString("moveout_address");
-                    toAddress = order.getString("movein_address");
+                    valuationTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
                     remainder = order.getString("additional");
+
+                    int i;
+                    for(i = 1; i < 3; i++){
+                        JSONObject address = responseArr.getJSONObject(i);
+                        if(address.getString("from_or_to").equals("from"))
+                            fromAddress = address.getString("address");
+                        else toAddress = address.getString("address");
+                    }
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             nameText.setText(name);
-                            if(gender.equals("female")) nameTitleText.setText("小姐");
-                            else if(gender.equals("male")) nameTitleText.setText("先生");
+                            if(gender.equals("女")) nameTitleText.setText("小姐");
+                            else if(gender.equals("男")) nameTitleText.setText("先生");
                             else nameTitleText.setText("");
                             phoneText.setText(phone);
                             valuationTimeText.setText(valuationTime);

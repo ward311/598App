@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
@@ -21,7 +25,6 @@ import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -46,6 +48,8 @@ import static com.example.homerenting_prototype_one.show.global_function.getTime
 public class Today_Detail extends AppCompatActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
+    
+    ConstraintLayout cLayout;
 
     TextView nameText;
     TextView nameTitleText;
@@ -57,8 +61,12 @@ public class Today_Detail extends AppCompatActivity {
     TextView carText;
     TextView staffText;
     TextView worktimeText;
+    TextView feeText;
+    TextView toPriceText;
+    TextView finalPriceText;
+    TextView priceUnitText;
 
-    EditText feeEdit;
+    EditText changePriceText;
     EditText memoEdit;
 
     String name;
@@ -75,11 +83,13 @@ public class Today_Detail extends AppCompatActivity {
     String fee;
     String memo;
 
-    int price;
-
-    Button addPriceBtn;
-    Button minusPriceBtn;
+    Button changePriceBtn;
     Button check_btn;
+
+    boolean change;
+
+    int price_origin;
+    int price;
 
     String TAG = "Today_Detail";
     String PHP = "/user_data.php";
@@ -103,12 +113,14 @@ public class Today_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-
+        change = false;
 
         Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
+        changePriceMark(); //讓+-按鈕可以按
+        changePrice();
 
         //傳值
         String function_name = "order_detail";
@@ -154,16 +166,22 @@ public class Today_Detail extends AppCompatActivity {
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
-                    fromAddress = order.getString("moveout_address");
-                    toAddress = order.getString("movein_address");
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
                     fee = order.getString("fee");
+                    price_origin = Integer.parseInt(fee);
                     memo = order.getString("memo");
 
                     int i;
+                    for(i = 1; i < 3; i++){
+                        JSONObject address = responseArr.getJSONObject(i);
+                        if(address.getString("from_or_to").equals("from"))
+                            fromAddress = address.getString("address");
+                        else toAddress = address.getString("address");
+                    }
+
                     car = "";
-                    for (i = 1; i < responseArr.length(); i++) {
+                    for (i = 3; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);
@@ -198,12 +216,9 @@ public class Today_Detail extends AppCompatActivity {
                             carText.setText(car);
                             staffText.setText(staff);
                             worktimeText.setText(worktime);
-                            feeEdit.setText(fee);
+                            feeText.setText(fee);
+                            finalPriceText.setText(fee);
                             memoEdit.setText(memo);
-
-                            //改變搬家費用的按鈕，有無存在的必要?
-                            addPrice();
-                            minusPrice();
                         }
                     });
                 } catch (JSONException e) {
@@ -221,7 +236,7 @@ public class Today_Detail extends AppCompatActivity {
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fee = feeEdit.getText().toString();
+                fee = finalPriceText.getText().toString();
                 memo = memoEdit.getText().toString();
                 Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
@@ -434,31 +449,55 @@ public class Today_Detail extends AppCompatActivity {
         });
     }
 
-    private void addPrice(){
-        addPriceBtn.setOnClickListener(new View.OnClickListener() {
+    private void changePriceMark(){
+        changePriceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = Integer.parseInt(feeEdit.getText().toString());
-                price = price + 10;
-                feeEdit.setText(String.valueOf(price));
+                if(changePriceBtn.equals("+")) changePriceBtn.setText("-");
+                else changePriceBtn.setText("+");
             }
         });
     }
 
-    private void minusPrice(){
-        minusPriceBtn.setOnClickListener(new View.OnClickListener() {
+    private void changePrice(){
+        changePriceText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                if(price > 9){
-                    price = Integer.parseInt(feeEdit.getText().toString());
-                    price = price - 10;
-                    feeEdit.setText(String.valueOf(price));
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String changeprice = changePriceText.getText().toString();
+                if(changePriceBtn.getText().toString().equals("+"))
+                    price = price_origin+Integer.parseInt(changeprice);
+                else
+                    price = price_origin-Integer.parseInt(changeprice);
+                finalPriceText.setText(String.valueOf(price));
+                if(!change){
+                    change = true;
+                    setPriceUnitPlace();
+                    toPriceText.setVisibility(View.VISIBLE);
+                    finalPriceText.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
 
+    private void setPriceUnitPlace(){
+        ConstraintSet s = new ConstraintSet();
+        s.clone(cLayout);
+        s.connect(priceUnitText.getId(), ConstraintSet.START, feeText.getId(), ConstraintSet.END, 5);
+        s.applyTo(cLayout);
+    }
+
     public void linking(){
+        cLayout = findViewById(R.id.CLayout_OTD);
         nameText = findViewById(R.id.name_OTD);
         nameTitleText = findViewById(R.id.nameTitle_OTD);
         phoneText = findViewById(R.id.phone_OTD);
@@ -469,10 +508,13 @@ public class Today_Detail extends AppCompatActivity {
         carText = findViewById(R.id.car_OTD);
         staffText = findViewById(R.id.staff_OTD);
         worktimeText = findViewById(R.id.worktime_OTD);
-        feeEdit = findViewById(R.id.price_OTD);
+        feeText = findViewById(R.id.price_OTD);
+        toPriceText = findViewById(R.id.toPrice_OTD);
+        finalPriceText = findViewById(R.id.finalPrice_OTD);
+        priceUnitText = findViewById(R.id.priceUnitText_OTD);
+        changePriceBtn = findViewById(R.id.changePrice_btn_OTD);
+        changePriceText = findViewById(R.id.changePrice_OTD);
         memoEdit = findViewById(R.id.PS_OTD);
-        addPriceBtn = findViewById(R.id.add_price_btn);
-        minusPriceBtn = findViewById(R.id.minus_price_btn);
         check_btn = findViewById(R.id.check_btn_OTD);
     }
 }

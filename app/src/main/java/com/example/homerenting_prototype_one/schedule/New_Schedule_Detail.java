@@ -3,6 +3,7 @@ package com.example.homerenting_prototype_one.schedule;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -19,6 +20,7 @@ import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.System_Schedule;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.order.Order_Booking;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -141,6 +143,15 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         });
                     }
                 });
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(context, Order_Booking.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                }, 1000);
             }
         });
 
