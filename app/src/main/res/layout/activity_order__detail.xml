@@ -50,10 +50,9 @@
         android:id="@+id/nameTitle_OD"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
-        android:layout_marginTop="8dp"
         android:text="稱謂"
-        app:layout_constraintStart_toEndOf="@+id/name_OD"
-        app:layout_constraintTop_toBottomOf="@+id/order_detail_title" />
+        app:layout_constraintBottom_toBottomOf="@+id/name_OD"
+        app:layout_constraintStart_toEndOf="@+id/name_OD" />
 
     <TextView
         android:id="@+id/phoneText"
@@ -156,11 +155,13 @@
         android:id="@+id/FurnitureText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="15dp"
         android:text="家具清單"
         android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/furniture_btn"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toBottomOf="@+id/ToAddressText" />
+        app:layout_constraintTop_toTopOf="@+id/furniture_btn" />
 
     <Button
         android:id="@+id/furniture_btn"
@@ -193,7 +194,7 @@
         android:text="注意事項"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toBottomOf="@+id/FurnitureText" />
+        app:layout_constraintTop_toTopOf="@+id/notice_scroll" />
 
     <ScrollView
         android:id="@+id/notice_scroll"
