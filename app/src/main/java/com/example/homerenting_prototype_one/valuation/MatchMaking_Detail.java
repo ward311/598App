@@ -36,6 +36,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 public class MatchMaking_Detail extends AppCompatActivity {
     TextView nameText;
@@ -113,15 +114,17 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
                     Log.d(TAG, "member:" + order);
-                    name = order.getString("name");
+                    name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     valuationTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
                     notice = order.getString("additional");
-                    movingTime = order.getString("moving_date");
-                    car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
+                    movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
+                    if(order.getString("vehicle_type").equals("null"))
+                        car = "尚未安排車輛";
+                    else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     worktime = order.getString("estimate_worktime");
-                    price = order.getString("fee");
+                    price = order.getString("fee")+"元";
 
                     int i;
                     for(i = 1; i < 3; i++){

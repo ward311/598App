@@ -43,15 +43,16 @@
                 android:gravity="center"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"/>
+
             <ImageButton
                 android:id="@+id/nextWeek_btn_VM"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/back_right"
-                android:scaleType="centerCrop"
                 android:layout_gravity="center_vertical"
-                android:background="#19B0ED"/>
+                android:layout_weight="1"
+                android:background="#19B0ED"
+                android:scaleType="centerCrop"
+                android:src="@drawable/back_white_right" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout

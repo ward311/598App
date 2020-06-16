@@ -327,7 +327,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
-                    android:hint="2019/10/01"
+                    android:hint="2019-10-01"
                     android:inputType="datetime"
                     app:layout_constraintBottom_toBottomOf="@+id/valTimeText"
                     app:layout_constraintStart_toStartOf="@+id/guideline_V2"
@@ -337,13 +337,38 @@
                     android:id="@+id/pickTime_editText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
                     android:layout_weight="1.5"
                     android:hint="9:00"
                     app:layout_constraintBottom_toBottomOf="@+id/pickDate_editText"
                     app:layout_constraintStart_toEndOf="@+id/pickDate_editText"
-                    app:layout_constraintTop_toTopOf="@+id/pickDate_editText" />
+                    app:layout_constraintTop_toTopOf="@+id/pickDate_editText"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/Totime_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="~"
+                    app:layout_constraintBottom_toBottomOf="@+id/pickTime_editText"
+                    app:layout_constraintStart_toEndOf="@+id/pickTime_editText"
+                    app:layout_constraintTop_toTopOf="@+id/pickTime_editText" />
+
+                <EditText
+                    android:id="@+id/pickTime2_editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_weight="1.5"
+                    android:hint="10:00"
+                    app:layout_constraintBottom_toBottomOf="@+id/pickTime_editText"
+                    app:layout_constraintStart_toEndOf="@+id/Totime_text"
+                    app:layout_constraintTop_toTopOf="@+id/pickTime_editText"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <Button
                     android:id="@+id/check_date_btn_VD"

@@ -82,7 +82,7 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        setwCount(-4);
+        setwCount(1);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getOrder();
@@ -228,7 +228,7 @@ public class Order extends AppCompatActivity {
                         //取欄位資料
                         final String order_id = member.getString("order_id");
                         final String datetime = member.getString("moving_date");
-                        final String name = member.getString("name");
+                        final String name = member.getString("member_name");
                         final String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";

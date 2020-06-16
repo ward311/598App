@@ -261,32 +261,37 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     Log.i(TAG,"JSONObject of order:"+order);
 
                     //取得資料
-                    name = order.getString("name");
+                    name = order.getString("member_name");
                     String gender = order.getString("gender");
                     if(gender.equals("female")) nameTitle = "小姐";
                     else if(gender.equals("male")) nameTitle = "先生";
                     else nameTitle = "";
                     contact_address = order.getString("contact_address");
                     movingDate = getDate(order.getString("moving_date"))+getTime(order.getString("moving_date"));
-                    fromAddress = order.getString("moveout_address");
-                    toAddress = order.getString("movein_address");
 
                     int i;
+                    for(i = 1; i < 3; i++){
+                        JSONObject address = responseArr.getJSONObject(i);
+                        if(address.getString("from_or_to").equals("from"))
+                            fromAddress = address.getString("address");
+                        else toAddress = address.getString("address");
+                    }
+
                     car = "";
-                    for (i = 1; i < responseArr.length(); i++) {
+                    for (i = 3; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
-                        Log.i(TAG, "vehicle:" + vehicle_assign);
+                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
                         car = car+vehicle_assign.getString("plate_num")+" ";
                     }
-                    if(i == 1) car = "尚未安排車輛";
+                    if(i == 3) car = "尚未安排車輛";
 
                     if(responseArr.length()-i < 1) staff = "尚未安排人員";
                     else staff = "";
                     for (; i < responseArr.length(); i++) {
                         JSONObject staff_assign = responseArr.getJSONObject(i);
                         if(!staff_assign.has("staff_id")) break;
-                        Log.i(TAG, "staff:" + staff_assign);
+                        Log.i(TAG, "staff_assign:" + staff_assign);
                         staff = staff+staff_assign.getString("staff_name")+" ";
                     }
 

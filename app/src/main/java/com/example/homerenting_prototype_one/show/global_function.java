@@ -90,6 +90,11 @@ public class global_function {
         return time_token[0]+":"+time_token[1];
     }
 
+    public static String getStartTime(String time){
+        String[] token = time.split("~");
+        return token[0];
+    }
+
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale);

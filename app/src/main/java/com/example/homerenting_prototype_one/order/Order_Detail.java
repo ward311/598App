@@ -142,7 +142,7 @@ public class Order_Detail extends AppCompatActivity {
                     Log.i(TAG,"JSONObject of order:"+order);
 
                     //取得資料
-                    name = order.getString("name");
+                    name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
@@ -176,8 +176,8 @@ public class Order_Detail extends AppCompatActivity {
                         @Override
                         public void run() {
                             nameText.setText(name);
-                            if(gender.equals("female")) nameTitleText.setText("小姐");
-                            else if(gender.equals("male")) nameTitleText.setText("先生");
+                            if(gender.equals("女")) nameTitleText.setText("小姐");
+                            else if(gender.equals("男")) nameTitleText.setText("先生");
                             else nameTitleText.setText("");
                             phoneText.setText(phone);
                             movingTimeText.setText(movingTime);

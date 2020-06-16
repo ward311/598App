@@ -60,7 +60,7 @@
                 android:layout_weight="1"
                 android:background="#19B0ED"
                 android:scaleType="centerCrop"
-                android:src="@drawable/back_right" />
+                android:src="@drawable/back_white_right" />
         </LinearLayout>
     </LinearLayout>
 

@@ -64,11 +64,13 @@ public class Valuation_Detail extends AppCompatActivity {
 
     EditText pickDate_edit;
     EditText pickTime_edit;
+    EditText pickTime2_edit;
 
     Button furniture_btn;
     Button check_date_btn;
     Button check_price_btn;
 
+    String valuation_id;
     String name;
     String gender;
     String nameTitle;
@@ -143,14 +145,15 @@ public class Valuation_Detail extends AppCompatActivity {
                     JSONObject order = responseArr.getJSONObject(0);
                     Log.d(TAG,"order:" + order);
 
-                    name = order.getString("name");
+                    valuation_id = order.getString("valuation_id");
+                    name = order.getString("member_name");
                     gender = order.getString("gender");
                     if(gender.equals("女")) nameTitle= "小姐";
                     else if(gender.equals("男")) nameTitle = "先生";
                     else nameTitle = "";
                     phone = order.getString("phone");
                     selfValTime = order.getString("last_update");
-                    contactTime = order.getString("connect_time");
+                    contactTime = order.getString("contact_time");
                     valTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
                     notice = order.getString("additional");
 
@@ -205,7 +208,7 @@ public class Valuation_Detail extends AppCompatActivity {
                 DatePickerDialog date_picker = new DatePickerDialog( Valuation_Detail.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        pickDate_edit.setText(year +"-"+month+1+"-"+dayOfMonth);
+                        pickDate_edit.setText(year +"-"+(month+1)+"-"+dayOfMonth);
                     }
                 },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
                 date_picker.show();
@@ -218,12 +221,30 @@ public class Valuation_Detail extends AppCompatActivity {
                 TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        pickTime_edit.setText(hourOfDay+":"+minute);
+                        String m = String.valueOf(minute);
+                        if(minute == 0) m = "00";
+                        pickTime_edit.setText(hourOfDay+":"+m);
                     }
                 },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
                 time_picker.show();
             }
         } );
+
+        pickTime2_edit.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        String m = String.valueOf(minute);
+                        if(minute == 0) m = "00";
+                        pickTime2_edit.setText(hourOfDay+":"+m);
+                    }
+                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+                time_picker.show();
+            }
+        } );
+
 
 
         check_price_btn.setOnClickListener( new View.OnClickListener() {
@@ -238,16 +259,20 @@ public class Valuation_Detail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String valDate = pickDate_edit.getText().toString();
-                String valTime = pickTime_edit.getText().toString();
+                String valTime = pickTime_edit.getText().toString()+"~"+pickTime2_edit.getText().toString();
 
                 String function_name = "update_selfValuation";
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
-                        .add("order_id",order_id)
+                        .add("order_id", order_id)
+                        .add("valuation_id",valuation_id)
                         .add("valuation_date", valDate)
                         .add("valuation_time", valTime)
                         .build();
-                Log.d(TAG,"check_price_btn: order_id: " + order_id + ", valuation_date" + valDate + ", valuation_time: " + valTime);
+                Log.d(TAG,"check_price_btn: order_id: " + order_id +
+                        " valuation_id: " + valuation_id +
+                        ", valuation_date" + valDate +
+                        ", valuation_time: " + valTime);
 
                 Request request = new Request.Builder()
                         .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -270,12 +295,15 @@ public class Valuation_Detail extends AppCompatActivity {
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         final String responseData = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(Valuation_Detail.this, "線上估價成功", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(responseData.equals("success"))
+                                        Toast.makeText(Valuation_Detail.this, "線上估價成功", Toast.LENGTH_LONG).show();
+                                    else
+                                        Toast.makeText(Valuation_Detail.this, "上傳失敗", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         Log.d(TAG, "check_price_btn, responseData: " + responseData);
                     }
                 });
@@ -362,6 +390,7 @@ public class Valuation_Detail extends AppCompatActivity {
         noticeText = findViewById(R.id.notice_VD);
         pickDate_edit = findViewById(R.id.pickDate_editText);
         pickTime_edit = findViewById(R.id.pickTime_editText);
+        pickTime2_edit = findViewById(R.id.pickTime2_editText);
         check_date_btn = findViewById(R.id.check_date_btn_VD);
         sysValPriceText = findViewById(R.id.sysValPrice_VD);
         valPriceText = findViewById(R.id.cusValTime_VD);

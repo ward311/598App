@@ -236,7 +236,7 @@ public class Order_Cancel extends AppCompatActivity {
                         //取欄位資料
                         final String order_id = member.getString("order_id");
                         final String datetime = member.getString("moving_date");
-                        final String name = member.getString("name");
+                        final String name = member.getString("member_name");
                         final String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";

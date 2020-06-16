@@ -146,7 +146,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     Log.i(TAG,"JSONObject of order:"+order);
 
                     //取得資料
-                    name = order.getString("name");
+                    name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     valuationTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");

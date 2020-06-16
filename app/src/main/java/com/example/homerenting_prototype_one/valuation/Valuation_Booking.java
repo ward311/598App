@@ -43,6 +43,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getDate
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getStartTime;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getwCount;
@@ -206,7 +207,7 @@ public class Valuation_Booking extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -221,8 +222,9 @@ public class Valuation_Booking extends AppCompatActivity {
 
                         //取欄位資料
                         final String order_id = member.getString("order_id");
-                        final String datetime = member.getString("valuation_time");
-                        final String name = member.getString("name");
+                        final String date = member.getString("valuation_date");
+                        final String time = member.getString("valuation_time");
+                        final String name = member.getString("member_name");
                         final String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
@@ -231,7 +233,7 @@ public class Valuation_Booking extends AppCompatActivity {
                         final String newicon = member.getString("new");
 
                         //呈現在app上
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
+                        String[] row_data = {order_id, getDate(date), getStartTime(time), name, nameTitle, phone, contact_address, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式

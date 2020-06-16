@@ -10,10 +10,10 @@
 
     <TextView
         android:id="@+id/order_detail_title"
-        android:layout_width="412dp"
+        android:layout_width="0dp"
         android:layout_height="45dp"
         android:background="#19B0ED"
-        android:gravity="center_horizontal|center_vertical"
+        android:gravity="center|center_vertical"
         android:text="訂單"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
@@ -59,11 +59,10 @@
         android:id="@+id/phoneText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
         android:text="連絡電話"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toBottomOf="@+id/name_OD" />
+        app:layout_constraintTop_toTopOf="@+id/phone_OD" />
 
     <TextView
         android:id="@+id/phone_OD"
@@ -91,11 +90,10 @@
         android:id="@+id/movingTimeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:text="搬家時間"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toBottomOf="@+id/phoneText" />
+        app:layout_constraintTop_toTopOf="@+id/movingTime_OD" />
 
     <TextView
         android:id="@+id/movingTime_OD"
@@ -110,18 +108,18 @@
         android:id="@+id/FromAddressText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="搬出地址"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toBottomOf="@+id/movingTimeText" />
+        app:layout_constraintTop_toTopOf="@+id/FromAddress_OD" />
 
     <TextView
         android:id="@+id/FromAddress_OD"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="搬出地址"
+        app:layout_constraintEnd_toStartOf="@+id/right_margin_GL"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/movingTime_OD" />
 
@@ -129,18 +127,18 @@
         android:id="@+id/ToAddressText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="搬入地址"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toBottomOf="@+id/FromAddressText" />
+        app:layout_constraintTop_toTopOf="@+id/ToAddress_OD" />
 
     <TextView
         android:id="@+id/ToAddress_OD"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="搬入地址"
+        app:layout_constraintEnd_toStartOf="@+id/right_margin_GL"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/FromAddress_OD" />
 

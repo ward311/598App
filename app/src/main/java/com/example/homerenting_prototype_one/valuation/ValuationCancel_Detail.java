@@ -39,6 +39,8 @@ import static com.example.homerenting_prototype_one.show.global_function.getTime
 
 public class ValuationCancel_Detail extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
+    Bundle bundle;
+
     TextView nameText;
     TextView nameTitleText;
     TextView phoneText;
@@ -73,7 +75,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_valuation_cancel__detail );
 
-        Bundle bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();
         String order_id = bundle.getString("order_id");
         Log.d(TAG, "order_id: " + order_id);
 
@@ -113,7 +115,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
-                    name = order.getString("name");
+                    name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     valuationtime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
@@ -187,9 +189,8 @@ public class ValuationCancel_Detail extends AppCompatActivity {
             public void onClick(View v) {
                 Intent detail_intent = new Intent();
                 detail_intent.setClass( ValuationCancel_Detail.this, Furniture_Detail.class );
-                Bundle detail_bundle = new Bundle();
-                detail_bundle.putString( "key","cancel" );
-                detail_intent.putExtras( detail_bundle );
+                bundle.putString( "key","cancel" );
+                detail_intent.putExtras( bundle );
                 startActivity( detail_intent );
             }
         } );

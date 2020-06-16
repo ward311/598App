@@ -217,7 +217,7 @@ public class Order_Booking extends AppCompatActivity {
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject member = responseArr.getJSONObject(i);
                         final String order_id = member.getString("order_id");
-                        final String name = member.getString("name");
+                        final String name = member.getString("member_name");
                         final String datetime = member.getString("moving_date");
                         String gender = member.getString("gender");
                         if (gender.equals("女")) gender ="小姐";

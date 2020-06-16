@@ -209,7 +209,7 @@ public class Valuation_Cancel extends AppCompatActivity {
                         Log.d(TAG, "member: " + member);
 
                         final String order_id = member.getString("order_id");
-                        final String name = member.getString("name");
+                        final String name = member.getString("member_name");
                         final String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
