@@ -235,7 +235,8 @@
                 android:layout_height="wrap_content"
                 android:text="test"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:visibility="gone" />
 
         </com.google.android.material.chip.ChipGroup>
 
@@ -276,9 +277,13 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checkable="true"
+                android:checked="false"
                 android:text="test6"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:checkedIconVisible="false" />
         </com.google.android.material.chip.ChipGroup>
 
     </HorizontalScrollView>

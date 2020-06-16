@@ -104,13 +104,14 @@ public class New_Schedule_Detail extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String function_name = "modify_vehicleAssignment";
+                String function_name = "modify_staff_vehicle";
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
                         .add("vehicle_assign", String.valueOf(cars))
+                        .add("staff_assign", String.valueOf(staffs))
                         .build();
-                Log.i(TAG, "order_id: "+order_id+", vehicle_assign: "+cars);
+                Log.i(TAG, "order_id: "+order_id+", vehicle_assign: "+cars+", staff_assign: "+staffs);
 
                 Request request = new Request.Builder()
                         .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -135,6 +136,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         final String responseData = response.body().string();
+                        Log.d(TAG, "submit: "+responseData);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -228,6 +230,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("assign", "true")
                 .build();
 
         Request request = new Request.Builder()
@@ -283,8 +286,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         if(!vehicle_assign.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle_assign:" + vehicle_assign);
                         car = car+vehicle_assign.getString("plate_num")+" ";
+                        cars_text.add(vehicle_assign.getString("plate_num"));
+                        cars.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
                     }
                     if(i == 3) car = "尚未安排車輛";
+                    Log.d(TAG, "car: "+car);
 
                     if(responseArr.length()-i < 1) staff = "尚未安排人員";
                     else staff = "";
@@ -293,7 +299,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         if(!staff_assign.has("staff_id")) break;
                         Log.i(TAG, "staff_assign:" + staff_assign);
                         staff = staff+staff_assign.getString("staff_name")+" ";
+                        staffs_text.add(staff_assign.getString("staff_name"));
+                        staffs.add(Integer.parseInt(staff_assign.getString("staff_id")));
                     }
+                    Log.d(TAG, "staff:"+staff);
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
@@ -376,17 +385,28 @@ public class New_Schedule_Detail extends AppCompatActivity {
                                 chip.setId(Integer.parseInt(staff_id));
                                 chip.setTag(Integer.parseInt(staff_id));
                                 chip.setText(staff_name);
+                                chip.setCheckable(true);
+                                if(staffs_text.contains(staff_name)) chip.setChecked(true);
                                 chip.setTextSize(18);
                                 ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(staffGroup.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Choice);
                                 chip.setChipDrawable(chipDrawable);
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        int tag = (int) buttonView.getTag();
                                         String sname = chip.getText().toString();
-                                        if(isChecked) staffs_text.add(sname);
-                                        else staffs_text.remove(sname);
-                                        Log.d(TAG, "click chip: " + sname);
-                                        Log.d(TAG, "staffs: " + staffs_text);
+                                        if(isChecked){
+                                            staffs.add(tag);
+                                            if(!staffs_text.contains(staff_name))
+                                                staffs_text.add(sname);
+                                        }
+                                        else{
+                                            staffs.remove(new Integer(tag));
+                                            staffs_text.remove(sname);
+                                        }
+                                        Log.i(TAG, "click chip: " + sname);
+                                        Log.i(TAG, "staffs_text: " + staffs_text);
+                                        Log.i(TAG, "staffs: " + staffs);
                                         setStaffText();
                                     }
                                 });
@@ -411,6 +431,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
                                 chip.setId(Integer.parseInt(vehicle_id));
                                 chip.setTag(Integer.parseInt(vehicle_id));
                                 chip.setText(plate_num);
+                                chip.setCheckable(true);
+                                if(cars_text.contains(plate_num)) chip.setChecked(true);
                                 chip.setTextSize(18);
                                 ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(carGroup.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Choice);
                                 chip.setChipDrawable(chipDrawable);
@@ -421,7 +443,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
                                         String cname = chip.getText().toString();
                                         if(isChecked){
                                             cars.add(tag);
-                                            cars_text.add(cname);
+                                            if(!cars_text.contains(plate_num))
+                                                cars_text.add(cname);
                                         }
                                         else{
                                             cars.remove(new Integer(tag));

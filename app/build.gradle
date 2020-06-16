@@ -13,8 +13,8 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "SERVER_URL", '"http://140.117.71.91/598_new/0612"'
-            //http://54.166.177.4/0612
+            buildConfigField "String", "SERVER_URL", '"http://54.166.177.4/0612"'
+            //http://140.117.71.91/598_new/0612
         }
         release {
             minifyEnabled false

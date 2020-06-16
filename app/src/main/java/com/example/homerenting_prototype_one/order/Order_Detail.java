@@ -163,13 +163,14 @@ public class Order_Detail extends AppCompatActivity {
                     car = "";
                     for (i = 3; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
-                        if(!vehicle_assign.has("vehicle_id")) break;
+                        if(!vehicle_assign.has("vehicle_type")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);
                         car = car+vehicle_assign.getString("num")+"輛"
                                 +vehicle_assign.getString("vehicle_weight")+"噸"
-                                +vehicle_assign.getString("vehicle_type")+"\n";
+                                +vehicle_assign.getString("vehicle_type");
+                        if(i+1<responseArr.length()) car = car + "\n";
                     }
-                    if(i == 1) car = "尚未安排車輛";
+                    if(i == 3) car = "尚未安排車輛";
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
