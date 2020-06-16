@@ -165,10 +165,10 @@ public class Order_Detail extends AppCompatActivity {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_type")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);
+                        if(i!=3) car = car + "\n";
                         car = car+vehicle_assign.getString("num")+"輛"
                                 +vehicle_assign.getString("vehicle_weight")+"噸"
                                 +vehicle_assign.getString("vehicle_type");
-                        if(i+1<responseArr.length()) car = car + "\n";
                     }
                     if(i == 3) car = "尚未安排車輛";
 
