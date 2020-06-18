@@ -25,7 +25,12 @@
         <activity android:name=".Service_Edit" />
         <activity android:name=".Information_Edit" />
 
+        <!--Main-->
+        <activity android:name=".main.MainActivity" />
+        <activity android:name=".main.Login" />
+
         <!--Order-->
+        <activity android:name=".order.Order"/>
         <activity android:name=".order.Order_Booking"/>
         <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Order_Cancel"/>
@@ -49,6 +54,7 @@
 
         <!--Schedule-->
         <activity android:name=".schedule.New_Schedule_Detail" />
+        <activity android:name=".schedule.Schedule_Detail"/>
 
         <activity android:name=".Setting_Record" />
         <activity android:name=".Setting_Announcement" />
@@ -62,13 +68,10 @@
         <activity android:name=".System_Data" />
         <activity android:name=".Setting" />
         <activity android:name=".System" />
-        <activity android:name=".MainActivity" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Calendar" />
         <activity android:name=".Register" />
-        <activity android:name=".Login" />
-        <activity android:name=".schedule.New_Schedule_Detail"/>
-        <activity android:name=".order.Order">
+        <activity android:name=".main.New_Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

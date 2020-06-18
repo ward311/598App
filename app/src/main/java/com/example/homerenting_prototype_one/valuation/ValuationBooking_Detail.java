@@ -85,6 +85,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
 
+    Context context;
     Bundle bundle;
 
     @Override
@@ -99,7 +100,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         final GregorianCalendar calendar = new GregorianCalendar();
 
-
+        context = ValuationBooking_Detail.this;
 
         bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
@@ -130,7 +131,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(ValuationBooking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -180,7 +181,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //Toast.makeText(ValuationBooking_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -189,7 +190,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         furniture_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ValuationBooking_Detail.this, Edit_Furniture.class);
+                Intent intent = new Intent(context, Edit_Furniture.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -198,7 +199,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         movingDateText.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog date_picker = new DatePickerDialog( ValuationBooking_Detail.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog date_picker = new DatePickerDialog( context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         movingDateText.setText(String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth));
@@ -211,7 +212,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         movingTimeText.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog time_picker = new TimePickerDialog( ValuationBooking_Detail.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog time_picker = new TimePickerDialog( context, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         movingTimeText.setText(hourOfDay+":"+minute);
@@ -260,7 +261,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(ValuationBooking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                             }
                         });
                     }
@@ -271,14 +272,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(ValuationBooking_Detail.this, "估價單已完成", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "估價單已完成", Toast.LENGTH_LONG).show();
                             }
                         });
-                        Log.d(TAG, "responseData: " + responseData);
+                        Log.d(TAG, "submit responseData: " + responseData);
                     }
                 });
 
-                new AlertDialog.Builder(ValuationBooking_Detail.this)
+                new AlertDialog.Builder(context)
                         .setTitle("媒合中")
                         .setMessage("到府估價單媒合中，成功媒\n合會成為訂單，請公司注意\n新訂單通知。")
                         .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
@@ -288,7 +289,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Intent intent = new Intent(ValuationBooking_Detail.this, Valuation_Booking.class);
+                                        Intent intent = new Intent(context, Valuation_Booking.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                     }
@@ -380,7 +381,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 } );
                 dialog.show();
                 dialog.getWindow().setLayout( 1400,2000 );*/
-                /*new AlertDialog.Builder( ValuationBooking_Detail.this )
+                /*new AlertDialog.Builder( context )
                         .setTitle( "請輸入安排車輛" )
                         .setPositiveButton( "確定", new DialogInterface.OnClickListener() {
                             @Override
@@ -395,35 +396,35 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent valuation_intent = new Intent(ValuationBooking_Detail.this, Valuation.class);
+                Intent valuation_intent = new Intent(context, Valuation.class);
                 startActivity(valuation_intent);
             }
         });
         order_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent order_intent = new Intent(ValuationBooking_Detail.this, Order.class);
+                Intent order_intent = new Intent(context, Order.class);
                 startActivity(order_intent);
             }
         });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent calender_intent = new Intent(ValuationBooking_Detail.this, Calendar.class);
+                Intent calender_intent = new Intent(context, Calendar.class);
                 startActivity(calender_intent);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent system_intent = new Intent(ValuationBooking_Detail.this, System.class);
+                Intent system_intent = new Intent(context, System.class);
                 startActivity(system_intent);
             }
         });
         setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent setting_intent = new Intent(ValuationBooking_Detail.this, Setting.class);
+                Intent setting_intent = new Intent(context, Setting.class);
                 startActivity(setting_intent);
             }
         });

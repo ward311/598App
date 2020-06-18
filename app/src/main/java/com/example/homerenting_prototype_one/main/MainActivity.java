@@ -1,26 +1,31 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.example.homerenting_prototype_one.R;
+
 public class MainActivity extends AppCompatActivity {
     public ImageView btn;
+
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        LinearLayout hone_page = findViewById(R.id.homePage_linearLayout);
+        LinearLayout hone_page = findViewById(R.id.homePage_Linear_M);
+        context = MainActivity.this;
+
         hone_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent login_intent = new Intent(MainActivity.this,Login.class);
+                Intent login_intent = new Intent(context, New_Login.class);
                 startActivity(login_intent);
             }
         });
