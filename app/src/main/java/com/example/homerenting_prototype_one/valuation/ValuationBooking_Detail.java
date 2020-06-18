@@ -81,6 +81,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String fromAddress;
     String toAddress;
     String remainder;
+    String valuation_id;
 
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
@@ -151,6 +152,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     phone = order.getString("phone");
                     valuationTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
                     remainder = order.getString("additional");
+                    valuation_id = order.getString("valuation_id");
 
                     int i;
                     for(i = 1; i < 3; i++){
@@ -242,6 +244,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         .add("type", type)
                         .add("estimate_worktime", estimate_worktime)
                         .add("fee", fee)
+                        .add("valuation_id", valuation_id)
                         .build();
                 Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date: "+moving_date+":00"+
                         ", num: "+num+", weight: "+weight+", type: "+type+
