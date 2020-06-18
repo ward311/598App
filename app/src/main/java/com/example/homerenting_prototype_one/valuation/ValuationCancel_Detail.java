@@ -82,9 +82,11 @@ public class ValuationCancel_Detail extends AppCompatActivity {
         linking();
 
         String function_name = "valuation_detail";
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id",company_id)
                 .build();
 
         Request request = new Request.Builder()

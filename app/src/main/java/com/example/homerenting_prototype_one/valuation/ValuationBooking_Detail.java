@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -24,13 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.order.Order_Booking;
-import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -49,7 +46,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
-import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 
 public class ValuationBooking_Detail extends AppCompatActivity {
@@ -110,9 +106,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         //傳至網頁的值，傳function_name
         String function_name = "valuation_detail";
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", company_id)
                 .build();
         Log.d(TAG, "order_id: "+order_id);
 
@@ -236,9 +234,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 String estimate_worktime = worktimeEdit.getText().toString().trim();
                 String fee = priceEdit.getText().toString().trim();
                 String function_name = "update_bookingValuation";
+                String company_id = "1";
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
+                        .add("company_id",company_id)
                         .add("moving_date",moving_date+":00")
                         .add("num", num)
                         .add("weight", weight)
@@ -247,7 +247,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         .add("fee", fee)
                         .add("valuation_id", valuation_id)
                         .build();
-                Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date: "+moving_date+":00"+
+                Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date:  "+moving_date+":00"+
                         ", num: "+num+", weight: "+weight+", type: "+type+
                         ", estimate_worktime: "+estimate_worktime+", fee: "+fee);
 

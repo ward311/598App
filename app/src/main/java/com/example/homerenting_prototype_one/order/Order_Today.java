@@ -1,7 +1,5 @@
 package com.example.homerenting_prototype_one.order;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
@@ -82,8 +82,10 @@ public class Order_Today extends AppCompatActivity {
 
         //傳至網頁的值，傳function_name
         String function_name = "order_member_today";
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id", company_id)
                 .build();
 
         //連線要求
