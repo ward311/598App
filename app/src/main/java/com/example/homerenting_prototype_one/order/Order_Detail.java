@@ -57,6 +57,7 @@ public class Order_Detail extends AppCompatActivity {
     TextView toAddressText;
     TextView remainderText;
     TextView carText;
+    TextView staffText;
     TextView worktimeText;
     TextView feeText;
 
@@ -69,8 +70,8 @@ public class Order_Detail extends AppCompatActivity {
     String fromAddress;
     String toAddress;
     String remainder;
-    ArrayList<String> carArr;
     String car;
+    String staff;
     String worktime;
     String fee;
 
@@ -97,11 +98,8 @@ public class Order_Detail extends AppCompatActivity {
 
         final Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
-        Boolean btn = bundle.getBoolean("btn");
 
         linking(); //將xml裡的元件連至此java
-        if(btn) check_btn.setVisibility(View.VISIBLE);
-        else check_btn.setVisibility(View.GONE);
 
         //傳值
         String function_name = "order_detail";
@@ -150,7 +148,7 @@ public class Order_Detail extends AppCompatActivity {
                     movingTime = getDate(movingDatetime)+" "+getTime(movingDatetime);
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
-                    fee = order.getString("fee")+"元";
+                    fee = order.getString("accurate_fee")+"元";
 
                     int i;
                     for(i = 1; i < 3; i++){
@@ -172,6 +170,15 @@ public class Order_Detail extends AppCompatActivity {
                     }
                     if(i == 3) car = "尚未安排車輛";
 
+                    if(responseArr.length()-i < 1) staff = "尚未安排人員";
+                    else staff = "";
+                    for (; i < responseArr.length(); i++) {
+                        JSONObject staff_assign = responseArr.getJSONObject(i);
+                        if(!staff_assign.has("staff_id")) break;
+                        Log.i(TAG, "staff:" + staff_assign);
+                        staff = staff+staff_assign.getString("staff_name")+" ";
+                    }
+
                     //顯示資料
                     runOnUiThread(new Runnable() {
                         @Override
@@ -186,6 +193,7 @@ public class Order_Detail extends AppCompatActivity {
                             toAddressText.setText(toAddress);
                             remainderText.setText(remainder);
                             carText.setText(car);
+                            staffText.setText(staff);
                             worktimeText.setText(worktime);
                             feeText.setText(fee);
                         }
@@ -195,7 +203,7 @@ public class Order_Detail extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Order_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(Order_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -285,6 +293,7 @@ public class Order_Detail extends AppCompatActivity {
         toAddressText = findViewById(R.id.ToAddress_OD);
         remainderText = findViewById(R.id.notice_OD);
         carText = findViewById(R.id.car_OD);
+        staffText = findViewById(R.id.staff_OD);
         worktimeText = findViewById(R.id.worktime_OD);
         feeText = findViewById(R.id.price_OD);
         check_btn = findViewById(R.id.check_order_btn);

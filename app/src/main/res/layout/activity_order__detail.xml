@@ -241,6 +241,24 @@
         app:layout_constraintTop_toBottomOf="@+id/view3" />
 
     <TextView
+        android:id="@+id/staffText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="安排人員"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
+        app:layout_constraintTop_toTopOf="@+id/staff_OD" />
+
+    <TextView
+        android:id="@+id/staff_OD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="人員分配"
+        app:layout_constraintStart_toStartOf="@+id/tablel_GL"
+        app:layout_constraintTop_toBottomOf="@+id/car_OD" />
+
+    <TextView
         android:id="@+id/worktimeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -257,7 +275,7 @@
         android:layout_marginTop="4dp"
         android:text="工時"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
-        app:layout_constraintTop_toBottomOf="@+id/car_OD" />
+        app:layout_constraintTop_toBottomOf="@+id/staff_OD" />
 
     <TextView
         android:id="@+id/priceText"

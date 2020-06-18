@@ -245,7 +245,7 @@ public class Valuation_Booking extends AppCompatActivity {
                                 NoDataAdapter noData = new NoDataAdapter();
                                 valuationBookingList.setAdapter(noData);
                             }
-                            else Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //else Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

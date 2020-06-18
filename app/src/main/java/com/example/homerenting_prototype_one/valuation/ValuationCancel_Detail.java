@@ -158,7 +158,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(ValuationCancel_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(ValuationCancel_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

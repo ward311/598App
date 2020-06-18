@@ -158,7 +158,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(MatchMaking_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(MatchMaking_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

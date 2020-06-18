@@ -1,7 +1,6 @@
 package com.example.homerenting_prototype_one.order;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +21,6 @@ import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.valuation.Valuation;
-import com.example.homerenting_prototype_one.show.show_user_data;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -43,17 +40,17 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
-import static com.example.homerenting_prototype_one.show.global_function.getWeek;
-import static com.example.homerenting_prototype_one.show.global_function.getwCount;
+import static com.example.homerenting_prototype_one.show.global_function.getToday;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
-import static com.example.homerenting_prototype_one.show.global_function.setwCount;
 
 
 public class Order_Today extends AppCompatActivity {
     ArrayList<String[]> data;
 
     TextView week_text;
+    TextView month_text;
     ListView orderList;
 
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -65,6 +62,7 @@ public class Order_Today extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__today);
         week_text = findViewById(R.id.week_OT);
+        month_text = findViewById(R.id.month_OT);
         orderList = findViewById(R.id.order_listView_OT);
 
         Button order = findViewById(R.id.order_btn);
@@ -79,8 +77,8 @@ public class Order_Today extends AppCompatActivity {
 
         data = new ArrayList<>();
 
-        setwCount(0);
-        week_text.setText(getWeek());
+        week_text.setText(getToday());
+        month_text.setText(getMonthStr());
 
         //傳至網頁的值，傳function_name
         String function_name = "order_member_today";
@@ -151,7 +149,7 @@ public class Order_Today extends AppCompatActivity {
                                 NoDataAdapter noData = new NoDataAdapter();
                                 orderList.setAdapter(noData);
                             }
-                            else Toast.makeText(Order_Today.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //else Toast.makeText(Order_Today.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

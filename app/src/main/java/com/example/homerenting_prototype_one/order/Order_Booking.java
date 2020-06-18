@@ -41,6 +41,7 @@ import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getWeek;
@@ -53,6 +54,7 @@ public class Order_Booking extends AppCompatActivity {
     ArrayList<String[]> data;
 
     TextView week_text;
+    TextView month_text;
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
 
@@ -64,6 +66,7 @@ public class Order_Booking extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__booking);
         week_text = findViewById(R.id.week_OB);
+        month_text = findViewById(R.id.month_OB);
         lastWeek_btn = findViewById(R.id.lastWeek_btn_OB);
         nextWeek_btn = findViewById(R.id.nextWeek_btn_OB);
         orderList = findViewById(R.id.order_listView_OB);
@@ -81,6 +84,7 @@ public class Order_Booking extends AppCompatActivity {
         data = new ArrayList<>();
 
         week_text.setText(getWeek());
+        month_text.setText(getMonthStr());
         getOrder();
 
         lastWeek_btn.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +93,7 @@ public class Order_Booking extends AppCompatActivity {
                 int wCount = getwCount();
                 setwCount(wCount-1);
                 week_text.setText(getWeek());
+                month_text.setText(getMonthStr());
                 data.clear();
                 getOrder();
             }
@@ -100,6 +105,7 @@ public class Order_Booking extends AppCompatActivity {
                 int wCount = getwCount();
                 setwCount(wCount+1);
                 week_text.setText(getWeek());
+                month_text.setText(getMonthStr());
                 data.clear();
                 getOrder();
             }
@@ -241,7 +247,7 @@ public class Order_Booking extends AppCompatActivity {
                                 NoDataAdapter noData = new NoDataAdapter();
                                 orderList.setAdapter(noData);
                             }
-                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -264,7 +270,6 @@ public class Order_Booking extends AppCompatActivity {
 
                                     Bundle bundle = new Bundle();
                                     bundle.putString("order_id", order_id);
-                                    bundle.putBoolean("btn", false);
 
                                     removeNew(order_id, Order_Booking.this);
 

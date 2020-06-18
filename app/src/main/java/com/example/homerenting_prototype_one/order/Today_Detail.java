@@ -168,7 +168,7 @@ public class Today_Detail extends AppCompatActivity {
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
-                    fee = order.getString("fee");
+                    fee = order.getString("accurate_fee");
                     price_origin = Integer.parseInt(fee);
                     memo = order.getString("memo");
 
@@ -190,7 +190,7 @@ public class Today_Detail extends AppCompatActivity {
                                 +vehicle_assign.getString("vehicle_weight")+"噸"
                                 +vehicle_assign.getString("vehicle_type");
                     }
-                    if(i == 1) car = "尚未安排車輛";
+                    if(i == 3) car = "尚未安排車輛";
 
                     if(responseArr.length()-i < 1) staff = "尚未安排人員";
                     else staff = "";
@@ -227,7 +227,7 @@ public class Today_Detail extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Today_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(Today_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -245,7 +245,7 @@ public class Today_Detail extends AppCompatActivity {
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
-                        .add("fee", fee)
+                        .add("accurate_fee", fee)
                         .add("memo", memo)
                         .build();
 
@@ -471,6 +471,7 @@ public class Today_Detail extends AppCompatActivity {
                 }
                 else{
                     change = false;
+                    finalPriceText.setText(String.valueOf(price_origin));
                     setPriceUnitPlace();
                     toPriceText.setVisibility(View.INVISIBLE);
                     finalPriceText.setVisibility(View.INVISIBLE);

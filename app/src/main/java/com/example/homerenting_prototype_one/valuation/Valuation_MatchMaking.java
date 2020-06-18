@@ -232,7 +232,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                                 NoDataAdapter noData = new NoDataAdapter();
                                 valuationMatchMakingList.setAdapter(noData);
                             }
-                            else Toast.makeText(Valuation_MatchMaking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //else Toast.makeText(Valuation_MatchMaking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

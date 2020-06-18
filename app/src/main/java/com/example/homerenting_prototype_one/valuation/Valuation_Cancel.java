@@ -229,7 +229,7 @@ public class Valuation_Cancel extends AppCompatActivity {
                                 NoDataAdapter noData = new NoDataAdapter();
                                 valuationCancelList.setAdapter(noData);
                             }
-                            else Toast.makeText(Valuation_Cancel.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //else Toast.makeText(Valuation_Cancel.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

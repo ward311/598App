@@ -82,7 +82,6 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        setwCount(1);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getOrder();
@@ -250,7 +249,7 @@ public class Order extends AppCompatActivity {
                                 NoDataAdapter noData = new NoDataAdapter();
                                 orderList.setAdapter(noData);
                             }
-                            else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -273,7 +272,6 @@ public class Order extends AppCompatActivity {
 
                                     Bundle bundle = new Bundle();
                                     bundle.putString("order_id", order_id);
-                                    bundle.putBoolean("btn", true);
 
                                     String newicon = row_data[row_data.length-1];
                                     if(newicon.equals("1"))

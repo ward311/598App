@@ -143,6 +143,21 @@ public class global_function {
     public static void setwCount(int newWCount){ wCount = newWCount;}
     public static int getwCount(){ return wCount;}
 
+    public static String getToday(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+
+        Date today = c.getTime();
+        month = c.get(Calendar.MONTH);
+        Log.d(TAG, "month: "+c.get(Calendar.MONTH));
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
+        String todayStr = sdf.format(today);
+        Log.i(TAG, "todayStr: "+todayStr);
+
+        return todayStr;
+    }
+
     public static String getMonthStr(){
         String m;
         switch (month){

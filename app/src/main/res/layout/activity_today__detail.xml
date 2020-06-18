@@ -248,39 +248,37 @@
                     android:id="@+id/carText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:text="安排車輛"
                     android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="@+id/GL_V1"
-                    app:layout_constraintTop_toBottomOf="@+id/view3" />
+                    app:layout_constraintTop_toTopOf="@+id/car_OTD" />
 
                 <TextView
                     android:id="@+id/car_OTD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="車輛分配"
-                    app:layout_constraintBottom_toBottomOf="@+id/carText"
                     app:layout_constraintStart_toStartOf="@+id/GL_V2"
-                    app:layout_constraintTop_toTopOf="@+id/carText" />
+                    app:layout_constraintTop_toBottomOf="@+id/view3" />
 
                 <TextView
-                    android:id="@+id/laborText"
+                    android:id="@+id/staffText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="安排人力"
+                    android:text="安排人員"
                     android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="@+id/GL_V1"
-                    app:layout_constraintTop_toBottomOf="@+id/carText" />
+                    app:layout_constraintTop_toTopOf="@+id/staff_OTD" />
 
                 <TextView
                     android:id="@+id/staff_OTD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="人力分配"
-                    app:layout_constraintBottom_toBottomOf="@+id/laborText"
+                    android:layout_marginTop="8dp"
+                    android:text="人員分配"
                     app:layout_constraintStart_toStartOf="@+id/GL_V2"
-                    app:layout_constraintTop_toTopOf="@+id/laborText" />
+                    app:layout_constraintTop_toBottomOf="@+id/car_OTD" />
 
                 <TextView
                     android:id="@+id/worktimeText"
@@ -290,7 +288,7 @@
                     android:text="預計工時"
                     android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="@+id/GL_V1"
-                    app:layout_constraintTop_toBottomOf="@+id/laborText" />
+                    app:layout_constraintTop_toBottomOf="@+id/staffText" />
 
                 <TextView
                     android:id="@+id/worktime_OTD"

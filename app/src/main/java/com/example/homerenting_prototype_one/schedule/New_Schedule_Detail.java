@@ -140,7 +140,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
                             }
                         });
                     }

@@ -136,7 +136,7 @@ public class Furniture_Detail extends AppCompatActivity {
                                 NoDataAdapter noData = new NoDataAdapter();
                                 detail_list.setAdapter(noData);
                             }
-                            else Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            //else Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
