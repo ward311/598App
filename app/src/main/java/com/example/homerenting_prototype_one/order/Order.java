@@ -20,6 +20,8 @@ import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
+import com.example.homerenting_prototype_one.helper.SessionManager;
+import com.example.homerenting_prototype_one.model.User;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +66,10 @@ public class Order extends AppCompatActivity {
     String TAG = "Order";
     private final String PHP = "/user_data.php";
 
+    private User user;
+    private String username;
+    SessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,8 +88,15 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
+
+        session = SessionManager.getInstance(this);
+        user = session.getUserDetail();
+        username = user.getName();
+        month_text.setText(username);
+
+
         week_text.setText(getWeek());
-        month_text.setText(getMonthStr());
+//        month_text.setText(getMonthStr());
         getOrder();
 
         lastWeek_btn.setOnClickListener(new View.OnClickListener() {

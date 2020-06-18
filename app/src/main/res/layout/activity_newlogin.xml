@@ -42,14 +42,15 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip4"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
+            style="@style/Widget.MaterialComponents.Chip.Action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checkable="true"
+            android:checkable="false"
             android:checked="false"
             android:text="test"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textSize="18sp"
+            android:visibility="gone"
             app:checkedIconVisible="false" />
     </com.google.android.material.chip.ChipGroup>
 

@@ -2,15 +2,20 @@ package com.example.homerenting_prototype_one.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.helper.SessionManager;
 import com.example.homerenting_prototype_one.order.Order;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -40,6 +45,8 @@ public class New_Login extends AppCompatActivity {
     String TAG = "New_Login";
     Context context;
 
+    SessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +55,7 @@ public class New_Login extends AppCompatActivity {
 
         context = New_Login.this;
         bundle = new Bundle();
+        session = SessionManager.getInstance(this);
 
         RequestBody body = new FormBody.Builder()
                 .add("function_name", "all_company_data")
@@ -88,6 +96,7 @@ public class New_Login extends AppCompatActivity {
                         final String company_id = company.getString("company_id");
                         final String company_name = company.getString("company_name");
                         runOnUiThread(new Runnable() {
+                            @RequiresApi(api = Build.VERSION_CODES.M)
                             @Override
                             public void run() {
                                 final Chip chip = new Chip(companyList_Group.getContext());
@@ -95,18 +104,30 @@ public class New_Login extends AppCompatActivity {
                                 chip.setTag(Integer.parseInt(company_id));
                                 chip.setText(company_name);
                                 chip.setCheckable(true);
+                                chip.setCheckedIconVisible(false);
                                 chip.setTextSize(18);
-                                ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(companyList_Group.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Choice);
+                                ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(companyList_Group.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Action);
                                 chip.setChipDrawable(chipDrawable);
-                                chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                chip.setOnClickListener(new View.OnClickListener() {
                                     @Override
-                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        int tag = (int) buttonView.getTag();
-                                        Log.d(TAG, "click chip: "+tag);
-                                        if(isChecked){
-                                            bundle.putString("company_id", String.valueOf(tag));
-                                            startActivity(new Intent(context, Order.class));
+                                    public void onClick(View v) {
+                                        JSONObject company = new JSONObject();
+                                        try {
+                                            company.put("company_id", company_id);
+                                            company.put("company_name", company_name);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(context, "login failed no value", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                            return;
                                         }
+                                        Log.i(TAG, "company: "+ company);
+                                        session.createLoginSession(company_id, String.valueOf(company));
+                                        startActivity(new Intent(context, Order.class));
                                     }
                                 });
                                 companyList_Group.addView(chip);
@@ -115,6 +136,12 @@ public class New_Login extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "login failed", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             }
         });
