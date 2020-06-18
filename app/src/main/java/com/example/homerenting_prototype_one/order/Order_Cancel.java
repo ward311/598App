@@ -1,8 +1,5 @@
 package com.example.homerenting_prototype_one.order;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,10 +7,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
@@ -23,7 +21,6 @@ import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.valuation.Valuation;
-import com.example.homerenting_prototype_one.show.show_canceled_user_data;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -186,8 +183,10 @@ public class Order_Cancel extends AppCompatActivity {
         String function_name = "order_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id", company_id)
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .add("status", "cancel")

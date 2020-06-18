@@ -189,8 +189,10 @@ public class Order extends AppCompatActivity {
         String function_name = "order_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id", company_id)
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .add("status", "scheduled")

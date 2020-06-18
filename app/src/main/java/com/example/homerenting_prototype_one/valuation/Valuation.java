@@ -1,7 +1,5 @@
 package com.example.homerenting_prototype_one.valuation;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
@@ -168,8 +168,10 @@ public class Valuation extends AppCompatActivity {
         String function_name = "self_valuation_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id",company_id)
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .build();

@@ -124,9 +124,11 @@ public class Today_Detail extends AppCompatActivity {
 
         //傳值
         String function_name = "order_detail";
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", company_id)
                 .build();
         Log.d(TAG, "order_id:"+order_id);
 
@@ -242,9 +244,11 @@ public class Today_Detail extends AppCompatActivity {
                 Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
                 String function_name = "update_todayOrder";
+                String company_id ="1";
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
+                        .add("company_id", company_id)
                         .add("accurate_fee", fee)
                         .add("memo", memo)
                         .build();

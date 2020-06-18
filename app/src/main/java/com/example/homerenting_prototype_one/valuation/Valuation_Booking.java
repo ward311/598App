@@ -44,7 +44,6 @@ import static com.example.homerenting_prototype_one.show.global_function.getEndO
 import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getStartTime;
-import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getwCount;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
@@ -172,8 +171,10 @@ public class Valuation_Booking extends AppCompatActivity {
         String function_name = "valuation_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id",company_id)
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .add("status", "booking")

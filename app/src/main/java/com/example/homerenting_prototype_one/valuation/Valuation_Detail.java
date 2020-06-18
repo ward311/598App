@@ -1,7 +1,6 @@
 package com.example.homerenting_prototype_one.valuation;
 
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,12 +8,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -23,13 +20,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.order.Order_Booking;
-import com.example.homerenting_prototype_one.schedule.Schedule_Detail;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -108,9 +103,11 @@ public class Valuation_Detail extends AppCompatActivity {
 
         //將傳至網頁的值
         String function_name = "valuation_detail";
+        String company_id = "1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id",company_id)
                 .build();
 
         //連線要求
@@ -262,11 +259,14 @@ public class Valuation_Detail extends AppCompatActivity {
                 String valDate = pickDate_edit.getText().toString();
                 String valTime = pickTime_edit.getText().toString()+"~"+pickTime2_edit.getText().toString();
 
+
                 String function_name = "update_selfValuation";
+                String company_id = "1";
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
                         .add("valuation_id",valuation_id)
+                        .add("company_id",company_id)
                         .add("valuation_date", valDate)
                         .add("valuation_time", valTime)
                         .build();
@@ -394,7 +394,7 @@ public class Valuation_Detail extends AppCompatActivity {
         pickTime2_edit = findViewById(R.id.pickTime2_editText);
         check_date_btn = findViewById(R.id.check_date_btn_VD);
         sysValPriceText = findViewById(R.id.sysValPrice_VD);
-        valPriceText = findViewById(R.id.cusValTime_VD);
+        valPriceText = findViewById(R.id.valPrice_VD);
         check_price_btn = findViewById(R.id.check_price_btn_VD);
     }
 }

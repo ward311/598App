@@ -170,8 +170,10 @@ public class Valuation_MatchMaking extends AppCompatActivity {
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
         String status = "match";
+        String company_id ="1";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id",company_id)
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .add("status", status)
