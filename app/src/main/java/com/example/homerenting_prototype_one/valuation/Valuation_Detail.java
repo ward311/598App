@@ -164,6 +164,7 @@ public class Valuation_Detail extends AppCompatActivity {
                             fromAddress = address.getString("address");
                         else toAddress = address.getString("address");
                     }
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -237,7 +238,7 @@ public class Valuation_Detail extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         String m = String.valueOf(minute);
-                        if(minute == 0) m = "00";
+                        if(minute < 10) m = "0"+minute;
                         pickTime2_edit.setText(hourOfDay+":"+m);
                     }
                 },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
