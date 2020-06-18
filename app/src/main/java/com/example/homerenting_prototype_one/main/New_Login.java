@@ -37,7 +37,7 @@ public class New_Login extends AppCompatActivity {
     Bundle bundle;
 
     OkHttpClient okHttpClient = new OkHttpClient();
-    String TAG = "Valuation_Booking";
+    String TAG = "New_Login";
     Context context;
 
     @Override
@@ -47,6 +47,7 @@ public class New_Login extends AppCompatActivity {
         companyList_Group = findViewById(R.id.companyList_NL);
 
         context = New_Login.this;
+        bundle = new Bundle();
 
         RequestBody body = new FormBody.Builder()
                 .add("function_name", "all_company_data")
@@ -75,6 +76,8 @@ public class New_Login extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
+                Log.i(TAG, "responeseData: "+responseData);
+
                 try {
                     final JSONArray responseArr = new JSONArray(responseData);
                     int i;
@@ -98,12 +101,15 @@ public class New_Login extends AppCompatActivity {
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        int tag = (int) buttonView.getTag();
+                                        Log.d(TAG, "click chip: "+tag);
                                         if(isChecked){
-                                            bundle.putString("company_id", company_id);
+                                            bundle.putString("company_id", String.valueOf(tag));
                                             startActivity(new Intent(context, Order.class));
                                         }
                                     }
                                 });
+                                companyList_Group.addView(chip);
                             }
                         });
                     }
