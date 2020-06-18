@@ -63,6 +63,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
     String car;
     String worktime;
     String price;
+    String valuation_id;
 
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation_MatchMaking_Detail";
@@ -125,6 +126,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     worktime = order.getString("estimate_worktime");
                     price = order.getString("fee")+"元";
+                    valuation_id = order.getString("valuation_id");
 
                     int i;
                     for(i = 1; i < 3; i++){
