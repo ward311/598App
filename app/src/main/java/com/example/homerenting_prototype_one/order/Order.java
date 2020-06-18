@@ -41,6 +41,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
@@ -66,9 +67,7 @@ public class Order extends AppCompatActivity {
     String TAG = "Order";
     private final String PHP = "/user_data.php";
 
-    private User user;
-    private String username;
-    SessionManager session;
+    //private String company_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,15 +87,11 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-
-        session = SessionManager.getInstance(this);
-        user = session.getUserDetail();
-        username = user.getName();
-        month_text.setText(username);
+        //company_id = getCompany_id(this);
 
 
         week_text.setText(getWeek());
-//        month_text.setText(getMonthStr());
+        month_text.setText(getMonthStr());
         getOrder();
 
         lastWeek_btn.setOnClickListener(new View.OnClickListener() {
@@ -189,8 +184,10 @@ public class Order extends AppCompatActivity {
         String function_name = "order_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id", company_id)
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .add("status", "scheduled")

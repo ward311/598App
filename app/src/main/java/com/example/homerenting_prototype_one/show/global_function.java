@@ -5,6 +5,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
+import com.example.homerenting_prototype_one.helper.SessionManager;
+import com.example.homerenting_prototype_one.model.User;
 import com.example.homerenting_prototype_one.order.Order;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +29,9 @@ public class global_function {
     private static int month;
     private static Date startDate;
     private static Date endDate;
+    private static String company_id;
+    private static SessionManager session;
+    private static User user;
 
     private static String TAG = "global_function";
 
@@ -201,5 +206,12 @@ public class global_function {
                 m = "月分";
         }
         return m;
+    }
+
+    public static String getCompany_id(Context context){
+        session = SessionManager.getInstance(context);
+        user = session.getUserDetail();
+        company_id = user.getId();
+        return company_id;
     }
 }
