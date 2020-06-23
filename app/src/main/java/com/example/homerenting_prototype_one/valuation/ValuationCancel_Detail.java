@@ -121,7 +121,9 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
-                    valuationtime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
+                    valuationtime = getDate(order.getString("valuation_date"));
+                    if(order.getString("valuation_time").equals("null"))
+                        valuationtime = valuationtime+" "+order.getString("valuation_time");
                     movingTime = getDate(order.getString("moving_date")) + " " + getTime(order.getString("moving_date"));
                     remainder = order.getString("additional");
                     movedate = order.getString("moving_date");

@@ -151,7 +151,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
-                    valuationTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
+                    valuationTime = getDate(order.getString("valuation_date"));
+                    if(order.getString("valuation_time").equals("null"))
+                        valuationTime = valuationTime+" "+order.getString("valuation_time");
                     remainder = order.getString("additional");
                     valuation_id = order.getString("valuation_id");
 

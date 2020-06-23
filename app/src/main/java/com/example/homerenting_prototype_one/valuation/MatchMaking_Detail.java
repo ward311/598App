@@ -121,7 +121,9 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
-                    valuationTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
+                    valuationTime = getDate(order.getString("valuation_date"));
+                    if(order.getString("valuation_time").equals("null"))
+                        valuationTime = valuationTime+" "+order.getString("valuation_time");
                     notice = order.getString("additional");
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
                     if(order.getString("vehicle_type").equals("null"))
