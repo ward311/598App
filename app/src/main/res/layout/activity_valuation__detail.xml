@@ -423,29 +423,14 @@
                     app:layout_constraintStart_toStartOf="@+id/guideline_V1"
                     app:layout_constraintTop_toBottomOf="@+id/sysValPriceText" />
 
-                <EditText
-                    android:id="@+id/valPrice_VD"
+                <TextView
+                    android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:hint="3,800"
-                    android:inputType="datetime"
+                    android:text="3800"
                     app:layout_constraintBottom_toBottomOf="@+id/valPriceText"
                     app:layout_constraintStart_toStartOf="@+id/guideline_V2"
                     app:layout_constraintTop_toTopOf="@+id/valPriceText" />
-
-                <Button
-                    android:id="@+id/check_price_btn_VD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:background="@drawable/roundedbutton"
-                    android:text="確認線上估價"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/valPrice_VD" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

@@ -57,7 +57,6 @@ public class Valuation_Detail extends AppCompatActivity {
     TextView cusValTimeText;
     TextView noticeText;
     TextView sysValPriceText;
-    TextView valPriceText;
 
     EditText pickDate_edit;
     EditText pickTime_edit;
@@ -65,7 +64,6 @@ public class Valuation_Detail extends AppCompatActivity {
 
     Button furniture_btn;
     Button check_date_btn;
-    Button check_price_btn;
 
     String valuation_id;
     String name;
@@ -255,16 +253,6 @@ public class Valuation_Detail extends AppCompatActivity {
             }
         } );
 
-
-
-        check_price_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Valuation_Detail.this, Valuation.class);
-                startActivity(intent);
-            }
-        } );
-
         check_date_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -406,7 +394,5 @@ public class Valuation_Detail extends AppCompatActivity {
         pickTime2_edit = findViewById(R.id.pickTime2_editText);
         check_date_btn = findViewById(R.id.check_date_btn_VD);
         sysValPriceText = findViewById(R.id.sysValPrice_VD);
-        valPriceText = findViewById(R.id.valPrice_VD);
-        check_price_btn = findViewById(R.id.check_price_btn_VD);
     }
 }
