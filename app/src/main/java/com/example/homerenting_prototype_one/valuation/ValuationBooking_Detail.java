@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -226,8 +227,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String moving_date = movingDateText.getText().toString().trim() + " " +
-                                     movingTimeText.getText().toString().trim();
+                String movingDate = movingDateText.getText().toString().trim();
+                String movingTime = movingTimeText.getText().toString().trim();
+                String moving_date = movingDate + " " + movingTime;
                 String num = carNumEdit.getText().toString().trim();
                 String weight = carWeightEdit.getText().toString().trim();
                 String type = carTypeEdit.getText().toString().trim();
@@ -235,6 +237,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 String fee = priceEdit.getText().toString().trim();
                 String function_name = "update_bookingValuation";
                 String company_id = "1";
+
+                if(checkEmpty(movingDate, movingTime, num, weight, type, estimate_worktime, fee))
+                    return;
+
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
@@ -450,5 +456,39 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         worktimeEdit = findViewById(R.id.worktime_VBD);
         priceEdit = findViewById( R.id.price_VBD);
         check_btn = findViewById(R.id.check_evaluation_btn);
+    }
+
+    private boolean checkEmpty(String movingDate, String movingTime, String num, String weight, String type, String estimate_worktime, String fee){
+        boolean check = false;
+        if(TextUtils.isEmpty(movingDateText.getText().toString())){
+            movingDateText.setError("請輸入日期");
+            check = true;
+        }
+        if(TextUtils.isEmpty(movingTimeText.getText().toString())){
+            movingTimeText.setError("請輸入時間");
+            check = true;
+        }
+        if(TextUtils.isEmpty(num)){
+            carNumEdit.setError("請輸入數量");
+            check = true;
+        }
+        if(TextUtils.isEmpty(weight)){
+            carWeightEdit.setError("請輸入重量");
+            check = true;
+        }
+        if(TextUtils.isEmpty(type)){
+            carTypeEdit.setError("請輸入車子種類");
+            check = true;
+        }
+        if(TextUtils.isEmpty(estimate_worktime)){
+            worktimeEdit.setError("請輸入工時");
+            check = true;
+        }
+        if(TextUtils.isEmpty(fee)){
+            priceEdit.setError("請輸入搬家價格");
+            check = true;
+        }
+
+        return check;
     }
 }
