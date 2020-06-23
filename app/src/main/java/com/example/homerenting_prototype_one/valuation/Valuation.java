@@ -39,6 +39,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
@@ -168,7 +169,7 @@ public class Valuation extends AppCompatActivity {
         String function_name = "self_valuation_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
-        String company_id ="1";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id",company_id)

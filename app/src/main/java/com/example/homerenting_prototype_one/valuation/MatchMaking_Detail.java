@@ -35,6 +35,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
@@ -81,7 +82,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
         linking();
 
         String function_name = "valuation_detail";
-        String company_id ="1";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
@@ -111,7 +112,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG, "responseData" + responseData); //顯示資料
+                Log.d(TAG, "responseData" + responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -127,7 +128,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
                         car = "尚未安排車輛";
                     else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     worktime = order.getString("estimate_worktime");
-                    price = order.getString("fee")+"元";
+                    price = order.getString("accurate_fee")+"元";
                     valuation_id = order.getString("valuation_id");
 
                     int i;

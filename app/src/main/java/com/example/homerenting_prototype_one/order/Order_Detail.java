@@ -36,6 +36,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getDay;
 import static com.example.homerenting_prototype_one.show.global_function.getMonth;
@@ -99,7 +100,7 @@ public class Order_Detail extends AppCompatActivity {
 
         //傳值
         String function_name = "order_detail";
-        String company_id ="1";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)

@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.order;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,10 +22,10 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.Calendar;
-import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,13 +43,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 public class Today_Detail extends AppCompatActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
-    
+    Context context;
+
     ConstraintLayout cLayout;
 
     TextView nameText;
@@ -114,6 +117,7 @@ public class Today_Detail extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         change = false;
+        context = Today_Detail.this;
 
         Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
@@ -124,7 +128,7 @@ public class Today_Detail extends AppCompatActivity {
 
         //傳值
         String function_name = "order_detail";
-        String company_id ="1";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
@@ -244,7 +248,7 @@ public class Today_Detail extends AppCompatActivity {
                 Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
                 String function_name = "update_todayOrder";
-                String company_id ="1";
+                String company_id = getCompany_id(context);
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)

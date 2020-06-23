@@ -46,6 +46,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 
 
@@ -107,7 +108,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         //傳至網頁的值，傳function_name
         String function_name = "valuation_detail";
-        String company_id ="1";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
@@ -236,7 +237,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 String estimate_worktime = worktimeEdit.getText().toString().trim();
                 String fee = priceEdit.getText().toString().trim();
                 String function_name = "update_bookingValuation";
-                String company_id = "1";
+                String company_id = getCompany_id(context);
 
                 if(checkEmpty(movingDate, movingTime, num, weight, type, estimate_worktime, fee))
                     return;

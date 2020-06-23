@@ -2,6 +2,7 @@ package com.example.homerenting_prototype_one.valuation;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 
 public class Valuation_Detail extends AppCompatActivity {
@@ -83,6 +85,8 @@ public class Valuation_Detail extends AppCompatActivity {
 
     final OkHttpClient okHttpClient = new OkHttpClient();
 
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +99,8 @@ public class Valuation_Detail extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         final GregorianCalendar calendar = new GregorianCalendar();
 
+        context = Valuation_Detail.this;
+
         final Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
         Log.d(TAG, "order_id: " + order_id);
@@ -103,7 +109,7 @@ public class Valuation_Detail extends AppCompatActivity {
 
         //將傳至網頁的值
         String function_name = "valuation_detail";
-        String company_id = "1";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
@@ -263,7 +269,7 @@ public class Valuation_Detail extends AppCompatActivity {
 
 
                 String function_name = "update_selfValuation";
-                String company_id = "1";
+                String company_id = getCompany_id(context);
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
