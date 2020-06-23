@@ -151,7 +151,9 @@ public class Valuation_Detail extends AppCompatActivity {
                     phone = order.getString("phone");
                     selfValTime = order.getString("last_update");
                     contactTime = order.getString("contact_time");
-                    valTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
+                    if(!order.getString("valuation_date").equals("null"))
+                        valTime = getDate(order.getString("valuation_date"))+" "+order.getString("valuation_time");
+                    else valTime = "no time";
                     notice = order.getString("additional");
 
                     int i;
