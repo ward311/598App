@@ -7,12 +7,12 @@ import android.widget.Toast;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.helper.SessionManager;
 import com.example.homerenting_prototype_one.model.User;
-import com.example.homerenting_prototype_one.order.Order;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,6 +32,7 @@ public class global_function {
     private static String company_id;
     private static SessionManager session;
     private static User user;
+    private static ArrayList<String> datalist = new ArrayList<>();
 
     private static String TAG = "global_function";
 
@@ -213,5 +214,25 @@ public class global_function {
         user = session.getUserDetail();
         company_id = user.getId();
         return company_id;
+    }
+
+    public static void addDatalist(String id){
+        datalist.add(id);
+    }
+
+    public static void clearDatalist(){
+        datalist.clear();
+    }
+
+    public static String getlastDatalist(String value){
+        int current = datalist.indexOf(value);
+        if(current == 0) return null;
+        return datalist.get(current-1);
+    }
+
+    public static String getnextDatalist(String value){
+        int current = datalist.indexOf(value);
+        if(current == datalist.size()-1) return null;
+        return datalist.get(current+1);
     }
 }

@@ -7,19 +7,22 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
+
         <TextView
-            android:id="@+id/valuation_bar"
+            android:id="@+id/valuation_bar_C"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="到府估價單"
+            android:background="#FB8527"
             android:gravity="center"
-            android:textSize="30sp"
+            android:text="到府估價單"
             android:textColor="#FFFFFF"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:background="#FB8527"/>
+            android:visibility="visible" />
+
         <TextView
-            android:id="@+id/order_bar"
+            android:id="@+id/order_bar_C"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -30,33 +33,23 @@
             android:textStyle="bold"
             android:background="#19B0ED"/>
     </LinearLayout>
+
     <TextView
-        android:id="@+id/today_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/date_C"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="2019.10.22"
-        android:textSize="20sp"
-        android:textColor="#000000"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:text="編號  時間    地址"
-        android:textSize="15sp"
-        android:textColor="#000000"/>
+        android:text="2019-10-22"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
     <ListView
-        android:id="@+id/valuation_today_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="8"/>
-    <ListView
-        android:id="@+id/order_today_list"
+        android:id="@+id/orderList_C"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="8"
-        android:visibility="gone"/>
+        android:visibility="visible" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -80,11 +73,12 @@
             android:textColor="#FFFFFF"
             android:background="@drawable/addorder_btn_drawable"
             android:visibility="gone"/>
+
         <Button
-            android:id="@+id/cancel_btn"
+            android:id="@+id/cancelBtn_C"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="取消"/>
+            android:text="取消" />
     </LinearLayout>
 
 </LinearLayout>

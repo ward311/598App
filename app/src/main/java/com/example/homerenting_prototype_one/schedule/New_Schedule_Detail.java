@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -14,11 +15,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.System_Schedule;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Booking;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -42,8 +43,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getlastDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.getnextDatalist;
 
 public class New_Schedule_Detail extends AppCompatActivity {
     Bundle bundle;
@@ -60,7 +64,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
     TextView staffText;
     TextView carText;
 
-    ImageButton backBtn;
+    ImageButton backBtn, lastBtn, nextBtn;
+    Button submitBtn;
 
     String title;
     String name;
@@ -102,6 +107,13 @@ public class New_Schedule_Detail extends AppCompatActivity {
         getChip();
 
         backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDestroy();
+            }
+        });
+
+        submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String function_name = "modify_staff_vehicle";
@@ -157,23 +169,46 @@ public class New_Schedule_Detail extends AppCompatActivity {
             }
         });
 
+        lastBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String new_order_id = getlastDatalist(order_id);
+                bundle.putString("order_id", new_order_id);
+                if(new_order_id == null)
+                    Toast.makeText(context, "This is the last order.", Toast.LENGTH_LONG).show();
+                else{
+                    Intent intent = new Intent(context, New_Schedule_Detail.class);
+                    intent.putExtras(bundle);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String new_order_id = getnextDatalist(order_id);
+                bundle.putString("order_id", new_order_id);
+                if(new_order_id == null)
+                    Toast.makeText(context, "This is the final order.", Toast.LENGTH_LONG).show();
+                else{
+                    Intent intent = new Intent(context, New_Schedule_Detail.class);
+                    intent.putExtras(bundle);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            }
+        });
 
 
 
-        ImageButton back_btn = findViewById(R.id.back_imgBtn);
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(context, System_Schedule.class);
-                startActivity(system_intent);
-            }
-        });
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,13 +258,18 @@ public class New_Schedule_Detail extends AppCompatActivity {
         staffGroup = findViewById(R.id.staffCG_SD);
         carGroup = findViewById(R.id.carCG_SD);
         backBtn = findViewById(R.id.back_btn_SD);
+        lastBtn = findViewById(R.id.last_imgBtn_SD);
+        nextBtn = findViewById(R.id.next_imgBtn_SD);
+        submitBtn = findViewById(R.id.submit_SD);
     }
 
     private void getOrder(){
         String function_name = "order_detail";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", company_id)
                 .add("assign", "true")
                 .build();
 
@@ -271,17 +311,12 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     else nameTitle = "";
                     contact_address = order.getString("contact_address");
                     movingDate = getDate(order.getString("moving_date"))+getTime(order.getString("moving_date"));
+                    fromAddress = order.getString("from_address");
+                    toAddress = order.getString("to_address");
 
                     int i;
-                    for(i = 1; i < 3; i++){
-                        JSONObject address = responseArr.getJSONObject(i);
-                        if(address.getString("from_or_to").equals("from"))
-                            fromAddress = address.getString("address");
-                        else toAddress = address.getString("address");
-                    }
-
                     car = "";
-                    for (i = 3; i < responseArr.length(); i++) {
+                    for (i = 1; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle_assign:" + vehicle_assign);
@@ -289,7 +324,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         cars_text.add(vehicle_assign.getString("plate_num"));
                         cars.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
                     }
-                    if(i == 3) car = "尚未安排車輛";
+                    if(i == 1) car = "尚未安排車輛";
                     Log.d(TAG, "car: "+car);
 
                     if(responseArr.length()-i < 1) staff = "尚未安排人員";

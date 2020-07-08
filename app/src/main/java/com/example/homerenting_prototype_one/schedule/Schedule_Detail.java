@@ -13,11 +13,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.System_Schedule;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Booking;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -174,7 +174,8 @@ public class Schedule_Detail extends AppCompatActivity {
         calendar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent calender_intent = new Intent(Schedule_Detail.this, Calendar.class);
+                Intent calender_intent;
+                calender_intent = new Intent(Schedule_Detail.this, Calendar.class);
                 startActivity(calender_intent);
             }
         });

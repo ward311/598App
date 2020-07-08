@@ -23,10 +23,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
 import com.example.homerenting_prototype_one.order.Order;
 
@@ -79,7 +79,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String fromAddress;
     String toAddress;
     String remainder;
-    String valuation_id;
 
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
@@ -154,16 +153,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     valuationTime = getDate(order.getString("valuation_date"));
                     if(order.getString("valuation_time").equals("null"))
                         valuationTime = valuationTime+" "+order.getString("valuation_time");
+                    fromAddress = order.getString("from_address");
+                    toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
-                    valuation_id = order.getString("valuation_id");
 
-                    int i;
-                    for(i = 1; i < 3; i++){
-                        JSONObject address = responseArr.getJSONObject(i);
-                        if(address.getString("from_or_to").equals("from"))
-                            fromAddress = address.getString("address");
-                        else toAddress = address.getString("address");
-                    }
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
@@ -254,7 +247,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         .add("type", type)
                         .add("estimate_worktime", estimate_worktime)
                         .add("fee", fee)
-                        .add("valuation_id", valuation_id)
                         .build();
                 Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date:  "+moving_date+":00"+
                         ", num: "+num+", weight: "+weight+", type: "+type+

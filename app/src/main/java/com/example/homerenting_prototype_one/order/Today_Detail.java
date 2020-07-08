@@ -21,10 +21,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
@@ -172,22 +172,18 @@ public class Today_Detail extends AppCompatActivity {
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
+                    fromAddress = order.getString("from_address");
+                    toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
                     fee = order.getString("accurate_fee");
                     price_origin = Integer.parseInt(fee);
                     memo = order.getString("memo");
+                    if(memo.equals("null")) memo = "";
 
                     int i;
-                    for(i = 1; i < 3; i++){
-                        JSONObject address = responseArr.getJSONObject(i);
-                        if(address.getString("from_or_to").equals("from"))
-                            fromAddress = address.getString("address");
-                        else toAddress = address.getString("address");
-                    }
-
                     car = "";
-                    for (i = 3; i < responseArr.length(); i++) {
+                    for (i = 1; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_type")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);
@@ -196,7 +192,7 @@ public class Today_Detail extends AppCompatActivity {
                                 +vehicle_assign.getString("vehicle_weight")+"噸"
                                 +vehicle_assign.getString("vehicle_type");
                     }
-                    if(i == 3) car = "尚未安排車輛";
+                    if(i == 1) car = "尚未安排車輛";
 
                     if(responseArr.length()-i < 1) staff = "尚未安排人員";
                     else staff = "";

@@ -9,6 +9,8 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.calendar.Calendar;
+
 public class Register_Company extends AppCompatActivity {
 
     @Override
@@ -73,7 +75,8 @@ public class Register_Company extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent finish_intent = new Intent();
-                finish_intent.setClass( Register_Company.this, Calendar.class);
+                finish_intent.setClass( Register_Company.this,
+                        Calendar.class);
                 startActivity( finish_intent );
             }
         } );

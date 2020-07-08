@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/back_imgBtn"
+        android:id="@+id/last_imgBtn_SD"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="@+id/orderContext_table" />
 
     <ImageButton
-        android:id="@+id/next_imgBtn"
+        android:id="@+id/next_imgBtn_SD"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
@@ -425,6 +425,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="30dp" />
+
+    <Button
+        android:id="@+id/submit_SD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        android:background="@drawable/addorder_btn_drawable"
+        android:text="送出"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

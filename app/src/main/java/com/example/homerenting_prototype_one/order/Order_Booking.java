@@ -14,12 +14,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +39,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
@@ -183,6 +185,7 @@ public class Order_Booking extends AppCompatActivity {
     }
 
     private void getOrder(){
+        clearDatalist();
         String function_name = "order_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
@@ -240,6 +243,7 @@ public class Order_Booking extends AppCompatActivity {
                         //將資料放入陣列
                         String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
                         data.add(row_data);
+                        addDatalist(order_id);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

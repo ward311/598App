@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
+import com.example.homerenting_prototype_one.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;

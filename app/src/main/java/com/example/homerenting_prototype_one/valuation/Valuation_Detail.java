@@ -20,10 +20,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
 import com.example.homerenting_prototype_one.order.Order;
 
@@ -65,7 +65,6 @@ public class Valuation_Detail extends AppCompatActivity {
     Button furniture_btn;
     Button check_date_btn;
 
-    String valuation_id;
     String name;
     String gender;
     String nameTitle;
@@ -146,7 +145,6 @@ public class Valuation_Detail extends AppCompatActivity {
                     JSONObject order = responseArr.getJSONObject(0);
                     Log.d(TAG,"order:" + order);
 
-                    valuation_id = order.getString("valuation_id");
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     if(gender.equals("女")) nameTitle= "小姐";
@@ -154,6 +152,8 @@ public class Valuation_Detail extends AppCompatActivity {
                     else nameTitle = "";
                     phone = order.getString("phone");
                     selfValTime = order.getString("last_update");
+                    fromAddress = order.getString("from_address");
+                    toAddress = order.getString("to_address");
                     contactTime = order.getString("contact_time");
                     if(!order.getString("valuation_date").equals("null")){
                         valTime = getDate(order.getString("valuation_date"));
@@ -163,14 +163,6 @@ public class Valuation_Detail extends AppCompatActivity {
                     }
                     else valTime = "no time";
                     notice = order.getString("additional");
-
-                    int i;
-                    for(i = 1; i < 3; i++){
-                        JSONObject address = responseArr.getJSONObject(i);
-                        if(address.getString("from_or_to").equals("from"))
-                            fromAddress = address.getString("address");
-                        else toAddress = address.getString("address");
-                    }
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -265,13 +257,11 @@ public class Valuation_Detail extends AppCompatActivity {
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
-                        .add("valuation_id",valuation_id)
                         .add("company_id",company_id)
                         .add("valuation_date", valDate)
                         .add("valuation_time", valTime)
                         .build();
                 Log.d(TAG,"check_price_btn: order_id: " + order_id +
-                        " valuation_id: " + valuation_id +
                         ", valuation_date" + valDate +
                         ", valuation_time: " + valTime);
 

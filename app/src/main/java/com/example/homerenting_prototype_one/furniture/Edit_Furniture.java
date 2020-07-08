@@ -19,11 +19,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.adapter.FurnitureAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
@@ -54,7 +54,7 @@ public class Edit_Furniture extends AppCompatActivity {
 
     FurnitureAdapter adapter;
 
-
+    Context context = Edit_Furniture.this;
     OkHttpClient okHttpClient = new OkHttpClient();
     private final String PHP = "/furniture.php";
 
@@ -212,7 +212,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 f_name_edit.setLayoutParams(params);
                 container.addView(f_name_edit);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(Edit_Furniture.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("家具名稱");
                 builder.setMessage("請輸入家具名稱");
                 builder.setView(container);

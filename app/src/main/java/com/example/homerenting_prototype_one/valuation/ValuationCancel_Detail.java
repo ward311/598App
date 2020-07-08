@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
@@ -125,6 +125,8 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                     if(order.getString("valuation_time").equals("null"))
                         valuationtime = valuationtime+" "+order.getString("valuation_time");
                     movingTime = getDate(order.getString("moving_date")) + " " + getTime(order.getString("moving_date"));
+                    fromAddress = order.getString("from_address");
+                    toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
                     movedate = order.getString("moving_date");
                     if(!order.getString("num").equals("null"))
@@ -133,13 +135,6 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                     worktime = order.getString("estimate_worktime");
                     fee = order.getString("fee");
 
-                    int i;
-                    for(i = 1; i < 3; i++){
-                        JSONObject address = responseArr.getJSONObject(i);
-                        if(address.getString("from_or_to").equals("from"))
-                            fromAddress = address.getString("address");
-                        else toAddress = address.getString("address");
-                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

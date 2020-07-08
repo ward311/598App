@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
@@ -64,7 +64,6 @@ public class MatchMaking_Detail extends AppCompatActivity {
     String car;
     String worktime;
     String price;
-    String valuation_id;
 
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Valuation_MatchMaking_Detail";
@@ -124,6 +123,8 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     valuationTime = getDate(order.getString("valuation_date"));
                     if(order.getString("valuation_time").equals("null"))
                         valuationTime = valuationTime+" "+order.getString("valuation_time");
+                    fromAddress = order.getString("from_address");
+                    toAddress = order.getString("to_address");
                     notice = order.getString("additional");
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
                     if(order.getString("vehicle_type").equals("null"))
@@ -131,15 +132,6 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     worktime = order.getString("estimate_worktime");
                     price = order.getString("accurate_fee")+"元";
-                    valuation_id = order.getString("valuation_id");
-
-                    int i;
-                    for(i = 1; i < 3; i++){
-                        JSONObject address = responseArr.getJSONObject(i);
-                        if(address.getString("from_or_to").equals("from"))
-                            fromAddress = address.getString("address");
-                        else toAddress = address.getString("address");
-                    }
 
 
                     runOnUiThread(new Runnable() {
@@ -171,8 +163,6 @@ public class MatchMaking_Detail extends AppCompatActivity {
                 }
             }
         });
-
-
 
 
 

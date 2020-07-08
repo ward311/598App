@@ -32,7 +32,7 @@ public class DetailAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return  data.get(position);
+        return data.get(position);
     }
 
     @Override

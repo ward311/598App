@@ -14,12 +14,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -82,11 +82,12 @@ public class Order_Today extends AppCompatActivity {
         month_text.setText(getMonthStr());
 
         //傳至網頁的值，傳function_name
-        String function_name = "order_member_today";
+        String function_name = "order_member_oneDay";
         String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", company_id)
+                .add("date", "today")
                 .build();
 
         //連線要求
@@ -261,9 +262,5 @@ public class Order_Today extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
-    }
-
-    private void getOrder(){
-
     }
 }

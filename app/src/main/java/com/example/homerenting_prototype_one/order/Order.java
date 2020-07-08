@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.order;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,14 +15,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.Calendar;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
-import com.example.homerenting_prototype_one.helper.SessionManager;
-import com.example.homerenting_prototype_one.model.User;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +40,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
@@ -64,6 +65,7 @@ public class Order extends AppCompatActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
 
+    Context context = Order.this;
     String TAG = "Order";
     private final String PHP = "/user_data.php";
 
@@ -180,6 +182,7 @@ public class Order extends AppCompatActivity {
     }
 
     private void getOrder(){
+        clearDatalist();
         //傳至網頁的值
         String function_name = "order_member";
         String startDate =  getStartOfWeek();
@@ -248,6 +251,7 @@ public class Order extends AppCompatActivity {
                         //將資料存進陣列裡
                         String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
                         data.add(row_data);
+                        addDatalist(order_id);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
@@ -285,10 +289,10 @@ public class Order extends AppCompatActivity {
 
                                     String newicon = row_data[row_data.length-1];
                                     if(newicon.equals("1"))
-                                        removeNew(order_id, Order.this);
+                                        removeNew(order_id, context);
 
                                     Intent intent = new Intent();
-                                    intent.setClass(Order.this, Order_Detail.class);
+                                    intent.setClass(context, Order_Detail.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.putExtras(bundle);
                                     startActivity(intent);

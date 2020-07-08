@@ -6,17 +6,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.helper.SessionManager;
-import com.example.homerenting_prototype_one.order.Order;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
@@ -127,7 +125,7 @@ public class New_Login extends AppCompatActivity {
                                         }
                                         Log.i(TAG, "company: "+ company);
                                         session.createLoginSession(company_id, String.valueOf(company));
-                                        startActivity(new Intent(context, Order.class));
+                                        startActivity(new Intent(context, Calendar.class));
                                     }
                                 });
                                 companyList_Group.addView(chip);
