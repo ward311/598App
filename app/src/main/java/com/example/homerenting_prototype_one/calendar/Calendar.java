@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.Add_Order;
+import com.example.homerenting_prototype_one.Add_Valuation;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting;
@@ -47,7 +49,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getStartTime;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
@@ -58,7 +59,7 @@ public class Calendar extends AppCompatActivity {
     ImageButton valuation_btn, order_btn, calendar_btn, system_btn, setting_btn;
     TextView valuation_bar, order_bar, dateText;
     ListView orderList;
-    Button cancel_btn;
+    Button addV_btn, addO_btn, cancel_btn;
 
     AlertDialog.Builder dialog;
     LayoutInflater inflater;
@@ -137,6 +138,22 @@ public class Calendar extends AppCompatActivity {
                     }
                 });
 
+                addV_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, Add_Valuation.class);
+                        startActivity(intent);
+                    }
+                });
+
+                addO_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, Add_Order.class);
+                        startActivity(intent);
+                    }
+                });
+
                 final AlertDialog alertDialog = dialog.create();
                 cancel_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -148,6 +165,11 @@ public class Calendar extends AppCompatActivity {
                 alertDialog.getWindow().setLayout(1400, 2000);
             }
         });
+
+        
+
+
+
 
         //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
@@ -201,6 +223,8 @@ public class Calendar extends AppCompatActivity {
         order_bar = v.findViewById(R.id.order_bar_C);
         dateText = v.findViewById(R.id.date_C);
         orderList = v.findViewById(R.id.orderList_C);
+        addV_btn = v.findViewById(R.id.add_valuation_btn_C);
+        addO_btn = v.findViewById(R.id.add_order_btn_C);
         cancel_btn = v.findViewById(R.id.cancelBtn_C);
     }
 
