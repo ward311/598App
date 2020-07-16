@@ -29,7 +29,10 @@ import com.example.homerenting_prototype_one.adapter.New_CalendarAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Detail;
+import com.example.homerenting_prototype_one.valuation.MatchMaking_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.example.homerenting_prototype_one.valuation.ValuationBooking_Detail;
+import com.example.homerenting_prototype_one.valuation.ValuationCancel_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation_Detail;
 
 import org.jetbrains.annotations.NotNull;
@@ -293,12 +296,13 @@ public class Calendar extends AppCompatActivity {
                             time = getStartTime(order.getString("valuation_time"));
                         else time = getTime(time);
                         String address = order.getString("from_address");
-                        String status = order.getString("order_status");
+                        String order_status = order.getString("order_status");
+                        String valuation_status = order.getString("valuation_status");
                         String newicon = order.getString("new");
 
-                        String[] row_data = {order_id, time, address, status, newicon};
+                        String[] row_data = {order_id, time, address, order_status, valuation_status, newicon};
                         data.add(row_data);
-                        if (status.equals("evaluating")) data_v.add(row_data);
+                        if (order_status.equals("evaluating")) data_v.add(row_data);
                         else{
                             data_o.add(row_data);
                             addDatalist(order_id);
@@ -345,10 +349,18 @@ public class Calendar extends AppCompatActivity {
                                         removeNew(order_id, context);
 
                                     Intent intent = new Intent();
-                                    String status = row_data[3];
-                                    Log.d(TAG, "status(" + order_id + "): " + status);
-                                    if (status.equals("evaluating"))
-                                        intent.setClass(context, Valuation_Detail.class);
+                                    String order_status = row_data[3];
+                                    String valuation_status = row_data[4];
+                                    Log.d(TAG, "status(" + order_id + "): " + order_status);
+                                    if (order_status.equals("evaluating")) {
+                                        if(valuation_status.equals("self"))
+                                            intent.setClass(context, Valuation_Detail.class);
+                                        else if(valuation_status.equals("booking"))
+                                            intent.setClass(context, ValuationBooking_Detail.class);
+                                        else if(valuation_status.equals("match"))
+                                            intent.setClass(context, MatchMaking_Detail.class);
+                                        else intent.setClass(context, ValuationCancel_Detail.class);
+                                    }
                                     else intent.setClass(context, Order_Detail.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.putExtras(bundle);
