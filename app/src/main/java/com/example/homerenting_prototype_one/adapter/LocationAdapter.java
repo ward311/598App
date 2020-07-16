@@ -53,7 +53,9 @@ public class LocationAdapter extends BaseAdapter implements View.OnClickListener
         }
         viewHolder = (LocationViewHolder)convertView.getTag();
         viewHolder.floor_text.setTag( R.id.location_floor,position );
-        viewHolder.floor_text.setText(data.get(position)[0]+"樓 / ");
+        if(!data.get(position)[0].isEmpty())
+            viewHolder.floor_text.setText(data.get(position)[0]+"樓 / ");
+        else viewHolder.floor_text.setText("");
         viewHolder.room_text.setTag( R.id.location_room,position );
         viewHolder.room_text.setText(data.get(position)[1]);
         viewHolder.item_text.setTag( R.id.location_item,position );

@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
@@ -92,11 +92,14 @@ public class Order_Detail extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
 
+        linking(); //將xml裡的元件連至此java
 
         final Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
+        if(bundle.getBoolean("btn")){
+            check_btn.setVisibility(View.GONE);
+        }
 
-        linking(); //將xml裡的元件連至此java
 
         //傳值
         String function_name = "order_detail";
@@ -149,6 +152,7 @@ public class Order_Detail extends AppCompatActivity {
                     toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
+                    if(worktime.equals("null")) worktime = "未預計工時";
                     fee = order.getString("accurate_fee")+"元";
 
                     int i;
@@ -157,7 +161,7 @@ public class Order_Detail extends AppCompatActivity {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_type")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);
-                        if(i!=3) car = car + "\n";
+                        if(i!=1) car = car + "\n";
                         car = car+vehicle_assign.getString("num")+"輛"
                                 +vehicle_assign.getString("vehicle_weight")+"噸"
                                 +vehicle_assign.getString("vehicle_type");

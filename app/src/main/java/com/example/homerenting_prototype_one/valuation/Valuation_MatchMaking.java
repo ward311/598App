@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
@@ -214,14 +214,15 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         JSONObject member = responseArr.getJSONObject(i);
                         Log.d(TAG, "member: " + member);
 
-                        final String order_id = member.getString("order_id");
-                        final String name = member.getString("member_name");
-                        final String nameTitle;
+                        String order_id = member.getString("order_id");
+                        String name = member.getString("member_name");
+                        String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
-                        final String phone = member.getString("phone");
-                        final String contact_address = member.getString("contact_address");
-                        final String newicon = member.getString("new");
+                        String phone = member.getString("phone");
+                        String contact_address = member.getString("contact_address");
+                        if(contact_address.equals("null")) contact_address = "";
+                        String newicon = member.getString("new");
 
                         String[] row_data = {order_id, name, nameTitle, phone, contact_address, newicon};
                         data.add(row_data);

@@ -22,7 +22,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;

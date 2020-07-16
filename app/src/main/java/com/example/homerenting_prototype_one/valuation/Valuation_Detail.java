@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
@@ -278,7 +278,7 @@ public class Valuation_Detail extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(Valuation_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                             }
                         });
                     }
@@ -290,9 +290,9 @@ public class Valuation_Detail extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     if(responseData.equals("success"))
-                                        Toast.makeText(Valuation_Detail.this, "線上估價成功", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
                                     else
-                                        Toast.makeText(Valuation_Detail.this, "上傳失敗", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(context, "上傳失敗", Toast.LENGTH_LONG).show();
                                 }
                             });
                         Log.d(TAG, "check_price_btn, responseData: " + responseData);
@@ -303,7 +303,7 @@ public class Valuation_Detail extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(Valuation_Detail.this, Valuation.class);
+                        Intent intent = new Intent(context, Valuation.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }

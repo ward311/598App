@@ -19,11 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.homerenting_prototype_one.Add_Order;
-import com.example.homerenting_prototype_one.Add_Valuation;
+import com.example.homerenting_prototype_one.add_order.Add_Order;
+import com.example.homerenting_prototype_one.add_order.Add_Valuation;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.New_CalendarAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
@@ -49,6 +49,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getStartTime;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
@@ -240,6 +242,7 @@ public class Calendar extends AppCompatActivity {
 
     private void getOrder(String date) {
         initData();
+        clearDatalist();
         String function_name = "order_member_oneDay";
         String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
@@ -289,14 +292,17 @@ public class Calendar extends AppCompatActivity {
                         if (time.equals("null"))
                             time = getStartTime(order.getString("valuation_time"));
                         else time = getTime(time);
-                        String to_address = order.getString("to_address");
+                        String address = order.getString("from_address");
                         String status = order.getString("order_status");
                         String newicon = order.getString("new");
 
-                        String[] row_data = {order_id, time, to_address, status, newicon};
+                        String[] row_data = {order_id, time, address, status, newicon};
                         data.add(row_data);
                         if (status.equals("evaluating")) data_v.add(row_data);
-                        else data_o.add(row_data);
+                        else{
+                            data_o.add(row_data);
+                            addDatalist(order_id);
+                        }
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();

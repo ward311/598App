@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
@@ -283,7 +283,7 @@ public class Order_Cancel extends AppCompatActivity {
 
                                     Bundle bundle = new Bundle();
                                     bundle.putString("order_id", order_id);
-                                    bundle.putBoolean("btn", false);
+                                    bundle.putBoolean("btn", true);
 
                                     removeNew(order_id, Order_Cancel.this);
 

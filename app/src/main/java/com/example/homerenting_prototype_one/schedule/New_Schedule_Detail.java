@@ -16,9 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
-import com.example.homerenting_prototype_one.System_Schedule;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Booking;
@@ -109,7 +108,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onDestroy();
+                finish();
             }
         });
 
@@ -310,7 +309,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     else if(gender.equals("male")) nameTitle = "先生";
                     else nameTitle = "";
                     contact_address = order.getString("contact_address");
-                    movingDate = getDate(order.getString("moving_date"))+getTime(order.getString("moving_date"));
+                    movingDate = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
 

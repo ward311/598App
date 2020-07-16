@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context=".Add_Order">
+    tools:context=".add_order.Add_Order">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -21,7 +21,6 @@
         android:layout_margin="15dp"
         android:textStyle="bold"/>
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
@@ -40,18 +39,21 @@
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="姓名"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
+
                 <EditText
-                    android:id="@+id/name_editText"
+                    android:id="@+id/name_AO"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:inputType="text"/>
+                    android:inputType="text" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,42 +67,82 @@
                     android:text="性別"
                     android:gravity="center_vertical"
                     android:textColor="#000000"/>
-                <RadioButton
-                    android:id="@+id/sir_radioBtn"
+
+                <RadioGroup
+                    android:id="@+id/genderRG_AO"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="先生"/>
-                <RadioButton
-                    android:id="@+id/lady_radioBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="小姐"/>
-                <RadioButton
-                    android:id="@+id/other_radioBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="無"/>
+                    android:layout_weight="3"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/male_rbtn_AO"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="先生" />
+
+                    <RadioButton
+                        android:id="@+id/female_rbtn_AO"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="小姐" />
+
+                    <RadioButton
+                        android:id="@+id/other_rbtn_AO"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="無" />
+                </RadioGroup>
+
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="聯絡地址"
+                    android:textColor="#000000" />
+
+                <EditText
+                    android:id="@+id/contactAddress_AO"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:ems="10"
+                    android:inputType="text" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="連絡電話"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
+
                 <EditText
-                    android:id="@+id/phone_editText"
+                    android:id="@+id/phone_AO"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:inputType="phone"/>
+                    android:inputType="phone" />
 
             </LinearLayout>
             <LinearLayout
@@ -108,64 +150,77 @@
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="搬出地址"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
+
                 <EditText
-                    android:id="@+id/move_out_editText"
+                    android:id="@+id/fromAddress_AO"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:inputType="text"/>
+                    android:inputType="text" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="搬入地址"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
                 <EditText
-                    android:id="@+id/move_in_editText"
+                    android:id="@+id/toAddress_AO"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:inputType="text"/>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
+                android:background="#989898"
+                android:visibility="gone" />
+
             <LinearLayout
+                android:id="@+id/furniture_LL_AO"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="家具清單"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
+
                     <Button
                         android:id="@+id/edit_furniture_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="修改家具"
-                        android:textColor="#FB8527"
+                        android:background="#FFFFFFFF"
                         android:gravity="top|left"
-                        android:background="#FFFFFFFF"/>
+                        android:text="修改家具"
+                        android:textColor="#FB8527" />
                 </LinearLayout>
                 <!--                <TextView-->
                 <!--                    android:layout_width="0dp"-->
@@ -178,12 +233,14 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="#FB8527"
                         android:text="編號 品項名稱   數量 備註   "
-                        android:textColor="#FFFFFF"
-                        android:background="#FB8527"/>
+                        android:textColor="#FFFFFF" />
+
                     <ListView
                         android:id="@+id/furniture_listView"
                         android:layout_width="match_parent"
@@ -194,77 +251,121 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#989898"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="搬家時間"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="搬家時間"
+                    android:textColor="#000000" />
+
                 <Button
                     android:id="@+id/pickDate_order_btn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
+                    android:background="@drawable/addorder_btn_drawable"
                     android:text="選擇日期"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
-                    android:background="@drawable/addorder_btn_drawable"/>
+                    android:visibility="gone" />
+
                 <TextView
-                    android:id="@+id/pickDate_order_text"
+                    android:id="@+id/pickDate_AO"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
+                    android:hint="點擊選擇搬家時間"
                     android:textSize="15sp"
-                    android:gravity="center_vertical"
-                    android:visibility="gone"/>
-<!--                <EditText-->
-<!--                    android:id="@+id/pickDate_editText"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_weight="3"-->
-<!--                    android:inputType="datetime"-->
-<!--                    android:hint="2019/10/01 9:00"/>-->
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/pictTime_AO"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
+                    android:hint="點擊選擇時間" />
+
+                <!--                <EditText-->
+                <!--                    android:id="@+id/pickDate_editText"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_weight="3"-->
+                <!--                    android:inputType="datetime"-->
+                <!--                    android:hint="2019/10/01 9:00"/>-->
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="搬家費用"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="搬家費用"
+                    android:textColor="#000000" />
+
                 <EditText
-                    android:id="@+id/price_VBD"
+                    android:id="@+id/price_AO"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:inputType="number"
-                    android:hint="3600"/>
+                    android:hint="3600"
+                    android:inputType="number" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="預計工時"
+                    android:textColor="#000000" />
+
+                <EditText
+                    android:id="@+id/worktime_AO"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:hint="1"
+                    android:inputType="number" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="注意事項"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="注意事項"
+                    android:textColor="#000000" />
+
                 <EditText
-                    android:id="@+id/notice_order_editText"
+                    android:id="@+id/notice_AO"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
@@ -276,7 +377,7 @@
                 android:layout_weight="1"
                 android:gravity="center">
                 <Button
-                    android:id="@+id/finish_order_btn"
+                    android:id="@+id/addOrder_btn_AO"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="完成新增搬家訂單"

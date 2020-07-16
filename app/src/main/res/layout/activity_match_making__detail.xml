@@ -36,6 +36,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -145,10 +146,11 @@
 
                 <TextView
                     android:id="@+id/FromAddress_MMD"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="搬出地址"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_V3"
                     app:layout_constraintStart_toStartOf="@+id/guideline_V2"
                     app:layout_constraintTop_toBottomOf="@+id/valuationTime_MMD" />
 
@@ -163,10 +165,11 @@
 
                 <TextView
                     android:id="@+id/ToAddress_MMD"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="搬入地址"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_V3"
                     app:layout_constraintStart_toStartOf="@+id/guideline_V2"
                     app:layout_constraintTop_toBottomOf="@+id/FromAddress_MMD" />
 
@@ -318,6 +321,17 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/confirm_MMD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/addorder_btn_drawable"
+                android:text="確認"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
 
     </ScrollView>

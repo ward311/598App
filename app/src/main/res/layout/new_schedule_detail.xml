@@ -65,7 +65,7 @@
         android:id="@+id/orderContext_table"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintHorizontal_bias="0.478"
@@ -212,8 +212,7 @@
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
         android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
@@ -224,6 +223,7 @@
             android:id="@+id/staffCG_SD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="10dp"
             android:theme="@style/Theme.MaterialComponents.Light"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="415dp">
@@ -246,7 +246,6 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="車輛"
         android:textColor="#000000"
         android:textSize="24sp"
@@ -257,8 +256,7 @@
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView2"
         android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
@@ -268,6 +266,7 @@
             android:id="@+id/carCG_SD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="10dp"
             android:theme="@style/Theme.MaterialComponents.Light"
             tools:layout_editor_absoluteX="85dp"
             tools:layout_editor_absoluteY="370dp">
@@ -287,6 +286,18 @@
         </com.google.android.material.chip.ChipGroup>
 
     </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/submit_SD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/addorder_btn_drawable"
+        android:text="送出"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -425,19 +436,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="30dp" />
-
-    <Button
-        android:id="@+id/submit_SD"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:background="@drawable/addorder_btn_drawable"
-        android:text="送出"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

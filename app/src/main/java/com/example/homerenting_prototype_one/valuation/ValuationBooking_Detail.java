@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
@@ -79,6 +80,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String fromAddress;
     String toAddress;
     String remainder;
+
+    LinearLayout furnitureLL;
 
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
@@ -151,7 +154,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     valuationTime = getDate(order.getString("valuation_date"));
-                    if(order.getString("valuation_time").equals("null"))
+                    if(!order.getString("valuation_time").equals("null"))
                         valuationTime = valuationTime+" "+order.getString("valuation_time");
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
@@ -173,6 +176,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                             remainderText.setText(remainder);
                         }
                     });
+
+                    int auto = order.getInt("auto");
+                    if(auto==0) furnitureLL.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -449,8 +455,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         carWeightEdit = findViewById(R.id.weight_VBD);
         carTypeEdit = findViewById(R.id.type_VBD);
         worktimeEdit = findViewById(R.id.worktime_VBD);
-        priceEdit = findViewById( R.id.price_VBD);
+        priceEdit = findViewById(R.id.price_VBD);
         check_btn = findViewById(R.id.check_evaluation_btn);
+        furnitureLL = findViewById(R.id.furniture_LL_VBD);
     }
 
     private boolean checkEmpty(String movingDate, String movingTime, String num, String weight, String type, String estimate_worktime, String fee){

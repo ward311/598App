@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
@@ -83,7 +83,7 @@ public class Valuation_Booking extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-
+        setwCount(getwCount()-1);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getValuationBooking();
@@ -223,16 +223,18 @@ public class Valuation_Booking extends AppCompatActivity {
                         Log.d(TAG,"member:"+member);
 
                         //取欄位資料
-                        final String order_id = member.getString("order_id");
-                        final String date = member.getString("valuation_date");
-                        final String time = member.getString("valuation_time");
-                        final String name = member.getString("member_name");
-                        final String nameTitle;
+                        String order_id = member.getString("order_id");
+                        String date = member.getString("valuation_date");
+                        String time = member.getString("valuation_time");
+                        if(time.equals("null")) time = "";
+                        String name = member.getString("member_name");
+                        String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
-                        final String phone = member.getString("phone");
-                        final String contact_address = member.getString("contact_address");
-                        final String newicon = member.getString("new");
+                        String phone = member.getString("phone");
+                        String contact_address = member.getString("contact_address");
+                        if(contact_address.equals("null")) contact_address = "";
+                        String newicon = member.getString("new");
 
                         //呈現在app上
                         String[] row_data = {order_id, getDate(date), getStartTime(time), name, nameTitle, phone, contact_address, newicon};

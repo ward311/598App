@@ -83,15 +83,16 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="0933669877" />
+
                     <Button
                         android:id="@+id/call_btn"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="撥打電話"
-                        android:textColor="#FB8527"
+                        android:background="#FFFFFFFF"
                         android:gravity="top"
-                        android:background="#FFFFFFFF"/>
+                        android:text="撥打電話"
+                        android:textColor="#FB8527" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -151,16 +152,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#989898"/>
+
                 <LinearLayout
+                    android:id="@+id/furniture_LL_VBD"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="家具清單"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
 
                     <Button
                         android:id="@+id/edit_furniture_btn_VBD"
@@ -311,13 +315,14 @@
                         android:text="搬運費用"
                         android:gravity="center_vertical"
                         android:textColor="#000000"/>
+
                     <EditText
                         android:id="@+id/price_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:inputType="numberDecimal"
-                        android:hint="3600"/>
+                        android:hint="3600"
+                        android:inputType="numberDecimal" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

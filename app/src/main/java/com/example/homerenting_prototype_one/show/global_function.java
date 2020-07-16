@@ -96,7 +96,7 @@ public class global_function {
         return time_token[0]+":"+time_token[1];
     }
 
-    public static String getStartTime(String time){
+    public static String getStartTime(String time){ //從valuation_time(01:00~02:00)中取得開頭時間
         String[] token = time.split("~");
         return token[0];
     }
@@ -132,24 +132,25 @@ public class global_function {
         return weekDay;
     }
 
-    public static String getStartOfWeek(){
+    public static String getStartOfWeek(){ //取一星期的開頭日
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String startStr = sdf.format(startDate);
         //Log.i(TAG, "startStr: "+startStr);
         return startStr;
     }
 
-    public static String getEndOfWeek(){
+    public static String getEndOfWeek(){ //取一星期的結尾日
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String endStr = sdf.format(endDate);
         //Log.i(TAG, "endStr: "+endStr);
         return endStr;
     }
 
+    //設定哪一周
     public static void setwCount(int newWCount){ wCount = newWCount;}
     public static int getwCount(){ return wCount;}
 
-    public static String getToday(){
+    public static String getToday(){ //取得今日的月、日
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
 
@@ -164,7 +165,7 @@ public class global_function {
         return todayStr;
     }
 
-    public static String getMonthStr(){
+    public static String getMonthStr(){ //將月份轉成中文
         String m;
         switch (month){
             case 0:
@@ -209,17 +210,17 @@ public class global_function {
         return m;
     }
 
-    public static String getCompany_id(Context context){
+    public static String getCompany_id(Context context){ //紀錄公司ID
         session = SessionManager.getInstance(context);
         user = session.getUserDetail();
         company_id = user.getId();
         return company_id;
     }
 
+    //紀錄前後切換時的資料
     public static void addDatalist(String id){
         datalist.add(id);
     }
-
     public static void clearDatalist(){
         datalist.clear();
     }

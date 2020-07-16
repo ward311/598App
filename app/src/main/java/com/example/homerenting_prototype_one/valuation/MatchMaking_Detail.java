@@ -1,8 +1,10 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +18,7 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
 
@@ -52,7 +54,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
     TextView worktimeText;
     TextView priceText;
 
-
+    String order_id;
     String name;
     String gender;
     String phone;
@@ -65,7 +67,10 @@ public class MatchMaking_Detail extends AppCompatActivity {
     String worktime;
     String price;
 
+    Button confirmBtn;
+
     OkHttpClient okHttpClient = new OkHttpClient();
+    Context context = MatchMaking_Detail.this;
     String TAG = "Valuation_MatchMaking_Detail";
     private final String PHP = "/user_data.php";
 
@@ -75,7 +80,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
         setContentView( R.layout.activity_match_making__detail );
 
         final Bundle bundle = getIntent().getExtras();
-        String order_id = bundle.getString("order_id");
+        order_id = bundle.getString("order_id");
         Log.d(TAG, "order_id: " + order_id);
 
         linking();
@@ -121,17 +126,20 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     valuationTime = getDate(order.getString("valuation_date"));
-                    if(order.getString("valuation_time").equals("null"))
+                    if(!order.getString("valuation_time").equals("null"))
                         valuationTime = valuationTime+" "+order.getString("valuation_time");
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
                     notice = order.getString("additional");
-                    movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
-                    if(order.getString("vehicle_type").equals("null"))
-                        car = "尚未安排車輛";
+                    String moving_date = order.getString("moving_date");
+                    if(moving_date.equals("null")) movingTime = "未安排搬家時間";
+                    else movingTime = getDate(moving_date)+" "+getTime(moving_date);
+                    if(order.getString("vehicle_type").equals("null")) car = "尚未安排車輛";
                     else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     worktime = order.getString("estimate_worktime");
-                    price = order.getString("accurate_fee")+"元";
+                    if(worktime.equals("null")) worktime = "未預計搬家時長";
+                    if(order.getString("accurate_fee").equals("null")) price = "0元";
+                    else price = order.getString("accurate_fee")+"元";
 
 
                     runOnUiThread(new Runnable() {
@@ -152,6 +160,9 @@ public class MatchMaking_Detail extends AppCompatActivity {
                             priceText.setText(price);
                         }
                     });
+
+                    int auto = order.getInt("auto");
+                    if(auto==0) setConfirmBtn();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -262,5 +273,55 @@ public class MatchMaking_Detail extends AppCompatActivity {
         carText = findViewById(R.id.car_MMD);
         worktimeText = findViewById(R.id.worktime_MMD);
         priceText = findViewById(R.id.price_MMD);
+        confirmBtn = findViewById(R.id.confirm_MMD);
+    }
+
+    private void setConfirmBtn(){
+        confirmBtn.setVisibility(View.VISIBLE);
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String function_name = "become_order";
+                RequestBody body = new FormBody.Builder()
+                        .add("function_name", function_name)
+                        .add("order_id", order_id)
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.SERVER_URL+"/functional.php")
+                        .post(body)
+                        .build();
+
+                Call call = okHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        String responseData = response.body().string();
+                        Log.d(TAG, "confirm, responseData: " + responseData);
+                    }
+                });
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(context, Order.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                }, 1000);
+            }
+        });
     }
 }

@@ -15,7 +15,7 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Detail;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.order.Order;
 
@@ -133,7 +133,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                         car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     else car = "尚未安排車輛";
                     worktime = order.getString("estimate_worktime");
-                    fee = order.getString("fee");
+                    fee = order.getString("accurate_fee");
 
                     runOnUiThread(new Runnable() {
                         @Override

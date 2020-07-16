@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Record_Detail">
+    tools:context=".setting.Record_Detail">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -42,10 +42,11 @@
         android:layout_height="0dp"
         android:layout_weight="9"
         android:orientation="vertical">
+
         <ListView
-            android:id="@+id/record_list"
+            android:id="@+id/record_list_RD"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

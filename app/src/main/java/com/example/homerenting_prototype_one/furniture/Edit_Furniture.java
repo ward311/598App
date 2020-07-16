@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.adapter.FurnitureAdapter;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -45,6 +45,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.dip2px;
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 
 public class Edit_Furniture extends AppCompatActivity {
@@ -78,10 +79,12 @@ public class Edit_Furniture extends AppCompatActivity {
         final Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
 
-        String function_name = "furniture_each_detail";
+        String function_name = "furniture_detail";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", company_id)
                 .build();
         Log.d(TAG, "order_id: "+order_id);
 
@@ -147,19 +150,29 @@ public class Edit_Furniture extends AppCompatActivity {
                         check_btn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                ArrayList<String[]> furniture_data = new ArrayList<>();
+                                //把資料放進ArrayList
+                                ArrayList<int[]> fd = new ArrayList<>();
                                 for(int i = 0 ; i < adapter.getCount() ; i++){
                                     String[] row_data = (String[])adapter.getItem(i);
-                                    furniture_data.add(row_data);
-                                    Log.d(TAG,"row_data:"+Arrays.toString(row_data));
+                                    int[] row_data2 = {Integer.parseInt(row_data[0]), Integer.parseInt(row_data[2])};
+                                    fd.add(row_data2);
                                 }
 
-                                String function_name = "update_furniture";
+                                //把ArrayList的資料放進二微陣列
+                                int[][] furniture_data = new int[fd.size()][2];
+                                for(int i = 0; i < fd.size(); i++)
+                                    for(int ii = 0; ii < 2; ii++)
+                                        furniture_data[i][ii] = fd.get(i)[ii];
+
+                                String function_name = "modify_furniture";
+                                String company_id = getCompany_id(context);
                                 RequestBody body = new FormBody.Builder()
                                         .add("function_name", function_name)
                                         .add("order_id", order_id)
-                                        .add("furniture_data", String.valueOf(furniture_data))
+                                        .add("company_id",company_id)
+                                        .add("furniture_data", Arrays.deepToString(furniture_data))
                                         .build();
+                                Log.d(TAG,"order_id: "+order_id+", furniture_data:"+ Arrays.deepToString(furniture_data));
 
                                 Request request = new Request.Builder()
                                         .url(BuildConfig.SERVER_URL+PHP)

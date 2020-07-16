@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.adapter.DetailAdapter;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -41,6 +41,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.R.*;
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class Furniture_Detail extends AppCompatActivity {
     ImageButton valuation_btn;
@@ -78,10 +79,12 @@ public class Furniture_Detail extends AppCompatActivity {
 
         data = new ArrayList<>();
 
-        String function_name = "furniture_each_detail";
+        String function_name = "furniture_detail";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", company_id)
                 .build();
 
         Request request = new Request.Builder()
@@ -115,7 +118,7 @@ public class Furniture_Detail extends AppCompatActivity {
                         JSONObject furniture = responseArr.getJSONObject(i);
                         final String furniture_name = furniture.getString("furniture_name");
                         final String num = furniture.getString("num");
-                        final String furniture_memo = furniture.getString("furniture_memo");
+                        final String furniture_memo = " ";
 
                         String[] row_data = {furniture_name, num, furniture_memo};
                         data.add(row_data);

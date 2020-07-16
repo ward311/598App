@@ -13,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.adapter.LocationAdapter;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Detail;
@@ -37,6 +38,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class Furniture_Location extends AppCompatActivity {
     String floor;
@@ -71,9 +74,11 @@ public class Furniture_Location extends AppCompatActivity {
         data = new ArrayList<>();
 
         String function_name = "furniture_room_detail";
+        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", company_id)
                 .build();
         Log.d(TAG, "order_id:"+order_id);
 
@@ -106,7 +111,7 @@ public class Furniture_Location extends AppCompatActivity {
 
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject furniture = responseArr.getJSONObject(i);
-                        if(furniture.getString("room_id") != null) {
+                        if(!furniture.getString("room_id").equals("null")) {
                             floor = furniture.getString("floor");
                             room_name = furniture.getString("room_type") + furniture.getString("room_name");
                         }
@@ -121,20 +126,17 @@ public class Furniture_Location extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            show_noData show = new show_noData(Order_Booking.this, orderL.getContext());
-//                            if(responseData.equals("null")) orderL.addView(show.noDataMessage());
-//                            else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-//                        }
-//                    });
+                    if(responseData.equals("null")){
+                        Log.d(TAG, "NO DATA");
+                        NoDataAdapter noData = new NoDataAdapter();
+                        location_list.setAdapter(noData);
+                    }
+                    //else Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                 }
 
                 //顯示資訊
                 for(int i=0; i < data.size(); i++)
                     Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-//                final ListView locationList = findViewById(R.id.furniture_location_listView);
                 final LocationAdapter LocationAdapter = new LocationAdapter(data);
                 runOnUiThread(new Runnable() {
                     @Override

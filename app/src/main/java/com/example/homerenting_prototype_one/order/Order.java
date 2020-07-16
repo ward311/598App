@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
@@ -187,7 +187,7 @@ public class Order extends AppCompatActivity {
         String function_name = "order_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
-        String company_id = getCompany_id(this);
+        String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", company_id)
@@ -216,7 +216,7 @@ public class Order extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Order.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -238,15 +238,16 @@ public class Order extends AppCompatActivity {
                         Log.i(TAG,"member: "+member);
 
                         //取欄位資料
-                        final String order_id = member.getString("order_id");
-                        final String datetime = member.getString("moving_date");
-                        final String name = member.getString("member_name");
-                        final String nameTitle;
+                        String order_id = member.getString("order_id");
+                        String datetime = member.getString("moving_date");
+                        String name = member.getString("member_name");
+                        String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
-                        final String phone = member.getString("phone");
-                        final String contact_address = member.getString("contact_address");
-                        final String newicon = member.getString("new");
+                        String phone = member.getString("phone");
+                        String contact_address = member.getString("contact_address");
+                        if(contact_address.equals("null")) contact_address = "";
+                        String newicon = member.getString("new");
 
                         //將資料存進陣列裡
                         String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};

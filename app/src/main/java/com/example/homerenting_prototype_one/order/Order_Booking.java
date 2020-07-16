@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Setting;
+import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
@@ -228,16 +228,17 @@ public class Order_Booking extends AppCompatActivity {
 
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject member = responseArr.getJSONObject(i);
-                        final String order_id = member.getString("order_id");
-                        final String name = member.getString("member_name");
-                        final String datetime = member.getString("moving_date");
+                        String order_id = member.getString("order_id");
+                        String name = member.getString("member_name");
+                        String datetime = member.getString("moving_date");
                         String gender = member.getString("gender");
                         if (gender.equals("女")) gender ="小姐";
                         else gender = "先生";
-                        final String nameTitle = gender;
-                        final String phone = member.getString("phone");
-                        final String contact_address = member.getString("contact_address");
-                        final String newicon = member.getString("new");
+                        String nameTitle = gender;
+                        String phone = member.getString("phone");
+                        String contact_address = member.getString("contact_address");
+                        if(contact_address.equals("null")) contact_address = "";
+                        String newicon = member.getString("new");
                         Log.d(TAG,"order_id: "+order_id);
 
                         //將資料放入陣列

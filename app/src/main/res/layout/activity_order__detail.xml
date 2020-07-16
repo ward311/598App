@@ -98,7 +98,7 @@
         android:id="@+id/movingTime_OD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="4dp"
         android:text="搬家時間"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/phone_OD" />
@@ -145,7 +145,7 @@
         android:id="@+id/view"
         android:layout_width="416dp"
         android:layout_height="2dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
         android:background="#F2F2F2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -168,42 +168,44 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:background="#FFFFFFFF"
         android:gravity="left|center_vertical"
         android:text="詳細資料"
         android:textColor="#FB8527"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
-        app:layout_constraintTop_toBottomOf="@+id/ToAddress_OD" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <View
         android:id="@+id/view2"
-        android:layout_width="416dp"
+        android:layout_width="0dp"
         android:layout_height="2dp"
-        android:layout_marginBottom="1dp"
         android:background="#F2F2F2"
-        app:layout_constraintBottom_toTopOf="@+id/notice_scroll"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/furniture_btn" />
 
     <TextView
         android:id="@+id/noticeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="31dp"
         android:text="注意事項"
         android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/notice_scroll"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
         app:layout_constraintTop_toTopOf="@+id/notice_scroll" />
 
     <ScrollView
         android:id="@+id/notice_scroll"
-        android:layout_width="243dp"
-        android:layout_height="110dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:background="#F2F2F2"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        app:layout_constraintEnd_toStartOf="@+id/right_margin_GL"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
-        app:layout_constraintTop_toBottomOf="@+id/furniture_btn">
+        app:layout_constraintTop_toBottomOf="@+id/view2">
 
         <TextView
             android:id="@+id/notice_OD"
@@ -216,7 +218,7 @@
         android:id="@+id/view3"
         android:layout_width="wrap_content"
         android:layout_height="2dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="4dp"
         android:background="#F2F2F2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notice_scroll" />
@@ -229,13 +231,13 @@
         android:text="安排車輛"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
+        app:layout_constraintTop_toTopOf="@+id/car_OD" />
 
     <TextView
         android:id="@+id/car_OD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="4dp"
         android:text="車輛分配"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/view3" />
