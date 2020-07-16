@@ -176,7 +176,7 @@ public class Valuation extends AppCompatActivity {
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .build();
-        Log.i(TAG, "getOrder:\n"+"startDate:"+startDate+", endDate:"+endDate+", status:"+"scheduled");
+        Log.i(TAG, "getOrder:\n"+"startDate:"+startDate+", endDate:"+endDate+", status:"+"self");
 
         //連線要求
         Request request = new Request.Builder()

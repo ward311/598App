@@ -195,7 +195,7 @@ public class Order extends AppCompatActivity {
                 .add("endDate", endDate)
                 .add("status", "scheduled")
                 .build();
-        Log.i(TAG, "getOrder:\n"+"startDate:"+startDate+", endDate:"+endDate+", status:"+"scheduled");
+        Log.i(TAG, "getOrder:\n"+"company_id: "+company_id+", startDate:"+startDate+", endDate:"+endDate+", status:"+"scheduled");
 
         //連線要求
         Request request = new Request.Builder()

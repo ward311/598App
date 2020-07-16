@@ -82,12 +82,11 @@ public class Order_Today extends AppCompatActivity {
         month_text.setText(getMonthStr());
 
         //傳至網頁的值，傳function_name
-        String function_name = "order_member_oneDay";
+        String function_name = "order_member_today";
         String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", company_id)
-                .add("date", "today")
                 .build();
 
         //連線要求
@@ -117,7 +116,7 @@ public class Order_Today extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d("responseData", responseData); //顯示資料
+                Log.d(TAG, "responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object

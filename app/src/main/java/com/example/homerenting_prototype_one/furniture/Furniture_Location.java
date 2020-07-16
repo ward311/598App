@@ -117,7 +117,7 @@ public class Furniture_Location extends AppCompatActivity {
                         }
                         else{
                             floor = "";
-                            room_name = furniture.getString("furniture_type");
+                            room_name = furniture.getString("space_type");
                         }
                         final String furniture_name = furniture.getString("furniture_name");
                         final String num = furniture.getString("num");
