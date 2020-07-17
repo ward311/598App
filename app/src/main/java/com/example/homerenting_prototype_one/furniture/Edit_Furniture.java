@@ -323,7 +323,7 @@ public class Edit_Furniture extends AppCompatActivity {
         furnitureSpr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position != 0) Toast.makeText(context, "選擇"+space[position], Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "選擇"+furniture[position], Toast.LENGTH_LONG).show();
             }
 
             @Override

@@ -178,7 +178,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     });
 
                     int auto = order.getInt("auto");
-                    if(auto==0) furnitureLL.setVisibility(View.GONE);
+                    if(auto==0){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                furnitureLL.setVisibility(View.GONE);
+                            }
+                        });
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {

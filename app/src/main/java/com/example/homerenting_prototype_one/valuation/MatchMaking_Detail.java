@@ -162,7 +162,14 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     });
 
                     int auto = order.getInt("auto");
-                    if(auto==0) setConfirmBtn();
+                    if(auto==0){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setConfirmBtn();
+                            }
+                        });
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {

@@ -75,7 +75,7 @@ public class Order_Detail extends AppCompatActivity {
     String fee;
     String order_id;
 
-    Button furniture_btn, check_btn;
+    Button call_btn, furniture_btn, check_btn;
 
     Bundle bundle;
 
@@ -88,7 +88,7 @@ public class Order_Detail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__detail);
-        Button call_btn = findViewById(R.id.call_btn);
+
 
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
@@ -96,12 +96,12 @@ public class Order_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-
         linking(); //將xml裡的元件連至此java
 
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         if(bundle.getBoolean("btn")){
+            call_btn.setVisibility(View.GONE);
             check_btn.setVisibility(View.GONE);
         }
 
@@ -286,6 +286,7 @@ public class Order_Detail extends AppCompatActivity {
         nameText = findViewById(R.id.name_OD);
         nameTitleText = findViewById(R.id.nameTitle_OD);
         phoneText = findViewById(R.id.phone_OD);
+        call_btn = findViewById(R.id.call_btn_OD);
         movingTimeText = findViewById(R.id.movingTime_OD);
         fromAddressText = findViewById(R.id.FromAddress_OD);
         toAddressText = findViewById(R.id.ToAddress_OD);
