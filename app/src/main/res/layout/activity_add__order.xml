@@ -102,7 +102,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:orientation="horizontal">
 
                 <TextView
@@ -283,7 +283,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.5"
                     android:gravity="center"
-                    android:hint="點擊選擇搬家時間"
+                    android:hint="點擊選擇時間"
                     android:textSize="15sp"
                     android:visibility="visible" />
 

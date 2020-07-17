@@ -159,12 +159,12 @@
         android:layout_marginBottom="15dp"
         android:text="家具清單"
         android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="@+id/furniture_btn"
+        app:layout_constraintBottom_toBottomOf="@id/furniture_btn_OD"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toTopOf="@+id/furniture_btn" />
+        app:layout_constraintTop_toTopOf="@id/furniture_btn_OD" />
 
     <Button
-        android:id="@+id/furniture_btn"
+        android:id="@+id/furniture_btn_OD"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
         android:background="#F2F2F2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/furniture_btn" />
+        app:layout_constraintTop_toBottomOf="@id/furniture_btn_OD" />
 
     <TextView
         android:id="@+id/noticeText"

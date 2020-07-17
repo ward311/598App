@@ -5,13 +5,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
@@ -52,8 +56,15 @@ public class Edit_Furniture extends AppCompatActivity {
     String TAG = "Edit_Furniture";
     private ListView list;
     private ArrayList<String[]> data;
+    ArrayList<String> spaceAL, furnitureAL;
+    String[] space, furniture;
+    String new_furniture;
+
+    Spinner spaceSpr, furnitureSpr;
 
     FurnitureAdapter adapter;
+
+    View view;
 
     Context context = Edit_Furniture.this;
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -187,7 +198,7 @@ public class Edit_Furniture extends AppCompatActivity {
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                                             }
                                         });
                                     }
@@ -198,7 +209,7 @@ public class Edit_Furniture extends AppCompatActivity {
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Toast.makeText(Edit_Furniture.this, "修改家具完成", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(context, "修改家具完成", Toast.LENGTH_LONG).show();
                                             }
                                         });
                                         Log.d(TAG, "responseData: " + responseData);
@@ -216,25 +227,18 @@ public class Edit_Furniture extends AppCompatActivity {
         add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context thisActivity = Edit_Furniture.this;
-                FrameLayout container = new FrameLayout(thisActivity);
-                FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.leftMargin = dip2px(thisActivity, 20);
-                params.rightMargin = dip2px(thisActivity, 20);
-                final EditText f_name_edit = new EditText(Edit_Furniture.this);
-                f_name_edit.setLayoutParams(params);
-                container.addView(f_name_edit);
+                setSpinner();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("家具名稱");
                 builder.setMessage("請輸入家具名稱");
-                builder.setView(container);
+                builder.setView(view);
                 builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String f_name = f_name_edit.getText().toString();
-                        Log.d(TAG, "f_name: "+f_name);
-                        String[] row_data = {"-1", f_name, "0"};
+                        /*new_furniture = f_name_edit.getText().toString();
+                        Log.d(TAG, "new_furniture: "+new_furniture);
+                        String[] row_data = {"-1", new_furniture, "0"};
                         Log.d(TAG, "row_data: "+Arrays.toString(row_data));
                         data.add(row_data);
                         final FurnitureAdapter adapter = new FurnitureAdapter(data);
@@ -243,7 +247,7 @@ public class Edit_Furniture extends AppCompatActivity {
                             public void run() {
                                 list.setAdapter(adapter);
                             }
-                        });
+                        });*/
                     }
                 });
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -291,6 +295,149 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Edit_Furniture.this, Setting.class);
                 startActivity(setting_intent);
+            }
+        });
+    }
+
+    private void setSpinner(){
+        LayoutInflater inflater = getLayoutInflater();
+        view = inflater.inflate(R.layout.add_furniture, null);
+        spaceSpr = view.findViewById(R.id.spaceType_sp_AF);
+        furnitureSpr = view.findViewById(R.id.furniture_sp_AF);
+        spaceAL = new ArrayList<>();
+        furnitureAL = new ArrayList<>();
+        getSpace();
+
+        spaceSpr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position != 0) getFurniture(space[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        furnitureSpr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position != 0) Toast.makeText(context, "選擇"+space[position], Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void getSpace(){
+        spaceAL.add("點擊選擇房間區塊");
+
+        String function_name = "all_space";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .build();
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/furniture.php")
+                .post(body)
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject spaceJO = responseArr.getJSONObject(i);
+                        Log.d(TAG, "spaceJO:" + spaceJO);
+
+                        String space_type = spaceJO.getString("space_type");
+                        spaceAL.add(space_type);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                space = new String[spaceAL.size()];
+                space = spaceAL.toArray(space);
+                ArrayAdapter<String> spaceList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, space);
+                spaceSpr.setAdapter(spaceList);
+            }
+        });
+    }
+
+    private void getFurniture(String space_type){
+        furnitureAL.clear();
+        String function_name = "furniture_space";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("space_type", space_type)
+                .build();
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/furniture.php")
+                .post(body)
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject furnitureJO = responseArr.getJSONObject(i);
+                        Log.d(TAG, "furnitureJO:" + furnitureJO);
+
+                        String furniture_name = furnitureJO.getString("furniture_name");
+                        furnitureAL.add(furniture_name);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                furniture = new String[furnitureAL.size()];
+                furniture = furnitureAL.toArray(furniture);
+                Log.i(TAG, "furniture: "+Arrays.toString(furniture));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ArrayAdapter<String> furnitureList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, furniture);
+                        furnitureSpr.setAdapter(null);
+                        furnitureSpr.setAdapter(furnitureList);
+                    }
+                });
             }
         });
     }

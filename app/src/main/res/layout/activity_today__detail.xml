@@ -193,7 +193,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/view" />
 
                 <Button
-                    android:id="@+id/furniture_btn"
+                    android:id="@+id/furniture_btn_OTD"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

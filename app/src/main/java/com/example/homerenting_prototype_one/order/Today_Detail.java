@@ -86,6 +86,7 @@ public class Today_Detail extends AppCompatActivity {
     String fee;
     String memo;
 
+    Button furnitureBtn;
     Button changePriceBtn;
     Button check_btn;
 
@@ -93,6 +94,10 @@ public class Today_Detail extends AppCompatActivity {
 
     int price_origin;
     int price;
+
+    Bundle bundle;
+
+    String order_id;
 
     String TAG = "Today_Detail";
     String PHP = "/user_data.php";
@@ -108,7 +113,6 @@ public class Today_Detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today__detail);
         Button call_btn = findViewById(R.id.call_btn);
-        Button detail_btn = findViewById(R.id.furniture_btn);
 
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
@@ -119,8 +123,8 @@ public class Today_Detail extends AppCompatActivity {
         change = false;
         context = Today_Detail.this;
 
-        Bundle bundle = getIntent().getExtras();
-        final String order_id = bundle.getString("order_id");
+        bundle = getIntent().getExtras();
+        order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
         changePriceMark(); //讓+-按鈕可以按
@@ -224,6 +228,8 @@ public class Today_Detail extends AppCompatActivity {
                             memoEdit.setText(memo);
                         }
                     });
+
+                    setFurniture_btn(order.getInt("auto"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -310,17 +316,6 @@ public class Today_Detail extends AppCompatActivity {
                 startActivity(call_intent);
             }
         });
-       detail_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_intent = new Intent();
-                detail_intent.setClass(Today_Detail.this, Furniture_Location.class);
-                Bundle today_bundle = new Bundle();
-                today_bundle.putString( "key","today" );
-                detail_intent.putExtras( today_bundle );
-                startActivity(detail_intent);
-            }
-        } );
 
         //收款按鈕
 //        check_btn.setOnClickListener(new View.OnClickListener() {
@@ -494,7 +489,7 @@ public class Today_Detail extends AppCompatActivity {
         s.applyTo(cLayout);
     }
 
-    public void linking(){
+    private void linking(){
         cLayout = findViewById(R.id.CLayout_OTD);
         nameText = findViewById(R.id.name_OTD);
         nameTitleText = findViewById(R.id.nameTitle_OTD);
@@ -502,6 +497,7 @@ public class Today_Detail extends AppCompatActivity {
         movingTimeText = findViewById(R.id.movingTime_OTD);
         fromAddressText = findViewById(R.id.FromAddress_OTD);
         toAddressText = findViewById(R.id.ToAddress_OTD);
+        furnitureBtn = findViewById(R.id.furniture_btn_OTD);
         remainderText = findViewById(R.id.notice_OTD);
         carText = findViewById(R.id.car_OTD);
         staffText = findViewById(R.id.staff_OTD);
@@ -514,5 +510,20 @@ public class Today_Detail extends AppCompatActivity {
         changePriceText = findViewById(R.id.changePrice_OTD);
         memoEdit = findViewById(R.id.PS_OTD);
         check_btn = findViewById(R.id.check_btn_OTD);
+    }
+
+    private void setFurniture_btn(int auto){
+        if(auto==1){
+            furnitureBtn.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent detail_intent = new Intent();
+                    detail_intent.setClass( context, Furniture_Location.class);
+                    bundle.putString( "key","order" );
+                    detail_intent.putExtras(bundle);
+                    startActivity( detail_intent);
+                }
+            } );
+        }
     }
 }

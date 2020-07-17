@@ -185,9 +185,10 @@ public class Record_Detail extends AppCompatActivity {
                         if(date.equals("null")) date = order.getString("valuation_date");
                         date = getDate(date);
                         String member = order.getString("member_name");
-                        String status = order.getString("valuation_status");
+                        String valuation_status = order.getString("valuation_status");
+                        String order_status = order.getString("order_status");
 
-                        String[] row_data = {order_id, date, member, status};
+                        String[] row_data = {order_id, date, member, valuation_status, order_status};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {
@@ -197,10 +198,10 @@ public class Record_Detail extends AppCompatActivity {
                 if(!responseData.equals("null")){
                     for(int i=0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                    final RecordAdapter adapter = new RecordAdapter(data);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            RecordAdapter adapter = new RecordAdapter(data);
                             list.setAdapter(adapter);
                         }
                     });

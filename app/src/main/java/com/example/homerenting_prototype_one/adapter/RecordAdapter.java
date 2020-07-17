@@ -60,13 +60,23 @@ public class RecordAdapter extends BaseAdapter implements View.OnClickListener {
             viewHolder.record = convertView.findViewById(R.id.record_item_R);
             viewHolder.day_text = convertView.findViewById(R.id.day_R);
             viewHolder.name_text = convertView.findViewById(R.id.name_R);
+            viewHolder.status_text = convertView.findViewById(R.id.status_R);
             convertView.setTag( viewHolder );
         }
         viewHolder.day_text.setText(data.get(position)[1]);
-        if(!data.get(position)[3].equals("chosen")){
-            viewHolder.day_text.setBackgroundColor(Color.parseColor("#FB8527"));
-        }
         viewHolder.name_text.setText(data.get(position)[2]);
+        String status = "";
+        if(data.get(position)[3].equals("chosen")){
+            status = data.get(position)[4];
+            if(data.get(position)[4].equals("done")) status = "完成";
+            if(data.get(position)[4].equals("cancel")) status = "取消(訂)";
+        }
+        else{
+            viewHolder.day_text.setBackgroundColor(Color.parseColor("#FB8527"));
+            status = data.get(position)[3];
+            if(data.get(position)[3].equals("cancel")) status = "取消(估)";
+        }
+        viewHolder.status_text.setText(status);
         viewHolder.record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +98,6 @@ public class RecordAdapter extends BaseAdapter implements View.OnClickListener {
 
     static class RecordViewHolder{
         LinearLayout record;
-        TextView day_text, name_text;
+        TextView day_text, name_text, status_text;
     }
 }

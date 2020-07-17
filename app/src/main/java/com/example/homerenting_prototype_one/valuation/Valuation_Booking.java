@@ -83,7 +83,6 @@ public class Valuation_Booking extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        setwCount(getwCount()-1);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getValuationBooking();

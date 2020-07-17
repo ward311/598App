@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.order;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,9 +73,14 @@ public class Order_Detail extends AppCompatActivity {
     String staff;
     String worktime;
     String fee;
+    String order_id;
 
-    Button check_btn;
+    Button furniture_btn, check_btn;
 
+    Bundle bundle;
+
+
+    Context context = Order_Detail.this;
     String TAG = "Order_Detail";
     private final String PHP = "/user_data.php";
 
@@ -82,8 +89,6 @@ public class Order_Detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__detail);
         Button call_btn = findViewById(R.id.call_btn);
-        //furniture_list = findViewById(R.id.furniture_listView);
-        Button detail_btn = findViewById(R.id.furniture_btn);
 
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
@@ -94,8 +99,8 @@ public class Order_Detail extends AppCompatActivity {
 
         linking(); //將xml裡的元件連至此java
 
-        final Bundle bundle = getIntent().getExtras();
-        final String order_id = bundle.getString("order_id");
+        bundle = getIntent().getExtras();
+        order_id = bundle.getString("order_id");
         if(bundle.getBoolean("btn")){
             check_btn.setVisibility(View.GONE);
         }
@@ -196,6 +201,9 @@ public class Order_Detail extends AppCompatActivity {
                             feeText.setText(fee);
                         }
                     });
+
+                    setFurniture_btn(order.getInt("auto"));
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -235,16 +243,8 @@ public class Order_Detail extends AppCompatActivity {
                 startActivity(call_intent);
             }
         });
-        detail_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_intent = new Intent();
-                detail_intent.setClass( Order_Detail.this, Furniture_Location.class);
-                bundle.putString( "key","order" );
-                detail_intent.putExtras( bundle );
-                startActivity( detail_intent);
-            }
-        } );
+
+
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -282,7 +282,7 @@ public class Order_Detail extends AppCompatActivity {
         });
     }
 
-    public void linking(){
+    private void linking(){
         nameText = findViewById(R.id.name_OD);
         nameTitleText = findViewById(R.id.nameTitle_OD);
         phoneText = findViewById(R.id.phone_OD);
@@ -295,5 +295,21 @@ public class Order_Detail extends AppCompatActivity {
         worktimeText = findViewById(R.id.worktime_OD);
         feeText = findViewById(R.id.price_OD);
         check_btn = findViewById(R.id.check_order_btn);
+        furniture_btn = findViewById(R.id.furniture_btn_OD);
+    }
+
+    private void setFurniture_btn(int auto){
+        if(auto==1){
+            furniture_btn.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent detail_intent = new Intent();
+                    detail_intent.setClass( context, Furniture_Location.class);
+                    bundle.putString( "key","order" );
+                    detail_intent.putExtras(bundle);
+                    startActivity( detail_intent);
+                }
+            } );
+        }
     }
 }
