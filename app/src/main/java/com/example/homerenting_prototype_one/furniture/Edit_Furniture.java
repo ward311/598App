@@ -96,8 +96,8 @@ public class Edit_Furniture extends AppCompatActivity {
         list = findViewById(R.id.furniture_listView);
 
 
-        //final Bundle bundle = getIntent().getExtras();
-        final String order_id = "16";//bundle.getString("order_id");
+        final Bundle bundle = getIntent().getExtras();
+        final String order_id = bundle.getString("order_id");
 
         String function_name = "furniture_detail";
         String company_id = getCompany_id(this);

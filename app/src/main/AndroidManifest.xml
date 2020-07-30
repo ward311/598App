@@ -18,8 +18,6 @@
         <activity android:name=".calendar.Calendar"/>
         <activity android:name=".main.Login"/>
 
-        <!--Calender-->
-
         <!--Order-->
         <activity android:name=".order.Order"/>
         <activity android:name=".order.Order_Booking"/>
@@ -41,7 +39,7 @@
         <!--Furniture-->
         <activity android:name=".furniture.Furniture_Detail"/>
         <activity android:name=".furniture.Furniture_Location"/>
-        <activity android:name=".main.New_Login"/>
+        <activity android:name=".furniture.Edit_Furniture"/>
 
         <!--Schedule-->
         <activity android:name=".schedule.New_Schedule_Detail" />
@@ -73,7 +71,7 @@
         <activity android:name=".System" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
-        <activity android:name=".furniture.Edit_Furniture">
+        <activity android:name=".main.New_Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
