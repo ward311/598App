@@ -22,7 +22,7 @@ import static com.example.homerenting_prototype_one.show.global_function.dip2px;
 public class ListAdapter extends BaseAdapter implements View.OnClickListener{
     private Context context;
     private List<String[]> data;
-    String TAG = "LiseAdapter";
+    String TAG = "ListAdapter";
 
     public ListAdapter(List<String[]> data){
         this.data = data;
@@ -53,7 +53,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         LinearLayout item_layout;
         LinearLayout time_layout, main_layout;
         TextView date_text, time_text, name_text, gender_text, phone_text, address_text;
-        ImageView icon_img;
+        ImageView add_icon, new_icon;
     }
 
     @Override
@@ -70,11 +70,12 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
             viewHolder.main_layout = view.findViewById(R.id.mainLayout);
             viewHolder.date_text = view.findViewById(R.id.month_date_text);
             viewHolder.time_text = view.findViewById(R.id.time_text);
-            viewHolder.name_text = view.findViewById(R.id.name_SD);
+            viewHolder.name_text = view.findViewById(R.id.name_text);
+            viewHolder.add_icon = view.findViewById(R.id.add_icon);
             viewHolder.gender_text = view.findViewById(R.id.gender_text);
             viewHolder.phone_text = view.findViewById(R.id.phone_text);
             viewHolder.address_text = view.findViewById(R.id.address_text);
-            viewHolder.icon_img = view.findViewById(R.id.new_icon_img);
+            viewHolder.new_icon = view.findViewById(R.id.new_icon_img);
             view.setTag(viewHolder);
         }
         Log.i(TAG, "position: "+position+"/"+getCount());
@@ -86,7 +87,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         viewHolder.gender_text.setTag(R.id.gender_text,position);
         viewHolder.phone_text.setTag(R.id.phone_text,position);
         viewHolder.address_text.setTag(R.id.address_text,position);
-        viewHolder.icon_img.setTag(R.id.new_icon_img,position);
+        viewHolder.new_icon.setTag(R.id.new_icon_img,position);
 
         int i = 1;
         if(data.get(position).length >= 8){
@@ -107,8 +108,13 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         viewHolder.phone_text.setText(data.get(position)[i++]);
         Log.i(TAG, "address: "+data.get(position)[i]);
         viewHolder.address_text.setText(data.get(position)[i++]);
+        if(data.get(position)[i++].equals("0")) {
+            Log.d(TAG, "add_icon("+position+"): "+data.get(position)[i-1]);
+            viewHolder.add_icon.setVisibility(View.VISIBLE);
+        }
+        else viewHolder.add_icon.setVisibility(View.GONE);
         if(!data.get(position)[i++].equals("1"))
-            viewHolder.icon_img.setVisibility(View.INVISIBLE);
+            viewHolder.new_icon.setVisibility(View.INVISIBLE);
         if(Arrays.asList(data.get(position)).contains("cancel")){
             viewHolder.date_text.setTextColor(Color.rgb(152, 152, 152));
             viewHolder.time_text.setTextColor(Color.rgb(152, 152, 152));

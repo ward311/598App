@@ -222,9 +222,10 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         String phone = member.getString("phone");
                         String contact_address = member.getString("contact_address");
                         if(contact_address.equals("null")) contact_address = "";
+                        String auto = member.getString("auto");
                         String newicon = member.getString("new");
 
-                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, newicon};
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {

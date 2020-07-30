@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.furniture;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,16 +56,21 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 public class Edit_Furniture extends AppCompatActivity {
     String TAG = "Edit_Furniture";
     private ListView list;
+
+    Button add_btn;
+
     private ArrayList<String[]> data;
-    ArrayList<String> spaceAL, furnitureAL;
+    ArrayList<String> spaceAL, furnitureAL, furnitureIDs;
     String[] space, furniture;
-    String new_furniture;
+    String[] new_furniture = new String[2];
 
     Spinner spaceSpr, furnitureSpr;
 
     FurnitureAdapter adapter;
 
     View view;
+
+    ProgressDialog dialog2;
 
     Context context = Edit_Furniture.this;
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -75,7 +81,7 @@ public class Edit_Furniture extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__furniture);
         final Button check_btn = findViewById(R.id.check_furniture_btn);
-        final Button add_btn = findViewById(R.id.add_furniture_btn);
+        add_btn = findViewById(R.id.add_furniture_btn);
 
         final ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         final ImageButton order_btn = findViewById(R.id.order_imgBtn);
@@ -84,11 +90,14 @@ public class Edit_Furniture extends AppCompatActivity {
         final ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         data = new ArrayList<>();
+        spaceAL = new ArrayList<>();
+        furnitureAL = new ArrayList<>();
+        furnitureIDs = new ArrayList<>();
         list = findViewById(R.id.furniture_listView);
 
 
-        final Bundle bundle = getIntent().getExtras();
-        final String order_id = bundle.getString("order_id");
+        //final Bundle bundle = getIntent().getExtras();
+        final String order_id = "16";//bundle.getString("order_id");
 
         String function_name = "furniture_detail";
         String company_id = getCompany_id(this);
@@ -236,18 +245,18 @@ public class Edit_Furniture extends AppCompatActivity {
                 builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        /*new_furniture = f_name_edit.getText().toString();
-                        Log.d(TAG, "new_furniture: "+new_furniture);
-                        String[] row_data = {"-1", new_furniture, "0"};
-                        Log.d(TAG, "row_data: "+Arrays.toString(row_data));
-                        data.add(row_data);
-                        final FurnitureAdapter adapter = new FurnitureAdapter(data);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                list.setAdapter(adapter);
-                            }
-                        });*/
+                        if(isNew(new_furniture[0])){
+                            String[] row_data = {new_furniture[0], new_furniture[1], "1"};
+                            Log.d(TAG, "row_data: "+Arrays.toString(row_data));
+                            data.add(row_data);
+                            final FurnitureAdapter adapter = new FurnitureAdapter(data);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    list.setAdapter(adapter);
+                                }
+                            });
+                        }
                     }
                 });
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -304,14 +313,18 @@ public class Edit_Furniture extends AppCompatActivity {
         view = inflater.inflate(R.layout.add_furniture, null);
         spaceSpr = view.findViewById(R.id.spaceType_sp_AF);
         furnitureSpr = view.findViewById(R.id.furniture_sp_AF);
-        spaceAL = new ArrayList<>();
-        furnitureAL = new ArrayList<>();
-        getSpace();
+
+        if(spaceAL.isEmpty()) getSpace();
+        else setSpace();
+        initFSpinner();
 
         spaceSpr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position != 0) getFurniture(space[position]);
+                if(position != 0){
+                    dialog2 = ProgressDialog.show(context, "", "Loading. Please wait...", true);
+                    getFurniture(space[position]);
+                }
             }
 
             @Override
@@ -322,8 +335,15 @@ public class Edit_Furniture extends AppCompatActivity {
 
         furnitureSpr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(context, "選擇"+furniture[position], Toast.LENGTH_LONG).show();
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                if(furnitureIDs.size() > 0){
+                    Log.d(TAG, "position: "+position);
+                    Toast.makeText(context, "選擇"+furniture[position], Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "furnitureIDs.size: "+furnitureIDs.size());
+                    Log.d(TAG, "furnitureIDs: "+furnitureIDs.get(0));
+                    new_furniture[0]=furnitureIDs.get(position);
+                    new_furniture[1]=furniture[position];
+                }
             }
 
             @Override
@@ -378,14 +398,19 @@ public class Edit_Furniture extends AppCompatActivity {
 
                 space = new String[spaceAL.size()];
                 space = spaceAL.toArray(space);
-                ArrayAdapter<String> spaceList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, space);
-                spaceSpr.setAdapter(spaceList);
+                setSpace();
             }
         });
     }
 
+    private void setSpace(){
+        ArrayAdapter<String> spaceList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, space);
+        spaceSpr.setAdapter(spaceList);
+    }
+
     private void getFurniture(String space_type){
         furnitureAL.clear();
+        furnitureIDs.clear();
         String function_name = "furniture_space";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -421,7 +446,9 @@ public class Edit_Furniture extends AppCompatActivity {
                         Log.d(TAG, "furnitureJO:" + furnitureJO);
 
                         String furniture_name = furnitureJO.getString("furniture_name");
+                        String furniture_id = furnitureJO.getString("furniture_id");
                         furnitureAL.add(furniture_name);
+                        furnitureIDs.add(furniture_id);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -440,5 +467,27 @@ public class Edit_Furniture extends AppCompatActivity {
                 });
             }
         });
+
+        dialog2.dismiss();
+    }
+
+    private void initFSpinner(){
+        final String[] init = {"-------"};
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayAdapter<String> initAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, init);
+                furnitureSpr.setAdapter(initAdapter);
+            }
+        });
+    }
+
+    private boolean isNew(String new_furniture){
+        int i;
+        for(i=0; i<data.size(); i++){
+            if(data.get(i)[0].equals(new_furniture))
+                return false;
+        }
+        return true;
     }
 }

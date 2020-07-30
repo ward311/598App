@@ -225,9 +225,10 @@ public class Valuation extends AppCompatActivity {
                         else nameTitle = "先生";
                         final String phone = member.getString("phone");
                         final String contact_address = member.getString("contact_address");
+                        String auto = member.getString("auto");
                         final String newicon = member.getString("new");
 
-                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, newicon};
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式

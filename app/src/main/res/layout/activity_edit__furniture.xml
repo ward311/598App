@@ -45,16 +45,19 @@
                     android:text="家具清單"
                     android:textColor="#000000"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="13"
+                android:gravity="center_horizontal"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#FB8527">
+                    android:background="#FB8527"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -96,26 +99,30 @@
                     <!--                        android:textColor="#FFFFFF"-->
                     <!--                        android:layout_gravity="right"/>-->
                 </LinearLayout>
+
                 <ListView
                     android:id="@+id/furniture_listView"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="8"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="7">
+
+                </ListView>
+
+                <Button
+                    android:id="@+id/add_furniture_btn"
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/system_schedule_btn_drawable"
+                    android:gravity="center"
+                    android:text="+"
+                    android:textColor="#8E7E7E"
+                    android:textSize="30sp" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
                 android:gravity="center">
-
-                <Button
-                    android:id="@+id/add_furniture_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/roundedbutton"
-                    android:text="新增家具"
-                    android:textColor="#FFFFFF" />
 
                 <Button
                     android:id="@+id/check_furniture_btn"

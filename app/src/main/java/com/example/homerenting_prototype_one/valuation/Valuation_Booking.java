@@ -233,10 +233,11 @@ public class Valuation_Booking extends AppCompatActivity {
                         String phone = member.getString("phone");
                         String contact_address = member.getString("contact_address");
                         if(contact_address.equals("null")) contact_address = "";
+                        String auto = member.getString("auto");
                         String newicon = member.getString("new");
 
                         //呈現在app上
-                        String[] row_data = {order_id, getDate(date), getStartTime(time), name, nameTitle, phone, contact_address, newicon};
+                        String[] row_data = {order_id, getDate(date), getStartTime(time), name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式

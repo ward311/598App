@@ -63,6 +63,7 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
             viewHolder.number = convertView.findViewById(R.id.furniture_number_text);
             viewHolder.minus_btn = convertView.findViewById(R.id.minus_btn);
             viewHolder.plus_btn = convertView.findViewById(R.id.plus_btn);
+            viewHolder.add_btn = convertView.findViewById(R.id.add_furniture_btn);
             convertView.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) convertView.getTag();
@@ -95,6 +96,14 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
                 finalViewHolder.number.setText(data.get(position)[2]);
             }
         });
+//
+//        if(data.get(position)[0].equals("-1")){
+//            viewHolder.name.setVisibility(View.GONE);
+//            viewHolder.number.setVisibility(View.GONE);
+//            viewHolder.minus_btn.setVisibility(View.GONE);
+//            viewHolder.plus_btn.setVisibility(View.GONE);
+//            viewHolder.add_btn.setVisibility(View.GONE);
+//        }
 
         return convertView;
     }
@@ -102,5 +111,6 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
     static class ViewHolder{
         TextView name, number;
         Button minus_btn, plus_btn;
+        Button add_btn;
     }
 }

@@ -138,10 +138,11 @@ public class Order_Today extends AppCompatActivity {
                         final String phone = member.getString("phone");
                         String contact_address = member.getString("contact_address");
                         if(contact_address.equals("null")) contact_address = "";
+                        String auto = member.getString("auto");
                         String newicon = member.getString("new");
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式

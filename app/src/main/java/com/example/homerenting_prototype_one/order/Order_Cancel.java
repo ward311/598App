@@ -237,18 +237,20 @@ public class Order_Cancel extends AppCompatActivity {
                         Log.d(TAG,"member: "+member);
 
                         //取欄位資料
-                        final String order_id = member.getString("order_id");
-                        final String datetime = member.getString("moving_date");
-                        final String name = member.getString("member_name");
-                        final String nameTitle;
+                        String order_id = member.getString("order_id");
+                        String datetime = member.getString("moving_date");
+                        String name = member.getString("member_name");
+                        String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
-                        final String phone = member.getString("phone");
-                        final String contact_address = member.getString("contact_address");
-                        final String newicon = member.getString("new");
+                        String phone = member.getString("phone");
+                        String contact_address = member.getString("contact_address");
+                        if(contact_address.equals("null")) contact_address = "";
+                        String auto = member.getString("auto");
+                        String newicon = member.getString("new");
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon, "cancel"};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, "cancel"};
                         data.add(row_data);
                         addDatalist(order_id);
                     }

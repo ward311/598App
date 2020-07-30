@@ -238,11 +238,12 @@ public class Order_Booking extends AppCompatActivity {
                         String phone = member.getString("phone");
                         String contact_address = member.getString("contact_address");
                         if(contact_address.equals("null")) contact_address = "";
+                        String auto = member.getString("auto");
                         String newicon = member.getString("new");
                         Log.d(TAG,"order_id: "+order_id);
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, newicon};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
                         addDatalist(order_id);
                     }
