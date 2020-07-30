@@ -63,12 +63,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     TextView remainderText;
     TextView movingDateText;
     TextView movingTimeText;
+    TextView valPriceText;
 
     EditText carNumEdit;
     EditText carWeightEdit;
     EditText carTypeEdit;
     EditText worktimeEdit;
     EditText priceEdit;
+    EditText memoEdit;
 
     Button check_btn;
     Button furniture_btn;
@@ -80,6 +82,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String fromAddress;
     String toAddress;
     String remainder;
+    String valPrice = "4000";
+    String memo;
 
     LinearLayout furnitureLL;
 
@@ -159,7 +163,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
-
+                    memo = order.getString("memo");
+                    if(memo.equals("null")) memo = "";
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
@@ -174,6 +179,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                             fromAddressText.setText(fromAddress);
                             toAddressText.setText(toAddress);
                             remainderText.setText(remainder);
+                            memoEdit.setText(memo);
                         }
                     });
 
@@ -245,6 +251,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 String estimate_worktime = worktimeEdit.getText().toString().trim();
                 String fee = priceEdit.getText().toString().trim();
                 String function_name = "update_bookingValuation";
+                memo = memoEdit.getText().toString();
+                Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
                 String company_id = getCompany_id(context);
 
                 if(checkEmpty(movingDate, movingTime, num, weight, type, estimate_worktime, fee))
@@ -260,6 +268,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         .add("type", type)
                         .add("estimate_worktime", estimate_worktime)
                         .add("fee", fee)
+                        .add("memo", memo)
                         .build();
                 Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date:  "+moving_date+":00"+
                         ", num: "+num+", weight: "+weight+", type: "+type+
@@ -465,6 +474,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         priceEdit = findViewById(R.id.price_VBD);
         check_btn = findViewById(R.id.check_evaluation_btn);
         furnitureLL = findViewById(R.id.furniture_LL_VBD);
+        valPriceText = findViewById(R.id.valPrice_VBD);
+        memoEdit = findViewById(R.id.PS_VBD);
     }
 
     private boolean checkEmpty(String movingDate, String movingTime, String num, String weight, String type, String estimate_worktime, String fee){
@@ -495,6 +506,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         }
         if(TextUtils.isEmpty(fee)){
             priceEdit.setError("請輸入搬家價格");
+            check = true;
+        }
+        if(Integer.parseInt(fee) > Integer.parseInt(valPrice)){
+            priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
             check = true;
         }
 

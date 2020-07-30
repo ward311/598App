@@ -7,15 +7,16 @@
     tools:context=".valuation.ValuationBooking_Detail">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="44dp"
         android:layout_gravity="top"
         android:orientation="vertical"
         android:background="#00BFFF">
 
         <ImageView
             android:id="@+id/back_imgBtn"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:paddingTop="6dp"
             android:paddingLeft="16dp"
             app:srcCompat="@drawable/back_white" />
     </LinearLayout>
@@ -26,17 +27,17 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
         android:textStyle="bold"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="44dp"
         android:orientation="vertical"
         android:layout_gravity="top"
         android:background="#FFFFFF">
         <ScrollView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9">
             <LinearLayout
@@ -54,7 +55,7 @@
                         android:id="@+id/name_VBD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="唐文心"
+                        android:text="姓名"
                         android:textColor="#19B0ED"
                         android:textSize="20sp" />
 
@@ -63,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="小姐" />
+                        android:text="稱謂" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -74,6 +75,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:gravity="center_vertical"
                         android:text="連絡電話"
                         android:textColor="#000000" />
 
@@ -82,7 +84,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:text="0933669877" />
+                        android:gravity="center_vertical"
+                        android:text="電話號碼" />
 
                     <Button
                         android:id="@+id/call_btn"
@@ -90,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#FFFFFFFF"
-                        android:gravity="top"
+                        android:gravity="center_vertical"
                         android:text="撥打電話"
                         android:textColor="#FB8527" />
                 </LinearLayout>
@@ -110,7 +113,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="2019/10/02 10:30" />
+                        android:text="日期時間" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -128,7 +131,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="高雄市三民區建國二路15號" />
+                        android:text="搬出地址內容" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -146,7 +149,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="高雄市大社區中山路5號" />
+                        android:text="搬入地址內容" />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -163,6 +166,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
                         android:text="家具清單"
                         android:textColor="#000000" />
 
@@ -172,7 +176,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:background="#FFFFFFFF"
-                        android:gravity="top|left"
+                        android:gravity="center_vertical"
                         android:text="修改家具"
                         android:textColor="#FB8527" />
                 </LinearLayout>
@@ -198,6 +202,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
+                        android:text="無內容"
                         android:background="#F2F2F2" />
 
                 </LinearLayout>
@@ -207,7 +212,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="36dp"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
@@ -216,21 +221,23 @@
 
                     <TextView
                         android:id="@+id/movingDate_VBD"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2.5"
+                        android:layout_weight="1.5"
                         android:gravity="center"
                         android:hint="選擇日期"
-                        android:inputType="date" />
+                        android:inputType="date"
+                        android:textColorHint="#FB8527"/>
 
                     <TextView
                         android:id="@+id/movingTime_VBD"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_weight="1.5"
                         android:gravity="center"
                         android:hint="選擇時間"
-                        android:inputType="time" />
+                        android:inputType="time"
+                        android:textColorHint="#FB8527"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -240,7 +247,7 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.5"
+                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="安排車輛"
                         android:textColor="#000000" />
@@ -249,13 +256,14 @@
                         android:id="@+id/num_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.6"
+                        android:gravity="center"
                         android:hint="數量"
                         android:inputType="number" />
 
                     <TextView
                         android:id="@+id/textView9"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.3"
                         android:gravity="center"
@@ -265,13 +273,14 @@
                         android:id="@+id/weight_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.6"
+                        android:gravity="center"
                         android:hint="噸位"
                         android:inputType="numberDecimal" />
 
                     <TextView
                         android:id="@+id/textView10"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_weight="0.3"
                         android:gravity="center"
@@ -281,7 +290,8 @@
                         android:id="@+id/type_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.5"
+                        android:layout_weight="1.2"
+                        android:gravity="center"
                         android:hint="車種"
                         android:inputType="text" />
                 </LinearLayout>
@@ -289,6 +299,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -296,18 +307,28 @@
                         android:text="預計工時"
                         android:gravity="center_vertical"
                         android:textColor="#000000"/>
+
                     <EditText
                         android:id="@+id/worktime_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="3"
+                        android:layout_weight="2.4"
                         android:inputType="number"
-                        android:hint="3"/>
+                        android:hint="輸入數字"/>
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:gravity="center"
+                        android:text="小時" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -320,9 +341,59 @@
                         android:id="@+id/price_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:hint="3600"
+                        android:layout_weight="2.4"
+                        android:hint="輸入數字"
                         android:inputType="numberDecimal" />
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:gravity="center"
+                        android:text="元" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="線上估價"
+                        android:gravity="center_vertical"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:id="@+id/valPrice_VBD"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:text="4000" />
+<!--                    android:text="系統估計價格"-->
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="備註"
+                        android:gravity="center_vertical"
+                        android:textColor="#000000" />
+
+                    <EditText
+                        android:id="@+id/PS_VBD"
+                        android:layout_width="0dp"
+                        android:layout_height="110dp"
+                        android:layout_weight="3"
+                        android:background="#F2F2F2"
+                        android:inputType="textPersonName" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -334,6 +405,7 @@
                         android:layout_height="wrap_content"
                         android:text="完成估價單"
                         android:textColor="#FFFFFF"
+                        android:layout_margin="10dp"
                         android:background="@drawable/roundedbutton"/>
                 </LinearLayout>
             </LinearLayout>

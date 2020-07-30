@@ -57,6 +57,7 @@ public class Valuation_Detail extends AppCompatActivity {
     TextView cusValTimeText;
     TextView noticeText;
     TextView sysValPriceText;
+    TextView valPriceText;
 
     EditText pickDate_edit;
     EditText pickTime_edit;
@@ -384,5 +385,6 @@ public class Valuation_Detail extends AppCompatActivity {
         pickTime2_edit = findViewById(R.id.pickTime2_editText);
         check_date_btn = findViewById(R.id.check_date_btn_VD);
         sysValPriceText = findViewById(R.id.sysValPrice_VD);
+        valPriceText = findViewById(R.id.valPrice_VD);
     }
 }
