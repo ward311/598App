@@ -191,7 +191,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#989898"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/furniture_LL_AO"
@@ -199,7 +199,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="2"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -214,7 +214,7 @@
                         android:textColor="#000000" />
 
                     <Button
-                        android:id="@+id/edit_furniture_btn"
+                        android:id="@+id/edit_furniture_btn_AO"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="#FFFFFFFF"
@@ -242,7 +242,7 @@
                         android:textColor="#FFFFFF" />
 
                     <ListView
-                        android:id="@+id/furniture_listView"
+                        android:id="@+id/furniture_list_AO"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>

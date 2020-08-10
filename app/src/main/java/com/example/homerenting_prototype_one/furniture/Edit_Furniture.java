@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.adapter.FurnitureAdapter;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.add_order.Add_Order;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -55,22 +56,27 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 
 public class Edit_Furniture extends AppCompatActivity {
     String TAG = "Edit_Furniture";
+
     private ListView list;
 
     Button add_btn;
 
+    Spinner spaceSpr, furnitureSpr;
+
     private ArrayList<String[]> data;
-    ArrayList<String> spaceAL, furnitureAL, furnitureIDs;
+    ArrayList<String> spaceAL, furnitureAL, furnitureIDs, zeroFurniture;
+
     String[] space, furniture;
     String[] new_furniture = new String[2];
 
-    Spinner spaceSpr, furnitureSpr;
+    int[][] furniture_data;
 
     FurnitureAdapter adapter;
 
     View view;
-
     ProgressDialog dialog2;
+
+    String order_id;
 
     Context context = Edit_Furniture.this;
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -93,11 +99,12 @@ public class Edit_Furniture extends AppCompatActivity {
         spaceAL = new ArrayList<>();
         furnitureAL = new ArrayList<>();
         furnitureIDs = new ArrayList<>();
+        zeroFurniture = new ArrayList<>();
         list = findViewById(R.id.furniture_listView);
 
 
         final Bundle bundle = getIntent().getExtras();
-        final String order_id = bundle.getString("order_id");
+        order_id = bundle.getString("order_id");
 
         String function_name = "furniture_detail";
         String company_id = getCompany_id(this);
@@ -163,6 +170,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 for(int i=0; i < data.size(); i++)
                     Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                 adapter = new FurnitureAdapter(data);
+                adapter.setOrder_id(order_id);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -170,62 +178,44 @@ public class Edit_Furniture extends AppCompatActivity {
                         check_btn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //把資料放進ArrayList
-                                ArrayList<int[]> fd = new ArrayList<>();
-                                for(int i = 0 ; i < adapter.getCount() ; i++){
-                                    String[] row_data = (String[])adapter.getItem(i);
-                                    int[] row_data2 = {Integer.parseInt(row_data[0]), Integer.parseInt(row_data[2])};
-                                    fd.add(row_data2);
+                                if(order_id.equals("-1")){
+                                    Intent intent = new Intent();
+                                    intent.setClass(context, Add_Order.class);
+                                    startActivity(intent);
                                 }
-
-                                //把ArrayList的資料放進二微陣列
-                                int[][] furniture_data = new int[fd.size()][2];
-                                for(int i = 0; i < fd.size(); i++)
-                                    for(int ii = 0; ii < 2; ii++)
-                                        furniture_data[i][ii] = fd.get(i)[ii];
-
-                                String function_name = "modify_furniture";
-                                String company_id = getCompany_id(context);
-                                RequestBody body = new FormBody.Builder()
-                                        .add("function_name", function_name)
-                                        .add("order_id", order_id)
-                                        .add("company_id",company_id)
-                                        .add("furniture_data", Arrays.deepToString(furniture_data))
-                                        .build();
-                                Log.d(TAG,"order_id: "+order_id+", furniture_data:"+ Arrays.deepToString(furniture_data));
-
-                                Request request = new Request.Builder()
-                                        .url(BuildConfig.SERVER_URL+PHP)
-                                        .post(body)
-                                        .build();
-
-                                Call call = okHttpClient.newCall(request);
-                                call.enqueue(new Callback() {
-                                    @Override
-                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                        e.printStackTrace();
-                                        runOnUiThread(new Runnable() {
+                                else{
+                                    if(datalist()){
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        builder.setTitle("確認送出");
+                                        String message = "確定後，數量為0的";
+                                        int i;
+                                        for(i = 0; i < zeroFurniture.size(); i++){
+                                            message = message+zeroFurniture.get(i);
+                                            if(i!=(zeroFurniture.size()-1)) message = message+", ";
+                                            else message = message+"將會從家具清單中刪除";
+                                        }
+                                        builder.setMessage(message);
+                                        builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
                                             @Override
-                                            public void run() {
-                                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                modifyFurniture();
+                                                finish();
                                             }
                                         });
-                                    }
-
-                                    @Override
-                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                                        final String responseData = response.body().string();
-                                        runOnUiThread(new Runnable() {
+                                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                                             @Override
-                                            public void run() {
-                                                Toast.makeText(context, "修改家具完成", Toast.LENGTH_LONG).show();
+                                            public void onClick(DialogInterface dialog, int which) {
+
                                             }
                                         });
-                                        Log.d(TAG, "responseData: " + responseData);
+                                        AlertDialog dialog = builder.create();
+                                        dialog.show();
                                     }
-                                });
-
-                                finish();
+                                    else{
+                                        modifyFurniture();
+                                        finish();
+                                    }
+                                }
                             }
                         });
                     }
@@ -489,5 +479,72 @@ public class Edit_Furniture extends AppCompatActivity {
                 return false;
         }
         return true;
+    }
+
+    private boolean datalist(){
+        boolean checkZero = false;
+        zeroFurniture.clear();
+        //把資料放進ArrayList
+        ArrayList<int[]> fd = new ArrayList<>();
+        for(int i = 0 ; i < adapter.getCount() ; i++){
+            String[] row_data = (String[])adapter.getItem(i);
+            int[] row_data2 = {Integer.parseInt(row_data[0]), Integer.parseInt(row_data[2])};
+            if(Integer.parseInt(row_data[2])==0){
+                zeroFurniture.add(row_data[1]);
+                checkZero = true;
+            }
+            fd.add(row_data2);
+        }
+
+        //把ArrayList的資料放進二微陣列
+        furniture_data = new int[fd.size()][2];
+        for(int i = 0; i < fd.size(); i++)
+            for(int ii = 0; ii < 2; ii++)
+                furniture_data[i][ii] = fd.get(i)[ii];
+
+        return checkZero;
+    }
+
+    private void modifyFurniture(){
+        String function_name = "modify_furniture";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id",company_id)
+                .add("furniture_data", Arrays.deepToString(furniture_data))
+                .build();
+        Log.d(TAG,"order_id: "+order_id+", furniture_data:"+ Arrays.deepToString(furniture_data));
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "修改家具完成", Toast.LENGTH_LONG).show();
+                    }
+                });
+                Log.d(TAG, "responseData: " + responseData);
+            }
+        });
     }
 }

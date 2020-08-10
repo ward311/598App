@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -23,7 +26,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.adapter.FurnitureAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -47,8 +52,9 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 public class Add_Order extends AppCompatActivity {
     EditText name_edit, cAddress_edit, phone_edit, moveOut_edit, moveIn_edit, price_edit, worktime_edit, notice_edit;
     TextView movingDate_text, movingTime_text;
+    ListView furniture_list;
     RadioGroup genderRG;
-    Button addOrderBtn;
+    Button editFurnitureBtn, addOrderBtn;
 
     String gender = "男";
 
@@ -99,6 +105,44 @@ public class Add_Order extends AppCompatActivity {
                 time_picker.show();
             }
         } );
+
+        cAddress_edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String address = cAddress_edit.getText().toString();
+                moveOut_edit.setText(address);
+            }
+        });
+
+        editFurnitureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString("order_id", "-1");
+                intent.putExtras(bundle);
+                intent.setClass(context, Edit_Furniture.class);
+                startActivity(intent);
+            }
+        });
+
+        runOnUiThread(new Runnable(){
+            @Override
+            public void run(){
+                FurnitureAdapter adapter = new FurnitureAdapter(FurnitureAdapter.getData());
+                if(adapter.getOrder_id().equals("-1")) furniture_list.setAdapter(adapter);
+            }
+        });
 
         addOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +199,7 @@ public class Add_Order extends AppCompatActivity {
                         ", additional: " + notice +
                         ", moving_date: " + date);
 
-                Request request = new Request.Builder()
+                /*Request request = new Request.Builder()
                         .url(BuildConfig.SERVER_URL+"/functional.php")
                         .post(body)
                         .build();
@@ -187,16 +231,17 @@ public class Add_Order extends AppCompatActivity {
                         });
                         Log.d(TAG, "add_btn, responseData: " + responseData);
                     }
-                });
+                });*/
 
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent();
-                        intent.setClass(context, Order.class);
-                        startActivity(intent);
+//                        Intent intent = new Intent();
+//                        intent.setClass(context, Order.class);
+//                        startActivity(intent);
+                        finish();
                     }
                 }, 1000);
             }
@@ -246,6 +291,8 @@ public class Add_Order extends AppCompatActivity {
         phone_edit = findViewById(R.id.phone_AO);
         moveOut_edit = findViewById(R.id.fromAddress_AO);
         moveIn_edit = findViewById(R.id.toAddress_AO);
+        editFurnitureBtn = findViewById(R.id.edit_furniture_btn_AO);
+        furniture_list = findViewById(R.id.furniture_list_AO);
         price_edit = findViewById(R.id.price_AO);
         worktime_edit = findViewById(R.id.worktime_AO);
         notice_edit = findViewById(R.id.notice_AO);

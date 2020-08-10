@@ -16,7 +16,8 @@ import java.util.ArrayList;
 
 public class FurnitureAdapter extends BaseAdapter implements View.OnClickListener{
     private Context context;
-    private ArrayList<String[]> data;
+    private static String order_id;
+    private static ArrayList<String[]> data;
     String TAG = "DetailAdapter";
 
     public FurnitureAdapter(ArrayList<String[]> data){
@@ -112,5 +113,17 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
         TextView name, number;
         Button minus_btn, plus_btn;
         Button add_btn;
+    }
+
+    public static ArrayList<String[]> getData(){
+        return data;
+    }
+
+    public void setOrder_id(String order_id){
+        this.order_id = order_id;
+    }
+
+    public static String getOrder_id(){
+        return order_id;
     }
 }
