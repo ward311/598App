@@ -139,7 +139,7 @@ public class Add_Order extends AppCompatActivity {
         runOnUiThread(new Runnable(){
             @Override
             public void run(){
-                FurnitureAdapter adapter = new FurnitureAdapter(FurnitureAdapter.getData());
+                FurnitureAdapter adapter = new FurnitureAdapter(FurnitureAdapter.getData(), "all");
                 if(adapter.getOrder_id().equals("-1")) furniture_list.setAdapter(adapter);
             }
         });

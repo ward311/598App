@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.homerenting_prototype_one.R;
@@ -16,12 +17,14 @@ import java.util.ArrayList;
 
 public class FurnitureAdapter extends BaseAdapter implements View.OnClickListener{
     private Context context;
+    private static String space;
     private static String order_id;
     private static ArrayList<String[]> data;
     String TAG = "DetailAdapter";
 
-    public FurnitureAdapter(ArrayList<String[]> data){
+    public FurnitureAdapter(ArrayList<String[]> data, String space){
         this.data = data;
+        this.space = space;
     }
     @Override
     public void onClick(View v) {
@@ -65,18 +68,16 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
             viewHolder.minus_btn = convertView.findViewById(R.id.minus_btn);
             viewHolder.plus_btn = convertView.findViewById(R.id.plus_btn);
             viewHolder.add_btn = convertView.findViewById(R.id.add_furniture_btn);
+            viewHolder.item = convertView.findViewById(R.id.item_LL_FI);
             convertView.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) convertView.getTag();
-
         viewHolder.name.setTag(R.id.furniture_text,position);
         viewHolder.name.setText(data.get(position)[1]);
         Log.d(TAG, "name: "+data.get(position)[1]);
         viewHolder.number.setTag(R.id.furniture_number_text,position);
         viewHolder.number.setText(data.get(position)[2]);
         Log.d(TAG, "number: "+data.get(position)[2]);
-//        viewHolder.minus_btn.setText("-");
-//        viewHolder.plus_btn.setText("+");
 
         final ViewHolder finalViewHolder = viewHolder;
         viewHolder.minus_btn.setOnClickListener(new View.OnClickListener() {
@@ -97,14 +98,6 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
                 finalViewHolder.number.setText(data.get(position)[2]);
             }
         });
-//
-//        if(data.get(position)[0].equals("-1")){
-//            viewHolder.name.setVisibility(View.GONE);
-//            viewHolder.number.setVisibility(View.GONE);
-//            viewHolder.minus_btn.setVisibility(View.GONE);
-//            viewHolder.plus_btn.setVisibility(View.GONE);
-//            viewHolder.add_btn.setVisibility(View.GONE);
-//        }
 
         return convertView;
     }
@@ -113,6 +106,7 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
         TextView name, number;
         Button minus_btn, plus_btn;
         Button add_btn;
+        LinearLayout item;
     }
 
     public static ArrayList<String[]> getData(){

@@ -50,43 +50,43 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.global_function.dip2px;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 
 public class Edit_Furniture extends AppCompatActivity {
-    String TAG = "Edit_Furniture";
-
     private ListView list;
-
-    Button add_btn;
-
-    Spinner spaceSpr, furnitureSpr;
-
-    private ArrayList<String[]> data;
-    ArrayList<String> spaceAL, furnitureAL, furnitureIDs, zeroFurniture;
-
-    String[] space, furniture;
-    String[] new_furniture = new String[2];
-
-    int[][] furniture_data;
-
-    FurnitureAdapter adapter;
+    Button add_btn, check_btn;
+    Spinner furnitureSpaceSpr, spaceSpr, furnitureSpr;
 
     View view;
     ProgressDialog dialog2;
 
+    private final String PHP = "/furniture.php";
+    String TAG = "Edit_Furniture";
     String order_id;
+    String fspace;
+
+    String[] space, furniture;
+    String[] new_furniture = new String[3];
+
+    int[][] furniture_data;
+    int nowSpace;
+
+    ArrayList<String[]> data;
+    ArrayList<ArrayList<String[]>> space_data;
+    ArrayList<String> spaceAL, furnitureAL, furnitureIDs, zeroFurniture;
+
+    FurnitureAdapter adapter;
 
     Context context = Edit_Furniture.this;
     OkHttpClient okHttpClient = new OkHttpClient();
-    private final String PHP = "/furniture.php";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__furniture);
-        final Button check_btn = findViewById(R.id.check_furniture_btn);
+        check_btn = findViewById(R.id.check_furniture_btn);
         add_btn = findViewById(R.id.add_furniture_btn);
 
         final ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
@@ -96,6 +96,7 @@ public class Edit_Furniture extends AppCompatActivity {
         final ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         data = new ArrayList<>();
+        space_data = new ArrayList<>();
         spaceAL = new ArrayList<>();
         furnitureAL = new ArrayList<>();
         furnitureIDs = new ArrayList<>();
@@ -105,6 +106,11 @@ public class Edit_Furniture extends AppCompatActivity {
 
         final Bundle bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
+
+        fspace = "all";
+        nowSpace = 0;
+
+        setSpaceSpr();
 
         String function_name = "furniture_detail";
         String company_id = getCompany_id(this);
@@ -145,17 +151,48 @@ public class Edit_Furniture extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
 
+                    ArrayList<String[]> livingRoom_data = new ArrayList<>();
+                    ArrayList<String[]> outside_data = new ArrayList<>();
+                    ArrayList<String[]> studyRoom_data = new ArrayList<>();
+                    ArrayList<String[]> bedRoom_data = new ArrayList<>();
+                    ArrayList<String[]> diningRoom_data = new ArrayList<>();
+
                     //取得資料
                     for(int i = 0 ; i < responseArr.length() ; i++) {
                         JSONObject furniture = responseArr.getJSONObject(i);
                         String furniture_id = furniture.getString("furniture_id");
                         String name = furniture.getString("furniture_name");
                         String num = furniture.getString("num");
+                        String space_type = furniture.getString("space_type");
 
-                        String[] row_data = {furniture_id, name, num};
+                        String[] row_data = {furniture_id, name, num, space_type};
                         Log.d(TAG, "row_data: "+Arrays.toString(row_data));
                         data.add(row_data);
+                        switch(space_type){
+                            case "客廳":
+                                livingRoom_data.add(row_data);
+                                break;
+                            case "戶外陽台":
+                                outside_data.add(row_data);
+                                break;
+                            case "書房":
+                                studyRoom_data.add(row_data);
+                                break;
+                            case "臥房":
+                                bedRoom_data.add(row_data);
+                                break;
+                            case "餐廳":
+                                diningRoom_data.add(row_data);
+                                break;
+                            default:
+                                Log.d(TAG, name+" no space type");
+                        }
                     }
+                    space_data.add(livingRoom_data);
+                    space_data.add(outside_data);
+                    space_data.add(studyRoom_data);
+                    space_data.add(bedRoom_data);
+                    space_data.add(diningRoom_data);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -169,7 +206,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 Log.d(TAG, "data.size(): "+data.size());
                 for(int i=0; i < data.size(); i++)
                     Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                adapter = new FurnitureAdapter(data);
+                adapter = new FurnitureAdapter(data, fspace);
                 adapter.setOrder_id(order_id);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -239,13 +276,12 @@ public class Edit_Furniture extends AppCompatActivity {
                             String[] row_data = {new_furniture[0], new_furniture[1], "1"};
                             Log.d(TAG, "row_data: "+Arrays.toString(row_data));
                             data.add(row_data);
-                            final FurnitureAdapter adapter = new FurnitureAdapter(data);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    list.setAdapter(adapter);
-                                }
-                            });
+                            space_data.get(Integer.parseInt(new_furniture[2])).add(row_data);
+                            if(nowSpace != 0){
+                                nowSpace = Integer.parseInt(new_furniture[2])+1;
+                                furnitureSpaceSpr.setSelection(nowSpace);
+                            }
+                            setList();
                         }
                     }
                 });
@@ -298,14 +334,51 @@ public class Edit_Furniture extends AppCompatActivity {
         });
     }
 
+    private void setSpaceSpr(){
+        furnitureSpaceSpr = findViewById(R.id.furnitureSpace_sp_EF);
+        if(spaceAL.isEmpty()) getSpace(1);
+        else setSpace(1);
+
+        furnitureSpaceSpr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0) fspace = "all";
+                else{
+                    fspace = space[position];
+                }
+                nowSpace = position;
+                Toast.makeText(context, "選擇"+fspace, Toast.LENGTH_LONG).show();
+                setList();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void setList(){
+        final FurnitureAdapter spaceAdapter;
+        list.setAdapter(null);
+        if(nowSpace == 0) spaceAdapter = new FurnitureAdapter(data, fspace);
+        else spaceAdapter = new FurnitureAdapter(space_data.get(nowSpace-1), fspace);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                list.setAdapter(spaceAdapter);
+            }
+        });
+    }
+
     private void setSpinner(){
         LayoutInflater inflater = getLayoutInflater();
         view = inflater.inflate(R.layout.add_furniture, null);
         spaceSpr = view.findViewById(R.id.spaceType_sp_AF);
         furnitureSpr = view.findViewById(R.id.furniture_sp_AF);
 
-        if(spaceAL.isEmpty()) getSpace();
-        else setSpace();
+        if(spaceAL.isEmpty()) getSpace(2);
+        else setSpace(2);
         initFSpinner();
 
         spaceSpr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -313,6 +386,7 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position != 0){
                     dialog2 = ProgressDialog.show(context, "", "Loading. Please wait...", true);
+                    new_furniture[2] = String.valueOf(position-1);
                     getFurniture(space[position]);
                 }
             }
@@ -343,8 +417,9 @@ public class Edit_Furniture extends AppCompatActivity {
         });
     }
 
-    private void getSpace(){
-        spaceAL.add("點擊選擇房間區塊");
+    private void getSpace(final int choose){
+        if(choose == 1) spaceAL.add("全部");
+        else spaceAL.add("點擊選擇房間區塊");
 
         String function_name = "all_space";
         RequestBody body = new FormBody.Builder()
@@ -388,14 +463,23 @@ public class Edit_Furniture extends AppCompatActivity {
 
                 space = new String[spaceAL.size()];
                 space = spaceAL.toArray(space);
-                setSpace();
+                setSpace(choose);
             }
         });
     }
 
-    private void setSpace(){
-        ArrayAdapter<String> spaceList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, space);
-        spaceSpr.setAdapter(spaceList);
+    private void setSpace(int choose){
+        final ArrayAdapter<String> spaceList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, space);
+        if(choose==1){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    furnitureSpaceSpr.setAdapter(spaceList);
+                }
+            });
+            spaceAL.clear();
+        }
+        if(choose==2) spaceSpr.setAdapter(spaceList);
     }
 
     private void getFurniture(String space_type){
