@@ -14,7 +14,7 @@ import com.example.homerenting_prototype_one.Setting_Discount;
 import com.example.homerenting_prototype_one.Setting_Evaluation;
 import com.example.homerenting_prototype_one.Setting_Information;
 import com.example.homerenting_prototype_one.Setting_Service;
-import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.Valuation;

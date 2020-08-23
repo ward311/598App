@@ -44,8 +44,8 @@ public class BonusAdapter extends BaseAdapter implements View.OnClickListener {
         if (convertView==null){
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.bonus_item, null);
             viewHolder = new BonusViewHolder();
-            viewHolder.name = convertView.findViewById( R.id.bonus_name_text );
-            viewHolder.total = convertView.findViewById( R.id.bonus_total_text );
+            viewHolder.name = convertView.findViewById(R.id.bonus_name_text);
+            viewHolder.total = convertView.findViewById(R.id.bonus_total_text2);
             viewHolder.first = convertView.findViewById( R.id.bonus_first_text );
             viewHolder.second = convertView.findViewById(R.id.bonus_sec_text);
             viewHolder.third = convertView.findViewById( R.id.bonus_third_text );
@@ -81,9 +81,7 @@ public class BonusAdapter extends BaseAdapter implements View.OnClickListener {
         } else{
             viewHolder = (BonusViewHolder)convertView.getTag();
         }
-        viewHolder.name.setTag( R.id.bonus_name_text,position );
-        viewHolder.name.setText( data.get( position ) );
-        viewHolder.total.setTag( R.id.bonus_total_text,position );
+        viewHolder.name.setText(data.get(position));
         viewHolder.first.setTag( R.id.bonus_first_text,position);
         viewHolder.second.setTag( R.id.bonus_sec_text,position );
         viewHolder.third.setTag( R.id.bonus_third_text,position );
@@ -119,8 +117,7 @@ public class BonusAdapter extends BaseAdapter implements View.OnClickListener {
     }
 
     static class BonusViewHolder{
-        TextView name, total,
-                first,second,third,four,five,six,seven,eight,nine,ten,
+        TextView name, total, first,second,third,four,five,six,seven,eight,nine,ten,
                 eleven,twelve,thirteen,fourteen,fifteen,sixteen,seventeen,eighteen,nineteen,twenty,
                 tOne,tTwo,tThree,tFour,tFive,tSix,tSeven,tEight,tNine,thirty,thirtyOne;
     }

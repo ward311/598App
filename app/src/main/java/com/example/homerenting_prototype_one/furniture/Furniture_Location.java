@@ -14,7 +14,7 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.adapter.LocationAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;

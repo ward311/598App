@@ -17,14 +17,15 @@
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".calendar.Calendar"/>
         <activity android:name=".main.Login"/>
+        <activity android:name=".system.System_Bonus"/>
 
         <!--Order-->
         <activity android:name=".order.Order"/>
         <activity android:name=".order.Order_Booking"/>
         <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Order_Cancel"/>
-        <activity android:name=".order.Today_Detail"/>
         <activity android:name=".order.Order_Detail"/>
+        <activity android:name=".order.Today_Detail"/>
 
         <!--Valuation-->
         <activity android:name=".valuation.Valuation"/>
@@ -42,33 +43,38 @@
         <activity android:name=".furniture.Edit_Furniture"/>
 
         <!--Schedule-->
-        <activity android:name=".schedule.New_Schedule_Detail" />
+        <activity android:name=".schedule.New_Schedule_Detail"/>
         <activity android:name=".schedule.Schedule_Detail"/>
 
-        <activity android:name=".Bonus_List_Detail"/>
-        <activity android:name=".setting.Record_Detail"/>
-        <activity android:name=".Register_Company"/>
+        <!--Add Order-->
         <activity android:name=".add_order.Add_Valuation"/>
         <activity android:name=".add_order.Add_Order"/>
-        <activity android:name=".Distribution_Detail" />
+
+        <!--System-->
+        <activity android:name=".system.System"/>
+        <activity android:name=".system.Bonus_View" />
+        <activity android:name=".system.Bonus_Distribution"/>
+        <activity android:name=".system.Distribution_Detail"/>
+        <activity android:name=".system.Bonus_List"/>
+        <activity android:name=".system.Bonus_List_Detail"/>
+
+        <!--Setting-->
+        <activity android:name=".setting.Setting"/>
+        <activity android:name=".setting.Setting_Record"/>
+        <activity android:name=".setting.Record_Detail"/>
+
+        <activity android:name=".Register_Company"/>
         <activity android:name=".Evaluation_Detail" />
-        <activity android:name=".Bonus_List" />
-        <activity android:name=".Bonus_Distribution" />
-        <activity android:name=".Bonus_View" />
         <activity android:name=".Service_Edit" />
         <activity android:name=".Information_Edit" />
-        <activity android:name=".setting.Setting_Record" />
         <activity android:name=".Setting_Announcement" />
         <activity android:name=".Setting_Evaluation" />
         <activity android:name=".Setting_Discount" />
         <activity android:name=".Setting_Service" />
         <activity android:name=".Setting_Information" />
-        <activity android:name=".System_Bonus" />
         <activity android:name=".System_Vacation" />
         <activity android:name=".System_Schedule" />
         <activity android:name=".System_Data" />
-        <activity android:name=".setting.Setting" />
-        <activity android:name=".System" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
         <activity android:name=".main.New_Login">

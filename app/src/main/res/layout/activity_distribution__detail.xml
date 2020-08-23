@@ -4,414 +4,357 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Distribution_Detail">
+    tools:context=".system.Distribution_Detail">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:background="#FFFFFF">
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
         <ImageButton
             android:id="@+id/back_imgBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/back"
+            android:layout_gravity="center"
             android:background="#FFFFFFFF"
-            android:layout_gravity="center"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/back" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="90dp"
+            android:gravity="center"
             android:text="工單獎金分潤"
             android:textColor="#19B0ED"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:layout_marginLeft="90dp"
-            android:layout_gravity="center"/>
+            android:textSize="25sp" />
     </LinearLayout>
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="9">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_gravity="top"
-            android:orientation="vertical"
-            android:background="#00BFFF"/>
+            android:background="#00BFFF"
+            android:orientation="vertical" />
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="#FFFFFF"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:layout_gravity="top"
-            android:background="#FFFFFF">
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/member_name_DD"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="唐文心"
-                        android:textSize="20sp"
-                        android:textColor="#19B0ED"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="小姐"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="連絡電話"
-                        android:textColor="#000000"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:text="0933669877"/>
-<!--                    <Button-->
-<!--                        android:id="@+id/call_btn"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:layout_weight="1"-->
-<!--                        android:text="撥打電話"-->
-<!--                        android:textColor="#FB8527"-->
-<!--                        android:gravity="top"-->
-<!--                        android:background="#FFFFFFFF"/>-->
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="搬出地址"
-                        android:textColor="#000000"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:text="高雄市三民區建國二路15號"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="搬入地址"
-                        android:textColor="#000000"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:text="高雄市大社區中山路5號"/>
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#989898"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.5"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="家具清單"
-                        android:textColor="#000000"/>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="編號 品項名稱   數量 備註   "
-                            android:textColor="#FFFFFF"
-                            android:background="#FB8527"/>
-                        <ListView
-                            android:id="@+id/furniture_listView"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="8"/>
-                    </LinearLayout>
-                </LinearLayout>
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:layout_weight="1">-->
-<!--                    <TextView-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:layout_weight="1"-->
-<!--                        android:text="家具定位"-->
-<!--                        android:gravity="center_vertical"-->
-<!--                        android:textColor="#000000"/>-->
-<!--                    <Button-->
-<!--                        android:id="@+id/location_btn"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:layout_weight="3"-->
-<!--                        android:text="詳細位置"-->
-<!--                        android:background="#FFFFFFFF"-->
-<!--                        android:gravity="left|center_vertical"-->
-<!--                        android:textColor="#FB8927"/>-->
-<!--                </LinearLayout>-->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#989898"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="搬家日期"
-                        android:gravity="center_vertical"
-                        android:textColor="#000000"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:gravity="center_vertical"
-                        android:text="2019/10/06 09:00"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="搬家費用"
-                        android:gravity="center_vertical"
-                        android:textColor="#000000"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:gravity="center_vertical"
-                        android:text="6000元"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.5"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="安排人力"
-                        android:gravity="top"
-                        android:textColor="#000000"/>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:orientation="vertical">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:text="王小明"/>
-                            <Button
-                                android:id="@+id/input_btn_one"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="輸入獎金"
-                                android:textColor="#FB8927"
-                                android:background="#FFFFFFFF"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:text="陳聰明"/>
-                            <Button
-                                android:id="@+id/input_btn_two"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="輸入獎金"
-                                android:textColor="#FB8927"
-                                android:background="#FFFFFFFF"/>
-                        </LinearLayout>
-                    </LinearLayout>
-<!--                    <EditText-->
-<!--                        android:id="@+id/ps_editText"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:layout_weight="3"-->
-<!--                        android:inputType="text"-->
-<!--                        android:background="#F2F2F2"-->
-<!--                        android:hint="1.鋼琴從後面搬入2.花瓶易碎需多加防護3.多加5個箱子備用4.多帶5個氣泡布"/>-->
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center">
-                    <Button
-                        android:id="@+id/check_bonus_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="確認獎金分潤"
-                        android:textColor="#FFFFFF"
-                        android:background="@drawable/roundedbutton"/>
-                </LinearLayout>
+                    android:text="唐文心"
+                    android:textColor="#19B0ED"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/nameTitle_DD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="小姐" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="搬出地址"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/fromAddress_DD"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:text="高雄市三民區建國二路15號" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="搬入地址"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/toAddress_DD"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:text="高雄市大社區中山路5號" />
+            </LinearLayout>
+            <!--                <LinearLayout-->
+            <!--                    android:layout_width="match_parent"-->
+            <!--                    android:layout_height="0dp"-->
+            <!--                    android:layout_weight="1">-->
+            <!--                    <TextView-->
+            <!--                        android:layout_width="0dp"-->
+            <!--                        android:layout_height="match_parent"-->
+            <!--                        android:layout_weight="1"-->
+            <!--                        android:text="家具定位"-->
+            <!--                        android:gravity="center_vertical"-->
+            <!--                        android:textColor="#000000"/>-->
+            <!--                    <Button-->
+            <!--                        android:id="@+id/location_btn"-->
+            <!--                        android:layout_width="0dp"-->
+            <!--                        android:layout_height="match_parent"-->
+            <!--                        android:layout_weight="3"-->
+            <!--                        android:text="詳細位置"-->
+            <!--                        android:background="#FFFFFFFF"-->
+            <!--                        android:gravity="left|center_vertical"-->
+            <!--                        android:textColor="#FB8927"/>-->
+            <!--                </LinearLayout>-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="#989898" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="搬家日期"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/movingTime_DD"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center_vertical"
+                    android:text="2019/10/06 09:00" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="搬家費用"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/price_DD"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center_vertical"
+                    android:text="6000元" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="安排人力"
+                    android:textColor="#000000" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/salaryDistribution_DD"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3" />
+
+                <!--                    <EditText-->
+                <!--                        android:id="@+id/ps_editText"-->
+                <!--                        android:layout_width="0dp"-->
+                <!--                        android:layout_height="match_parent"-->
+                <!--                        android:layout_weight="3"-->
+                <!--                        android:inputType="text"-->
+                <!--                        android:background="#F2F2F2"-->
+                <!--                        android:hint="1.鋼琴從後面搬入2.花瓶易碎需多加防護3.多加5個箱子備用4.多帶5個氣泡布"/>-->
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/check_bonus_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/roundedbutton"
+                android:text="確認獎金分潤"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="#F2F2F2"
         android:orientation="horizontal">
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/valuationBlue_Btn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/valuation_btn_drawable"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/valuation_btn_drawable" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="估價單"
-                android:textSize="10sp"
-                android:textColor="#D5D5D5"/>
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/order_imgBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/order_btn_drawable"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/order_btn_drawable" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="訂單"
-                android:textSize="10sp"
-                android:textColor="#D5D5D5"/>
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/calendar_imgBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/calendar_btn_drawable"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/calendar_btn_drawable" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="行事曆"
-                android:textSize="10sp"
-                android:textColor="#D5D5D5"/>
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/system_imgBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/system_blue"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/system_blue" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="人事系統"
-                android:textSize="10sp"
-                android:textColor="#19B0ED"/>
+                android:textColor="#19B0ED"
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/setting_imgBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/setting_btn_drawable"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/setting_btn_drawable" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="我的系統"
-                android:textSize="10sp"
-                android:textColor="#D5D5D5"/>
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

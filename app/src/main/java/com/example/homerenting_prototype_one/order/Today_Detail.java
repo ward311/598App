@@ -1,21 +1,26 @@
 package com.example.homerenting_prototype_one.order;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -23,10 +28,14 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.example.homerenting_prototype_one.valuation.Valuation_Booking;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -34,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -50,7 +60,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getTime
 public class Today_Detail extends AppCompatActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
-    Context context;
+    Context context = Today_Detail.this;
 
     ConstraintLayout cLayout;
 
@@ -85,12 +95,13 @@ public class Today_Detail extends AppCompatActivity {
     String worktime;
     String fee;
     String memo;
+    String status;
 
     Button furnitureBtn;
     Button changePriceBtn;
     Button check_btn;
 
-    boolean change;
+    boolean change = false, check = false, result = false;
 
     int price_origin;
     int price;
@@ -98,10 +109,9 @@ public class Today_Detail extends AppCompatActivity {
     Bundle bundle;
 
     String order_id;
+    String company_id = getCompany_id(context);
 
     String TAG = "Today_Detail";
-    String PHP = "/user_data.php";
-    String PHP2 = "/functional.php";
 
     public ListView furniture_list;
     public String[] furnitures = {"1 單人沙發   2    ","2 兩人沙發   1    ","3 三人沙發   1    ","4 L型沙發   1    ",
@@ -120,8 +130,6 @@ public class Today_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        change = false;
-        context = Today_Detail.this;
 
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
@@ -141,7 +149,7 @@ public class Today_Detail extends AppCompatActivity {
         Log.d(TAG, "order_id:"+order_id);
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
                 .post(body)
                 .build();
 
@@ -155,7 +163,7 @@ public class Today_Detail extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Today_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -163,12 +171,12 @@ public class Today_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData); //顯示資料
+//                Log.d(TAG,"responseData of get_order: "+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
-                    Log.i(TAG,"order:"+order);
+//                    Log.i(TAG,"order:"+order);
 
                     //取得資料
                     name = order.getString("member_name");
@@ -184,6 +192,7 @@ public class Today_Detail extends AppCompatActivity {
                     price_origin = Integer.parseInt(fee);
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
+                    status = order.getString("order_status");
 
                     int i;
                     car = "";
@@ -229,7 +238,7 @@ public class Today_Detail extends AppCompatActivity {
                         }
                     });
 
-                    setFurniture_btn(order.getInt("auto"));
+                    setFurniture_btn();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -249,57 +258,56 @@ public class Today_Detail extends AppCompatActivity {
                 memo = memoEdit.getText().toString();
                 Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
-                String function_name = "update_todayOrder";
-                String company_id = getCompany_id(context);
-                RequestBody body = new FormBody.Builder()
-                        .add("function_name", function_name)
-                        .add("order_id", order_id)
-                        .add("company_id", company_id)
-                        .add("accurate_fee", fee)
-                        .add("memo", memo)
-                        .build();
+                update_today_order();
 
-                Request request = new Request.Builder()
-                        .url(BuildConfig.SERVER_URL+"/functional.php")
-                        .post(body)
-                        .build();
+                LayoutInflater inflater = getLayoutInflater();
+                View view = inflater.inflate(R.layout.qrcode_image, null);
+                ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
+                String url = "http://140.117.71.91/598_new/appecpay.php";
+                try {
+                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                    Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
+                    qrcodeView.setImageBitmap(bitmap);
+                } catch (WriterException e){
+                    e.printStackTrace();
+                }
 
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("匯款QR CODE");
+//               builder.setMessage("請掃描QR CODE");
+                builder.setView(view);
+                builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(Today_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(check){
+                            if(!status.equals("done") && change_order_status()){
+                                Toast.makeText(context, "網路錯誤", Toast.LENGTH_LONG).show();
                             }
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        final String responseData = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(Today_Detail.this, "收款成功", Toast.LENGTH_LONG).show();
+                            else{
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent(context, Order_Today.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                    }
+                                }, 500);
                             }
-                        });
-                        Log.d(TAG, "responseData: " + responseData);
+                        }
+                        else {
+                            Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
-
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
-                    public void run() {
-                        Intent intent = new Intent(Today_Detail.this,Order_Today.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                    public void onClick(DialogInterface dialog, int which) {
+
                     }
-                }, 1000);
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -512,18 +520,92 @@ public class Today_Detail extends AppCompatActivity {
         check_btn = findViewById(R.id.check_btn_OTD);
     }
 
-    private void setFurniture_btn(int auto){
-        if(auto==1){
-            furnitureBtn.setOnClickListener( new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent detail_intent = new Intent();
-                    detail_intent.setClass( context, Furniture_Location.class);
-                    bundle.putString( "key","order" );
-                    detail_intent.putExtras(bundle);
-                    startActivity( detail_intent);
-                }
-            } );
-        }
+    private void setFurniture_btn(){
+        furnitureBtn.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent detail_intent = new Intent();
+                detail_intent.setClass( context, Furniture_Location.class);
+                bundle.putString( "key","order" );
+                detail_intent.putExtras(bundle);
+                startActivity( detail_intent);
+            }
+        } );
+    }
+
+    private void update_today_order(){
+        String function_name = "update_todayOrder";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id", company_id)
+                .add("accurate_fee", fee)
+                .add("memo", memo)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Today_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        check = false;
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of update_today_order: " + responseData);
+                if(responseData.equals("success")) check = true;
+                else check = false;
+            }
+        });
+    }
+
+    private boolean change_order_status(){
+        String function_name = "change_status";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("table", "orders")
+                .add("order_id", order_id)
+                .add("status", "done")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Today_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of change_status: " + responseData);
+                if(responseData.equals("success")) result = true;
+            }
+        });
+        return result;
     }
 }

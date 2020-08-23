@@ -113,9 +113,9 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
             viewHolder.add_icon.setVisibility(View.VISIBLE);
         }
         else viewHolder.add_icon.setVisibility(View.GONE);
-        if(!data.get(position)[i++].equals("1"))
+        if(!data.get(position)[i++].equals("1") || Arrays.asList(data.get(position)).contains("done_today"))
             viewHolder.new_icon.setVisibility(View.INVISIBLE);
-        if(Arrays.asList(data.get(position)).contains("cancel")){
+        if(Arrays.asList(data.get(position)).contains("cancel") || Arrays.asList(data.get(position)).contains("done_today")){
             viewHolder.date_text.setTextColor(Color.rgb(152, 152, 152));
             viewHolder.time_text.setTextColor(Color.rgb(152, 152, 152));
             viewHolder.name_text.setTextColor(Color.rgb(112, 112, 112));

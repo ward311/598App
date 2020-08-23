@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.system;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.System_Data;
+import com.example.homerenting_prototype_one.System_Schedule;
+import com.example.homerenting_prototype_one.System_Vacation;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
@@ -56,6 +60,8 @@ public class System extends AppCompatActivity {
                 startActivity(bonus_intent);
             }
         });
+
+        //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

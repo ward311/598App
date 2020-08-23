@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -116,12 +116,12 @@ public class Order_Today extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG, "responseData: "+responseData); //顯示資料
+//                Log.d(TAG, "responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
                     final JSONArray responseArr = new JSONArray(responseData);
-                    Log.d(TAG,"responseObj: "+ responseArr);
+//                    Log.d(TAG,"responseObj: "+ responseArr);
 
                     //一筆一筆的取JSONArray中的json資料
                     for (int i = 0; i < responseArr.length(); i++) {
@@ -140,9 +140,12 @@ public class Order_Today extends AppCompatActivity {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
+                        String status = member.getString("order_status");
+                        if(status.equals("done")) status = "done_today";
+
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, status};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式

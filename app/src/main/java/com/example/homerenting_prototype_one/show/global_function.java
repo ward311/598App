@@ -150,7 +150,7 @@ public class global_function {
     public static void setwCount(int newWCount){ wCount = newWCount;}
     public static int getwCount(){ return wCount;}
 
-    public static String getToday(){ //取得今日的月、日
+    public static String getToday(){ //取得今日的MM.dd
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
 
@@ -159,6 +159,21 @@ public class global_function {
         Log.d(TAG, "month: "+c.get(Calendar.MONTH));
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
+        String todayStr = sdf.format(today);
+        Log.i(TAG, "todayStr: "+todayStr);
+
+        return todayStr;
+    }
+
+    public static String getToday(String dateFormate){ //取得今日的yyyy MM dd
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+
+        Date today = c.getTime();
+        month = c.get(Calendar.MONTH);
+        Log.d(TAG, "month: "+c.get(Calendar.MONTH));
+
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormate);
         String todayStr = sdf.format(today);
         Log.i(TAG, "todayStr: "+todayStr);
 

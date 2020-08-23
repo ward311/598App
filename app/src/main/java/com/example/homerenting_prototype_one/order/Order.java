@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -67,7 +67,6 @@ public class Order extends AppCompatActivity {
 
     Context context = Order.this;
     String TAG = "Order";
-    private final String PHP = "/user_data.php";
 
     //private String company_id;
 
@@ -88,8 +87,6 @@ public class Order extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-
-        //company_id = getCompany_id(this);
 
 
         week_text.setText(getWeek());
@@ -199,7 +196,7 @@ public class Order extends AppCompatActivity {
 
         //連線要求
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL + PHP)
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
                 .post(body)
                 .build();
         //http://54.166.177.4/user_data.php
@@ -290,8 +287,7 @@ public class Order extends AppCompatActivity {
                                     bundle.putString("order_id", order_id);
 
                                     String newicon = row_data[row_data.length-1];
-                                    if(newicon.equals("1"))
-                                        removeNew(order_id, context);
+                                    if(newicon.equals("1")) removeNew(order_id, context);
 
                                     Intent intent = new Intent();
                                     intent.setClass(context, Order_Detail.class);

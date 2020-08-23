@@ -26,7 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
 import com.example.homerenting_prototype_one.order.Order;
@@ -109,6 +109,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
+        Log.i(TAG, "order_id: "+order_id);
 
         linking(); //將xml裡的元件連至此java
 
@@ -151,7 +152,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
-                    Log.i(TAG,"JSONObject of order:"+order);
+//                    Log.i(TAG,"JSONObject of order:"+order);
 
                     //取得資料
                     name = order.getString("member_name");
@@ -336,7 +337,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             }
         });
 
-        final Context context = this;
 //        pickCar_edit.setOnClickListener( new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -508,10 +508,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             priceEdit.setError("請輸入搬家價格");
             check = true;
         }
-        if(Integer.parseInt(fee) > Integer.parseInt(valPrice)){
-            priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
-            check = true;
-        }
+//        if(Integer.parseInt(fee) > Integer.parseInt(valPrice)){
+//            priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
+//            check = true;
+//        }
 
         return check;
     }

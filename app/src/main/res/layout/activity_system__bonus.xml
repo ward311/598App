@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".System_Bonus">
+    tools:context=".system.System_Bonus">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -40,13 +40,14 @@
             android:layout_height="0dp"
             android:layout_weight="2"
             android:orientation="vertical">
+
             <TextView
-                android:id="@+id/monthdate_text"
+                android:id="@+id/monthdate_SB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="至2019年10月22日"
-                android:textSize="30sp"
-                android:textColor="#FFFFFF"/>
+                android:textColor="#FFFFFF"
+                android:textSize="30sp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -77,41 +78,44 @@
         android:layout_height="0dp"
         android:layout_weight="3"
         android:orientation="vertical">
+
         <Button
-            android:id="@+id/salary_view_btn"
+            android:id="@+id/salaryView_btn_SB"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
             android:text="員工薪資一覽"
             android:textColor="#19B0ED"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#D5D5D5"/>
+
         <Button
-            android:id="@+id/bonus_distributed_btn"
+            android:id="@+id/bonusDistributed_btn_SB"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
             android:text="工單獎金分潤"
             android:textColor="#19B0ED"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#D5D5D5"/>
+
         <Button
-            android:id="@+id/bonus_list_btn"
+            android:id="@+id/bonusList_btn_SB"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
             android:text="當月獎金報表"
             android:textColor="#19B0ED"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

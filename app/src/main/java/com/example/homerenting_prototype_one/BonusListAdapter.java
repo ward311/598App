@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.homerenting_prototype_one.system.Bonus_List_Detail;
+
 import java.util.List;
 
 public class BonusListAdapter extends BaseAdapter implements View.OnClickListener{
@@ -70,7 +72,7 @@ public class BonusListAdapter extends BaseAdapter implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 Intent month_intent = new Intent();
-                month_intent.setClass(context,Bonus_List_Detail.class );
+                month_intent.setClass(context, Bonus_List_Detail.class );
                 Bundle month_bundle = new Bundle();
                 month_bundle.putString( "month","1月" );
                 month_intent.putExtras( month_bundle );

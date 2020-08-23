@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,16 +15,36 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 public class System_Data extends AppCompatActivity {
 
@@ -33,6 +54,12 @@ public class System_Data extends AppCompatActivity {
 //            "3.5噸箱型車NKC-456","3.5噸箱型車ZXE-654","7.7噸箱型車RSF-673","7.7噸箱型車ESF-553","7.7噸箱型車KMS-352"};
     public ListView employee_list, car_list;
     private List<String> employee_aList, car_aList;
+    private ArrayList<String> new_employee;
+
+
+    Context context = this;
+    String TAG = "System_Data";
+    OkHttpClient okHttpClient = new OkHttpClient();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +76,9 @@ public class System_Data extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        new_employee = new ArrayList<>();
+
         employee_aList = new ArrayList<>();
         car_aList = new ArrayList<>();
         employee_aList.add( "王小明" );
@@ -76,9 +106,10 @@ public class System_Data extends AppCompatActivity {
         car_aList.add( "7.7噸箱型車RSF-673" );
         car_aList.add( "7.7噸箱型車ESF-553" );
         car_aList.add( "7.7噸箱型車KMS-352" );
+
         final ArrayAdapter employee_adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,employee_aList);
-        Context context;
         final ArrayAdapter car_adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,car_aList);
+
         employee_list.setAdapter(employee_adapter);
         employee_list.setOnItemClickListener( new ListView.OnItemClickListener() {
             @Override
@@ -98,6 +129,7 @@ public class System_Data extends AppCompatActivity {
                         .show();
             }
         } );
+
         car_list.setAdapter(car_adapter);
         car_list.setOnItemClickListener( new ListView.OnItemClickListener() {
             @Override
@@ -117,6 +149,7 @@ public class System_Data extends AppCompatActivity {
                         .show();
             }
         } );
+
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,6 +157,7 @@ public class System_Data extends AppCompatActivity {
                 startActivity(system_intent);
             }
         });
+
         employee_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,6 +165,7 @@ public class System_Data extends AppCompatActivity {
                 car_list.setVisibility(View.GONE);
             }
         });
+
         car_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,6 +173,7 @@ public class System_Data extends AppCompatActivity {
                 car_list.setVisibility(View.VISIBLE);
             }
         });
+
         final EditText employee_edit = new EditText(this);
         final EditText car_edit = new EditText(this);
         addEmployee_btn.setOnClickListener(new View.OnClickListener() {
@@ -155,9 +191,12 @@ public class System_Data extends AppCompatActivity {
                         .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String new_employee = employee_edit.getText().toString();
-                                employee_aList.add( new_employee );
+                                String new_employee_name = employee_edit.getText().toString();
+                                employee_aList.add( new_employee_name );
                                 employee_adapter.notifyDataSetChanged();
+//                                new_employee.add(new_employee_name);
+                                add_employee(new_employee_name);
+
                             }
                         } )
                         .setNegativeButton( "取消",null ).create()
@@ -215,6 +254,43 @@ public class System_Data extends AppCompatActivity {
             public void onClick(View v) {
                 Intent setting_intent = new Intent(System_Data.this, Setting.class);
                 startActivity(setting_intent);
+            }
+        });
+    }
+
+    private void add_employee(String employee_name){
+        String function_name = "order_detail";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("employee_name", employee_name)
+                .add("company_id", company_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of add_employee: "+responseData); //顯示資料
             }
         });
     }

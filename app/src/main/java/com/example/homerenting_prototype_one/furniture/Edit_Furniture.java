@@ -8,12 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -28,7 +25,7 @@ import com.example.homerenting_prototype_one.adapter.FurnitureAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.add_order.Add_Order;
 import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.System;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -104,8 +101,9 @@ public class Edit_Furniture extends AppCompatActivity {
         list = findViewById(R.id.furniture_listView);
 
 
-        final Bundle bundle = getIntent().getExtras();
-        order_id = bundle.getString("order_id");
+//        final Bundle bundle = getIntent().getExtras();
+        order_id = "59";//bundle.getString("order_id");
+        Log.i(TAG, "order_id: "+order_id);
 
         fspace = "all";
         nowSpace = 0;
@@ -146,7 +144,7 @@ public class Edit_Furniture extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData);
+                Log.d(TAG,"responseData of furniture_list: "+responseData);
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -178,7 +176,7 @@ public class Edit_Furniture extends AppCompatActivity {
                             case "書房":
                                 studyRoom_data.add(row_data);
                                 break;
-                            case "臥房":
+                            case "臥室":
                                 bedRoom_data.add(row_data);
                                 break;
                             case "餐廳":
@@ -188,11 +186,11 @@ public class Edit_Furniture extends AppCompatActivity {
                                 Log.d(TAG, name+" no space type");
                         }
                     }
-                    space_data.add(livingRoom_data);
-                    space_data.add(outside_data);
-                    space_data.add(studyRoom_data);
-                    space_data.add(bedRoom_data);
-                    space_data.add(diningRoom_data);
+                    space_data.add(0, livingRoom_data);
+                    space_data.add(1, outside_data);
+                    space_data.add(2, studyRoom_data);
+                    space_data.add(3, bedRoom_data);
+                    space_data.add(4, diningRoom_data);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -201,6 +199,10 @@ public class Edit_Furniture extends AppCompatActivity {
                             //Toast.makeText(Edit_Furniture.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
                     });
+                    int i;
+                    for(i = 0; i < 5; i++){
+                        space_data.add(new ArrayList<String[]>());
+                    }
                 }
 
                 Log.d(TAG, "data.size(): "+data.size());
@@ -387,6 +389,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 if(position != 0){
                     dialog2 = ProgressDialog.show(context, "", "Loading. Please wait...", true);
                     new_furniture[2] = String.valueOf(position-1);
+                    Log.d(TAG, "space: "+space.length);
                     getFurniture(space[position]);
                 }
             }
@@ -479,7 +482,14 @@ public class Edit_Furniture extends AppCompatActivity {
             });
             spaceAL.clear();
         }
-        if(choose==2) spaceSpr.setAdapter(spaceList);
+        if(choose==2){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    spaceSpr.setAdapter(spaceList);
+                }
+            });
+        }
     }
 
     private void getFurniture(String space_type){
@@ -627,7 +637,7 @@ public class Edit_Furniture extends AppCompatActivity {
                         Toast.makeText(context, "修改家具完成", Toast.LENGTH_LONG).show();
                     }
                 });
-                Log.d(TAG, "responseData: " + responseData);
+                Log.d(TAG, "responseData of modify_furniture: " + responseData);
             }
         });
     }
