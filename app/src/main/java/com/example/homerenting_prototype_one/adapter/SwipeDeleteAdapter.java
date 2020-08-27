@@ -29,7 +29,7 @@ import static com.example.homerenting_prototype_one.show.global_function.removeN
 public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.ViewHolder> {
     private ArrayList<String[]> data;
     private Context context;
-    private Class mTarget = null;
+    private Class mTarget;
 
     public SwipeDeleteAdapter(Context context, ArrayList<String[]> data, Class target){
         this.context = context;

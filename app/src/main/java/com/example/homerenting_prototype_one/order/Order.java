@@ -16,11 +16,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.RecyclerViewAction;
 import com.example.homerenting_prototype_one.adapter.SwipeDeleteAdapter;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
@@ -72,7 +74,7 @@ public class Order extends AppCompatActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
 
-    Context context = Order.this;
+    Context context = this;
     String TAG = "Order";
 
     //private String company_id;
@@ -279,47 +281,24 @@ public class Order extends AppCompatActivity {
                 if(!responseData.equals("null")){
                     for(int i=0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-//                    setList();
                     setRList();
                 }
             }
         });
     }
 
-    private void setList(){
-        listAdapter = new ListAdapter(data);
+    private void setRList(){
+        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(this, data, Order_Detail.class);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                orderList.setAdapter(listAdapter);
-                orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String[] row_data = (String[])parent.getItemAtPosition(position);
-                        Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                        String order_id = row_data[0];
+                orderRList.setLayoutManager(new LinearLayoutManager(context));
+                orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+                orderRList.setAdapter(adapter);
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("order_id", order_id);
-
-                        String newicon = row_data[row_data.length-1];
-                        if(newicon.equals("1")) removeNew(order_id, context);
-
-                        Intent intent = new Intent();
-                        intent.setClass(context, Order_Detail.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                });
+                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
+                helper.attachToRecyclerView(orderRList);
             }
         });
-    }
-
-    private void setRList(){
-        SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(context, data, Order_Detail.class);
-        orderRList.setLayoutManager(new LinearLayoutManager(context));
-        orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-        orderRList.setAdapter(adapter);
     }
 }
