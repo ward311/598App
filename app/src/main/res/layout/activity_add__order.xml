@@ -205,6 +205,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:orientation="vertical">
 
                     <TextView
@@ -213,14 +214,6 @@
                         android:text="家具清單"
                         android:textColor="#000000" />
 
-                    <Button
-                        android:id="@+id/edit_furniture_btn_AO"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="#FFFFFFFF"
-                        android:gravity="top|left"
-                        android:text="修改家具"
-                        android:textColor="#FB8527" />
                 </LinearLayout>
                 <!--                <TextView-->
                 <!--                    android:layout_width="0dp"-->
@@ -228,11 +221,22 @@
                 <!--                    android:layout_weight="1"-->
                 <!--                    android:text="家具清單"-->
                 <!--                    android:textColor="#000000"/>-->
+                <Button
+                    android:id="@+id/edit_furniture_btn_AO"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:background="#FFFFFFFF"
+                    android:gravity="center"
+                    android:text="修改家具"
+                    android:textColor="#FB8527" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -244,7 +248,8 @@
                     <ListView
                         android:id="@+id/furniture_list_AO"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" />
                 </LinearLayout>
             </LinearLayout>
             <View

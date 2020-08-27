@@ -19,7 +19,7 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
     private Context context;
     private static String space;
     private static String order_id;
-    private static ArrayList<String[]> data;
+    private ArrayList<String[]> data;
     String TAG = "DetailAdapter";
 
     public FurnitureAdapter(ArrayList<String[]> data, String space){
@@ -107,10 +107,6 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
         Button minus_btn, plus_btn;
         Button add_btn;
         LinearLayout item;
-    }
-
-    public static ArrayList<String[]> getData(){
-        return data;
     }
 
     public void setOrder_id(String order_id){

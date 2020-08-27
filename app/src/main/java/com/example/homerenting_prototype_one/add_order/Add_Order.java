@@ -109,7 +109,14 @@ public class Add_Order extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String address = cAddress_edit.getText().toString();
-                moveOut_edit.setText(address);
+                String moveOut_address = moveOut_edit.getText().toString();
+                if(!address.equals("") && !moveOut_address.equals("")){
+                    if(address.substring(0, 1).equals(moveOut_address.substring(0, 1)))
+                        moveOut_edit.setText(address);
+                }
+                else if(!address.equals("") || moveOut_address.length()<=1){
+                    moveOut_edit.setText(address);
+                }
             }
         });
 
@@ -122,14 +129,6 @@ public class Add_Order extends AppCompatActivity {
                 intent.putExtras(bundle);
                 intent.setClass(context, Edit_Furniture.class);
                 startActivity(intent);
-            }
-        });
-
-        runOnUiThread(new Runnable(){
-            @Override
-            public void run(){
-                FurnitureAdapter adapter = new FurnitureAdapter(FurnitureAdapter.getData(), "all");
-                if(adapter.getOrder_id().equals("-1")) furniture_list.setAdapter(adapter);
             }
         });
 
@@ -290,4 +289,5 @@ public class Add_Order extends AppCompatActivity {
         genderRG = findViewById(R.id.genderRG_AO);
         addOrderBtn = findViewById(R.id.addOrder_btn_AO);
     }
+
 }

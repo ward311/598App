@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -12,10 +13,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.SwipeDeleteAdapter;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
@@ -59,6 +65,7 @@ public class Order extends AppCompatActivity {
     TextView week_text;
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
+    RecyclerView orderRList;
 
     ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter;
@@ -79,6 +86,7 @@ public class Order extends AppCompatActivity {
         lastWeek_btn = findViewById(R.id.lastWeek_btn_O);
         nextWeek_btn = findViewById(R.id.nextWeek_btn_O);
         orderList = findViewById(R.id.order_listView_O);
+        orderRList = findViewById(R.id.order_recyclerView_O);
 
         Button booking_order = findViewById(R.id.bookingOrder_btn);
         Button today_order = findViewById(R.id.todayOrder_btn);
@@ -88,7 +96,7 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-
+        setwCount(getwCount()-1);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getOrder();
@@ -271,35 +279,47 @@ public class Order extends AppCompatActivity {
                 if(!responseData.equals("null")){
                     for(int i=0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                    listAdapter = new ListAdapter(data);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            orderList.setAdapter(listAdapter);
-                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[])parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                    String order_id = row_data[0];
-
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
-
-                                    String newicon = row_data[row_data.length-1];
-                                    if(newicon.equals("1")) removeNew(order_id, context);
-
-                                    Intent intent = new Intent();
-                                    intent.setClass(context, Order_Detail.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
-                    });
+//                    setList();
+                    setRList();
                 }
             }
         });
+    }
+
+    private void setList(){
+        listAdapter = new ListAdapter(data);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                orderList.setAdapter(listAdapter);
+                orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String[] row_data = (String[])parent.getItemAtPosition(position);
+                        Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                        String order_id = row_data[0];
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("order_id", order_id);
+
+                        String newicon = row_data[row_data.length-1];
+                        if(newicon.equals("1")) removeNew(order_id, context);
+
+                        Intent intent = new Intent();
+                        intent.setClass(context, Order_Detail.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+            }
+        });
+    }
+
+    private void setRList(){
+        SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(context, data, Order_Detail.class);
+        orderRList.setLayoutManager(new LinearLayoutManager(context));
+        orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        orderRList.setAdapter(adapter);
     }
 }

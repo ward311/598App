@@ -15,12 +15,12 @@
 
         <!--Main-->
         <activity android:name=".main.MainActivity"/>
-        <activity android:name=".calendar.Calendar"/>
         <activity android:name=".main.Login"/>
-        <activity android:name=".system.System_Bonus"/>
+        <activity android:name=".main.New_Login"/>
+        <activity android:name=".calendar.Calendar"/>
 
         <!--Order-->
-        <activity android:name=".order.Order"/>
+        <activity android:name=".add_order.Add_Order"/>
         <activity android:name=".order.Order_Booking"/>
         <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Order_Cancel"/>
@@ -48,10 +48,10 @@
 
         <!--Add Order-->
         <activity android:name=".add_order.Add_Valuation"/>
-        <activity android:name=".add_order.Add_Order"/>
 
         <!--System-->
         <activity android:name=".system.System"/>
+        <activity android:name=".system.System_Bonus"/>
         <activity android:name=".system.Bonus_View" />
         <activity android:name=".system.Bonus_Distribution"/>
         <activity android:name=".system.Distribution_Detail"/>
@@ -77,7 +77,7 @@
         <activity android:name=".System_Data" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
-        <activity android:name=".main.New_Login">
+        <activity android:name=".order.Order">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

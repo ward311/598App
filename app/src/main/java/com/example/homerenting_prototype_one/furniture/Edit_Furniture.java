@@ -75,6 +75,7 @@ public class Edit_Furniture extends AppCompatActivity {
 
     FurnitureAdapter adapter;
 
+    Bundle bundle;
     Context context = Edit_Furniture.this;
     OkHttpClient okHttpClient = new OkHttpClient();
 
@@ -101,8 +102,8 @@ public class Edit_Furniture extends AppCompatActivity {
         list = findViewById(R.id.furniture_listView);
 
 
-//        final Bundle bundle = getIntent().getExtras();
-        order_id = "59";//bundle.getString("order_id");
+        bundle = getIntent().getExtras();
+        order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
         fspace = "all";
