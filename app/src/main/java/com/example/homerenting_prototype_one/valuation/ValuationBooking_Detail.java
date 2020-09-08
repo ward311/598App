@@ -54,36 +54,17 @@ import static com.example.homerenting_prototype_one.show.global_function.getDate
 public class ValuationBooking_Detail extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
 
-    TextView nameText;
-    TextView nameTitleText;
-    TextView phoneText;
-    TextView valuationTimeText;
-    TextView fromAddressText;
-    TextView toAddressText;
-    TextView remainderText;
-    TextView movingDateText;
-    TextView movingTimeText;
-    TextView valPriceText;
+    TextView nameText, nameTitleText, phoneText, valuationTimeText;
+    TextView fromAddressText, toAddressText, remainderText;
+    TextView movingDateText, movingTimeText, valPriceText;
 
-    EditText carNumEdit;
-    EditText carWeightEdit;
-    EditText carTypeEdit;
-    EditText worktimeEdit;
-    EditText priceEdit;
-    EditText memoEdit;
+    EditText carNumEdit, carWeightEdit, carTypeEdit;
+    EditText worktimeEdit, priceEdit, memoEdit;
 
-    Button check_btn;
-    Button furniture_btn;
+    Button check_btn, furniture_btn;
 
-    String name;
-    String gender;
-    String phone;
-    String valuationTime;
-    String fromAddress;
-    String toAddress;
-    String remainder;
+    String name, gender, phone, valuationTime, fromAddress, toAddress, remainder, memo;
     String valPrice = "4000";
-    String memo;
 
     LinearLayout furnitureLL;
 

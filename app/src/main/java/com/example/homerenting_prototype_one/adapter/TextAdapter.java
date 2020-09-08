@@ -30,7 +30,11 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.item.setText(data.get(position)[1]);
+        String text = data.get(position)[1];
+        if(data.get(position).length > 2){
+            text = text+"噸"+data.get(position)[2]+" "+data.get(position)[3];
+        }
+        holder.item.setText(text);
     }
 
     @Override

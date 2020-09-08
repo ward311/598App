@@ -57,11 +57,9 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
                 switch (current) {
                     case 1:
                         s_adapter.deleteItem(position);
-                        Log.d(TAG, "SwipeAdapter");
                         break;
                     case 2:
                         t_adapter.deleteItem(position);
-                        Log.d(TAG, "TextAdapter");
                         break;
                 }
 
@@ -80,7 +78,9 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
                 }
             }
         });
+
         AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
