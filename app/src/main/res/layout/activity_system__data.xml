@@ -62,18 +62,12 @@
         android:orientation="horizontal">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/employee_rv_STD"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" >
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/car_rv_STD"
+            android:id="@+id/staff_vehicle_rv_STD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:visibility="gone" />
+            tools:visibility="visible">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
         <ListView
             android:id="@+id/employee_list"

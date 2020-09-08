@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.NoDataRecyclerAdapter;
+import com.example.homerenting_prototype_one.adapter.TextAdapter;
 import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.adapter.SwipeDeleteAdapter;
 import com.example.homerenting_prototype_one.setting.Setting;
