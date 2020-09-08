@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one.system;
+package com.example.homerenting_prototype_one.bouns;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,10 +19,10 @@ import com.example.homerenting_prototype_one.adapter.SalaryAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Bonus_List_Detail extends AppCompatActivity {
     private RecyclerView employeeDataView, test1, test2;

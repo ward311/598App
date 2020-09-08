@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one.adapter;
+package com.example.homerenting_prototype_one.helper;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,16 +11,27 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.SwipeDeleteAdapter;
+import com.example.homerenting_prototype_one.adapter.TextAdapter;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class RecyclerViewAction extends ItemTouchHelper.Callback {
     Context context;
-    SwipeDeleteAdapter adapter;
+    SwipeDeleteAdapter s_adapter;
+    TextAdapter t_adapter;
+    int current = 0;
 
     public RecyclerViewAction(Context context, SwipeDeleteAdapter adapter){
         this.context = context;
-        this.adapter = adapter;
+        s_adapter = adapter;
+        current = 1;
+    }
+
+    public RecyclerViewAction(Context context, TextAdapter adapter){
+        this.context = context;
+        t_adapter = adapter;
+        current = 2;
     }
 
     @Override
@@ -41,13 +52,28 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
         builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                adapter.deleteItem(position);
+                switch (current) {
+                    case 1:
+                        s_adapter.deleteItem(position);
+                        break;
+                    case 2:
+                        t_adapter.deleteItem(position);
+                        break;
+                }
+
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                adapter.notifyItemChanged(position);
+                switch (current) {
+                    case 1:
+                        s_adapter.notifyItemChanged(position);
+                        break;
+                    case 2:
+                        t_adapter.notifyItemChanged(position);
+                        break;
+                }
             }
         });
         AlertDialog dialog = builder.create();

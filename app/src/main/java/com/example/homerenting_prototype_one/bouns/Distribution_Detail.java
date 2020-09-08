@@ -1,14 +1,16 @@
-package com.example.homerenting_prototype_one.system;
+package com.example.homerenting_prototype_one.bouns;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import com.example.homerenting_prototype_one.adapter.DistributionAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
+import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import okhttp3.Call;
@@ -59,6 +63,8 @@ public class Distribution_Detail extends AppCompatActivity {
 
     private ArrayList<String> staffs, staffIds;
     private ArrayList<Integer> salaries;
+    private String salaryStr;
+    int net;
 
     private Context context = this;
 
@@ -90,6 +96,7 @@ public class Distribution_Detail extends AppCompatActivity {
 
         staffs = new ArrayList<>();
         staffIds = new ArrayList<>();
+        salaries = new ArrayList<>();
 
         //傳值
         String function_name = "order_detail";
@@ -162,6 +169,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         staffs.add(staff_assign.getString("staff_name"));
                         staffIds.add(staff_assign.getString("staff_id"));
                     }
+                    initSalaries();
 
                     //顯示資料
                     runOnUiThread(new Runnable() {
@@ -198,6 +206,15 @@ public class Distribution_Detail extends AppCompatActivity {
             }
         });
 
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0; i < distributionAdapter.getItemCount(); i++){
+                    getItem(i);
+                }
+            }
+        }, 3000);
 
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -210,12 +227,7 @@ public class Distribution_Detail extends AppCompatActivity {
         checkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int total = 0, i;
-                salaries = new ArrayList<>();
-                for(i = 0; i < salaries.size(); i++){
-                    total = total + salaries.get(i);
-                }
-                if(total > Integer.parseInt(fee)){
+                if(net < 0){
                     Toast.makeText(context, "工錢總額大於搬家費用", Toast.LENGTH_LONG).show();
                 }
                 else{
@@ -228,7 +240,8 @@ public class Distribution_Detail extends AppCompatActivity {
                             startActivity(intent);
                         }
                     }, 1000);
-                    Toast.makeText(context, "total:"+total+"(fee"+fee+")", Toast.LENGTH_LONG).show();
+//                    int total = Integer.parseInt(fee) - net;
+//                    Toast.makeText(context, "total bouns: "+total+"(fee: "+fee+")", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -269,5 +282,60 @@ public class Distribution_Detail extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
+    }
+
+    private void initSalaries(){
+        for(int i = 0; i < staffs.size(); i++){
+            salaries.add(0);
+        }
+    }
+
+    private void getItem(final int position){
+        View view = salaryDistribution.getLayoutManager().findViewByPosition(position);
+        if(view != null){
+//                    feeText.setText("null");
+            final EditText salaryText = view.findViewById(R.id.salary_DI);
+            salaryText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    int salary = 0;
+                    salaryStr = salaryText.getText().toString();
+                    if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr);
+                    salaries.set(position, salary);
+                    setFeeText();
+                }
+            });
+        }
+        else{
+            feeText.setText(fee+"("+position+" null)");
+        }
+    }
+
+    private void setFeeText(){
+        int total = 0;
+        for(int i = 0; i < salaries.size(); i++){
+            total = total + salaries.get(i);
+        }
+        net = Integer.parseInt(fee) - total;
+        if(total == 0){
+            feeText.setText(fee);
+        }
+        else{
+            double percentage = 100;
+            if(net != 0) percentage = (net/(double)Integer.parseInt(fee))*100;
+            DecimalFormat df = new DecimalFormat("0.00");
+            String p = df.format(percentage);
+            feeText.setText(fee+" - "+total+" = "+net+"("+p+"%)");
+        }
     }
 }

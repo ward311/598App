@@ -1,15 +1,10 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.system;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,11 +13,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.homerenting_prototype_one.BuildConfig;
+import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
+import com.example.homerenting_prototype_one.adapter.TextAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,8 +45,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
-import static com.example.homerenting_prototype_one.show.global_function.getDate;
-import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 public class System_Data extends AppCompatActivity {
 
@@ -53,32 +53,45 @@ public class System_Data extends AppCompatActivity {
 //    public String[] cars = {"3.5噸平斗車NRT-134","3.5噸平斗車HWE-353","3.5噸平斗車ITE-774","3.5噸平斗車BTU-255","3.5噸箱型車YEU-712",
 //            "3.5噸箱型車NKC-456","3.5噸箱型車ZXE-654","7.7噸箱型車RSF-673","7.7噸箱型車ESF-553","7.7噸箱型車KMS-352"};
     public ListView employee_list, car_list;
+    private RecyclerView employeeRList, carRList;
+
     private List<String> employee_aList, car_aList;
+    private ArrayList<String[]> employees, vehicles;
     private ArrayList<String> new_employee;
 
 
     Context context = this;
     String TAG = "System_Data";
-    OkHttpClient okHttpClient = new OkHttpClient();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system__data);
         employee_list = findViewById(R.id.employee_list);
         car_list = findViewById(R.id.car_list);
+        employeeRList = findViewById(R.id.employee_rv_STD);
+        carRList = findViewById(R.id.car_rv_STD);
+
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
+
         TextView employee_text = findViewById(R.id.employee_bar);
         TextView car_text = findViewById(R.id.car_bar);
+
         Button addEmployee_btn = findViewById(R.id.add_employee_btn);
         Button addCar_btn = findViewById(R.id.add_car_btn);
+
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
+        employees = new ArrayList<>();
+        vehicles = new ArrayList<>();
         new_employee = new ArrayList<>();
 
+        getData();
+
+        /*
         employee_aList = new ArrayList<>();
         car_aList = new ArrayList<>();
         employee_aList.add( "王小明" );
@@ -149,6 +162,21 @@ public class System_Data extends AppCompatActivity {
                         .show();
             }
         } );
+*/
+
+        TextAdapter e_adapter = new TextAdapter(employees);
+        employeeRList.setLayoutManager(new LinearLayoutManager(context));
+        employeeRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        employeeRList.setAdapter(e_adapter);
+        ItemTouchHelper ehelper = new ItemTouchHelper(new RecyclerViewAction(context, e_adapter));
+        ehelper.attachToRecyclerView(employeeRList);
+
+//        TextAdapter c_adapter = new TextAdapter(vehicles);
+//        carRList.setLayoutManager(new LinearLayoutManager(context));
+//        carRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+//        carRList.setAdapter(e_adapter);
+//        ItemTouchHelper chelper = new ItemTouchHelper(new RecyclerViewAction(context, c_adapter));
+//        chelper.attachToRecyclerView(carRList);
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +204,8 @@ public class System_Data extends AppCompatActivity {
 
         final EditText employee_edit = new EditText(this);
         final EditText car_edit = new EditText(this);
+
+        /*
         addEmployee_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,6 +251,9 @@ public class System_Data extends AppCompatActivity {
                         .show();
             }
         });
+         */
+
+
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,6 +291,81 @@ public class System_Data extends AppCompatActivity {
         });
     }
 
+    private void getData(){
+        String function_name = "staff-vehicle_data";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                //Log.d(TAG,"responseData"+responseData); //顯示資料
+
+                try {
+                    //轉換成json格式，array或object
+                    final JSONArray responseArr = new JSONArray(responseData);
+                    //Log.i(TAG,"responseObj: "+ responseArr);
+
+                    //一筆一筆的取JSONArray中的json資料
+                    int i;
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject staff = responseArr.getJSONObject(i);
+                        if (!staff.has("staff_id")) break;
+                        Log.i(TAG, "staff: " + staff);
+
+                        //取欄位資料
+                        String staff_id = staff.getString("staff_id");
+                        String staff_name = staff.getString("staff_name");
+                        String[] row_data = {staff_id, staff_name};
+                        employees.add(row_data);
+                    }
+
+                    for (; i < responseArr.length(); i++) {
+                        JSONObject vehicle = responseArr.getJSONObject(i);
+                        if (!vehicle.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle: " + vehicle);
+
+                        //取欄位資料
+                        String vehicle_id = vehicle.getString("vehicle_id");
+                        String plate_num = vehicle.getString("plate_num");
+                        String[] row_data = {vehicle_id, plate_num};
+                        vehicles.add(row_data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     private void add_employee(String employee_name){
         String function_name = "order_detail";
         String company_id = getCompany_id(this);
@@ -272,6 +380,7 @@ public class System_Data extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

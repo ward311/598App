@@ -20,7 +20,7 @@
         <activity android:name=".calendar.Calendar"/>
 
         <!--Order-->
-        <activity android:name=".add_order.Add_Order"/>
+        <activity android:name=".bouns.Distribution_Detail"/>
         <activity android:name=".order.Order_Booking"/>
         <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Order_Cancel"/>
@@ -47,16 +47,18 @@
         <activity android:name=".schedule.Schedule_Detail"/>
 
         <!--Add Order-->
+        <activity android:name=".add_order.Add_Order"/>
         <activity android:name=".add_order.Add_Valuation"/>
 
         <!--System-->
         <activity android:name=".system.System"/>
-        <activity android:name=".system.System_Bonus"/>
-        <activity android:name=".system.Bonus_View" />
-        <activity android:name=".system.Bonus_Distribution"/>
-        <activity android:name=".system.Distribution_Detail"/>
-        <activity android:name=".system.Bonus_List"/>
-        <activity android:name=".system.Bonus_List_Detail"/>
+
+        <!--Bouns-->
+        <activity android:name=".bouns.System_Bonus"/>
+        <activity android:name=".bouns.Bonus_View" />
+        <activity android:name=".bouns.Bonus_Distribution"/>
+        <activity android:name=".bouns.Bonus_List"/>
+        <activity android:name=".bouns.Bonus_List_Detail"/>
 
         <!--Setting-->
         <activity android:name=".setting.Setting"/>
@@ -74,7 +76,7 @@
         <activity android:name=".Setting_Information" />
         <activity android:name=".System_Vacation" />
         <activity android:name=".System_Schedule" />
-        <activity android:name=".System_Data" />
+        <activity android:name=".system.System_Data" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
         <activity android:name=".order.Order">
