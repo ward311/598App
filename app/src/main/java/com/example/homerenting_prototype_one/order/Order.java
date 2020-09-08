@@ -4,16 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -22,12 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.adapter.RecyclerViewAction;
+import com.example.homerenting_prototype_one.adapter.NoDataRecyclerAdapter;
+import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.adapter.SwipeDeleteAdapter;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.ListAdapter;
-import com.example.homerenting_prototype_one.adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
@@ -58,7 +55,6 @@ import static com.example.homerenting_prototype_one.show.global_function.getStar
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getwCount;
-import static com.example.homerenting_prototype_one.show.global_function.removeNew;
 import static com.example.homerenting_prototype_one.show.global_function.setwCount;
 
 public class Order extends AppCompatActivity {
@@ -98,7 +94,7 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        setwCount(getwCount()-1);
+//        setwCount(getwCount()-1);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getOrder();
@@ -269,8 +265,9 @@ public class Order extends AppCompatActivity {
                         public void run() {
                             if(responseData.equals("null")){
                                 Log.d(TAG, "NO DATA");
-                                NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
+                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                                orderRList.setLayoutManager(new LinearLayoutManager(context));
+                                orderRList.setAdapter(noDataAdapter);
                             }
                             //else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
@@ -293,9 +290,10 @@ public class Order extends AppCompatActivity {
             @Override
             public void run() {
                 orderRList.setLayoutManager(new LinearLayoutManager(context));
-                orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+                orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
                 orderRList.setAdapter(adapter);
 
+                //側滑刪除
                 ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
                 helper.attachToRecyclerView(orderRList);
             }

@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.homerenting_prototype_one.system.Bonus_List_Detail;
+import com.example.homerenting_prototype_one.bouns.Bonus_List_Detail;
 
 import java.util.List;
 

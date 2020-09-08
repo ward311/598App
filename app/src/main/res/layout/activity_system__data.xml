@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".System_Data">
+    tools:context=".system.System_Data">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -60,12 +60,27 @@
         android:layout_height="0dp"
         android:layout_weight="7"
         android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/employee_rv_STD"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/car_rv_STD"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="gone" />
+
         <ListView
             android:id="@+id/employee_list"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:visibility="visible"/>
+            android:visibility="gone" />
         <ListView
             android:id="@+id/car_list"
             android:layout_width="0dp"

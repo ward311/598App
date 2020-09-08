@@ -64,9 +64,9 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
         holder.phone_text.setText(data.get(position)[i++]);
         holder.address_text.setText(data.get(position)[i++]);
         if(data.get(position)[i++].equals("0")) {
-            holder.add_icon.setVisibility(View.VISIBLE);
+            holder.add_text.setVisibility(View.VISIBLE);
         }
-        else holder.add_icon.setVisibility(View.GONE);
+        else holder.add_text.setVisibility(View.GONE);
 
         //icon zone
         if(!data.get(position)[i++].equals("1") || Arrays.asList(data.get(position)).contains("done_today"))
@@ -97,9 +97,6 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }
-                else{ //我也不知道為什麼要有這個else才能正常運作ㄟ，不然都會閃退
-//                    holder.name_text.setText("ooooo");
-                }
             }
         });
     }
@@ -118,7 +115,7 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
         View view;
         LinearLayout item_layout;
         LinearLayout time_layout, main_layout;
-        TextView date_text, time_text, name_text, gender_text, phone_text, address_text;
+        TextView date_text, time_text, name_text, gender_text, add_text, phone_text, address_text;
         ImageView add_icon, new_icon;
 
         public ViewHolder(@NonNull View itemView) {
@@ -130,8 +127,9 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
             date_text = itemView.findViewById(R.id.month_date_text);
             time_text = itemView.findViewById(R.id.time_text);
             name_text = itemView.findViewById(R.id.name_text);
-            add_icon = itemView.findViewById(R.id.add_icon);
             gender_text = itemView.findViewById(R.id.gender_text);
+            add_icon = itemView.findViewById(R.id.add_icon);
+            add_text = itemView.findViewById(R.id.add_text);
             phone_text = itemView.findViewById(R.id.phone_text);
             address_text = itemView.findViewById(R.id.address_text);
             new_icon = itemView.findViewById(R.id.new_icon_img);
