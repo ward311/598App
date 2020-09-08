@@ -135,16 +135,9 @@ public class Bonus_View extends AppCompatActivity {
             }
         } );
         dialog.getWindow().setLayout( 1400,2000 );
+        dialog.setCanceledOnTouchOutside(true); //點其他地方也能取消
         dialog.show();
 
-        //點其他地方也能取消
-        LinearLayout BV = findViewById(R.id.bonusView_BV);
-        BV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
 
         chartBtn.setOnClickListener( new View.OnClickListener() {
             @Override

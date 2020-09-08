@@ -16,7 +16,7 @@
         <!--Main-->
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".main.Login"/>
-        <activity android:name=".system.System_Data"/>
+        <activity android:name=".main.New_Login"/>
         <activity android:name=".calendar.Calendar"/>
 
         <!--Order-->
@@ -79,7 +79,7 @@
         <activity android:name=".System_Schedule" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
-        <activity android:name=".main.New_Login">
+        <activity android:name=".system.System_Data">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
