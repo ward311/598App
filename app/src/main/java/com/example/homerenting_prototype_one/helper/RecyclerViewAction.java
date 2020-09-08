@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -21,6 +22,7 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
     SwipeDeleteAdapter s_adapter;
     TextAdapter t_adapter;
     int current = 0;
+    String TAG = "RecyclerViewAction";
 
     public RecyclerViewAction(Context context, SwipeDeleteAdapter adapter){
         this.context = context;
@@ -48,16 +50,18 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getAdapterPosition();
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("確定要刪除此訂單?");
+        builder.setMessage("確定要刪除?");
         builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (current) {
                     case 1:
                         s_adapter.deleteItem(position);
+                        Log.d(TAG, "SwipeAdapter");
                         break;
                     case 2:
                         t_adapter.deleteItem(position);
+                        Log.d(TAG, "TextAdapter");
                         break;
                 }
 

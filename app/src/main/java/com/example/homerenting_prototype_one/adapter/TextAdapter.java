@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 
 public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
     private ArrayList<String[]> data;
+    private String TAG = "TextAdapter";
 
     public TextAdapter(ArrayList<String[]> data){
         this.data = data;
@@ -39,9 +41,10 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
     public void deleteItem(int position){
         data.remove(position);
         notifyItemRemoved(position);
+        Log.d(TAG, "delete");
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView item;
 
         public ViewHolder(@NonNull View itemView) {
