@@ -2,6 +2,9 @@ package com.example.homerenting_prototype_one.schedule;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -82,14 +85,13 @@ public class New_Schedule_Detail extends AppCompatActivity {
         cars_text = new ArrayList<>();
         cars = new ArrayList<>();
 
-//        bundle = getIntent().getExtras();
-//        order_id = bundle.getString("order_id");
-        order_id = "67";
+        bundle = getIntent().getExtras();
+        order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
 
         getOrder();
-/*        getChip();
+        getChip();
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +187,6 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
             }
         });
-*/
 
 
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
@@ -349,7 +350,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
             }
         });
     }
-/*
+
     private void getChip(){
         String function_name = "staff-vehicle_data";
         RequestBody body = new FormBody.Builder()
@@ -389,6 +390,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
                     //一筆一筆的取JSONArray中的json資料
                     int i;
+                    final int chipSize = 16;
                     for (i = 0; i < responseArr.length(); i++) {
                         JSONObject staff = responseArr.getJSONObject(i);
                         if(!staff.has("staff_id")) break;
@@ -401,33 +403,40 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                //在staffGroup底下新增chip，加入ID和Tag
                                 final Chip chip = new Chip(staffGroup.getContext());
                                 chip.setId(Integer.parseInt(staff_id));
                                 chip.setTag(Integer.parseInt(staff_id));
-                                chip.setText(staff_name);
-                                chip.setCheckable(true);
-                                if(staffs_text.contains(staff_name)) chip.setChecked(true);
-                                chip.setTextSize(18);
+
+                                chip.setText(staff_name); //顯示員工姓名
+                                chip.setCheckable(true); //可點擊
+
+                                if(staffs_text.contains(staff_name)) chip.setChecked(true); //把本單有的員工列為已點擊
+                                chip.setTextSize(chipSize); //文字的大小
+
+                                //選擇chip的模式:choice
                                 ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(staffGroup.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Choice);
                                 chip.setChipDrawable(chipDrawable);
+
+                                //點擊chip
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                         int tag = (int) buttonView.getTag();
                                         String sname = chip.getText().toString();
-                                        if(isChecked){
+                                        if(isChecked){ //取消選擇
                                             staffs.add(tag);
                                             if(!staffs_text.contains(staff_name))
                                                 staffs_text.add(sname);
                                         }
-                                        else{
+                                        else{ //加入選擇
                                             staffs.remove(new Integer(tag));
                                             staffs_text.remove(sname);
                                         }
                                         Log.i(TAG, "click chip: " + sname);
                                         Log.i(TAG, "staffs_text: " + staffs_text);
                                         Log.i(TAG, "staffs: " + staffs);
-                                        setStaffText();
+                                        setStaffText(); //顯示在上方已選擇員工列
                                     }
                                 });
                                 staffGroup.addView(chip);
@@ -453,7 +462,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                                 chip.setText(plate_num);
                                 chip.setCheckable(true);
                                 if(cars_text.contains(plate_num)) chip.setChecked(true);
-                                chip.setTextSize(18);
+                                chip.setTextSize(chipSize);
                                 ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(carGroup.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Choice);
                                 chip.setChipDrawable(chipDrawable);
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -506,5 +515,4 @@ public class New_Schedule_Detail extends AppCompatActivity {
             car = car + cars_text.get(i) + " ";
         carText.setText(car);
     }
-    */
 }
