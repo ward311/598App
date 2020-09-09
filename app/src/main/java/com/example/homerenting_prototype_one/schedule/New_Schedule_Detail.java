@@ -54,35 +54,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
 
-    TextView titleText;
-    TextView nameText;
-    TextView nameTitleText;
-    TextView movingDateText;
-    TextView fromAddressText;
-    TextView toAddressText;
-    TextView staffText;
-    TextView carText;
+    TextView titleText, nameText, nameTitleText, movingDateText, fromAddressText, toAddressText;
+    TextView staffText, carText;
 
     ImageButton backBtn, lastBtn, nextBtn;
     Button submitBtn;
 
-    String title;
-    String name;
-    String nameTitle;
-    String contact_address;
-    String movingDate;
-    String fromAddress;
-    String toAddress;
-    String staff;
-    String car;
+    String name, nameTitle, movingDate, fromAddress, toAddress;
+    String staff, car;
 
     ChipGroup staffGroup;
     ChipGroup carGroup;
 
-    ArrayList<String> staffs_text;
-    ArrayList<Integer> staffs;
-    ArrayList<String> cars_text;
-    ArrayList<Integer> cars;
+    ArrayList<String> staffs_text, cars_text;
+    ArrayList<Integer> staffs, cars;
 
     Context context = this;
 
@@ -97,13 +82,14 @@ public class New_Schedule_Detail extends AppCompatActivity {
         cars_text = new ArrayList<>();
         cars = new ArrayList<>();
 
-        bundle = getIntent().getExtras();
-        order_id = bundle.getString("order_id");
+//        bundle = getIntent().getExtras();
+//        order_id = bundle.getString("order_id");
+        order_id = "67";
 
         linking(); //將xml裡的元件連至此java
-/*
+
         getOrder();
-        getChip();
+/*        getChip();
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,7 +248,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         nextBtn = findViewById(R.id.next_imgBtn_SD);
         submitBtn = findViewById(R.id.submit_SD);
     }
-/*
+
     private void getOrder(){
         String function_name = "order_detail";
         String company_id = getCompany_id(this);
@@ -308,8 +294,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     String gender = order.getString("gender");
                     if(gender.equals("female")) nameTitle = "小姐";
                     else if(gender.equals("male")) nameTitle = "先生";
-                    else nameTitle = "";
-                    contact_address = order.getString("contact_address");
+                    else nameTitle = "客戶";
                     movingDate = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
@@ -364,7 +349,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
             }
         });
     }
-
+/*
     private void getChip(){
         String function_name = "staff-vehicle_data";
         RequestBody body = new FormBody.Builder()

@@ -24,6 +24,7 @@
         <activity android:name=".order.Order_Booking"/>
         <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Order_Cancel"/>
+        <activity android:name=".order.Order_Detail"/>
         <activity android:name=".order.Today_Detail"/>
 
         <!--Valuation-->
@@ -42,7 +43,6 @@
         <activity android:name=".furniture.Edit_Furniture"/>
 
         <!--Schedule-->
-        <activity android:name=".schedule.New_Schedule_Detail"/>
         <activity android:name=".schedule.Schedule_Detail"/>
 
         <!--Add Order-->
@@ -79,7 +79,7 @@
         <activity android:name=".System_Schedule" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
-        <activity android:name=".order.Order_Detail">
+        <activity android:name=".schedule.New_Schedule_Detail">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
