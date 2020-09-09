@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one.adapter;
+package com.example.homerenting_prototype_one.adapter.base_adapter;
 
 import android.content.Context;
 import android.util.Log;

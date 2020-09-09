@@ -84,24 +84,24 @@ public class New_Schedule_Detail extends AppCompatActivity {
     ArrayList<String> cars_text;
     ArrayList<Integer> cars;
 
-    Context context;
+    Context context = this;
 
     String TAG = "New_Schedule_Detail";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_schedule_detail);
+        setContentView(R.layout.activity_new_schedule_detail);
+
         staffs_text = new ArrayList<>();
         staffs = new ArrayList<>();
         cars_text = new ArrayList<>();
         cars = new ArrayList<>();
-        context = New_Schedule_Detail.this;
 
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
-
+/*
         getOrder();
         getChip();
 
@@ -199,7 +199,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
             }
         });
-
+*/
 
 
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
@@ -243,10 +243,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
+
     }
 
     private void linking() {
-        titleText = findViewById(R.id.title_SD);
+        titleText = findViewById(R.id.title_nSD);
         nameText = findViewById(R.id.name_SD);
         nameTitleText = findViewById(R.id.nameTitle_SD);
         movingDateText = findViewById(R.id.date_SD);
@@ -261,7 +262,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         nextBtn = findViewById(R.id.next_imgBtn_SD);
         submitBtn = findViewById(R.id.submit_SD);
     }
-
+/*
     private void getOrder(){
         String function_name = "order_detail";
         String company_id = getCompany_id(this);
@@ -520,4 +521,5 @@ public class New_Schedule_Detail extends AppCompatActivity {
             car = car + cars_text.get(i) + " ";
         carText.setText(car);
     }
+    */
 }

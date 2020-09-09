@@ -21,7 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.adapter.FurnitureAdapter;
+import com.example.homerenting_prototype_one.adapter.base_adapter.FurnitureAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.add_order.Add_Order;
 import com.example.homerenting_prototype_one.setting.Setting;

@@ -97,12 +97,13 @@ public class Order_Detail extends AppCompatActivity {
 
         linking(); //將xml裡的元件連至此java
 
-        bundle = getIntent().getExtras();
-        order_id = bundle.getString("order_id");
-        if(bundle.getBoolean("btn")){
-            call_btn.setVisibility(View.GONE);
-            check_btn.setVisibility(View.GONE);
-        }
+//        bundle = getIntent().getExtras();
+//        order_id = bundle.getString("order_id");
+//        if(bundle.getBoolean("btn")){
+//            call_btn.setVisibility(View.GONE);
+//            check_btn.setVisibility(View.GONE);
+//        }
+        order_id = "67";
 
 
         //傳值

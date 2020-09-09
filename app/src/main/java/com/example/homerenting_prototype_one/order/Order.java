@@ -19,12 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.adapter.NoDataRecyclerAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
 import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
-import com.example.homerenting_prototype_one.adapter.SwipeDeleteAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
-import com.example.homerenting_prototype_one.adapter.ListAdapter;
+import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
@@ -94,7 +94,7 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-//        setwCount(getwCount()-1);
+        setwCount(getwCount()-3);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getOrder();

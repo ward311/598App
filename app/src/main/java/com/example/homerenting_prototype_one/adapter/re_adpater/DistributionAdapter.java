@@ -1,11 +1,10 @@
-package com.example.homerenting_prototype_one.adapter;
+package com.example.homerenting_prototype_one.adapter.re_adpater;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 

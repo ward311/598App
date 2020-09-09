@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -29,12 +29,12 @@
         android:id="@+id/TodayDate_SD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginLeft="96dp"
-        android:text="TextView"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:text="06.30"
         android:textColor="#19B0ED"
         app:layout_constraintBottom_toBottomOf="@+id/title_SD"
-        app:layout_constraintStart_toStartOf="@+id/title_SD"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="@+id/title_SD"
         app:layout_constraintVertical_bias="0.484" />
 
@@ -53,24 +53,23 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
-        android:layout_width="342dp"
-        android:layout_height="272dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/addorder_btn_drawable"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/title_SD">
 
         <TableLayout
             android:id="@+id/tableLayout"
-            android:layout_width="282dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginRight="30dp"
             android:background="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/next_imgBtn_SD"
+            app:layout_constraintStart_toStartOf="@id/guideline16"
             app:layout_constraintTop_toTopOf="parent">
 
             <TableRow
@@ -82,7 +81,7 @@
                     android:id="@+id/name_SD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:text="人名"
                     android:textColor="#FFFFFF"
                     android:textSize="30sp" />
 
@@ -90,7 +89,7 @@
                     android:id="@+id/nameTitle_SD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:text="稱謂"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
             </TableRow>
@@ -173,6 +172,8 @@
             android:scaleType="centerCrop"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline16"
+            app:layout_constraintEnd_toStartOf="@+id/tableLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -195,30 +196,17 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="30dp" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline17"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="190dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="240dp" />
-
         <TextView
             android:id="@+id/staff_text"
             android:layout_width="88dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:height="30dp"
             android:gravity="center_vertical"
             android:text="派遣人員"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toTopOf="@+id/guideline17"
-            app:layout_constraintStart_toStartOf="@+id/guideline16" />
+            app:layout_constraintStart_toStartOf="@+id/guideline16"
+            app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
         <TextView
             android:id="@+id/staff_SD"
@@ -226,19 +214,21 @@
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toTopOf="@+id/guideline17"
-            app:layout_constraintStart_toEndOf="@+id/staff_text" />
+            app:layout_constraintBottom_toBottomOf="@+id/staff_text"
+            app:layout_constraintStart_toEndOf="@+id/staff_text"
+            app:layout_constraintTop_toTopOf="@+id/staff_text" />
 
         <TextView
             android:id="@+id/vehicle_text"
             android:layout_width="88dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:height="30dp"
             android:gravity="center_vertical"
             android:text="派遣車輛"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toTopOf="@+id/guideline18"
-            app:layout_constraintStart_toStartOf="@+id/guideline16" />
+            app:layout_constraintStart_toStartOf="@+id/guideline16"
+            app:layout_constraintTop_toBottomOf="@+id/staff_text" />
 
         <TextView
             android:id="@+id/car_SD"
@@ -246,16 +236,18 @@
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toTopOf="@+id/guideline18"
-            app:layout_constraintStart_toEndOf="@+id/vehicle_text" />
+            app:layout_constraintBottom_toBottomOf="@+id/vehicle_text"
+            app:layout_constraintStart_toEndOf="@+id/vehicle_text"
+            app:layout_constraintTop_toTopOf="@+id/vehicle_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="342dp"
-        android:layout_height="250dp"
-        android:layout_marginTop="24dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
@@ -311,13 +303,24 @@
             app:layout_constraintTop_toTopOf="@+id/guideline13">
 
             <com.google.android.material.chip.ChipGroup
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:id="@+id/staffCG_SD"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="415dp">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip14"
+                    android:id="@+id/chip1"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="test"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
 
@@ -339,140 +342,155 @@
             app:layout_constraintTop_toTopOf="@+id/guideline14">
 
             <com.google.android.material.chip.ChipGroup
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:id="@+id/carCG_SD"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                tools:layout_editor_absoluteX="85dp"
+                tools:layout_editor_absoluteY="370dp">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip17"
+                    android:id="@+id/chip6"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="false"
+                    android:text="test6"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textSize="18sp"
+                    android:visibility="gone"
+                    app:checkedIconVisible="false" />
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:background="#F2F2F2"
-    android:orientation="horizontal"
-    app:layout_constraintBottom_toBottomOf="parent">
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:background="#F2F2F2"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageButton
-            android:id="@+id/valuationBlue_Btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#00000000"
-            android:scaleType="centerCrop"
-            android:src="@drawable/valuation" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="估價單"
-            android:textColor="#D5D5D5"
-            android:textSize="10sp" />
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/valuationBlue_Btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="#00000000"
+                android:scaleType="centerCrop"
+                android:src="@drawable/valuation" />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="估價單"
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/order_imgBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#00000000"
-            android:scaleType="centerCrop"
-            android:src="@drawable/order" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="訂單"
-            android:textColor="#D5D5D5"
-            android:textSize="10sp" />
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/order_imgBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="#00000000"
+                android:scaleType="centerCrop"
+                android:src="@drawable/order" />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="訂單"
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/calendar_imgBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#00000000"
-            android:scaleType="centerCrop"
-            android:src="@drawable/calendar_btn_drawable" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="行事曆"
-            android:textColor="#D5D5D5"
-            android:textSize="10sp" />
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/calendar_imgBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="#00000000"
+                android:scaleType="centerCrop"
+                android:src="@drawable/calendar_btn_drawable" />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="行事曆"
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/system_imgBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#00000000"
-            android:scaleType="centerCrop"
-            android:src="@drawable/system_blue" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="人事系統"
-            android:textColor="#19B0ED"
-            android:textSize="10sp" />
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/system_imgBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="#00000000"
+                android:scaleType="centerCrop"
+                android:src="@drawable/system_blue" />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="人事系統"
+                android:textColor="#19B0ED"
+                android:textSize="10sp" />
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/setting_imgBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#00000000"
-            android:scaleType="centerCrop"
-            android:src="@drawable/setting_btn_drawable" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="我的系統"
-            android:textColor="#D5D5D5"
-            android:textSize="10sp" />
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/setting_imgBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="#00000000"
+                android:scaleType="centerCrop"
+                android:src="@drawable/setting_btn_drawable" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我的系統"
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -483,11 +501,11 @@
         app:layout_constraintGuide_percent="0.0729927" />
 
     <androidx.constraintlayout.widget.Guideline
-    android:id="@+id/guideline7"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    app:layout_constraintGuide_end="30dp" />
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.92" />
 
     <Button
         android:id="@+id/submit_SD"
@@ -496,6 +514,7 @@
         android:background="@drawable/addorder_btn_drawable"
         android:text="送出"
         android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />

@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.system.System;
-import com.example.homerenting_prototype_one.adapter.FurnitureAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
 import com.example.homerenting_prototype_one.order.Order;

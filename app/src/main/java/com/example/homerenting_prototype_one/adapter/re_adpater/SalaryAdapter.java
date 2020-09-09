@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one.adapter;
+package com.example.homerenting_prototype_one.adapter.re_adpater;
 
 import android.view.LayoutInflater;
 import android.view.View;

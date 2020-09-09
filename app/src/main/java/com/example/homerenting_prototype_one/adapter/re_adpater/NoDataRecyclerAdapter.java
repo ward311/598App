@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one.adapter;
+package com.example.homerenting_prototype_one.adapter.re_adpater;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.R;

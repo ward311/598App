@@ -7,14 +7,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.adapter.SalaryAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.SalaryAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;

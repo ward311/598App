@@ -1,24 +1,20 @@
-package com.example.homerenting_prototype_one.adapter;
+package com.example.homerenting_prototype_one.adapter.re_adpater;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.order.Order_Detail;
 
 import java.util.ArrayList;
 import java.util.Arrays;

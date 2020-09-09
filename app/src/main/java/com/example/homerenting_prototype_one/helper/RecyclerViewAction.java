@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -12,8 +11,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.adapter.SwipeDeleteAdapter;
-import com.example.homerenting_prototype_one.adapter.TextAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.TextAdapter;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 

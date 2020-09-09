@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.adapter.MonthAdapter;
+import com.example.homerenting_prototype_one.adapter.base_adapter.MonthAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
