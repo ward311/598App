@@ -146,7 +146,6 @@ public class Bonus_View extends AppCompatActivity {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.bonus_dialog);
 
-//        setList(dialog);
         setBarChart(dialog);
 
         Button dialog_btn = dialog.findViewById(R.id.check_dialog_btn);
@@ -232,60 +231,5 @@ public class Bonus_View extends AppCompatActivity {
         salaries.add(55000);
         salaries.add(25000);
         return salaries;
-    }
-
-    private void setList(Dialog dialog){
-        double m = getMultiplier();
-
-        LinearLayout salaryChart = dialog.findViewById(R.id.salaryChart_LL_BD);
-        for(int i = 0; i < emp.size(); i++) {
-            LinearLayout rowSalaryChart = new LinearLayout(context); //新的員工薪資條
-            rowSalaryChart.setPadding(dip2px(context, 20), 0, 0, dip2px(context, 10));
-            {
-                TextView name = new TextView(context); //員工姓名
-                {
-                    name.setText(emp.get(i)[0]);
-                    name.setTextSize(20);
-                    LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 3);
-                    name.setLayoutParams(p);
-                }
-                rowSalaryChart.addView(name); //員工姓名加入薪資條
-
-                LinearLayout chart = new LinearLayout(context); //薪資區塊
-                {
-                    LinearLayout.LayoutParams p2 = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
-                    chart.setLayoutParams(p2);
-                    TextView salary = new TextView(context); //薪資文字
-                    {
-                        salary.setText(emp.get(i)[1]);
-                        int sa = Integer.parseInt(emp.get(i)[1]);
-                        int width = (int) Math.round(sa * m);
-                        Log.d(TAG, emp.get(i)[0] + "'s width: " + width + "(salary:" + sa + "/m:" + m + ")");
-                        salary.setWidth(dip2px(context, width));
-                        salary.setBackgroundColor(Color.parseColor("#FB8527"));
-                        salary.setTextColor(Color.parseColor("#FFFFFF"));
-                        salary.setTextSize(20);
-                    }
-                    chart.addView(salary); //薪資文字加入薪資區塊
-                }
-                rowSalaryChart.addView(chart); //薪資區塊加入薪資條
-            }
-            salaryChart.addView(rowSalaryChart); //新的薪資條加入圖表
-        }
-    }
-
-    private double getMultiplier(){
-        int maxSalary = 0;
-        for(int i = 0; i < emp.size(); i++){
-            if(Integer.parseInt(emp.get(i)[1]) > maxSalary){
-                maxSalary = Integer.parseInt(emp.get(i)[1]);
-            }
-        }
-
-        double multiplier = (double) 275/maxSalary;
-        Log.d(TAG, "muliplier: "+multiplier);
-        return multiplier;
     }
 }
