@@ -26,6 +26,7 @@ import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -160,7 +161,6 @@ public class Bonus_View extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(true); //點其他地方也能取消
         dialog.show();
 
-
         chartBtn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,20 +195,31 @@ public class Bonus_View extends AppCompatActivity {
         xAxis.setDrawGridLines(false); //取消垂直網格線
         xAxis.setTextSize(20); //標籤文字大小(sp)
 
+        YAxis yAxis = hBarChart.getAxisLeft();
+        yAxis.setSpaceTop(0f); //最高bar上方留空多少%
+        yAxis.setDrawAxisLine(false); //軸線顯示
+        yAxis.setDrawGridLines(false); //取消水平網格線
+//        yAxis.setDrawLabels(false); //Y軸標籤顯示
+        yAxis.setGranularity(getAverage());
+
+        LimitLine ll = new LimitLine(getAverage()); //平均線
+        ll.setLineColor(Color.parseColor("#19B0ED")); //線的顏色
+        ll.setLineWidth(2f); //線的寬度
+        yAxis.addLimitLine(ll); //加入平均線
+
         Legend legend = hBarChart.getLegend(); //圖例
         legend.setEnabled(false); //不顯示圖例
 
         hBarChart.getAxisRight().setEnabled(false); //取消右側(下方)Y軸
-        hBarChart.getAxisLeft().setEnabled(false); //取消左側(下方)Y軸
         hBarChart.getDescription().setEnabled(false); //不顯示描述文字
         hBarChart.setDrawValueAboveBar(false); //數值放在bar上方(true:above bar)或頂端(false:top)
+        hBarChart.setScaleEnabled(false); //不能縮放
 
         hBarChart.setData(barData); //圖表放入資料
     }
 
     private ArrayList getBarData(){
-        employee_names = set_employee_name();
-        salaries = set_salaries();
+        set_data();
 
         ArrayList<BarEntry> yValue = new ArrayList<>(); //資料List
         for(int x = 0; x < employee_names.size(); x++){
@@ -217,19 +228,32 @@ public class Bonus_View extends AppCompatActivity {
         return yValue;
     }
 
-    private ArrayList set_employee_name(){
-        employee_names = new ArrayList<>();
-        employee_names.add("");
-        employee_names.add("一號");
-        employee_names.add("二號");
-        return employee_names;
+    private float getAverage(){
+        float max = 0;
+        for(int i = 0; i < salaries.size(); i++) {
+            max = max + salaries.get(i);
+        }
+        float average = max / (salaries.size()-1);
+        return average;
     }
 
-    private ArrayList set_salaries(){
+    private void set_data(){
+        employee_names = new ArrayList<>();
+        employee_names.add("一號");
+        employee_names.add("二號");
+        employee_names.add("三號");
+        employee_names.add("四號");
+        employee_names.add("五號");
+        employee_names.add("六號");
+        employee_names.add("");
+
         salaries = new ArrayList<>();
-        salaries.add(0);
         salaries.add(55000);
         salaries.add(25000);
-        return salaries;
+        salaries.add(15000);
+        salaries.add(40000);
+        salaries.add(35000);
+        salaries.add(50000);
+        salaries.add(0);
     }
 }

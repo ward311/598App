@@ -151,6 +151,7 @@ public class Setting_Record extends AppCompatActivity {
                         Log.i(TAG,"order: "+order);
 
                         String date = order.getString("date");
+                        if(date.equals("null") || date.equals("0000-00-00")) continue;
                         String month = getMonth(date);
                         String year = getYear(date);
                         boolean check = false;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import java.util.List;
 public class RecordAdapter extends BaseAdapter implements View.OnClickListener {
     private Context context;
     ArrayList<String[]> data;
+    String TAG = "RecordAdapter";
 
     public RecordAdapter(ArrayList<String[]>data){
         this.data = data;
@@ -56,13 +58,15 @@ public class RecordAdapter extends BaseAdapter implements View.OnClickListener {
         }
         if (convertView==null){
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.record_item, null);
-            viewHolder = new RecordViewHolder();
-            viewHolder.record = convertView.findViewById(R.id.record_item_R);
-            viewHolder.day_text = convertView.findViewById(R.id.day_R);
-            viewHolder.name_text = convertView.findViewById(R.id.name_R);
-            viewHolder.status_text = convertView.findViewById(R.id.status_R);
-            convertView.setTag( viewHolder );
-        }
+          }
+        viewHolder = new RecordViewHolder();
+        viewHolder.record = convertView.findViewById(R.id.record_item_R);
+        viewHolder.day_text = convertView.findViewById(R.id.day_R);
+        viewHolder.day_text.setTag(position);
+        viewHolder.name_text = convertView.findViewById(R.id.name_R);
+        viewHolder.status_text = convertView.findViewById(R.id.status_R);
+        convertView.setTag( viewHolder );
+
         viewHolder.day_text.setText(data.get(position)[1]);
         viewHolder.name_text.setText(data.get(position)[2]);
         String status = "";

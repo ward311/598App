@@ -68,9 +68,9 @@ public class Record_Detail extends AppCompatActivity {
 
         data = new ArrayList<>();
 
-        Bundle bundle = getIntent().getExtras();
-        year = bundle.getString("year");
-        month = bundle.getString("month");
+//        Bundle bundle = getIntent().getExtras();
+        year = "2020";//bundle.getString("year");
+        month = "7";//bundle.getString("month");
 
         getOrder();
 
