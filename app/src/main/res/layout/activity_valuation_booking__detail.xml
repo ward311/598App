@@ -252,48 +252,56 @@
                         android:text="安排車輛"
                         android:textColor="#000000" />
 
-                    <EditText
-                        android:id="@+id/num_VBD"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.6"
-                        android:gravity="center"
-                        android:hint="數量"
-                        android:inputType="number" />
+                        android:layout_weight="3"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/textView9"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.3"
-                        android:gravity="center"
-                        android:text="輛" />
+                        <EditText
+                            android:id="@+id/num_VBD"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:hint="數量"
+                            android:inputType="number" />
 
-                    <EditText
-                        android:id="@+id/weight_VBD"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.6"
-                        android:gravity="center"
-                        android:hint="噸位"
-                        android:inputType="numberDecimal" />
+                        <TextView
+                            android:id="@+id/textView9"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="輛" />
 
-                    <TextView
-                        android:id="@+id/textView10"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="0.3"
-                        android:gravity="center"
-                        android:text="噸" />
+                        <EditText
+                            android:id="@+id/weight_VBD"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:hint="噸位"
+                            android:inputType="numberDecimal" />
 
-                    <EditText
-                        android:id="@+id/type_VBD"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.2"
-                        android:gravity="center"
-                        android:hint="車種"
-                        android:inputType="text" />
+                        <TextView
+                            android:id="@+id/textView10"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="噸" />
+
+                        <EditText
+                            android:id="@+id/type_VBD"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.75"
+                            android:gravity="center"
+                            android:hint="車種"
+                            android:inputType="text" />
+                    </LinearLayout>
+
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

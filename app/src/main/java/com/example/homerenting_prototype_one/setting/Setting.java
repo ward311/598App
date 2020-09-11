@@ -17,7 +17,6 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting_Announcement;
 import com.example.homerenting_prototype_one.Setting_Discount;
 import com.example.homerenting_prototype_one.Setting_Evaluation;
-import com.example.homerenting_prototype_one.Setting_Service;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -51,7 +50,7 @@ public class Setting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         LinearLayout company_information = findViewById(R.id.companyInfo_LL_S);
-        LinearLayout service_item = findViewById(R.id.serviceItem_linearLayout);
+        LinearLayout service_item = findViewById(R.id.serviceItem_LL_S);
         LinearLayout discount = findViewById(R.id.discount_linearLayout);
         LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_linearLayout);
         LinearLayout system_announcement = findViewById(R.id.systemAnnouncement_linearLayout);

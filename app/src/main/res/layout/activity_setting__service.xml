@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Setting_Service">
+    tools:context=".setting.Setting_Service">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -45,6 +45,7 @@
 <!--        android:textColor="#F58039"-->
 <!--        android:background="#FFFFFFFF"-->
 <!--        android:layout_gravity="right"/>-->
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -98,11 +99,12 @@
                             android:layout_height="wrap_content"
                             android:text="雲嘉南"
                             android:checked="false"/>
+
                         <CheckBox
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="高屏"
-                            android:checked="false"/>
+                            android:layout_height="match_parent"
+                            android:checked="false"
+                            android:text="高屏" />
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -125,57 +127,52 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="top|center_horizontal"
                         android:text="服務項目"
                         android:textColor="#000000"
-                        android:textSize="20sp"
-                        android:gravity="top|center_horizontal"
-                        android:layout_marginLeft="15dp"/>
-                    <Button
-                        android:id="@+id/add_item_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="新增選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#FB9825" />
-                    <Button
-                        android:id="@+id/delete_item_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="刪除選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#19B0ED" />
+                        android:textSize="20sp" />
+
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="個人搬遷"
-                            android:checked="true"/>
+                            android:checked="true"
+                            android:text="個人搬遷" />
+
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="家庭搬遷"
-                            android:checked="true"/>
+                            android:checked="true"
+                            android:text="家庭搬遷" />
+
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="企業搬遷"
-                            android:checked="true"/>
+                            android:checked="true"
+                            android:text="企業搬遷" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -184,12 +181,39 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="免動手搬家" />
+
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/new_item_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"/>
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/add_item_btn"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/ic_baseline_add_circle_outline_24"
+                            android:textColor="#FB9825" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/delete_item_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#FFFFFFFF"
+                            android:text="刪除選項"
+                            android:textColor="#19B0ED"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout

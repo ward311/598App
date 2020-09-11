@@ -69,7 +69,7 @@
         android:layout_height="1dp"
         android:background="#D5D5D5"/>
     <LinearLayout
-        android:id="@+id/serviceItem_linearLayout"
+        android:id="@+id/serviceItem_LL_S"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

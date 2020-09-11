@@ -74,7 +74,7 @@
         <activity android:name=".Setting_Announcement" />
         <activity android:name=".Setting_Evaluation" />
         <activity android:name=".Setting_Discount" />
-        <activity android:name=".Setting_Service" />
+        <activity android:name=".setting.Setting_Service" />
         <activity android:name=".System_Vacation" />
         <activity android:name=".System_Schedule" />
         <activity android:name=".ForgetPassword" />
