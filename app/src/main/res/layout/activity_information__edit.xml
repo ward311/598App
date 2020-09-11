@@ -53,7 +53,7 @@
             android:gravity="center_vertical"
             android:layout_marginLeft="15dp"/>
         <EditText
-            android:id="@+id/company_address_editText"
+            android:id="@+id/company_address_edit_SIF"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -75,7 +75,7 @@
             android:gravity="center_vertical"
             android:layout_marginLeft="15dp"/>
         <EditText
-            android:id="@+id/company_phone_editText"
+            android:id="@+id/company_phone_edit_SIF"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -97,7 +97,7 @@
             android:gravity="center_vertical"
             android:layout_marginLeft="15dp"/>
         <EditText
-            android:id="@+id/employee_number_editText"
+            android:id="@+id/employee_number_edit_SIF"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -119,7 +119,7 @@
             android:gravity="center_vertical"
             android:layout_marginLeft="15dp"/>
         <EditText
-            android:id="@+id/company_url_editText"
+            android:id="@+id/company_url_edit_SIF"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -156,7 +156,7 @@
         android:orientation="vertical"
         android:gravity="center">
         <Button
-            android:id="@+id/companyInformation_finished_btn"
+            android:id="@+id/companyInfo_finished_btn_SIF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="完成"

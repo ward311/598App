@@ -1,66 +1,248 @@
 package com.example.homerenting_prototype_one.setting;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+
 public class Setting_Information extends AppCompatActivity {
-    public TextView address_txt, phone_txt, number_txt, url_txt, email_text,line_text,idea_txt;
-    public EditText address_edit, phone_edit, number_edit, url_edit, email_edit, line_edit,idea_edit;
+    TextView address_text, phone_text, number_text, url_text, email_text, line_text, idea_text, companyIdea_text;
+    EditText address_edit, phone_edit, number_edit, url_edit, email_edit, line_edit,idea_edit;
+    Button edit_btn, finish_btn;
+    String address, phone, staff_num, url, email, line, idea;
+
+    String TAG = "Setting_Information";
+    Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting__information);
-        address_txt = findViewById(R.id.company_address_text);
-        phone_txt = findViewById(R.id.company_phone_text);
-        number_txt = findViewById(R.id.employee_number_text);
-        url_txt = findViewById(R.id.company_url_text);
-        email_text = findViewById(R.id.company_email_S);
-        line_text = findViewById(R.id.company_line_text);
-        idea_txt = findViewById(R.id.company_idea_text);
-        address_edit = findViewById(R.id.company_address_editText);
-        phone_edit = findViewById(R.id.company_phone_editText);
-        number_edit = findViewById(R.id.employee_number_editText);
-        url_edit = findViewById(R.id.company_url_editText);
-        email_edit = findViewById(R.id.company_email_editText);
-        line_edit = findViewById(R.id.company_line_editText);
+        address_text = findViewById(R.id.company_address_SIF);
+        phone_text = findViewById(R.id.company_phone_SIF);
+        number_text = findViewById(R.id.employee_number_SIF);
+        url_text = findViewById(R.id.company_url_SIF);
+        email_text = findViewById(R.id.company_email_SIF);
+        line_text = findViewById(R.id.company_line_SIF);
+        idea_text = findViewById(R.id.company_idea_SIF);
+        companyIdea_text = findViewById(R.id.companyIdea_text_SIF);
+
+        address_edit = findViewById(R.id.company_address_edit_SIF);
+        phone_edit = findViewById(R.id.company_phone_edit_SIF);
+        number_edit = findViewById(R.id.employee_number_edit_SIF);
+        url_edit = findViewById(R.id.company_url_edit_SIF);
+        email_edit = findViewById(R.id.company_email_edit_SIF);
+        line_edit = findViewById(R.id.company_line_edit_SIF);
         idea_edit = findViewById(R.id.company_idea_editText);
+
+        edit_btn = findViewById(R.id.infoEdit_btn_SIF);
+        finish_btn = findViewById(R.id.companyInfo_finished_btn_SIF);
+
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
+
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        getData();
+
+        edit_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                address = address_text.getText().toString();
+                phone = phone_text.getText().toString();
+                staff_num = number_text.getText().toString();
+                url = url_text.getText().toString();
+                email = email_text.getText().toString();
+                line = line_text.getText().toString();
+                idea = idea_text.getText().toString();
+
+                companyIdea_text.setGravity(Gravity.CENTER_VERTICAL);
+
+                address_edit.setHint(address);
+                phone_edit.setHint(phone);
+                number_edit.setHint(staff_num);
+                url_edit.setHint(url);
+                email_edit.setHint(email);
+                line_edit.setHint(line);
+                idea_edit.setHint(idea);
+
+                editMode();
+            }
+        });
+        finish_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!address_edit.getText().toString().equals("")) address = address_edit.getText().toString();
+                if(!phone_edit.getText().toString().equals("")) phone = phone_edit.getText().toString();
+                if(!number_edit.getText().toString().equals("")) staff_num = number_edit.getText().toString();
+                if(!url_edit.getText().toString().equals("")) url = url_edit.getText().toString();
+                if(!email_edit.getText().toString().equals("")) email = email_edit.getText().toString();
+                if(!line_edit.getText().toString().equals("")) line = line_edit.getText().toString();
+                if(!idea_edit.getText().toString().equals("")) idea = idea_edit.getText().toString();
+
+                companyIdea_text.setGravity(Gravity.TOP);
+
+                address_text.setText(address);
+                phone_text.setText(phone);
+                number_text.setText(staff_num+"人");
+                url_text.setText(url);
+                email_text.setText(email);
+                line_text.setText(line);
+                idea_text.setText(idea);
+
+                textMode();
+            }
+        });
+
+        globalNav();
+    }
+
+    private void getData(){
+        String function_name = "company_detail";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .build();
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    JSONObject company = responseArr.getJSONObject(0);
+
+                    address = company.getString("address");
+                    phone = company.getString("phone");
+                    staff_num = company.getString("staff_num");
+                    url = company.getString("url");
+                    email = company.getString("email");
+                    line = company.getString("line_id");
+                    idea = company.getString("philosophy");
+
+
+                    address_text.setText(address);
+                    phone_text.setText(phone);
+                    number_text.setText(staff_num+"人");
+                    url_text.setText(url);
+                    email_text.setText(email);
+                    line_text.setText(line);
+                    idea_text.setText(idea);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void editMode(){
+        address_text.setVisibility(View.GONE);
+        phone_text.setVisibility(View.GONE);
+        number_text.setVisibility(View.GONE);
+        url_text.setVisibility(View.GONE);
+        email_text.setVisibility(View.GONE);
+        line_text.setVisibility(View.GONE);
+        idea_text.setVisibility(View.GONE);
+        edit_btn.setVisibility(View.GONE);
+
+        address_edit.setVisibility(View.VISIBLE);
+        phone_edit.setVisibility(View.VISIBLE);
+        number_edit.setVisibility(View.VISIBLE);
+        url_edit.setVisibility(View.VISIBLE);
+        email_edit.setVisibility(View.VISIBLE);
+        line_edit.setVisibility(View.VISIBLE);
+        idea_edit.setVisibility(View.VISIBLE);
+        finish_btn.setVisibility(View.VISIBLE);
+    }
+
+    private void textMode(){
+        address_text.setVisibility(View.VISIBLE);
+        phone_text.setVisibility(View.VISIBLE);
+        number_text.setVisibility(View.VISIBLE);
+        url_text.setVisibility(View.VISIBLE);
+        email_text.setVisibility(View.VISIBLE);
+        line_text.setVisibility(View.VISIBLE);
+        idea_text.setVisibility(View.VISIBLE);
+        edit_btn.setVisibility(View.VISIBLE);
+
+        address_edit.setVisibility(View.GONE);
+        phone_edit.setVisibility(View.GONE);
+        number_edit.setVisibility(View.GONE);
+        url_edit.setVisibility(View.GONE);
+        email_edit.setVisibility(View.GONE);
+        line_edit.setVisibility(View.GONE);
+        idea_edit.setVisibility(View.GONE);
+        finish_btn.setVisibility(View.GONE);
+    }
+
+    private void globalNav(){ //底下nav
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        final Button edit_btn = findViewById(R.id.informationEdit_btn);
-        final Button finish_btn = findViewById(R.id.companyInformation_finished_btn);
-        final LinearLayout finish_lsyout = findViewById(R.id.finished_linearLayout);
 
-//        Bundle bundle = getIntent().getExtras();
-//        String address = bundle.getString("address");
-//        String phone = bundle.getString("phone");
-//        String number = bundle.getString("number");
-//        String url = bundle.getString("url");
-//        String idea = bundle.getString("idea");
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent back_setting_intent = new Intent(Setting_Information.this, Setting.class);
-                startActivity(back_setting_intent);
-            }
-        });
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,64 +271,12 @@ public class Setting_Information extends AppCompatActivity {
                 startActivity(system_intent);
             }
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Setting_Information.this, Setting.class);
-                startActivity(setting_intent);
-            }
-        });
-        edit_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent edit_intent = new Intent(Setting_Information.this, Information_Edit.class);
-//                startActivity(edit_intent);
-                edit_btn.setVisibility(View.GONE);
-                finish_lsyout.setVisibility(View.VISIBLE);
-                address_txt.setVisibility(View.GONE);
-                phone_txt.setVisibility(View.GONE);
-                number_txt.setVisibility(View.GONE);
-                url_txt.setVisibility(View.GONE);
-                email_text.setVisibility(View.GONE);
-                line_text.setVisibility(View.GONE);
-                idea_txt.setVisibility(View.GONE);
-                address_edit.setVisibility(View.VISIBLE);
-                phone_edit.setVisibility(View.VISIBLE);
-                number_edit.setVisibility(View.VISIBLE);
-                url_edit.setVisibility(View.VISIBLE);
-                email_edit.setVisibility(View.VISIBLE);
-                line_edit.setVisibility(View.VISIBLE);
-                idea_edit.setVisibility(View.VISIBLE);
-            }
-        });
-        finish_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                address_txt.setText(address_edit.getText().toString());
-                phone_txt.setText(phone_edit.getText().toString());
-                number_txt.setText(number_edit.getText().toString());
-                url_txt.setText(url_edit.getText().toString());
-                email_text.setText(email_edit.getText().toString());
-                line_text.setText(line_edit.getText().toString());
-                idea_txt.setText(idea_edit.getText().toString());
-
-                finish_lsyout.setVisibility(View.GONE);
-                edit_btn.setVisibility(View.VISIBLE);
-                address_txt.setVisibility(View.VISIBLE);
-                phone_txt.setVisibility(View.VISIBLE);
-                number_txt.setVisibility(View.VISIBLE);
-                url_txt.setVisibility(View.VISIBLE);
-                email_text.setVisibility(View.VISIBLE);
-                line_text.setVisibility(View.VISIBLE);
-                idea_txt.setVisibility(View.VISIBLE);
-                address_edit.setVisibility(View.GONE);
-                phone_edit.setVisibility(View.GONE);
-                number_edit.setVisibility(View.GONE);
-                url_edit.setVisibility(View.GONE);
-                email_edit.setVisibility(View.GONE);
-                line_edit.setVisibility(View.GONE);
-                idea_edit.setVisibility(View.GONE);
-            }
-        });
+//        setting_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent setting_intent = new Intent(Setting_Information.this, Setting.class);
+//                startActivity(setting_intent);
+//            }
+//        });
     }
 }

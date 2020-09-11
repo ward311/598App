@@ -21,13 +21,13 @@ public class Information_Edit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information__edit);
-        address_edit = findViewById(R.id.company_address_editText);
-        phone_edit = findViewById(R.id.company_phone_editText);
-        number_edit = findViewById(R.id.employee_number_editText);
-        url_edit = findViewById(R.id.company_url_editText);
+        address_edit = findViewById(R.id.company_address_edit_SIF);
+        phone_edit = findViewById(R.id.company_phone_edit_SIF);
+        number_edit = findViewById(R.id.employee_number_edit_SIF);
+        url_edit = findViewById(R.id.company_url_edit_SIF);
         idea_edit = findViewById(R.id.company_idea_editText);
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
-        Button informationFinished_btn = findViewById(R.id.companyInformation_finished_btn);
+        Button informationFinished_btn = findViewById(R.id.companyInfo_finished_btn_SIF);
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
