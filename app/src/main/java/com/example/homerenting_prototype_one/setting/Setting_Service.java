@@ -264,6 +264,8 @@ public class Setting_Service extends AppCompatActivity {
 //                range_text.setText(range_edit.getText().toString());
 //            }
 //        });
+
+        globalNav();
     }
 
     private void globalNav(){ //底下nav
