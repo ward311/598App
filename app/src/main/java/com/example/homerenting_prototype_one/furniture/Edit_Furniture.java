@@ -221,6 +221,7 @@ public class Edit_Furniture extends AppCompatActivity {
                                 if(order_id.equals("-1")){
                                     Intent intent = new Intent();
                                     intent.setClass(context, Add_Order.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 }
                                 else{
@@ -350,7 +351,7 @@ public class Edit_Furniture extends AppCompatActivity {
                     fspace = space[position];
                 }
                 nowSpace = position;
-                Toast.makeText(context, "選擇"+fspace, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "選擇"+fspace, Toast.LENGTH_SHORT).show();
                 setList();
             }
 
