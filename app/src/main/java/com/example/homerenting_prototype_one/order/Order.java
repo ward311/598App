@@ -68,8 +68,6 @@ public class Order extends AppCompatActivity {
     ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter;
 
-    OkHttpClient okHttpClient = new OkHttpClient();
-
     Context context = this;
     String TAG = "Order";
 
@@ -212,6 +210,7 @@ public class Order extends AppCompatActivity {
         //http://54.166.177.4/user_data.php
 
         //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             //連線失敗

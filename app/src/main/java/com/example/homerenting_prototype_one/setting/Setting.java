@@ -2,30 +2,55 @@ package com.example.homerenting_prototype_one.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting_Announcement;
 import com.example.homerenting_prototype_one.Setting_Discount;
 import com.example.homerenting_prototype_one.Setting_Evaluation;
-import com.example.homerenting_prototype_one.Setting_Information;
 import com.example.homerenting_prototype_one.Setting_Service;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+
 public class Setting extends AppCompatActivity {
+    TextView company_email;
+
+    Context context = this;
+    String TAG = "Setting";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        LinearLayout company_information = findViewById(R.id.companyInformation_linearLayout);
+        LinearLayout company_information = findViewById(R.id.companyInfo_LL_S);
         LinearLayout service_item = findViewById(R.id.serviceItem_linearLayout);
         LinearLayout discount = findViewById(R.id.discount_linearLayout);
         LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_linearLayout);
@@ -36,6 +61,10 @@ public class Setting extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        company_email = findViewById(R.id.company_email_S);
+
+        getCompanyDetail();
 
         company_information.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,5 +145,52 @@ public class Setting extends AppCompatActivity {
 //                startActivity(setting_intent);
 //            }
 //        });
+    }
+
+    private void getCompanyDetail(){
+        String function_name = "company_detail";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .build();
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    JSONObject company = responseArr.getJSONObject(0);
+                    String email = company.getString("email");
+                    company_email.setText(email);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

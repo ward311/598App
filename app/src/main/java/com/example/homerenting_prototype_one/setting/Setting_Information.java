@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.setting;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
@@ -28,7 +28,7 @@ public class Setting_Information extends AppCompatActivity {
         phone_txt = findViewById(R.id.company_phone_text);
         number_txt = findViewById(R.id.employee_number_text);
         url_txt = findViewById(R.id.company_url_text);
-        email_text = findViewById(R.id.company_email_text);
+        email_text = findViewById(R.id.company_email_S);
         line_text = findViewById(R.id.company_line_text);
         idea_txt = findViewById(R.id.company_idea_text);
         address_edit = findViewById(R.id.company_address_editText);
