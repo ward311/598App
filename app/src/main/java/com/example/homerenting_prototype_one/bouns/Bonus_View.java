@@ -12,11 +12,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SalaryAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -34,9 +36,27 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 import static com.example.homerenting_prototype_one.show.global_function.dip2px;
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getMonth;
+import static com.example.homerenting_prototype_one.show.global_function.getToday;
+import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class Bonus_View extends AppCompatActivity {
 
@@ -81,17 +101,7 @@ public class Bonus_View extends AppCompatActivity {
             }
         });
 
-        setChart(); //圖表
-
-        data = new ArrayList<>();
-        int i;
-        for(i = 0; i < employees.length; i++){
-            String[] row_data = {employees[i], total[i]};
-            data.add(row_data);
-        }
-        SalaryAdapter salaryAdapter = new SalaryAdapter(data);
-        salaryView.setLayoutManager(new LinearLayoutManager(context));
-        salaryView.setAdapter(salaryAdapter);
+        getData();
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,8 +109,6 @@ public class Bonus_View extends AppCompatActivity {
                 finish();
             }
         });
-
-
 
         //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +144,84 @@ public class Bonus_View extends AppCompatActivity {
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Bonus_View.this, Setting.class);
                 startActivity(setting_intent);
+            }
+        });
+    }
+
+    private void getData(){
+        employee_names = new ArrayList<>();
+        salaries = new ArrayList<>();
+        data = new ArrayList<>();
+
+        String function_name = "pay_oneMonth";
+        String company_id = getCompany_id(context);
+        String year = getYear(getToday("yyyy-MM-dd"));
+        String month = "7";//getMonth(getToday("yyyy-MM-dd"));
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .add("year", year)
+                .add("month", month)
+                .build();
+        Log.i(TAG, "company_id: "+company_id+", year: "+year+", month: "+month);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+//                Log.i(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    //一筆一筆的取JSONArray中的json資料
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject staff = responseArr.getJSONObject(i);
+                        Log.i(TAG,"staff: "+staff);
+
+                        String staff_name = staff.getString("staff_name");
+                        String total_payment = staff.getString("total_payment");
+                        employee_names.add(staff_name);
+                        salaries.add(Integer.parseInt(total_payment));
+
+                        String[] row_data = {staff_name, total_payment};
+                        data.add(row_data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                employee_names.add("");
+                salaries.add(0);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setList(); //清單
+                        setChart(); //圖表
+                    }
+                });
             }
         });
     }
@@ -219,11 +305,10 @@ public class Bonus_View extends AppCompatActivity {
     }
 
     private ArrayList getBarData(){
-        set_data();
-
         ArrayList<BarEntry> yValue = new ArrayList<>(); //資料List
         for(int x = 0; x < employee_names.size(); x++){
             yValue.add(new BarEntry(x, salaries.get(x))); //加入新資料
+            Log.d(TAG, "staff_name: "+employee_names.get(x)+", total_payment: "+salaries.get(x));
         }
         return yValue;
     }
@@ -237,23 +322,9 @@ public class Bonus_View extends AppCompatActivity {
         return average;
     }
 
-    private void set_data(){
-        employee_names = new ArrayList<>();
-        employee_names.add("一號");
-        employee_names.add("二號");
-        employee_names.add("三號");
-        employee_names.add("四號");
-        employee_names.add("五號");
-        employee_names.add("六號");
-        employee_names.add("");
-
-        salaries = new ArrayList<>();
-        salaries.add(55000);
-        salaries.add(25000);
-        salaries.add(15000);
-        salaries.add(40000);
-        salaries.add(35000);
-        salaries.add(50000);
-        salaries.add(0);
+    private void setList(){
+        SalaryAdapter salaryAdapter = new SalaryAdapter(data);
+        salaryView.setLayoutManager(new LinearLayoutManager(context));
+        salaryView.setAdapter(salaryAdapter);
     }
 }

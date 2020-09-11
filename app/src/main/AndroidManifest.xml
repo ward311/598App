@@ -56,7 +56,6 @@
 
         <!--Bouns-->
         <activity android:name=".bouns.System_Bonus"/>
-        <activity android:name=".bouns.Bonus_View"/>
         <activity android:name=".bouns.Bonus_Distribution"/>
         <activity android:name=".bouns.Distribution_Detail"/>
         <activity android:name=".bouns.Bonus_List"/>
@@ -64,6 +63,7 @@
 
         <!--Setting-->
         <activity android:name=".setting.Setting"/>
+        <activity android:name=".setting.Setting_Record"/>
         <activity android:name=".setting.Record_Detail"/>
 
         <activity android:name=".Register_Company"/>
@@ -79,7 +79,7 @@
         <activity android:name=".System_Schedule" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
-        <activity android:name=".setting.Setting_Record">
+        <activity android:name=".bouns.Bonus_View">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,14 @@ import java.util.ArrayList;
 
 public class MonthAdapter extends BaseAdapter implements View.OnClickListener {
     private Context context;
+    private Class mTarget;
     ArrayList<ArrayList<String>> data;
 
-    public  MonthAdapter(ArrayList<ArrayList<String>> data){
+    String TAG = "MonthAdapter";
+
+    public  MonthAdapter(ArrayList<ArrayList<String>> data, Class target){
         this.data = data;
+        mTarget = target;
     }
 
     @Override
@@ -137,13 +142,15 @@ public class MonthAdapter extends BaseAdapter implements View.OnClickListener {
             btn.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent month_intent = new Intent();
-                    month_intent.setClass(context, Record_Detail.class);
-                    Bundle month_bundle = new Bundle();
-                    month_bundle.putString("year", year);
-                    month_bundle.putString("month",String.valueOf(month));
-                    month_intent.putExtras(month_bundle);
-                    context.startActivity(month_intent);
+                    if(mTarget != null) {
+                        Intent month_intent = new Intent();
+                        month_intent.setClass(context, mTarget);
+                        Bundle month_bundle = new Bundle();
+                        month_bundle.putString("year", year);
+                        month_bundle.putString("month", String.valueOf(month));
+                        month_intent.putExtras(month_bundle);
+                        context.startActivity(month_intent);
+                    }
                 }
             } );
         }

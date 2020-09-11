@@ -41,7 +41,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getYear
 
 public class Setting_Record extends AppCompatActivity {
     private ListView list;
-    ArrayList<ArrayList<String>> data;
+    private ArrayList<ArrayList<String>> data;
 
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Setting_Record";
@@ -58,7 +58,7 @@ public class Setting_Record extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        list = findViewById(R.id.year_list_SR);
+        list = findViewById(R.id.year_record_list_SR);
 
         data = new ArrayList<>();
 
@@ -183,7 +183,7 @@ public class Setting_Record extends AppCompatActivity {
                             Log.i(TAG, data.get(i).get(ii) + " ");
                         }
                     }
-                    final MonthAdapter adapter = new MonthAdapter(data);
+                    final MonthAdapter adapter = new MonthAdapter(data, Record_Detail.class);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

@@ -55,7 +55,7 @@
             android:orientation="vertical"
             android:gravity="bottom">
             <TextView
-                android:id="@+id/total_bonus_text"
+                android:id="@+id/total_bonus_BL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="共45個月獎金報表"
@@ -65,7 +65,7 @@
         </LinearLayout>
     </LinearLayout>
     <ListView
-        android:id="@+id/month_bonus_list"
+        android:id="@+id/year_bonus_list_BL"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="6"/>

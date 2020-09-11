@@ -49,7 +49,7 @@
             android:orientation="vertical">
 
             <ListView
-                android:id="@+id/year_list_SR"
+                android:id="@+id/year_record_list_SR"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 <!--            <TextView-->
