@@ -95,7 +95,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         final GregorianCalendar calendar = new GregorianCalendar();
 
         cars = new ArrayList<>();
-        isCarsExist(0);
+        String[] newString = {"", "", ""};
+        cars.add(newString);
 
 //        bundle = getIntent().getExtras();
         bundle = new Bundle();
@@ -288,32 +289,38 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     private void getItems(){
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() { //delay 3 秒之後才抓得到東西
             @Override
             public void run() {
-                for(int i = 0; i < carAdapter.getItemCount(); i++){
+                int i;
+                for(i = 0; i < carAdapter.getItemCount(); i++){
                     getItem(i);
                 }
             }
         }, 3000);
     }
 
-    private void getItem(final int position){
+    private boolean getItem(final int position){
         View view = carAssignRList.getLayoutManager().findViewByPosition(position);
-        isCarsExist(position);
-        if(view != null){
+        if(view != null){ //有可能太快輸入而導致view沒東西
+            if(!isCarsExist(position)){
+                Log.d(TAG, "add position "+position);
+                String[] newString = {"", "", ""};
+                cars.add(newString);
+            }
+            Log.d(TAG, "getItem: postion:"+position);
             EditText weight_edit = view.findViewById(R.id.weight_CI);
-            editTextChange(weight_edit, position, 0);
-
             EditText type_edit = view.findViewById(R.id.type_CI);
-            editTextChange(type_edit, position, 1);
-
             EditText num_edit = view.findViewById(R.id.num_CI);
+
+            editTextChange(weight_edit, position, 0);
+            editTextChange(type_edit, position, 1);
             editTextChange(num_edit, position, 2);
         }
         else{
             Log.d(TAG, position+". view is null");
         }
+        return true;
     }
 
     private void editTextChange(final EditText editText, final int position, final int i){
@@ -330,13 +337,22 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(!isCarsExist(position)){
+                    return;
+                }
+
                 if(!editText.getText().toString().isEmpty()){
                     Log.d(TAG, position+". cars["+i+"] no empty");
+
                     String str = editText.getText().toString();
                     cars.get(position)[i] = str;
 
                     if(carAdapter.getItemCount() == position+1 && position < max_car-1){
-                        isCarsExist(position+1);
+                        if(!isCarsExist(position+1)){
+                            Log.d(TAG, "add position "+position);
+                            String[] newString = {"", "", ""};
+                            cars.add(newString);
+                        }
                         carAdapter.notifyItemInserted(cars.size()-1);
                     }
                     getItems();
@@ -345,6 +361,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     cars.get(position)[i] = "";
                     Log.d(TAG, "carAdapter.getItemCount: "+carAdapter.getItemCount());
                     //如果該列為空，而且場上還會留下1個，而且不是最後一列(因為最後一列常保持空的)
+                    //要是輸入的字沒偵測到，就有可能發生明明有輸字卻整列刪除的狀況
                     if(isRowEmpty(position) && carAdapter.getItemCount() > 1 && position+1 != carAdapter.getItemCount()){
                         cars.remove(position);
                         showCars();
@@ -375,9 +392,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             cars.get(position);
             return true;
         } catch (IndexOutOfBoundsException e) {
-            Log.d(TAG, "isCarsExist: add position "+position);
-            String[] newString = {"", "", ""};
-            cars.add(newString);
             return false;
         }
     }
@@ -386,7 +400,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateCarAssign();
+                checkCars();
 
                 String movingDate = movingDateText.getText().toString().trim();
                 String movingTime = movingTimeText.getText().toString().trim();
@@ -449,28 +463,30 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         return check;
     }
 
-    private void updateCarAssign(){
-        if(getCarStr()) {
+    private void checkCars(){
+        if(getCarStr(true)) {
             Log.d(TAG, "update car");
 
             int carSize = cars.size();
             if(isRowEmpty(carSize-1)) carSize = carSize-1;
             Log.d(TAG, "actual car size: "+carSize);
+
+            for(int i = 0; i < carSize; i++)
+                updateCarDemand(i);
         }
         else Log.d(TAG, "update but empty");
 
         showCars();
     }
 
-    private boolean getCarStr(){
+    private boolean getCarStr(boolean errorMsg){
         boolean check = true;
-        for(int position = 0; position < carAdapter.getItemCount(); position++){
-            if(isRowEmpty(position)) break;
+        for(int position = 0; position < cars.size(); position++){
             View view = carAssignRList.getLayoutManager().findViewByPosition(position);
             EditText weight_edit = view.findViewById(R.id.weight_CI);
             String weightStr = weight_edit.getText().toString();
             cars.get(position)[0] = weightStr;
-            if(TextUtils.isEmpty(weightStr)){
+            if(errorMsg && TextUtils.isEmpty(weightStr)){
                 weight_edit.setError("請輸入噸位");
                 check = false;
             }
@@ -478,7 +494,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             EditText type_edit = view.findViewById(R.id.type_CI);
             String typeStr = type_edit.getText().toString();
             cars.get(position)[1] = typeStr;
-            if(TextUtils.isEmpty(typeStr)){
+            if(errorMsg && TextUtils.isEmpty(typeStr)){
                 type_edit.setError("請輸入車輛種類");
                 check = false;
             }
@@ -486,12 +502,51 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             EditText num_edit = view.findViewById(R.id.num_CI);
             String numStr = num_edit.getText().toString();
             cars.get(position)[2] = numStr;
-            if(TextUtils.isEmpty(numStr)){
+            if(errorMsg && TextUtils.isEmpty(numStr)){
                 num_edit.setError("請輸入數量");
                 check = false;
             }
         }
         return check;
+    }
+
+    private void updateCarDemand(int i){
+        String function_name = "add_vehicleDemand";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("num",cars.get(i)[2])
+                .add("weight", cars.get(i)[0])
+                .add("type", cars.get(i)[1])
+                .build();
+        Log.d(TAG, "check_btn: order_id: "+order_id+", num:  "+cars.get(i)[2]+
+                ", weight: "+cars.get(i)[0]+", type: "+cars.get(i)[1]);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "submit update_carDemand responseData: " + responseData);
+            }
+        });
     }
 
     private void updateValuation(String moving_date, String num, String weight, String type, String estimate_worktime, String fee){
@@ -513,7 +568,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 .url(BuildConfig.SERVER_URL+"/functional.php")
                 .post(body)
                 .build();
-
 
         OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
@@ -538,7 +592,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         Toast.makeText(context, "估價單已完成", Toast.LENGTH_LONG).show();
                     }
                 });
-                Log.d(TAG, "submit responseData: " + responseData);
+                Log.d(TAG, "submit update_valuation responseData: " + responseData);
             }
         });
     }
