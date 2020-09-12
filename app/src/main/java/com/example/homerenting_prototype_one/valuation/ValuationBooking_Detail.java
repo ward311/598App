@@ -79,6 +79,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     CarAdapter carAdapter;
 
     ArrayList<String[]> cars;
+    int max_car = 4; //超過4輛車就會出現第一列和最後一列對調的狀況，我也不懂為什麼
 
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
@@ -330,21 +331,21 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(!editText.getText().toString().isEmpty()){
+                    Log.d(TAG, position+". cars["+i+"] no empty");
                     String str = editText.getText().toString();
                     cars.get(position)[i] = str;
 
-                    if(carAdapter.getItemCount() == position+1 && position < 3){
+                    if(carAdapter.getItemCount() == position+1 && position < max_car-1){
                         isCarsExist(position+1);
                         carAdapter.notifyItemInserted(cars.size()-1);
                     }
                     getItems();
                 }
                 else{
-                    Log.d(TAG, "cars.get("+position+")["+i+"]="+cars.get(position)[i]);
                     cars.get(position)[i] = "";
                     Log.d(TAG, "carAdapter.getItemCount: "+carAdapter.getItemCount());
-                    if(isEmpty(position) && carAdapter.getItemCount() > 1){
-                        showCars();
+                    //如果該列為空，而且場上還會留下1個，而且不是最後一列(因為最後一列常保持空的)
+                    if(isRowEmpty(position) && carAdapter.getItemCount() > 1 && position+1 != carAdapter.getItemCount()){
                         cars.remove(position);
                         showCars();
                         carAdapter.notifyItemRemoved(position);
@@ -354,7 +355,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         });
     }
 
-    private boolean isEmpty(int position){
+    private boolean isRowEmpty(int position){
         int check = 0;
         for(int i = 0; i < 3; i++){
             if(cars.get(position)[i].equals(""))
@@ -449,25 +450,48 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     }
 
     private void updateCarAssign(){
-        getCarStr();
+        if(getCarStr()) {
+            Log.d(TAG, "update car");
+
+            int carSize = cars.size();
+            if(isRowEmpty(carSize-1)) carSize = carSize-1;
+            Log.d(TAG, "actual car size: "+carSize);
+        }
+        else Log.d(TAG, "update but empty");
+
         showCars();
     }
 
-    private void getCarStr(){
+    private boolean getCarStr(){
+        boolean check = true;
         for(int position = 0; position < carAdapter.getItemCount(); position++){
+            if(isRowEmpty(position)) break;
             View view = carAssignRList.getLayoutManager().findViewByPosition(position);
             EditText weight_edit = view.findViewById(R.id.weight_CI);
             String weightStr = weight_edit.getText().toString();
             cars.get(position)[0] = weightStr;
+            if(TextUtils.isEmpty(weightStr)){
+                weight_edit.setError("請輸入噸位");
+                check = false;
+            }
 
             EditText type_edit = view.findViewById(R.id.type_CI);
             String typeStr = type_edit.getText().toString();
             cars.get(position)[1] = typeStr;
+            if(TextUtils.isEmpty(typeStr)){
+                type_edit.setError("請輸入車輛種類");
+                check = false;
+            }
 
             EditText num_edit = view.findViewById(R.id.num_CI);
             String numStr = num_edit.getText().toString();
             cars.get(position)[2] = numStr;
+            if(TextUtils.isEmpty(numStr)){
+                num_edit.setError("請輸入數量");
+                check = false;
+            }
         }
+        return check;
     }
 
     private void updateValuation(String moving_date, String num, String weight, String type, String estimate_worktime, String fee){
