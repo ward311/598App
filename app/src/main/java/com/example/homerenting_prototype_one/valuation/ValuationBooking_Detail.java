@@ -43,6 +43,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -93,7 +94,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         final GregorianCalendar calendar = new GregorianCalendar();
 
         cars = new ArrayList<>();
-        cars.add(new String[3]);
+        isCarsExist(0);
 
 //        bundle = getIntent().getExtras();
         bundle = new Bundle();
@@ -297,101 +298,74 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     }
 
     private void getItem(final int position){
-        Log.d(TAG, "getItem. position/getItemCount:"+position+"/"+carAdapter.getItemCount());
         View view = carAssignRList.getLayoutManager().findViewByPosition(position);
-
+        isCarsExist(position);
         if(view != null){
-            if(!isCarsExist(position)) cars.add(position, new String[3]);
+            EditText weight_edit = view.findViewById(R.id.weight_CI);
+            editTextChange(weight_edit, position, 0);
 
-            final EditText weight_edit = view.findViewById(R.id.weight_CI);
-            weight_edit.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            EditText type_edit = view.findViewById(R.id.type_CI);
+            editTextChange(type_edit, position, 1);
 
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if(!weight_edit.getText().toString().isEmpty()){
-                        String weightStr = weight_edit.getText().toString();
-                        cars.get(position)[0] = weightStr;
-                        nameText.setText(weightStr);
-
-                        Log.d(TAG, position+". weight: "+weightStr);
-
-                        if(carAdapter.getItemCount() == position+1){
-                            if(!isCarsExist(position+1)) cars.add(position+1, new String[3]);
-                            carAdapter.notifyDataSetChanged();
-                            getItems();
-                        }
-                    }
-                    else{
-                        cars.get(position)[0] = "";
-                        nameText.setText((position+1)+". no weight");
-                    }
-                }
-            });
-
-
-            final EditText type_edit = view.findViewById(R.id.type_CI);
-            type_edit.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if(!type_edit.getText().toString().isEmpty()){
-                        String typeStr = type_edit.getText().toString();
-                        cars.get(position)[1] = typeStr;
-                        nameText.setText(typeStr);
-                    }
-                    else{
-                        cars.get(position)[0] = "";
-                        nameText.setText((position+1)+". no type");
-                    }
-                }
-            });
-
-            final EditText num_edit = view.findViewById(R.id.num_CI);
-            num_edit.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if(!num_edit.getText().toString().isEmpty()){
-                        String numStr = num_edit.getText().toString();
-                        cars.get(position)[2] = numStr;
-                        nameText.setText(numStr);
-                    }
-                    else{
-                        cars.get(position)[2] = "";
-                        nameText.setText((position+1)+". no num");
-                    }
-                }
-            });
+            EditText num_edit = view.findViewById(R.id.num_CI);
+            editTextChange(num_edit, position, 2);
         }
         else{
             Log.d(TAG, position+". view is null");
+        }
+    }
+
+    private void editTextChange(final EditText editText, final int position, final int i){
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!editText.getText().toString().isEmpty()){
+                    String str = editText.getText().toString();
+                    cars.get(position)[i] = str;
+
+                    if(carAdapter.getItemCount() == position+1 && position < 3){
+                        isCarsExist(position+1);
+                        carAdapter.notifyItemInserted(cars.size()-1);
+                    }
+                    getItems();
+                }
+                else{
+                    Log.d(TAG, "cars.get("+position+")["+i+"]="+cars.get(position)[i]);
+                    cars.get(position)[i] = "";
+                    Log.d(TAG, "carAdapter.getItemCount: "+carAdapter.getItemCount());
+                    if(isEmpty(position) && carAdapter.getItemCount() > 1){
+                        showCars();
+                        cars.remove(position);
+                        showCars();
+                        carAdapter.notifyItemRemoved(position);
+                    }
+                }
+            }
+        });
+    }
+
+    private boolean isEmpty(int position){
+        int check = 0;
+        for(int i = 0; i < 3; i++){
+            if(cars.get(position)[i].equals(""))
+                check = check + 1;
+        }
+        return (check == 3);
+    }
+
+    private void showCars(){
+        for(int i = 0; i < cars.size(); i++){
+            Log.d(TAG, "cars("+i+"): "+ Arrays.toString(cars.get(i)));
         }
     }
 
@@ -401,6 +375,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             return true;
         } catch (IndexOutOfBoundsException e) {
             Log.d(TAG, "isCarsExist: add position "+position);
+            String[] newString = {"", "", ""};
+            cars.add(newString);
             return false;
         }
     }
@@ -409,21 +385,20 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updateCarAssign();
+
                 String movingDate = movingDateText.getText().toString().trim();
                 String movingTime = movingTimeText.getText().toString().trim();
                 String moving_date = movingDate + " " + movingTime;
-                String num = carNumEdit.getText().toString().trim();
-                String weight = carWeightEdit.getText().toString().trim();
-                String type = carTypeEdit.getText().toString().trim();
                 String estimate_worktime = worktimeEdit.getText().toString().trim();
                 String fee = priceEdit.getText().toString().trim();
                 memo = memoEdit.getText().toString();
                 Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
-                if(checkEmpty(movingDate, movingTime, num, weight, type, estimate_worktime, fee))
+                if(checkEmpty(movingDate, movingTime, estimate_worktime, fee))
                     return;
 
-                updateValuation(moving_date, num, weight, type, estimate_worktime, fee);
+//                updateValuation(moving_date, num, weight, type, estimate_worktime, fee);
 
                 new AlertDialog.Builder(context)
                         .setTitle("媒合中")
@@ -447,7 +422,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         });
     }
 
-    private boolean checkEmpty(String movingDate, String movingTime, String num, String weight, String type, String estimate_worktime, String fee){
+    private boolean checkEmpty(String movingDate, String movingTime, String estimate_worktime, String fee){
         boolean check = false;
         if(TextUtils.isEmpty(movingDateText.getText().toString())){
             movingDateText.setError("請輸入日期");
@@ -455,18 +430,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         }
         if(TextUtils.isEmpty(movingTimeText.getText().toString())){
             movingTimeText.setError("請輸入時間");
-            check = true;
-        }
-        if(TextUtils.isEmpty(num)){
-            carNumEdit.setError("請輸入數量");
-            check = true;
-        }
-        if(TextUtils.isEmpty(weight)){
-            carWeightEdit.setError("請輸入重量");
-            check = true;
-        }
-        if(TextUtils.isEmpty(type)){
-            carTypeEdit.setError("請輸入車子種類");
             check = true;
         }
         if(TextUtils.isEmpty(estimate_worktime)){
@@ -485,6 +448,28 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         return check;
     }
 
+    private void updateCarAssign(){
+        getCarStr();
+        showCars();
+    }
+
+    private void getCarStr(){
+        for(int position = 0; position < carAdapter.getItemCount(); position++){
+            View view = carAssignRList.getLayoutManager().findViewByPosition(position);
+            EditText weight_edit = view.findViewById(R.id.weight_CI);
+            String weightStr = weight_edit.getText().toString();
+            cars.get(position)[0] = weightStr;
+
+            EditText type_edit = view.findViewById(R.id.type_CI);
+            String typeStr = type_edit.getText().toString();
+            cars.get(position)[1] = typeStr;
+
+            EditText num_edit = view.findViewById(R.id.num_CI);
+            String numStr = num_edit.getText().toString();
+            cars.get(position)[2] = numStr;
+        }
+    }
+
     private void updateValuation(String moving_date, String num, String weight, String type, String estimate_worktime, String fee){
         String function_name = "update_bookingValuation";
         String company_id = getCompany_id(context);
@@ -493,15 +478,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 .add("order_id", order_id)
                 .add("company_id",company_id)
                 .add("moving_date",moving_date+":00")
-                .add("num", num)
-                .add("weight", weight)
-                .add("type", type)
                 .add("estimate_worktime", estimate_worktime)
                 .add("fee", fee)
                 .add("memo", memo)
                 .build();
         Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date:  "+moving_date+":00"+
-                ", num: "+num+", weight: "+weight+", type: "+type+
                 ", estimate_worktime: "+estimate_worktime+", fee: "+fee);
 
         Request request = new Request.Builder()

@@ -181,14 +181,19 @@ public class Setting_Information extends AppCompatActivity {
                     line = company.getString("line_id");
                     idea = company.getString("philosophy");
 
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            address_text.setText(address);
+                            phone_text.setText(phone);
+                            number_text.setText(staff_num+"人");
+                            url_text.setText(url);
+                            email_text.setText(email);
+                            line_text.setText(line);
+                            idea_text.setText(idea);
+                        }
+                    });
 
-                    address_text.setText(address);
-                    phone_text.setText(phone);
-                    number_text.setText(staff_num+"人");
-                    url_text.setText(url);
-                    email_text.setText(email);
-                    line_text.setText(line);
-                    idea_text.setText(idea);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

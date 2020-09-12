@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,12 +42,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
 
     public class ViewHoler extends RecyclerView.ViewHolder {
         EditText weight, type, num;
+        TextView ton;
 
         public ViewHoler(@NonNull View itemView) {
             super(itemView);
             weight = itemView.findViewById(R.id.weight_CI);
             type = itemView.findViewById(R.id.type_CI);
             num = itemView.findViewById(R.id.num_CI);
+            ton = itemView.findViewById(R.id.ton_CI);
         }
     }
 }
