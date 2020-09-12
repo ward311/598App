@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,9 +24,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.re_adpater.CarAdapter;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -37,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -52,7 +58,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getDate
 
 
 public class ValuationBooking_Detail extends AppCompatActivity {
-    OkHttpClient okHttpClient = new OkHttpClient();
+    LinearLayout furnitureLL;
 
     TextView nameText, nameTitleText, phoneText, valuationTimeText;
     TextView fromAddressText, toAddressText, remainderText;
@@ -61,17 +67,22 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     EditText carNumEdit, carWeightEdit, carTypeEdit;
     EditText worktimeEdit, priceEdit, memoEdit;
 
+    RecyclerView carAssignRList;
+
     Button check_btn, furniture_btn;
 
+    String order_id;
     String name, gender, phone, valuationTime, fromAddress, toAddress, remainder, memo;
     String valPrice = "4000";
 
-    LinearLayout furnitureLL;
+    CarAdapter carAdapter;
+
+    ArrayList<String[]> cars;
 
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
 
-    Context context;
+    Context context = this;
     Bundle bundle;
 
     @Override
@@ -79,21 +90,97 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation_booking__detail);
         Button phoneCall_btn = findViewById(R.id.call_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         final GregorianCalendar calendar = new GregorianCalendar();
 
-        context = ValuationBooking_Detail.this;
+        cars = new ArrayList<>();
+        cars.add(new String[3]);
 
-        bundle = getIntent().getExtras();
-        final String order_id = bundle.getString("order_id");
+//        bundle = getIntent().getExtras();
+        bundle = new Bundle();
+        bundle.putString("order_id", "47");
+        order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
         linking(); //將xml裡的元件連至此java
 
+        getOrder();
+
+        getItems();
+
+        furniture_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, Edit_Furniture.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        movingDateText.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog date_picker = new DatePickerDialog( context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        movingDateText.setText(String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth));
+                    }
+                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+                date_picker.show();
+            }
+        } );
+
+        movingTimeText.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog time_picker = new TimePickerDialog( context, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        movingTimeText.setText(hourOfDay+":"+minute);
+                    }
+                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+                time_picker.show();
+            }
+        } );
+
+        setCheckBtn();
+
+        phoneCall_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent call_intent = new Intent(Intent.ACTION_DIAL);
+                call_intent.setData(Uri.parse("tel:"+phone));
+                startActivity(call_intent);
+            }
+        });
+
+        globalNav(); //底下nav
+    }
+
+    public void linking(){
+        nameText = findViewById(R.id.name_VBD);
+        nameTitleText = findViewById(R.id.nameTitle_VBD);
+        phoneText = findViewById(R.id.phone_VBD);
+        valuationTimeText = findViewById(R.id.valuationTime_VBD);
+        fromAddressText = findViewById(R.id.FromAddress_VBD);
+        toAddressText = findViewById(R.id.ToAddress_VBD);
+        furniture_btn = findViewById(R.id.edit_furniture_btn_VBD);
+        remainderText = findViewById(R.id.notice_VBD);
+        movingDateText = findViewById(R.id.movingDate_VBD);
+        movingTimeText = findViewById(R.id.movingTime_VBD);
+        carNumEdit = findViewById(R.id.num_VBD);
+        carWeightEdit = findViewById(R.id.weight_VBD);
+        carTypeEdit = findViewById(R.id.type_VBD);
+        worktimeEdit = findViewById(R.id.worktime_VBD);
+        priceEdit = findViewById(R.id.price_VBD);
+        check_btn = findViewById(R.id.check_evaluation_btn);
+        furnitureLL = findViewById(R.id.furniture_LL_VBD);
+        valPriceText = findViewById(R.id.valPrice_VBD);
+        memoEdit = findViewById(R.id.PS_VBD);
+
+        carAssignRList = findViewById(R.id.car_assign_VBD);
+    }
+
+    private void getOrder(){
         //傳至網頁的值，傳function_name
         String function_name = "valuation_detail";
         String company_id = getCompany_id(this);
@@ -110,6 +197,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -183,44 +271,141 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         }
                     });
                 }
+
+                carAdapter = new CarAdapter(cars);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        carAssignRList.setLayoutManager(new LinearLayoutManager(context));
+                        carAssignRList.setAdapter(carAdapter);
+                    }
+                });
             }
         });
-        furniture_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, Edit_Furniture.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+    }
 
-        movingDateText.setOnClickListener( new View.OnClickListener() {
+    private void getItems(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
-                DatePickerDialog date_picker = new DatePickerDialog( context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        movingDateText.setText(String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth));
+            public void run() {
+                for(int i = 0; i < carAdapter.getItemCount(); i++){
+                    getItem(i);
+                }
+            }
+        }, 3000);
+    }
+
+    private void getItem(final int position){
+        Log.d(TAG, "getItem. position/getItemCount:"+position+"/"+carAdapter.getItemCount());
+        View view = carAssignRList.getLayoutManager().findViewByPosition(position);
+
+        if(view != null){
+            if(!isCarsExist(position)) cars.add(position, new String[3]);
+
+            final EditText weight_edit = view.findViewById(R.id.weight_CI);
+            weight_edit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(!weight_edit.getText().toString().isEmpty()){
+                        String weightStr = weight_edit.getText().toString();
+                        cars.get(position)[0] = weightStr;
+                        nameText.setText(weightStr);
+
+                        Log.d(TAG, position+". weight: "+weightStr);
+
+                        if(carAdapter.getItemCount() == position+1){
+                            if(!isCarsExist(position+1)) cars.add(position+1, new String[3]);
+                            carAdapter.notifyDataSetChanged();
+                            getItems();
+                        }
                     }
-                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
-                date_picker.show();
-            }
-        } );
-
-        movingTimeText.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog time_picker = new TimePickerDialog( context, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        movingTimeText.setText(hourOfDay+":"+minute);
+                    else{
+                        cars.get(position)[0] = "";
+                        nameText.setText((position+1)+". no weight");
                     }
-                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
-                time_picker.show();
-            }
-        } );
+                }
+            });
 
 
+            final EditText type_edit = view.findViewById(R.id.type_CI);
+            type_edit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(!type_edit.getText().toString().isEmpty()){
+                        String typeStr = type_edit.getText().toString();
+                        cars.get(position)[1] = typeStr;
+                        nameText.setText(typeStr);
+                    }
+                    else{
+                        cars.get(position)[0] = "";
+                        nameText.setText((position+1)+". no type");
+                    }
+                }
+            });
+
+            final EditText num_edit = view.findViewById(R.id.num_CI);
+            num_edit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(!num_edit.getText().toString().isEmpty()){
+                        String numStr = num_edit.getText().toString();
+                        cars.get(position)[2] = numStr;
+                        nameText.setText(numStr);
+                    }
+                    else{
+                        cars.get(position)[2] = "";
+                        nameText.setText((position+1)+". no num");
+                    }
+                }
+            });
+        }
+        else{
+            Log.d(TAG, position+". view is null");
+        }
+    }
+
+    private boolean isCarsExist(int position){
+        try{
+            cars.get(position);
+            return true;
+        } catch (IndexOutOfBoundsException e) {
+            Log.d(TAG, "isCarsExist: add position "+position);
+            return false;
+        }
+    }
+
+    private void setCheckBtn(){
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -232,60 +417,13 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 String type = carTypeEdit.getText().toString().trim();
                 String estimate_worktime = worktimeEdit.getText().toString().trim();
                 String fee = priceEdit.getText().toString().trim();
-                String function_name = "update_bookingValuation";
                 memo = memoEdit.getText().toString();
                 Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-                String company_id = getCompany_id(context);
 
                 if(checkEmpty(movingDate, movingTime, num, weight, type, estimate_worktime, fee))
                     return;
 
-                RequestBody body = new FormBody.Builder()
-                        .add("function_name", function_name)
-                        .add("order_id", order_id)
-                        .add("company_id",company_id)
-                        .add("moving_date",moving_date+":00")
-                        .add("num", num)
-                        .add("weight", weight)
-                        .add("type", type)
-                        .add("estimate_worktime", estimate_worktime)
-                        .add("fee", fee)
-                        .add("memo", memo)
-                        .build();
-                Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date:  "+moving_date+":00"+
-                        ", num: "+num+", weight: "+weight+", type: "+type+
-                        ", estimate_worktime: "+estimate_worktime+", fee: "+fee);
-
-                Request request = new Request.Builder()
-                        .url(BuildConfig.SERVER_URL+"/functional.php")
-                        .post(body)
-                        .build();
-
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        final String responseData = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "估價單已完成", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        Log.d(TAG, "submit responseData: " + responseData);
-                    }
-                });
+                updateValuation(moving_date, num, weight, type, estimate_worktime, fee);
 
                 new AlertDialog.Builder(context)
                         .setTitle("媒合中")
@@ -307,156 +445,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         .show();
             }
         });
-
-
-        phoneCall_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent call_intent = new Intent(Intent.ACTION_DIAL);
-                call_intent.setData(Uri.parse("tel:0933669877"));
-                startActivity(call_intent);
-            }
-        });
-
-//        pickCar_edit.setOnClickListener( new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-                /*final Dialog dialog = new Dialog(context);
-                dialog.setTitle("請輸入安排車輛");
-                dialog.setContentView(R.layout.car_dialog);
-                Button done_btn = dialog.findViewById( R.id.done_btn );
-                done_btn.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                } );
-                Button cancel_btn = dialog.findViewById( R.id.cancel_btn );
-                cancel_btn.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                } );
-                final TextView num_first = dialog.findViewById( R.id.num_1 );
-                final TextView num_second = dialog.findViewById( R.id.num_2 );
-                final TextView num_third = dialog.findViewById( R.id.num_3 );
-                final String num_one = num_first.getText().toString();
-                final String num_two = num_second.getText().toString();
-                final String num_three = num_third.getText().toString();
-                Button minus_first = dialog.findViewById( R.id.minus_btn_1 );
-                Button minus_second = dialog.findViewById( R.id.minus_btn_2 );
-                Button minus_third = dialog.findViewById( R.id.minus_btn_3 );
-                Button plus_first = dialog.findViewById( R.id.plus_btn_1 );
-                Button plus_second = dialog.findViewById( R.id.plus_btn_2 );
-                Button plus_third = dialog.findViewById( R.id.plus_btn_3 );
-                minus_first.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        num_first.setText( String.valueOf((int) Integer.parseInt(num_one)-1) );
-                    }
-                } );
-                minus_second.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        num_second.setText( String.valueOf((int) Integer.parseInt(num_two)-1) );
-                    }
-                } );
-                minus_third.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        num_third.setText( String.valueOf((int) Integer.parseInt(num_three)-1) );
-                    }
-                } );
-                plus_first.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        num_first.setText( String.valueOf((int) Integer.parseInt(num_one)+1) );
-                    }
-                } );
-                plus_second.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        num_second.setText( String.valueOf((int) Integer.parseInt(num_two)+1) );
-                    }
-                } );
-                plus_third.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        num_third.setText( String.valueOf((int) Integer.parseInt(num_three)+1) );
-                    }
-                } );
-                dialog.show();
-                dialog.getWindow().setLayout( 1400,2000 );*/
-                /*new AlertDialog.Builder( context )
-                        .setTitle( "請輸入安排車輛" )
-                        .setPositiveButton( "確定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        } )
-                        .setNegativeButton( "取消",null ).create()
-                        .show();*/
-//            }
-//        } );
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(context, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(context, Order.class);
-                startActivity(order_intent);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(context, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(context, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(context, Setting.class);
-                startActivity(setting_intent);
-            }
-        });
-    }
-
-    public void linking(){
-        nameText = findViewById(R.id.name_VBD);
-        nameTitleText = findViewById(R.id.nameTitle_VBD);
-        phoneText = findViewById(R.id.phone_VBD);
-        valuationTimeText = findViewById(R.id.valuationTime_VBD);
-        fromAddressText = findViewById(R.id.FromAddress_VBD);
-        toAddressText = findViewById(R.id.ToAddress_VBD);
-        furniture_btn = findViewById(R.id.edit_furniture_btn_VBD);
-        remainderText = findViewById(R.id.notice_VBD);
-        movingDateText = findViewById(R.id.movingDate_VBD);
-        movingTimeText = findViewById(R.id.movingTime_VBD);
-        carNumEdit = findViewById(R.id.num_VBD);
-        carWeightEdit = findViewById(R.id.weight_VBD);
-        carTypeEdit = findViewById(R.id.type_VBD);
-        worktimeEdit = findViewById(R.id.worktime_VBD);
-        priceEdit = findViewById(R.id.price_VBD);
-        check_btn = findViewById(R.id.check_evaluation_btn);
-        furnitureLL = findViewById(R.id.furniture_LL_VBD);
-        valPriceText = findViewById(R.id.valPrice_VBD);
-        memoEdit = findViewById(R.id.PS_VBD);
     }
 
     private boolean checkEmpty(String movingDate, String movingTime, String num, String weight, String type, String estimate_worktime, String fee){
@@ -495,5 +483,102 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 //        }
 
         return check;
+    }
+
+    private void updateValuation(String moving_date, String num, String weight, String type, String estimate_worktime, String fee){
+        String function_name = "update_bookingValuation";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id",company_id)
+                .add("moving_date",moving_date+":00")
+                .add("num", num)
+                .add("weight", weight)
+                .add("type", type)
+                .add("estimate_worktime", estimate_worktime)
+                .add("fee", fee)
+                .add("memo", memo)
+                .build();
+        Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date:  "+moving_date+":00"+
+                ", num: "+num+", weight: "+weight+", type: "+type+
+                ", estimate_worktime: "+estimate_worktime+", fee: "+fee);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "估價單已完成", Toast.LENGTH_LONG).show();
+                    }
+                });
+                Log.d(TAG, "submit responseData: " + responseData);
+            }
+        });
+    }
+
+    private void globalNav(){
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(context, Valuation.class);
+                startActivity(valuation_intent);
+            }
+        });
+        order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(context, Order.class);
+                startActivity(order_intent);
+            }
+        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(context, Calendar.class);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(context, System.class);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(context, Setting.class);
+                startActivity(setting_intent);
+            }
+        });
     }
 }

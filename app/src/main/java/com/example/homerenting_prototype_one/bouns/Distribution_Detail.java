@@ -100,7 +100,7 @@ public class Distribution_Detail extends AppCompatActivity {
         //傳值
         getOrder();
 
-        //取得薪水edittext的內容
+//        取得薪水edittext的內容
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
