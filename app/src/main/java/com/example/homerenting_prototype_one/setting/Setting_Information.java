@@ -36,6 +36,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class Setting_Information extends AppCompatActivity {
@@ -85,14 +86,6 @@ public class Setting_Information extends AppCompatActivity {
         edit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                address = address_text.getText().toString();
-                phone = phone_text.getText().toString();
-                staff_num = number_text.getText().toString();
-                url = url_text.getText().toString();
-                email = email_text.getText().toString();
-                line = line_text.getText().toString();
-                idea = idea_text.getText().toString();
-
                 companyIdea_text.setGravity(Gravity.CENTER_VERTICAL);
 
                 address_edit.setHint(address);
@@ -116,6 +109,8 @@ public class Setting_Information extends AppCompatActivity {
                 if(!email_edit.getText().toString().equals("")) email = email_edit.getText().toString();
                 if(!line_edit.getText().toString().equals("")) line = line_edit.getText().toString();
                 if(!idea_edit.getText().toString().equals("")) idea = idea_edit.getText().toString();
+
+                updateCompany();
 
                 companyIdea_text.setGravity(Gravity.TOP);
 
@@ -239,6 +234,51 @@ public class Setting_Information extends AppCompatActivity {
         line_edit.setVisibility(View.GONE);
         idea_edit.setVisibility(View.GONE);
         finish_btn.setVisibility(View.GONE);
+    }
+
+    private void updateCompany(){
+        String function_name = "update_company";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .add("address", address)
+                .add("phone", phone)
+                .add("staff_num", staff_num)
+                .add("url", url)
+                .add("email", email)
+                .add("line_id", line)
+                .add("philosophy", idea)
+                .build();
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData of update_company: "+responseData); //顯示資料
+            }
+        });
     }
 
     private void globalNav(){ //底下nav

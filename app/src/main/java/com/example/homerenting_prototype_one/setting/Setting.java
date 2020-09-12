@@ -184,8 +184,14 @@ public class Setting extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject company = responseArr.getJSONObject(0);
-                    String email = company.getString("email");
-                    company_email.setText(email);
+                    final String email = company.getString("email");
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            company_email.setText(email);
+                        }
+                    });
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
