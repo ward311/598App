@@ -28,6 +28,8 @@ import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.shape.CornerSize;
+import com.google.android.material.shape.ShapeAppearanceModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -85,8 +87,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
         cars_text = new ArrayList<>();
         cars = new ArrayList<>();
 
-        bundle = getIntent().getExtras();
-        order_id = bundle.getString("order_id");
+//        bundle = getIntent().getExtras();
+        order_id = "12";//bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
 
@@ -352,9 +354,12 @@ public class New_Schedule_Detail extends AppCompatActivity {
     }
 
     private void getChip(){
+        final Chip chip1 = findViewById(R.id.chip1_SD); //控制形狀用的chip
+
         String function_name = "staff-vehicle_data";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
                 .build();
 
         Request request = new Request.Builder()
@@ -418,6 +423,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                                 ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(staffGroup.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Choice);
                                 chip.setChipDrawable(chipDrawable);
 
+                                //將邊框設為方形圓角
+                                chip.setShapeAppearanceModel(chip1.getShapeAppearanceModel());
+
                                 //點擊chip
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
@@ -459,12 +467,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
                                 final Chip chip = new Chip(carGroup.getContext());
                                 chip.setId(Integer.parseInt(vehicle_id));
                                 chip.setTag(Integer.parseInt(vehicle_id));
-                                chip.setText(plate_num);
-                                chip.setCheckable(true);
-                                if(cars_text.contains(plate_num)) chip.setChecked(true);
-                                chip.setTextSize(chipSize);
+
+                                chip.setText(plate_num); //顯示車牌號碼
+                                chip.setCheckable(true); //可點擊
+
+                                if(cars_text.contains(plate_num)) chip.setChecked(true); //把本單有的車輛列為已點擊
+                                chip.setTextSize(chipSize); //文字的大小
+
+                                //選擇chip的模式:choice
                                 ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(carGroup.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Choice);
                                 chip.setChipDrawable(chipDrawable);
+
+                                //將邊框設為方形圓角
+                                chip.setShapeAppearanceModel(chip1.getShapeAppearanceModel());
+
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
