@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -54,167 +55,137 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:gravity="top"
+                    android:paddingTop="8dp"
                     android:text="服務範圍"
                     android:textColor="#000000"
-                    android:textSize="20sp"
-                    android:gravity="center_horizontal"
-                    android:layout_marginLeft="15dp"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="北北基"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="桃竹苗"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="中彰投"
-                            android:checked="true"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="雲嘉南"
-                            android:checked="false"/>
+                    android:textSize="20sp" />
 
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:checked="false"
-                            android:text="高屏" />
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="花東"
-                            android:checked="false"/>
-                    </LinearLayout>
-                    <LinearLayout
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/serviceArea_CG_SS"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/checkChip">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/area1_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="外島"
-                            android:checked="false"/>
-                    </LinearLayout>
-                </LinearLayout>
+                        android:text="北北基" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/area2_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="桃竹苗" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/area3_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="中彰投" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/area4_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="雲嘉南" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/area5_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="高屏" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/area6_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="花東" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/area9_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="外島" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/areaExtra_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                </com.google.android.material.chip.ChipGroup>
+
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginLeft="15dp"
+                    android:gravity="top"
+                    android:paddingTop="8dp"
+                    android:text="服務項目"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:gravity="top|center_horizontal"
-                        android:text="服務項目"
-                        android:textColor="#000000"
-                        android:textSize="20sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/serviceItem_CG_SS"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:theme="@style/checkChip">
 
-                    <LinearLayout
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/item1_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:text="個人搬遷" />
 
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:text="個人搬遷" />
-
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:text="家庭搬遷" />
-
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:text="企業搬遷" />
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/item2_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="免動手搬家" />
+                        android:text="家庭搬遷" />
 
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/new_item_layout"
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/item3_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:text="企業搬遷" />
 
-                        <Button
-                            android:id="@+id/add_item_btn"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginLeft="10dp"
-                            android:background="@drawable/ic_baseline_add_circle_outline_24"
-                            android:textColor="#FB9825" />
-                    </LinearLayout>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/item4_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="免動手搬家" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/addItem_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:foreground="@drawable/ic_baseline_add_circle_outline_24"
+                        android:foregroundGravity="center"
+                        app:checkedIconVisible="false"
+                        app:chipIconVisible="false" />
+                </com.google.android.material.chip.ChipGroup>
 
-                        <Button
-                            android:id="@+id/delete_item_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="#FFFFFFFF"
-                            android:text="刪除選項"
-                            android:textColor="#19B0ED"
-                            android:visibility="gone" />
-                    </LinearLayout>
-
-                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -230,53 +201,50 @@
                         android:text="特殊項目"
                         android:textColor="#000000"
                         android:textSize="20sp"
-                        android:gravity="top|center_horizontal"
+                        android:gravity="top"
+                        android:paddingTop="8dp"
                         android:layout_marginLeft="15dp"/>
-                    <Button
-                        android:id="@+id/add_special_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="新增選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#FB9825" />
-                    <Button
-                        android:id="@+id/delete_special_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="刪除選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#19B0ED" />
+
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/specialItem_CG_SS"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
+                    android:theme="@style/checkChip"
+                    android:visibility="visible">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sitem1_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="鋼琴"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="系統家具"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="雕像"
-                            android:checked="true"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/new_special_layout"
+                        android:text="鋼琴"
+                        app:closeIconVisible="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sitem2_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"/>
-                </LinearLayout>
+                        android:text="系統家具" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sitem3_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="雕像"
+                        app:closeIconVisible="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/addsItem_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:foreground="@drawable/ic_baseline_add_circle_outline_24"
+                        android:foregroundGravity="center"
+                        app:checkedIconVisible="false"
+                        app:chipIconVisible="false" />
+                </com.google.android.material.chip.ChipGroup>
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -292,62 +260,28 @@
                         android:text="車輛種類"
                         android:textColor="#000000"
                         android:textSize="20sp"
-                        android:gravity="top|center_horizontal"
+                        android:gravity="top"
+                        android:paddingTop="8dp"
                         android:layout_marginLeft="15dp"/>
-                    <Button
-                        android:id="@+id/add_type_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="新增選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#FB9825" />
-                    <Button
-                        android:id="@+id/delete_type_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="刪除選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#19B0ED" />
+
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/carType_CG_SS"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
+                    android:theme="@style/checkChip">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/addcar_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸平斗車"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸箱型車"
-                            android:checked="true"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="7.7噸箱型車"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="吊車" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/new_type_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"/>
-                </LinearLayout>
+                        android:checkable="true"
+                        android:foreground="@drawable/ic_baseline_add_circle_outline_24"
+                        android:foregroundGravity="center"
+                        app:checkedIconVisible="false"
+                        app:chipIconVisible="false" />
+                </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -364,56 +298,45 @@
                         android:textColor="#000000"
                         android:textSize="20sp"
                         android:gravity="top"
+                        android:paddingTop="8dp"
                         android:layout_marginLeft="15dp"/>
-                    <Button
-                        android:id="@+id/add_boxType_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="新增選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#FB9825" />
-                    <Button
-                        android:id="@+id/delete_boxType_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="刪除選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#19B0ED" />
+
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/boxType_CG_SS"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
+                    android:theme="@style/checkChip">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/box1_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="綜合紙箱"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="重物紙箱"
-                            android:checked="true"/>
-                    </LinearLayout>
-                    <LinearLayout
+                        android:text="綜合紙箱" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/box2_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="環保紙箱" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/new_boxType_layout"
+                        android:text="重物紙箱" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/box3_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"/>
-                </LinearLayout>
+                        android:text="環保紙箱" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/addbox_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:foreground="@drawable/ic_baseline_add_circle_outline_24"
+                        android:foregroundGravity="center"
+                        app:checkedIconVisible="false"
+                        app:chipIconVisible="false" />
+                </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -430,72 +353,66 @@
                         android:textColor="#000000"
                         android:textSize="20sp"
                         android:gravity="top"
+                        android:paddingTop="8dp"
                         android:layout_marginLeft="15dp"/>
-                    <Button
-                        android:id="@+id/add_material_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="新增選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#FB9825" />
-                    <Button
-                        android:id="@+id/delete_material_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="刪除選項"
-                        android:background="#FFFFFFFF"
-                        android:textColor="#19B0ED" />
+
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/wrapItem_CG_SS"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
+                    android:theme="@style/checkChip">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/wrapper1_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="PE保護膠膜"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="大型氣泡袋"
-                            android:checked="true"/>
-                    </LinearLayout>
-                    <LinearLayout
+                        android:text="PE保護膠膜" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/wrapper2_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="小型氣泡袋"
-                            android:checked="true"/>
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="環保物流箱"
-                            android:checked="true"/>
-                    </LinearLayout>
-                    <LinearLayout
+                        android:text="大型氣泡袋" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/wrapper3_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="環保綜合箱" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/new_material_layout"
+                        android:text="小型氣泡袋" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/wrapper4_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"/>
-                </LinearLayout>
+                        android:text="環保物流箱" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/wrapper5_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="環保綜合箱" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/addwrapper_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:foreground="@drawable/ic_baseline_add_circle_outline_24"
+                        android:foregroundGravity="center"
+                        app:checkedIconVisible="false"
+                        app:chipIconVisible="false" />
+                </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
+
+            <Button
+                android:id="@+id/delete_btn_SS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#19B0ED"
+                android:text="編輯選項"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </ScrollView>
     <LinearLayout

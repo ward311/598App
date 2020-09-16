@@ -316,6 +316,7 @@
             android:id="@+id/horizontalScrollView3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline9"
@@ -323,12 +324,11 @@
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/staffCG_SD"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:theme="@style/Theme.MaterialComponents.Light"
                 app:chipSpacingHorizontal="4dp"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="415dp">
+                app:singleLine="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip1_SD"
@@ -352,12 +352,14 @@
             android:text="車輛"
             android:textColor="#535353"
             android:textSize="18sp"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="@+id/guideline9"
             app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView3" />
 
         <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline9"
             app:layout_constraintTop_toBottomOf="@+id/vehicle2_SD">

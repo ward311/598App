@@ -2,9 +2,6 @@ package com.example.homerenting_prototype_one.schedule;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -28,7 +25,6 @@ import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.shape.CornerSize;
 import com.google.android.material.shape.ShapeAppearanceModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,8 +52,6 @@ import static com.example.homerenting_prototype_one.show.global_function.getnext
 public class New_Schedule_Detail extends AppCompatActivity {
     Bundle bundle;
     String order_id;
-
-    OkHttpClient okHttpClient = new OkHttpClient();
 
     TextView titleText, nameText, nameTitleText, movingDateText, fromAddressText, toAddressText;
     TextView staffText, carText;
@@ -119,6 +113,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         .post(body)
                         .build();
 
+                OkHttpClient okHttpClient = new OkHttpClient();
                 Call call = okHttpClient.newCall(request);
                 call.enqueue(new Callback() {
                     @Override
@@ -267,6 +262,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .post(body)
                 .build();
 
+
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -367,6 +364,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
 
         call.enqueue(new Callback() {
@@ -386,7 +384,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData"+responseData); //顯示資料
+                //Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object

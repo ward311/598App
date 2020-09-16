@@ -192,6 +192,9 @@ public class Bonus_View extends AppCompatActivity {
                 String responseData = response.body().string();
 //                Log.i(TAG,"responseData: "+responseData); //顯示資料
 
+                employee_names.add("");
+                salaries.add(0);
+
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
 
@@ -211,9 +214,6 @@ public class Bonus_View extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                employee_names.add("");
-                salaries.add(0);
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -269,7 +269,7 @@ public class Bonus_View extends AppCompatActivity {
         });
         barDataSet.setDrawValues(true); //在bar上顯示數值
         barDataSet.setColor(Color.parseColor("#FB8527")); //bar的顏色
-        barDataSet.setValueTextColor(Color.parseColor("#FFFFFF")); //數值文字顏色
+        barDataSet.setValueTextColor(Color.parseColor("#000000")); //數值文字顏色
 
         BarData barData = new BarData(barDataSet);
         barData.setHighlightEnabled(false); //不能點擊反光

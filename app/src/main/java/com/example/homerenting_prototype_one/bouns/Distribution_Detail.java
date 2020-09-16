@@ -326,19 +326,26 @@ public class Distribution_Detail extends AppCompatActivity {
                     Toast.makeText(context, "工錢總額大於搬家費用", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    boolean checkAll = true;
                     for(int i = 0; i < salaries.size(); i++){
                         Log.i(TAG, "salaries("+i+"): "+salaries.get(i));
-                        if(salaries.get(i) == 0) continue;
+                        if(salaries.get(i) == 0){
+                            checkAll = false;
+                            continue;
+                        }
                         update_staff_salary(i);
+                    }
+                    if(checkAll){
+                        changeStatus();
                     }
 
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-//                            Intent intent = new Intent(context, Bonus_Distribution.class);
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            startActivity(intent);
+                            Intent intent = new Intent(context, Bonus_Distribution.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
                             Toast.makeText(context, "done", Toast.LENGTH_LONG).show();
                         }
                     }, 1000);
@@ -382,6 +389,45 @@ public class Distribution_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of update_staff_salary("+i+"): " + responseData);
+            }
+        });
+    }
+
+    private void changeStatus(){
+        String function_name = "change_status";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("table", "orders")
+                .add("status", "paid")
+                .build();
+        Log.d(TAG, "order_id: "+order_id+", table: orders, status: paid");
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of change_status: " + responseData);
             }
         });
     }

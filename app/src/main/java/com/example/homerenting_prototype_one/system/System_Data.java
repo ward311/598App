@@ -179,6 +179,7 @@ public class System_Data extends AppCompatActivity {
         String function_name = "staff-vehicle_data";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
                 .build();
 
         Request request = new Request.Builder()
@@ -205,7 +206,7 @@ public class System_Data extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                //Log.d(TAG,"responseData"+responseData); //顯示資料
+                Log.d(TAG,"responseData"+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object

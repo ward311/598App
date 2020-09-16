@@ -8,5 +8,39 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme2" parent="Theme.MaterialComponents.Light.NoActionBar" />
+    <style name="checkChip" parent="Theme.MaterialComponents.Light">
+        <item name="chipStyle">@style/Widget.App.Chip</item>
+        <item name="shapeAppearanceSmallComponent">@style/Shape_rectangle4</item>
+    </style>
+
+    <style name="Widget.App.Chip" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/white</item>
+        <item name="chipIcon">@drawable/month_btn_drawable</item>
+        <item name="chipIconVisible">true</item>
+        <item name="checkedIconVisible">true</item>
+        <item name="chipStrokeWidth">0dp</item> <!-- 邊框寬度 -->
+        <item name="chipStrokeColor">@color/colorAccent</item> <!-- 邊框顏色 -->
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+
+    <style name="Shape_rectangle0" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">1dp</item>
+    </style>
+
+    <style name="Shape_rectangle4" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="Shape_rectangle8" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="Shape_rectangle50" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
