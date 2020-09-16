@@ -93,10 +93,6 @@ public class Order extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        if(first){
-            setwCount(getwCount()-8);
-            first = false;
-        }
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getOrder();

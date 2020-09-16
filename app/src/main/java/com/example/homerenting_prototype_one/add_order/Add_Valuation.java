@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -101,6 +103,31 @@ public class Add_Valuation extends AppCompatActivity {
                 time_picker.show();
             }
         } );
+
+        cAddressText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String address = cAddressText.getText().toString();
+                String moveOut_address = fromAddressText.getText().toString();
+                if(!address.equals("") && !moveOut_address.equals("")){
+                    if(address.substring(0, 1).equals(moveOut_address.substring(0, 1)))
+                        fromAddressText.setText(address);
+                }
+                else if(!address.equals("") || moveOut_address.length()<=1){
+                    fromAddressText.setText(address);
+                }
+            }
+        });
 
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override

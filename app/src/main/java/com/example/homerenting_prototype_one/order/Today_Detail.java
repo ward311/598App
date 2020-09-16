@@ -258,8 +258,6 @@ public class Today_Detail extends AppCompatActivity {
                 memo = memoEdit.getText().toString();
                 Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
-                update_today_order();
-
                 LayoutInflater inflater = getLayoutInflater();
                 View view = inflater.inflate(R.layout.qrcode_image, null);
                 ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
@@ -288,6 +286,7 @@ public class Today_Detail extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
+                                        update_today_order();
                                         Intent intent = new Intent(context, Order_Today.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);

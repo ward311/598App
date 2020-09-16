@@ -160,7 +160,7 @@ public class Distribution_Detail extends AppCompatActivity {
 
     private void initSalaries(){
         for(int i = 0; i < staffs.size(); i++){
-            salaries.add(0);
+            salaries.add(-1);
         }
     }
 
@@ -289,7 +289,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 public void afterTextChanged(Editable s) {
                     int salary = 0;
                     salaryStr = salaryText.getText().toString();
-                    if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr);
+                    if(!salaryStr.isEmpty() && !salaryStr.equals("-")) salary = Integer.parseInt(salaryStr);
                     salaries.set(position, salary);
                     setFeeText();
                 }
@@ -303,18 +303,20 @@ public class Distribution_Detail extends AppCompatActivity {
     private void setFeeText(){
         int total = 0;
         for(int i = 0; i < salaries.size(); i++){
+            if(salaries.get(i) == -1) continue;
             total = total + salaries.get(i);
         }
-        net = Integer.parseInt(fee) - total;
-        if(total == 0){
-            feeText.setText(fee);
-        }
+        if(total > 0) net = Integer.parseInt(fee) - total;
+        else net = Integer.parseInt(fee) + total;
+
+        if(total == 0) feeText.setText(fee);
         else{
             double percentage = 100;
             if(net != 0) percentage = (net/(double)Integer.parseInt(fee))*100;
             DecimalFormat df = new DecimalFormat("0.00");
             String p = df.format(percentage);
-            feeText.setText(fee+" - "+total+" = "+net+"("+p+"%)");
+            if(total > 0) feeText.setText(fee+" - "+total+" = "+net+"("+p+"%)");
+            else feeText.setText(fee+" "+total+" = "+net+"("+p+"%)");
         }
     }
 
@@ -329,13 +331,15 @@ public class Distribution_Detail extends AppCompatActivity {
                     boolean checkAll = true;
                     for(int i = 0; i < salaries.size(); i++){
                         Log.i(TAG, "salaries("+i+"): "+salaries.get(i));
-                        if(salaries.get(i) == 0){
+                        if(salaries.get(i) == -1){
                             checkAll = false;
+                            Log.d(TAG, "not complete thd distribution");
                             continue;
                         }
                         update_staff_salary(i);
                     }
                     if(checkAll){
+                        Log.d(TAG, "complete, finish the distirbution");
                         changeStatus();
                     }
 

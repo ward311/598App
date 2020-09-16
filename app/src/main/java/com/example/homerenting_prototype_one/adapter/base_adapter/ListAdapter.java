@@ -92,7 +92,7 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
 
         int i = 1;
         //time zone
-        if(data.get(position).length >= 8){
+        if(data.get(position).length > 8){
             Log.i(TAG, "date: "+data.get(position)[i]);
             viewHolder.date_text.setText(data.get(position)[i++]);
             Log.i(TAG, "time: "+data.get(position)[i]);

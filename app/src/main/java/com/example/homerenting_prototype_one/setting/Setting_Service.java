@@ -91,7 +91,6 @@ public class Setting_Service extends AppCompatActivity {
 
         setAddChip(serviceItem);
         setAddChip(specialItem);
-        setAddChip(carType);
         setAddChip(boxType);
         setAddChip(wrapItem);
 
@@ -102,21 +101,19 @@ public class Setting_Service extends AppCompatActivity {
                 for(int i = 0; i < enableItems.size(); i++){
                     Log.d(TAG, "enable: "+ Arrays.toString(enableItems.get(i)));
                 }
-                if(enableItems.size() > 0) deleteItem();//enableItem();
-                else Log.d(TAG, "enableItems no item");
-
+                if(enableItems.size() == 0) Log.d(TAG, "enableItems no item");
 
                 for(int i = 0; i < disableItems.size(); i++){
                     Log.d(TAG, "disable: "+ Arrays.toString(disableItems.get(i)));
                 }
-                if(disableItems.size() > 0) deleteItem();//disableItem();
-                else Log.d(TAG, "disableItems no item");
+                if(disableItems.size() == 0) Log.d(TAG, "disableItems no item");
 
                 for(int i = 0; i < deleteItems.size(); i++){
                     Log.d(TAG, "delete: "+ Arrays.toString(deleteItems.get(i)));
                 }
-                if(deleteItems.size() > 0) deleteItem();
-                else Log.d(TAG, "deleteItems no item");
+                if(deleteItems.size() == 0) Log.d(TAG, "deleteItems no item");
+
+                update_serviceItem();
 
 //                finish();
             }
@@ -244,6 +241,7 @@ public class Setting_Service extends AppCompatActivity {
 
                         String service_name = serviceItem.getString("service_name");
                         final String item_name = serviceItem.getString("item_name");
+                        String end_time = serviceItem.getString("end_time");
 
                         final ChipGroup chipGroup = getChipGroup(service_name);
                         if(chipGroup != null){
@@ -259,15 +257,20 @@ public class Setting_Service extends AppCompatActivity {
                                             Log.d(TAG, item.getText().toString()+" is checked");
                                         }
                                     });
-
                                     String[] originalItem = {chipGroup.getTag().toString(), item_name};
                                     originItems.add(originalItem);
                                     break;
                                 }
                             }
                             if(ii == chipGroup.getChildCount() && chipGroup != carType){
-                                addChip(chipGroup, item_name, true);
+                                if(end_time.equals("null")){
+                                    addChip(chipGroup, item_name, true);
+                                    String[] originalItem = {chipGroup.getTag().toString(), item_name};
+                                    originItems.add(originalItem);
+                                }
+                                else addChip(chipGroup, item_name, false);
                             }
+
                         }
                         else{
                             Log.d(TAG, "chipGroup: "+service_name+" is null");
@@ -335,13 +338,17 @@ public class Setting_Service extends AppCompatActivity {
         });
     }
 
-    private Chip addChip(final ChipGroup chipGroup, String newItem, final boolean checked){
+    private Chip addChip(final ChipGroup chipGroup, final String newItem, final boolean checked){
         Log.d(TAG, "add new chip:"+newItem);
         lock = false;
         //新chip
         final Chip chip = new Chip(chipGroup.getContext());
         chip.setId(R.id.added_chip_id);
         chip.setText(newItem);
+        if(checked){
+            String[] item = {chipGroup.getTag().toString(), newItem};
+            enableItems.add(item);
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -405,100 +412,14 @@ public class Setting_Service extends AppCompatActivity {
         }
     }
 
-    private void enableItem(){
-        String function_name = "add_serviceItems";
+    private void update_serviceItem(){
+        String function_name = "modify_serviceItems";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
-                .add("items", itemsToString(enableItems))
-                .build();
-
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/functional.php")
-                .post(body)
-                .build();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseData = response.body().string();
-                Log.d(TAG,"responseData of enableItem: "+responseData); //顯示資料
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "response!", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-    }
-
-    private void disableItem(){
-        String function_name = "disable_serviceItems";
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("company_id", getCompany_id(context))
-                .add("items", itemsToString(disableItems))
-                .build();
-
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/functional.php")
-                .post(body)
-                .build();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseData = response.body().string();
-                Log.d(TAG,"responseData of disableItem: "+responseData); //顯示資料
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "response!", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-    }
-
-    private void deleteItem() {
-        String function_name = "delete_serviceItems";
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("company_id", getCompany_id(context))
-                .add("items", itemsToString(deleteItems))
+                .add("enableItems", itemsToString(enableItems))
+                .add("disableItems", itemsToString(disableItems))
+                .add("deleteItems", itemsToString(deleteItems))
                 .build();
 
         Request request = new Request.Builder()
@@ -547,13 +468,16 @@ public class Setting_Service extends AppCompatActivity {
     }
 
     private void removeOriginItem(){
+        Log.d(TAG, "remove origin items");
         for(int i = 0; i < originItems.size(); i++){
-//            Log.d(TAG, "originItems: "+ Arrays.toString(originItems.get(i)));
+            Log.d(TAG, "originItems: "+ Arrays.toString(originItems.get(i)));
             removeItem(enableItems, originItems.get(i));
         }
     }
 
     private String itemsToString(ArrayList<String[]> items){
+        if(items.size() == 0) return "";
+
         String itemStr;
         itemStr = "[";
         itemStr = itemStr+"[\""+items.get(0)[0] +"\", \""+items.get(0)[1]+"\"]";
@@ -612,8 +536,22 @@ public class Setting_Service extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         removeOriginItem();
-        if(enableItems.size() > 0) enableItem();
-        if(disableItems.size() > 0) disableItem();
+        for(int i = 0; i < enableItems.size(); i++){
+            Log.d(TAG, "enable: "+ Arrays.toString(enableItems.get(i)));
+        }
+        if(enableItems.size() == 0) Log.d(TAG, "enableItems no item");
+
+        for(int i = 0; i < disableItems.size(); i++){
+            Log.d(TAG, "disable: "+ Arrays.toString(disableItems.get(i)));
+        }
+        if(disableItems.size() == 0) Log.d(TAG, "disableItems no item");
+
+        for(int i = 0; i < deleteItems.size(); i++){
+            Log.d(TAG, "delete: "+ Arrays.toString(deleteItems.get(i)));
+        }
+        if(deleteItems.size() == 0) Log.d(TAG, "deleteItems no item");
+
+        update_serviceItem();
         super.onBackPressed();
     }
 }

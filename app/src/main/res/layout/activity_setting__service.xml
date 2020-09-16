@@ -273,14 +273,10 @@
                     android:theme="@style/checkChip">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/addcar_SS"
+                        android:id="@+id/carExtra_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:foreground="@drawable/ic_baseline_add_circle_outline_24"
-                        android:foregroundGravity="center"
-                        app:checkedIconVisible="false"
-                        app:chipIconVisible="false" />
+                        android:visibility="gone" />
                 </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
             <LinearLayout
