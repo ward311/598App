@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting_Announcement;
-import com.example.homerenting_prototype_one.Setting_Discount;
 import com.example.homerenting_prototype_one.Setting_Evaluation;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -51,15 +50,10 @@ public class Setting extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
         LinearLayout company_information = findViewById(R.id.companyInfo_LL_S);
         LinearLayout service_item = findViewById(R.id.serviceItem_LL_S);
-        LinearLayout discount = findViewById(R.id.discount_linearLayout);
+        LinearLayout discount = findViewById(R.id.discount_LL_S);
         LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_linearLayout);
         LinearLayout system_announcement = findViewById(R.id.systemAnnouncement_linearLayout);
         LinearLayout history_record = findViewById(R.id.historyRecord_linearLayout);
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         company_email = findViewById(R.id.company_email_S);
 
@@ -108,42 +102,7 @@ public class Setting extends AppCompatActivity {
             }
         });
 
-        //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Setting.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Setting.this, Order.class);
-                startActivity(order_intent);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Setting.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Setting.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-//        setting_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent setting_intent = new Intent(Setting.this, Setting.class);
-//                startActivity(setting_intent);
-//            }
-//        });
+        globalNav();
     }
 
     private void getCompanyDetail(){
@@ -197,5 +156,50 @@ public class Setting extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void globalNav(){
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        //底下nav
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(Setting.this, Valuation.class);
+                startActivity(valuation_intent);
+            }
+        });
+        order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(Setting.this, Order.class);
+                startActivity(order_intent);
+            }
+        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(Setting.this, Calendar.class);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(Setting.this, System.class);
+                startActivity(system_intent);
+            }
+        });
+//        setting_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent setting_intent = new Intent(Setting.this, Setting.class);
+//                startActivity(setting_intent);
+//            }
+//        });
     }
 }

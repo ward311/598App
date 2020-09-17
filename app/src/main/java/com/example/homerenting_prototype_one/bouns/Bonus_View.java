@@ -190,7 +190,7 @@ public class Bonus_View extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-//                Log.i(TAG,"responseData: "+responseData); //顯示資料
+                Log.i(TAG,"responseData: "+responseData); //顯示資料
 
                 employee_names.add("");
                 salaries.add(0);
@@ -243,7 +243,7 @@ public class Bonus_View extends AppCompatActivity {
             }
         });
 
-        dialog.getWindow().setLayout( 1400,2000 );
+        dialog.getWindow().setLayout(dip2px(context, 375), dip2px(context, 500)); //1400, 2000
         dialog.setCanceledOnTouchOutside(true); //點其他地方也能取消
         dialog.show();
 

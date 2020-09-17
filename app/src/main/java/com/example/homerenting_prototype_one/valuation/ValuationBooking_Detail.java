@@ -98,9 +98,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         String[] newString = {"", "", ""};
         cars.add(newString);
 
-//        bundle = getIntent().getExtras();
-        bundle = new Bundle();
-        bundle.putString("order_id", "47");
+        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
@@ -108,7 +106,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         getOrder();
 
-        getItems();
+//        getItems();
 
         furniture_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,90 +285,90 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         });
     }
 
-    private void getItems(){
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() { //delay 3 秒之後才抓得到東西
-            @Override
-            public void run() {
-                int i;
-                for(i = 0; i < carAdapter.getItemCount(); i++){
-                    getItem(i);
-                }
-            }
-        }, 3000);
-    }
+//    private void getItems(){
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() { //delay 3 秒之後才抓得到東西
+//            @Override
+//            public void run() {
+//                int i;
+//                for(i = 0; i < carAdapter.getItemCount(); i++){
+//                    getItem(i);
+//                }
+//            }
+//        }, 3000);
+//    }
 
-    private boolean getItem(final int position){
-        View view = carAssignRList.getLayoutManager().findViewByPosition(position);
-        if(view != null){ //有可能太快輸入而導致view沒東西
-            if(!isCarsExist(position)){
-                Log.d(TAG, "add position "+position);
-                String[] newString = {"", "", ""};
-                cars.add(newString);
-            }
-            Log.d(TAG, "getItem: postion:"+position);
-            EditText weight_edit = view.findViewById(R.id.weight_CI);
-            EditText type_edit = view.findViewById(R.id.type_CI);
-            EditText num_edit = view.findViewById(R.id.num_CI);
+//    private boolean getItem(final int position){
+//        View view = carAssignRList.getLayoutManager().findViewByPosition(position);
+//        if(view != null){ //有可能太快輸入而導致view沒東西
+//            if(!isCarsExist(position)){
+//                Log.d(TAG, "add position "+position);
+//                String[] newString = {"", "", ""};
+//                cars.add(newString);
+//            }
+//            Log.d(TAG, "getItem: postion:"+position);
+//            EditText weight_edit = view.findViewById(R.id.weight_CI);
+//            EditText type_edit = view.findViewById(R.id.type_CI);
+//            EditText num_edit = view.findViewById(R.id.num_CI);
+//
+//            editTextChange(weight_edit, position, 0);
+//            editTextChange(type_edit, position, 1);
+//            editTextChange(num_edit, position, 2);
+//        }
+//        else{
+//            Log.d(TAG, position+". view is null");
+//        }
+//        return true;
+//    }
 
-            editTextChange(weight_edit, position, 0);
-            editTextChange(type_edit, position, 1);
-            editTextChange(num_edit, position, 2);
-        }
-        else{
-            Log.d(TAG, position+". view is null");
-        }
-        return true;
-    }
-
-    private void editTextChange(final EditText editText, final int position, final int i){
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(!isCarsExist(position)){
-                    return;
-                }
-
-                if(!editText.getText().toString().isEmpty()){
-                    Log.d(TAG, position+". cars["+i+"] no empty");
-
-                    String str = editText.getText().toString();
-                    cars.get(position)[i] = str;
-
-                    if(carAdapter.getItemCount() == position+1 && position < max_car-1){
-                        if(!isCarsExist(position+1)){
-                            Log.d(TAG, "add position "+position);
-                            String[] newString = {"", "", ""};
-                            cars.add(newString);
-                        }
-                        carAdapter.notifyItemInserted(cars.size()-1);
-                    }
-                    getItems();
-                }
-                else{
-                    cars.get(position)[i] = "";
-                    Log.d(TAG, "carAdapter.getItemCount: "+carAdapter.getItemCount());
-                    //如果該列為空，而且場上還會留下1個，而且不是最後一列(因為最後一列常保持空的)
-                    //要是輸入的字沒偵測到，就有可能發生明明有輸字卻整列刪除的狀況
-                    if(isRowEmpty(position) && carAdapter.getItemCount() > 1 && position+1 != carAdapter.getItemCount()){
-                        cars.remove(position);
-                        showCars();
-                        carAdapter.notifyItemRemoved(position);
-                    }
-                }
-            }
-        });
-    }
+//    private void editTextChange(final EditText editText, final int position, final int i){
+//        editText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if(!isCarsExist(position)){
+//                    return;
+//                }
+//
+//                if(!editText.getText().toString().isEmpty()){
+//                    Log.d(TAG, position+". cars["+i+"] no empty");
+//
+//                    String str = editText.getText().toString();
+//                    cars.get(position)[i] = str;
+//
+//                    if(carAdapter.getItemCount() == position+1 && position < max_car-1){
+//                        if(!isCarsExist(position+1)){
+//                            Log.d(TAG, "add position "+position);
+//                            String[] newString = {"", "", ""};
+//                            cars.add(newString);
+//                        }
+//                        carAdapter.notifyItemInserted(cars.size()-1);
+//                    }
+//                    getItems();
+//                }
+//                else{
+//                    cars.get(position)[i] = "";
+//                    Log.d(TAG, "carAdapter.getItemCount: "+carAdapter.getItemCount());
+//                    //如果該列為空，而且場上還會留下1個，而且不是最後一列(因為最後一列常保持空的)
+//                    //要是輸入的字沒偵測到，就有可能發生明明有輸字卻整列刪除的狀況
+//                    if(isRowEmpty(position) && carAdapter.getItemCount() > 1 && position+1 != carAdapter.getItemCount()){
+//                        cars.remove(position);
+//                        showCars();
+//                        carAdapter.notifyItemRemoved(position);
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     private boolean isRowEmpty(int position){
         int check = 0;
@@ -400,7 +398,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCars();
+//                checkCars();
 
                 String movingDate = movingDateText.getText().toString().trim();
                 String movingTime = movingTimeText.getText().toString().trim();
@@ -413,7 +411,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 if(checkEmpty(movingDate, movingTime, estimate_worktime, fee))
                     return;
 
-//                updateValuation(moving_date, num, weight, type, estimate_worktime, fee);
+                updateValuation(moving_date, estimate_worktime, fee);
 
                 new AlertDialog.Builder(context)
                         .setTitle("媒合中")
@@ -463,21 +461,21 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         return check;
     }
 
-    private void checkCars(){
-        if(getCarStr(true)) {
-            Log.d(TAG, "update car");
-
-            int carSize = cars.size();
-            if(isRowEmpty(carSize-1)) carSize = carSize-1;
-            Log.d(TAG, "actual car size: "+carSize);
-
-            for(int i = 0; i < carSize; i++)
-                updateCarDemand(i);
-        }
-        else Log.d(TAG, "update but empty");
-
-        showCars();
-    }
+//    private void checkCars(){
+//        if(getCarStr(true)) {
+//            Log.d(TAG, "update car");
+//
+//            int carSize = cars.size();
+//            if(isRowEmpty(carSize-1)) carSize = carSize-1;
+//            Log.d(TAG, "actual car size: "+carSize);
+//
+//            for(int i = 0; i < carSize; i++)
+//                updateCarDemand(i);
+//        }
+//        else Log.d(TAG, "update but empty");
+//
+//        showCars();
+//    }
 
     private boolean getCarStr(boolean errorMsg){
         boolean check = true;
@@ -549,7 +547,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         });
     }
 
-    private void updateValuation(String moving_date, String num, String weight, String type, String estimate_worktime, String fee){
+    private void updateValuation(String moving_date, String estimate_worktime, String fee){
         String function_name = "update_bookingValuation";
         String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()
@@ -559,7 +557,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 .add("moving_date",moving_date+":00")
                 .add("estimate_worktime", estimate_worktime)
                 .add("fee", fee)
-                .add("memo", memo)
                 .build();
         Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date:  "+moving_date+":00"+
                 ", estimate_worktime: "+estimate_worktime+", fee: "+fee);

@@ -250,6 +250,16 @@ public class Setting_Service extends AppCompatActivity {
                                 final Chip item = (Chip) chipGroup.getChildAt(ii);
                                 Log.d(TAG, "get item:"+item.getText().toString()+"("+chipGroup.getTag()+")");
                                 if(item.getText().toString().equals(item_name)){
+                                    if(!end_time.equals("null")){
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                item.setChecked(false);
+                                                Log.d(TAG, item_name+" is disable");
+                                            }
+                                        });
+                                        break;
+                                    }
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -451,7 +461,7 @@ public class Setting_Service extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "response!", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(context, "response!", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

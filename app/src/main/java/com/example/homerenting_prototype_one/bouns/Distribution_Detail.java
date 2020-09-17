@@ -287,9 +287,9 @@ public class Distribution_Detail extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    int salary = 0;
+                    int salary = -1;
                     salaryStr = salaryText.getText().toString();
-                    if(!salaryStr.isEmpty() && !salaryStr.equals("-")) salary = Integer.parseInt(salaryStr);
+                    if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr);
                     salaries.set(position, salary);
                     setFeeText();
                 }

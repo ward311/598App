@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.setting;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,9 +16,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
-import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
@@ -41,13 +41,14 @@ public class Setting_Discount extends AppCompatActivity {
         final LinearLayout discount_begin_layout = findViewById(R.id.new_discount_begin_layout);
         final LinearLayout middle_layout = findViewById(R.id.new_middle_layout);
         final LinearLayout discount_end_layout = findViewById(R.id.new_discount_end_layout);
+
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent back_setting_intent = new Intent(Setting_Discount.this, Setting.class);
-                startActivity(back_setting_intent);
+                finish();
             }
         });
+
         final EditText discount_edit = new EditText(this);
         add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
