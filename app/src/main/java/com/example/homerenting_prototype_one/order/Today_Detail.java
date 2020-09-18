@@ -58,66 +58,31 @@ import static com.example.homerenting_prototype_one.show.global_function.getDate
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 public class Today_Detail extends AppCompatActivity {
-
-    OkHttpClient okHttpClient = new OkHttpClient();
     Context context = Today_Detail.this;
 
     ConstraintLayout cLayout;
 
-    TextView nameText;
-    TextView nameTitleText;
-    TextView phoneText;
-    TextView movingTimeText;
-    TextView fromAddressText;
-    TextView toAddressText;
-    TextView remainderText;
-    TextView carText;
-    TextView staffText;
-    TextView worktimeText;
-    TextView feeText;
-    TextView toPriceText;
-    TextView finalPriceText;
-    TextView priceUnitText;
+    TextView nameText, nameTitleText, phoneText, movingTimeText, fromAddressText, toAddressText;
+    TextView remainderText, carText, staffText, worktimeText, feeText, toPriceText, finalPriceText, priceUnitText;
 
-    EditText changePriceText;
-    EditText memoEdit;
+    EditText changePriceText, memoEdit;
 
-    String name;
-    String gender;
-    String phone;
-    String contact_address;
-    String movingTime;
-    String fromAddress;
-    String toAddress;
-    String remainder;
-    String car;
-    String staff;
-    String worktime;
-    String fee;
-    String memo;
-    String status;
+    String name, gender, phone, contact_address, movingTime, fromAddress, toAddress;
+    String remainder, car, staff, worktime, fee, memo, status;
 
-    Button furnitureBtn;
-    Button changePriceBtn;
-    Button check_btn;
+    String order_id;
+
+    Button furnitureBtn, changePriceBtn, check_btn;
 
     boolean change = false, check = false, result = false;
 
-    int price_origin;
-    int price;
+    int price_origin, price;
 
     Bundle bundle;
 
-    String order_id;
-    String company_id = getCompany_id(context);
 
     String TAG = "Today_Detail";
 
-    public ListView furniture_list;
-    public String[] furnitures = {"1 單人沙發   2    ","2 兩人沙發   1    ","3 三人沙發   1    ","4 L型沙發   1    ",
-            "5 沙發桌   3    ","6 傳統電視   1    ","7 液晶電視37吋以下   1    ","8 液晶電視40吋以上   1    ","9 電視櫃   1    ",
-            "10 酒櫃   2    ","11 鞋櫃   2    ","12 按摩椅   1    ","13 佛桌   1    ","14 鋼琴   1    ",
-            "15 健身器材   3    "};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,11 +105,10 @@ public class Today_Detail extends AppCompatActivity {
 
         //傳值
         String function_name = "order_detail";
-        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
-                .add("company_id", company_id)
+                .add("company_id", getCompany_id(context))
                 .build();
         Log.d(TAG, "order_id:"+order_id);
 
@@ -153,6 +117,7 @@ public class Today_Detail extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -538,7 +503,7 @@ public class Today_Detail extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
-                .add("company_id", company_id)
+                .add("company_id", getCompany_id(context))
                 .add("accurate_fee", fee)
                 .add("memo", memo)
                 .build();
@@ -548,6 +513,7 @@ public class Today_Detail extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -556,7 +522,7 @@ public class Today_Detail extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(Today_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                         check = false;
                     }
                 });
@@ -586,6 +552,7 @@ public class Today_Detail extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

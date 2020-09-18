@@ -3,347 +3,618 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".setting.Setting_Discount">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:orientation="vertical"
-        android:background="#19B0ED">
+        android:background="#19B0ED"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageButton
                 android:id="@+id/back_imgBtn"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:scaleType="centerCrop"
                 android:background="#19B0ED"
-                android:src="@drawable/back_white"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/back_white" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="優惠折扣"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:src="@drawable/logo_long"
-            android:background="#FFFFFF"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"/>
+            android:background="#FFFFFF"
+            android:src="@drawable/logo_long" />
     </LinearLayout>
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_weight="1"/>-->
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_weight="1"/>-->
+    <TableLayout
+        android:id="@+id/discount_table_SDC"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="免費估價"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:paddingLeft="15dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="免收訂金"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:paddingLeft="15dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="免費取消"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <Switch
+                android:id="@+id/switch3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp">
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="短期優惠"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <Switch
+                android:id="@+id/switch4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp" />
+
+            <EditText
+                android:id="@+id/editTextNumber"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="right"
+                android:hint="5"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="8dp"
+                android:text="%"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/shortStart_edit_SDC"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="10/01"
+                android:inputType="text"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/shortStart_text_SDC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_rectanngle"
+                android:padding="3dp"
+                android:text="10-01"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="─"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/shortEnd_edit_SDC"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="11/01"
+                android:inputType="text"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/shortEnd_text_SDC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_rectanngle"
+                android:padding="3dp"
+                android:text="11-01"
+                android:textSize="18sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp">
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="長期優惠"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <Switch
+                android:id="@+id/switch5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp" />
+
+            <EditText
+                android:id="@+id/editTextNumber2"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="right"
+                android:hint="10"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="8dp"
+                android:text="%"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/longStart_edit_SDC"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="01/01"
+                android:inputType="text"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/longStart_text_SDC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_rectanngle"
+                android:padding="3dp"
+                android:text="01-01"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="─" />
+
+            <EditText
+                android:id="@+id/longEnd_edit_SDC"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="11/01"
+                android:inputType="text"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/longEnd_text_SDC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_rectanngle"
+                android:padding="3dp"
+                android:text="01-01"
+                android:textSize="18sp" />
+        </TableRow>
+
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/button_LL_SDC"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/add_btn_SDC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFFFF"
+            android:text="新增選項"
+            android:textColor="#FB9825" />
+
+        <Button
+            android:id="@+id/delete_discount_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFFFF"
+            android:text="刪除選項"
+            android:textColor="#19B0ED" />
+
+        <Button
+            android:id="@+id/check_btn_SDC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/roundedbutton"
+            android:text="確認"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center_vertical"
             android:text="免費估價"
             android:textColor="#000000"
             android:textSize="20sp"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             tools:ignore="Suspicious0dp" />
+
         <Switch
             android:id="@+id/free_evaluation_switch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center_vertical"
             android:text="免收訂金"
             android:textColor="#000000"
             android:textSize="20sp"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             tools:ignore="Suspicious0dp" />
+
         <Switch
             android:id="@+id/free_deposit_switch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center_vertical"
             android:text="免費取消"
             android:textColor="#000000"
             android:textSize="20sp"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             tools:ignore="Suspicious0dp" />
+
         <Switch
             android:id="@+id/free_cancel_switch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center_vertical"
             android:text="短期優惠"
             android:textColor="#000000"
             android:textSize="20sp"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             tools:ignore="Suspicious0dp" />
+
         <Switch
             android:id="@+id/shortTerm_discount_switch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"/>
+            android:layout_marginRight="15dp" />
+
         <EditText
             android:id="@+id/shortTerm_discount_editText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="5%"/>
+            android:hint="5%"
+            android:inputType="text" />
+
         <EditText
             android:id="@+id/shortTerm_begin_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="date"
-            android:hint="10/01"/>
+            android:hint="10/01"
+            android:inputType="date" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="—"/>
+            android:text="—" />
+
         <EditText
             android:id="@+id/shortTerm_end_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="date"
-            android:hint="10/31"/>
+            android:hint="10/31"
+            android:inputType="date" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center_vertical"
             android:text="長期優惠"
             android:textColor="#000000"
             android:textSize="20sp"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             tools:ignore="Suspicious0dp" />
+
         <Switch
             android:id="@+id/longTerm_discount_switch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"/>
+            android:layout_marginRight="15dp" />
+
         <EditText
             android:id="@+id/longTerm_discount_editText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="10%"/>
+            android:hint="10%"
+            android:inputType="text" />
+
         <EditText
             android:id="@+id/longTerm_begin_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="date"
-            android:hint="05/10"/>
+            android:hint="05/10"
+            android:inputType="date" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="—"/>
+            android:text="—" />
+
         <EditText
             android:id="@+id/longTerm_end_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="date"
-            android:hint="10/31"/>
+            android:hint="10/31"
+            android:inputType="date" />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <Button
-            android:id="@+id/add_discount_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="新增選項"
-            android:background="#FFFFFFFF"
-            android:textColor="#FB9825" />
-        <Button
-            android:id="@+id/delete_discount_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="刪除選項"
-            android:background="#FFFFFFFF"
-            android:textColor="#19B0ED" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:orientation="horizontal">
-        <LinearLayout
-            android:id="@+id/new_discount_text_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:orientation="vertical"/>
-        <LinearLayout
-            android:id="@+id/new_discount_switch_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-        <LinearLayout
-            android:id="@+id/new_discount_begin_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-        <LinearLayout
-            android:id="@+id/new_middle_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-        <LinearLayout
-            android:id="@+id/new_discount_end_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="#F2F2F2"
         android:orientation="horizontal">
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/valuationBlue_Btn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/valuation_btn_drawable"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/valuation_btn_drawable" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="估價單"
-                android:textSize="10sp"
-                android:textColor="#D5D5D5"/>
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/order_imgBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/order_btn_drawable"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/order_btn_drawable" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="訂單"
-                android:textSize="10sp"
-                android:textColor="#D5D5D5"/>
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/calendar_imgBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/calendar_btn_drawable"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/calendar_btn_drawable" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="行事曆"
-                android:textSize="10sp"
-                android:textColor="#D5D5D5"/>
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/system_imgBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/system_btn_drawable"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/system_btn_drawable" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="人事系統"
-                android:textSize="10sp"
-                android:textColor="#D5D5D5"/>
+                android:textColor="#D5D5D5"
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageButton
                 android:id="@+id/setting_imgBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/setting_blue"
+                android:background="#00000000"
                 android:scaleType="centerCrop"
-                android:background="#00000000"/>
+                android:src="@drawable/setting_blue" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="我的系統"
-                android:textSize="10sp"
-                android:textColor="#19B0ED"/>
+                android:textColor="#19B0ED"
+                android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -123,7 +123,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 DatePickerDialog date_picker = new DatePickerDialog( context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        movingDateText.setText(String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth));
+                        movingDateText.setText(year+"-"+(month+1)+"-"+dayOfMonth);
                     }
                 },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
                 date_picker.show();
