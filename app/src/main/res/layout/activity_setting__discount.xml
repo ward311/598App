@@ -47,245 +47,238 @@
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="0dp"-->
     <!--        android:layout_weight="1"/>-->
-    <TableLayout
-        android:id="@+id/discount_table_SDC"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="8">
 
-        <TableRow
+        <TableLayout
+            android:id="@+id/discount_table_SDC"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingLeft="15dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingRight="15dp"
+            android:shrinkColumns="1, 5, 7">
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="免費估價"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
-            <Switch
-                android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:paddingLeft="15dp" />
-        </TableRow>
+                <Button
+                    android:id="@+id/button1"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:visibility="gone" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="15dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="免費估價"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="免收訂金"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+                <Switch
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
 
-            <Switch
-                android:id="@+id/switch2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:paddingLeft="15dp"/>
-        </TableRow>
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="15dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="免費取消"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:visibility="gone" />
 
-            <Switch
-                android:id="@+id/switch3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="免收訂金"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="15dp">
+                <Switch
+                    android:id="@+id/switch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="短期優惠"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
-            <Switch
-                android:id="@+id/switch4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp" />
+                <Button
+                    android:id="@+id/button3"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/editTextNumber"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="right"
-                android:hint="5"
-                android:inputType="number" />
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="免費取消"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/textView15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="8dp"
-                android:text="%"
-                android:textSize="18sp" />
+                <Switch
+                    android:id="@+id/switch3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
 
-            <EditText
-                android:id="@+id/shortStart_edit_SDC"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="10/01"
-                android:inputType="text"
-                android:visibility="gone" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/shortStart_text_SDC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edittext_rectanngle"
-                android:padding="3dp"
-                android:text="10-01"
-                android:textSize="18sp" />
+                <Button
+                    android:id="@+id/button4"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/dot"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="─"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:text="短期優惠"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/shortEnd_edit_SDC"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="11/01"
-                android:inputType="text"
-                android:visibility="gone" />
+                <Switch
+                    android:id="@+id/switch4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
-            <TextView
-                android:id="@+id/shortEnd_text_SDC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edittext_rectanngle"
-                android:padding="3dp"
-                android:text="11-01"
-                android:textSize="18sp" />
+                <EditText
+                    android:id="@+id/editTextNumber"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="right"
+                    android:hint="5"
+                    android:inputType="number" />
 
-        </TableRow>
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="8dp"
+                    android:text="%"
+                    android:textSize="18sp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="15dp">
+                <TextView
+                    android:id="@+id/shortStart_text_SDC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    android:background="@drawable/edittext_rectanngle"
+                    android:padding="3dp"
+                    android:text="2020-10-01"
+                    android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="長期優惠"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="─"
+                    android:textSize="14sp" />
 
-            <Switch
-                android:id="@+id/switch5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp" />
+                <TextView
+                    android:id="@+id/shortEnd_text_SDC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_rectanngle"
+                    android:padding="3dp"
+                    android:text="2020-11-01"
+                    android:textSize="18sp" />
 
-            <EditText
-                android:id="@+id/editTextNumber2"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="right"
-                android:hint="10"
-                android:inputType="number" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/textView18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="8dp"
-                android:text="%"
-                android:textSize="18sp" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/longStart_edit_SDC"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="01/01"
-                android:inputType="text"
-                android:visibility="gone" />
+                <Button
+                    android:id="@+id/button5"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/dot"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/longStart_text_SDC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edittext_rectanngle"
-                android:padding="3dp"
-                android:text="01-01"
-                android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:text="長期優惠"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="─" />
+                <Switch
+                    android:id="@+id/switch5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-            <EditText
-                android:id="@+id/longEnd_edit_SDC"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="11/01"
-                android:inputType="text"
-                android:visibility="gone" />
+                <EditText
+                    android:id="@+id/editTextNumber2"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="right"
+                    android:hint="10"
+                    android:inputType="number" />
 
-            <TextView
-                android:id="@+id/longEnd_text_SDC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edittext_rectanngle"
-                android:padding="3dp"
-                android:text="01-01"
-                android:textSize="18sp" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="8dp"
+                    android:text="%"
+                    android:textSize="18sp" />
 
-    </TableLayout>
+                <TextView
+                    android:id="@+id/longStart_text_SDC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_rectanngle"
+                    android:padding="3dp"
+                    android:text="2020-01-01"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="─" />
+
+                <TextView
+                    android:id="@+id/longEnd_text_SDC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_rectanngle"
+                    android:padding="3dp"
+                    android:text="2021-01-01"
+                    android:textSize="18sp" />
+            </TableRow>
+
+        </TableLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/button_LL_SDC"

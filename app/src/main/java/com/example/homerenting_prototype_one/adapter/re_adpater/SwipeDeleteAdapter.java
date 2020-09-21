@@ -107,6 +107,10 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
         notifyItemRemoved(position);
     }
 
+    public String[] getItem(int position){
+        return data.get(position);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         View view;
         LinearLayout item_layout;

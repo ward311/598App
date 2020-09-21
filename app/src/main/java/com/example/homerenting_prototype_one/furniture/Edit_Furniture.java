@@ -60,8 +60,7 @@ public class Edit_Furniture extends AppCompatActivity {
 
     private final String PHP = "/furniture.php";
     String TAG = "Edit_Furniture";
-    String order_id;
-    String fspace;
+    String order_id, fspace;
 
     String[] space, furniture;
     String[] new_furniture = new String[3];
@@ -77,8 +76,6 @@ public class Edit_Furniture extends AppCompatActivity {
 
     Bundle bundle;
     Context context = Edit_Furniture.this;
-    OkHttpClient okHttpClient = new OkHttpClient();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +123,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
 
         call.enqueue(new Callback() {
@@ -434,6 +432,9 @@ public class Edit_Furniture extends AppCompatActivity {
                 .url(BuildConfig.SERVER_URL + "/furniture.php")
                 .post(body)
                 .build();
+
+
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -506,6 +507,8 @@ public class Edit_Furniture extends AppCompatActivity {
                 .url(BuildConfig.SERVER_URL + "/furniture.php")
                 .post(body)
                 .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -617,6 +620,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

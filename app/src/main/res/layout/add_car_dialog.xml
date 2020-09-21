@@ -16,7 +16,7 @@
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toBottomOf="@+id/weight_edit_ACD" />
+        app:layout_constraintTop_toBottomOf="@+id/type_edit_ACD" />
 
     <EditText
         android:id="@+id/weight_edit_ACD"
@@ -42,18 +42,26 @@
         app:layout_constraintStart_toEndOf="@+id/weight_edit_ACD"
         app:layout_constraintTop_toTopOf="@+id/weight_edit_ACD" />
 
+    <Spinner
+        android:id="@+id/type_sp_ACD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/weight_edit_ACD"
+        app:layout_constraintStart_toStartOf="@+id/guideline9"
+        app:layout_constraintTop_toTopOf="@+id/weight_edit_ACD" />
+
     <EditText
         android:id="@+id/type_edit_ACD"
         android:layout_width="117dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:ems="10"
         android:hint="如: 箱型車"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/weight_text"
-        app:layout_constraintStart_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toTopOf="@+id/weight_text" />
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/type_sp_ACD"
+        app:layout_constraintTop_toBottomOf="@+id/type_sp_ACD" />
 
     <EditText
         android:id="@+id/plateNum_edit_ACD"
@@ -74,5 +82,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.45" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

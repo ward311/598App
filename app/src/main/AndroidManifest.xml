@@ -16,6 +16,7 @@
         <!--Main-->
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".main.Login"/>
+        <activity android:name=".main.New_Login"/>
         <activity android:name=".calendar.Calendar"/>
 
         <!--Order-->
@@ -51,12 +52,11 @@
 
         <!--System-->
         <activity android:name=".system.System"/>
-        <activity android:name=".system.System_Data" />
+        <activity android:name=".system.System_Data"/>
 
         <!--Bouns-->
         <activity android:name=".bouns.System_Bonus"/>
         <activity android:name=".bouns.Bonus_View"/>
-        <activity android:name=".bouns.Bonus_Distribution"/>
         <activity android:name=".bouns.Distribution_Detail"/>
         <activity android:name=".bouns.Bonus_List"/>
         <activity android:name=".bouns.Bonus_List_Detail"/>
@@ -74,13 +74,13 @@
         <activity android:name=".Service_Edit" />
         <activity android:name=".Information_Edit" />
         <activity android:name=".Setting_Announcement" />
-        <activity android:name=".Setting_Evaluation" />
+        <activity android:name=".setting.Setting_Evaluation" />
         <activity android:name=".System_Vacation" />
         <activity android:name=".System_Schedule" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
 
-        <activity android:name=".main.New_Login">
+        <activity android:name=".bouns.Bonus_Distribution">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

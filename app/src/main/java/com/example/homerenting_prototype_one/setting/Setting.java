@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Setting_Announcement;
-import com.example.homerenting_prototype_one.Setting_Evaluation;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -51,7 +50,7 @@ public class Setting extends AppCompatActivity {
         LinearLayout company_information = findViewById(R.id.companyInfo_LL_S);
         LinearLayout service_item = findViewById(R.id.serviceItem_LL_S);
         LinearLayout discount = findViewById(R.id.discount_LL_S);
-        LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_linearLayout);
+        LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_LL_S);
         LinearLayout system_announcement = findViewById(R.id.systemAnnouncement_linearLayout);
         LinearLayout history_record = findViewById(R.id.historyRecord_linearLayout);
 

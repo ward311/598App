@@ -65,6 +65,7 @@ public class Distribution_Detail extends AppCompatActivity {
     private ArrayList<Integer> salaries;
     private String salaryStr;
     int net;
+    boolean lock = false;
 
     private Context context = this;
 
@@ -101,16 +102,17 @@ public class Distribution_Detail extends AppCompatActivity {
         getOrder();
 
 //        取得薪水edittext的內容
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                for(int i = 0; i < distributionAdapter.getItemCount(); i++){
-                    getItem(i); //取得分配薪水的edittext
-                }
-                setCheckBtn(); //設置確認送出按鈕
-            }
-        }, 3000);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                for(int i = 0; i < distributionAdapter.getItemCount(); i++){
+//                    getItem(i); //取得分配薪水的edittext
+//                }
+//                setCheckBtn(); //設置確認送出按鈕
+//            }
+//        }, 3000);
+
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,7 +213,7 @@ public class Distribution_Detail extends AppCompatActivity {
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
-                    fee = order.getString("accurate_fee");
+                    fee = "1000";//order.getString("accurate_fee");
 
                     int i;
                     //跳過車輛
@@ -264,8 +266,16 @@ public class Distribution_Detail extends AppCompatActivity {
                     public void run() {
                         salaryDistribution.setLayoutManager(new LinearLayoutManager(context));
                         salaryDistribution.setAdapter(distributionAdapter);
+                        Log.d(TAG, "setAdapter");
                     }
                 });
+                while(distributionAdapter.getReady() != -1){
+                    Log.d(TAG, "ready: "+distributionAdapter.getReady());
+                }
+                for(int i = 0; i < distributionAdapter.getItemCount(); i++){
+                    getItem(i); //取得分配薪水的edittext
+                }
+                setCheckBtn(); //設置確認送出按鈕
             }
         });
     }
@@ -273,8 +283,31 @@ public class Distribution_Detail extends AppCompatActivity {
     private void getItem(final int position){
         View view = salaryDistribution.getLayoutManager().findViewByPosition(position);
         if(view != null){
-            final EditText salaryText = view.findViewById(R.id.salary_DI);
-            salaryText.addTextChangedListener(new TextWatcher() {
+            Log.d(TAG, "view "+position+" is not null");
+//            final EditText salaryPEdit = view.findViewById(R.id.salaryP_DI);
+            final TextView salaryPText = view.findViewById(R.id.salaryP_text_DI);
+            final EditText salaryEdit = view.findViewById(R.id.salary_DI);
+
+//            salaryPEdit.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    String salaryPStr = salaryPEdit.getText().toString();
+//                    if(salaryPStr.isEmpty()) salaryPStr = "0";
+//                    Log.d(TAG, "(sp) salary(p): "+salaryPStr);
+//                }
+//            });
+
+            salaryEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -287,16 +320,25 @@ public class Distribution_Detail extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    int salary = -1;
-                    salaryStr = salaryText.getText().toString();
+                    int salary = 0;
+                    salaryStr = salaryEdit.getText().toString();
                     if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr);
+                    Log.d(TAG, "(s) salary: "+salary);
                     salaries.set(position, salary);
                     setFeeText();
+
+                    if(salary == 0) salaryPText.setText("0");
+                    else{
+                        int salaryP =  Math.round(((float) salary/(Integer.parseInt(fee)))*100);
+                        Log.d(TAG, (position+1)+". salary percent("+salary+"/"+fee+"): "+salaryP);
+                        salaryPText.setText(String.valueOf(salaryP));
+                     }
                 }
             });
         }
         else{
             feeText.setText(fee+"("+position+" null)");
+            Log.d(TAG, "view "+position+" is null");
         }
     }
 

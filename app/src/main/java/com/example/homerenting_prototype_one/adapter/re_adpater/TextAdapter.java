@@ -48,6 +48,10 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
         Log.d(TAG, "delete");
     }
 
+    public String[] getItem(int position){
+        return data.get(position);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView item;
 

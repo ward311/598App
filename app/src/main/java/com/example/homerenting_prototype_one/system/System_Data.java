@@ -11,12 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +79,7 @@ public class System_Data extends AppCompatActivity {
     TextAdapter e_adapter, c_adapter;
 
     int currentList;
+    String new_carType;
 
     Context context = this;
     String TAG = "System_Data";
@@ -89,7 +93,6 @@ public class System_Data extends AppCompatActivity {
 
         getData();
 //        setList();
-
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,7 +209,7 @@ public class System_Data extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.d(TAG,"responseData"+responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -350,18 +353,43 @@ public class System_Data extends AppCompatActivity {
                 final EditText type_edit = view.findViewById(R.id.type_edit_ACD);
                 final EditText plateNum_edit = view.findViewById(R.id.plateNum_edit_ACD);
 
+                Spinner type_sp = view.findViewById(R.id.type_sp_ACD);
+                final String[] types = {"箱型車", "平斗車", "其他"};
+                ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, types);
+                type_sp.setAdapter(typeAdapter);
+                type_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(context, "type("+position+"): "+types[position], Toast.LENGTH_SHORT).show();
+                        if(position == types.length-1) {
+                            type_edit.setVisibility(View.VISIBLE);
+                            new_carType = null;
+                        }
+                        else {
+                            type_edit.setVisibility(View.GONE);
+                            new_carType = types[position];
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
 
                 car_dialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //輸入的內容
                         String new_weight = weight_edit.getText().toString();
-                        String new_type = type_edit.getText().toString();
                         String new_plateNum = plateNum_edit.getText().toString();
+
+                        if(new_carType == null) new_carType = type_edit.getText().toString();
+                        else type_edit.setText(new_carType);
 
                         //空白防呆+防止重複的車牌
                         if(!isEmtpy(weight_edit, type_edit, plateNum_edit) && !isCarExist(new_plateNum)){
-                            String[] row_data = {"-1", new_weight, new_type, new_plateNum};
+                            String[] row_data = {"-1", new_weight, new_carType, new_plateNum};
                             vehicles.add(row_data);
                         }
 
@@ -373,7 +401,8 @@ public class System_Data extends AppCompatActivity {
                             Toast.makeText(context, "新增車輛失敗，有空白欄位", Toast.LENGTH_LONG).show(); //有空白欄位，顯示錯誤訊息
                         }
                         else{
-                            add_car(new_weight, new_type, new_plateNum); //寫入資料庫
+                            add_car(new_weight, new_carType, new_plateNum); //寫入資料庫
+                            Log.i(TAG, new_weight+"噸"+new_carType+" "+new_plateNum);
                         }
                     }
                 });

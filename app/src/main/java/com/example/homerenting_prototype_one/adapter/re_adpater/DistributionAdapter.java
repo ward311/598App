@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 public class DistributionAdapter extends RecyclerView.Adapter<DistributionAdapter.ViewHolder>{
     private ArrayList<String> mData;
+    private int ready = 0;
 
     public DistributionAdapter(ArrayList<String> data){
         mData = data;
@@ -26,6 +27,7 @@ public class DistributionAdapter extends RecyclerView.Adapter<DistributionAdapte
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.distribution_item, parent, false);
+        ready = ready+1;
         return new ViewHolder(view);
     }
 
@@ -39,14 +41,21 @@ public class DistributionAdapter extends RecyclerView.Adapter<DistributionAdapte
         return mData.size();
     }
 
+    public int getReady(){
+        if(ready == getItemCount()) return -1;
+        else return ready;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView employee;
-        EditText salaryText;
+        TextView employee, salaryPText;
+        EditText salaryPEdit, salaryEdit;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             employee = itemView.findViewById(R.id.employee_name_DI);
-            salaryText = itemView.findViewById(R.id.salary_DI);
+            salaryPText = itemView.findViewById(R.id.salaryP_text_DI);
+            salaryPEdit = itemView.findViewById(R.id.salaryP_DI);
+            salaryEdit = itemView.findViewById(R.id.salary_DI);
         }
     }
 }
