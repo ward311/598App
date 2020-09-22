@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Evaluation_Detail">
+    tools:context=".setting.Evaluation_Detail">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -50,22 +50,26 @@
                     android:text="巨力搬家大師"
                     android:textSize="20sp"
                     android:textColor="#FFFFFF"/>
+
                 <TextView
+                    android:id="@+id/commentCount_ED"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="共1500則評論"
-                    android:textSize="15sp"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
+                        android:id="@+id/allStar_ED"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="評價 4.8"
-                        android:textSize="15sp"
-                        android:textColor="#FFFFFF"/>
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -89,17 +93,21 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="horizontal">
+
                 <TextView
+                    android:id="@+id/name_ED"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="唐文心"
-                    android:textSize="20sp"
-                    android:textColor="#19B0ED"/>
+                    android:textColor="#19B0ED"
+                    android:textSize="20sp" />
+
                 <TextView
+                    android:id="@+id/nameTitle_ED"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="小姐"/>
+                    android:text="小姐" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -113,11 +121,13 @@
                     android:layout_weight="1"
                     android:text="連絡電話"
                     android:textColor="#000000"/>
+
                 <TextView
+                    android:id="@+id/phone_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="0933669877"/>
+                    android:text="0933669877" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -131,11 +141,13 @@
                     android:layout_weight="1"
                     android:text="搬出地址"
                     android:textColor="#000000"/>
+
                 <TextView
+                    android:id="@+id/fromAddress_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="高雄市三民區建國二路15號"/>
+                    android:text="高雄市三民區建國二路15號" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -149,11 +161,13 @@
                     android:layout_weight="1"
                     android:text="搬入地址"
                     android:textColor="#000000"/>
+
                 <TextView
+                    android:id="@+id/toAddress_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="高雄市大社區中山路5號"/>
+                    android:text="高雄市大社區中山路5號" />
             </LinearLayout>
             <View
                 android:layout_width="match_parent"
@@ -172,41 +186,48 @@
                     android:text="服務品質"
                     android:gravity="center_vertical"
                     android:textColor="#000000"/>
+
                 <LinearLayout
+                    android:id="@+id/serviceStar_LL_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:orientation="horizontal">
+
                     <ImageView
                         android:id="@+id/first_star"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:id="@+id/second_star"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:id="@+id/third_star"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:id="@+id/foryh_star"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:id="@+id/fifth_star"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -222,31 +243,44 @@
                     android:text="工作態度"
                     android:gravity="center_vertical"
                     android:textColor="#000000"/>
+
                 <LinearLayout
+                    android:id="@+id/workStar_LL_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:orientation="horizontal">
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star"
+                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -262,117 +296,157 @@
                     android:text="價     格"
                     android:gravity="center_vertical"
                     android:textColor="#000000"/>
+
                 <LinearLayout
+                    android:id="@+id/priceStar_LL_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:orientation="horizontal">
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:src="@drawable/star" />
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/star"/>
+                        android:src="@drawable/star"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/star"
+                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="照     片"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="照     片"
+                    android:textColor="#000000" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:orientation="horizontal">
+
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_weight="1"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop" />
+
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_weight="1"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop" />
+
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_weight="1"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop" />
                 </LinearLayout>
             </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#989898"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="顧客評價"
                     android:gravity="top"
-                    android:textColor="#000000"/>
+                    android:text="顧客評價"
+                    android:textColor="#000000" />
+
                 <TextView
+                    android:id="@+id/comment_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                    android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
             </LinearLayout>
-        <LinearLayout
-            android:id="@+id/reply_layout"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:orientation="horizontal"
-            android:visibility="invisible">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="回覆評論"
-                android:gravity="top"
-                android:textColor="#000000"/>
-            <EditText
-                android:id="@+id/reply_edit"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:hint="感謝您的支持與愛護，巨力搬家會更努力，會在價格上做更多考量。"/>
-            <TextView
-                android:id="@+id/reply_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:text=""
-                android:visibility="gone"/>
-        </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reply_layout"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/replyText_ED"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="top"
+                    android:text="回覆評論"
+                    android:textColor="#000000"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/reply_edit_ED"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="top"
+                    android:hint="感謝您的支持與愛護，巨力搬家會更努力，會在價格上做更多考量。"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/reply_text_ED"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:text=""
+                    android:visibility="gone" />
+            </LinearLayout>
             <Button
-                android:id="@+id/reply_btn"
+                android:id="@+id/reply_btn_ED"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="回覆評論"
@@ -381,20 +455,10 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/addorder_btn_drawable"/>
             <Button
-                android:id="@+id/edit_btn"
+                android:id="@+id/finish_btn_ED"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="完成"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/addorder_btn_drawable"
-                android:visibility="gone"/>
-            <Button
-                android:id="@+id/edit_again_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="修改"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"

@@ -39,7 +39,7 @@ public class Bonus_List_Detail extends AppCompatActivity {
         test1 = findViewById(R.id.test1_rv_BLD);
         test2 = findViewById(R.id.test2_rv_BLD);
 
-        ImageButton back_btn = findViewById( R.id.back_imgBtn );
+        ImageButton back_btn = findViewById( R.id.back_imgBtn);
         TextView title_text = findViewById( R.id.month_title_text );
         ListView bonus_list = findViewById( R.id.bonus_detail_list );
         Button export_btn = findViewById(R.id.export_bonus_btn);

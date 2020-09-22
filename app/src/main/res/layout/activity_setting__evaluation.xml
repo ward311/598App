@@ -15,13 +15,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageButton
-                android:id="@+id/back_imgBtn"
+                android:id="@+id/back_btn_SE"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:scaleType="centerCrop"
                 android:background="#19B0ED"
-                android:src="@drawable/back_white"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/back_white" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,764 +77,895 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/comment_list_SE"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8">
+        android:layout_weight="4"
+        android:visibility="gone">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/first_evaluation_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="5.0"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="唐文心"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="小姐"/>
+                            android:text="小姐" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/01"/>
+                            android:text="2019/10/01" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            2-->
+                android:background="#989898" />
+            <!--            2-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.8"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="汪小飛"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/02"/>
+                            android:text="2019/10/02" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            3-->
+                android:background="#989898" />
+            <!--            3-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.9"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="李敬鵬"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/04"/>
+                            android:text="2019/10/04" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            4-->
+                android:background="#989898" />
+            <!--            4-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.8"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="孫協志"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/07"/>
+                            android:text="2019/10/07" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            5-->
+                android:background="#989898" />
+            <!--            5-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.8"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="楊家宇"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/08"/>
+                            android:text="2019/10/08" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            6-->
+                android:background="#989898" />
+            <!--            6-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.0"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="夏啟明"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/12"/>
+                            android:text="2019/10/12" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            7-->
+                android:background="#989898" />
+            <!--            7-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.8"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="劉洋"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/13"/>
+                            android:text="2019/10/13" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            8-->
+                android:background="#989898" />
+            <!--            8-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.5"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="王可愛"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="小姐"/>
+                            android:text="小姐" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/13"/>
+                            android:text="2019/10/13" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            9-->
+                android:background="#989898" />
+            <!--            9-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.8"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="藍又石"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/13"/>
+                            android:text="2019/10/13" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            10-->
+                android:background="#989898" />
+            <!--            10-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="5.0"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="溫福銘"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/14"/>
+                            android:text="2019/10/14" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            11-->
+                android:background="#989898" />
+            <!--            11-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.8"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="吳啟禎"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/18"/>
+                            android:text="2019/10/18" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            12-->
+                android:background="#989898" />
+            <!--            12-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="5.0"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="陳肥兔"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="小姐"/>
+                            android:text="小姐" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/21"/>
+                            android:text="2019/10/21" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            13-->
+                android:background="#989898" />
+            <!--            13-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.8"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="方大同"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/24"/>
+                            android:text="2019/10/24" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            14-->
+                android:background="#989898" />
+            <!--            14-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="3.0"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="邱怡珍"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="小姐"/>
+                            android:text="小姐" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/25"/>
+                            android:text="2019/10/25" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
-<!--            15-->
+                android:background="#989898" />
+            <!--            15-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="4.8"
                     android:textColor="#FB8527"
-                    android:textSize="40sp"/>
+                    android:textSize="40sp" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="游宗文"
                             android:textColor="#19B0ED"
-                            android:textSize="25sp"/>
+                            android:textSize="25sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="先生"/>
+                            android:text="先生" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="10dp"
-                            android:text="2019/10/27"/>
+                            android:text="2019/10/27" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"/>
+                        android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
+                android:background="#989898" />
         </LinearLayout>
     </ScrollView>
     <LinearLayout

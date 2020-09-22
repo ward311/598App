@@ -4,14 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,7 +51,6 @@ import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.dip2px;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
-import static com.example.homerenting_prototype_one.show.global_function.getMonth;
 import static com.example.homerenting_prototype_one.show.global_function.getToday;
 import static com.example.homerenting_prototype_one.show.global_function.getYear;
 

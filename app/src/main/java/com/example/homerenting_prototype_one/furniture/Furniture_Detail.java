@@ -62,7 +62,7 @@ public class Furniture_Detail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( layout.activity_furniture__detail );
-        ImageButton back_btn = findViewById( id.back_imgBtn );
+        ImageButton back_btn = findViewById( id.back_imgBtn);
 
         context = Furniture_Detail.this;
 

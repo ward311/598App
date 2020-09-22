@@ -128,7 +128,7 @@ public class Order_Detail extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Order_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -136,7 +136,7 @@ public class Order_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData"+responseData); //顯示資料
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);

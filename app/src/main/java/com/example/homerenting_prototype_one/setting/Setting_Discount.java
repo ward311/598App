@@ -30,7 +30,6 @@ import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
-import com.google.android.material.tabs.TabLayout;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -39,7 +38,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -53,7 +51,6 @@ import okhttp3.Response;
 import static com.example.homerenting_prototype_one.show.global_function.dip2px;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getToday;
-import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class Setting_Discount extends AppCompatActivity {
     TableLayout discountTable;

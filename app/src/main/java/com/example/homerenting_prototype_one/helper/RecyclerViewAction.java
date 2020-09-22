@@ -71,12 +71,12 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
             public void onClick(DialogInterface dialog, int which) {
                 switch (current) {
                     case 1:
-                        s_adapter.deleteItem(position);
                         deleteOrderData(position);
+                        s_adapter.deleteItem(position);
                         break;
                     case 2:
-                        t_adapter.deleteItem(position);
                         deleteTextData(position);
+                        t_adapter.deleteItem(position);
                         break;
                 }
 
@@ -150,7 +150,7 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
         if(t_adapter.getItem(0).length > 2) table = "vehicle";
         final String finalTable = table;
 
-        String function_name = "delete_staff-vehicle";
+        String function_name = "delete_staff_vehicle";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("table", table)

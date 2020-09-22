@@ -57,7 +57,7 @@ public class Furniture_Location extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_furniture__location );
         location_list = findViewById( R.id.furniture_location_listView);
-        ImageButton back_btn = findViewById( R.id.back_imgBtn );
+        ImageButton back_btn = findViewById( R.id.back_imgBtn);
 
         ImageButton valuation_btn = findViewById(R.id.valuation_imgBtn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
