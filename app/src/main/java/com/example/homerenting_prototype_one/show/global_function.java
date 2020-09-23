@@ -44,8 +44,10 @@ public class global_function {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", getCompany_id(context))
                 .add("new", "FALSE")
                 .build();
+
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
                 .post(body)
@@ -61,11 +63,42 @@ public class global_function {
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String responseData = response.body().string();
-                Log.d(TAG, "new click success");
+                String responseData = response.body().string();
+                Log.d(TAG, "respneseData of remove_new: "+responseData);
             }
         });
     }
+
+    public static void removeAnnounceNew(String announcement_id, final Context context){
+        Log.d(TAG, "removeNew");
+        String function_name = "update_announcement_new";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("announcement_id", announcement_id)
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                Toast.makeText(context, "new onFailure.", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "respneseData of remove_new: "+responseData);
+            }
+        });
+    }
+
     public static String getYear(String datetime){ //從datetime中取出年部分
         String[] token = datetime.split(" ");
         String[] date_token = token[0].split("-");

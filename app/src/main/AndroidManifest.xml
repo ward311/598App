@@ -60,6 +60,7 @@
         <activity android:name=".bouns.Bonus_Distribution"/>
         <activity android:name=".bouns.Distribution_Detail"/>
         <activity android:name=".bouns.Bonus_List"/>
+        <activity android:name=".bouns.Bonus_List_Detail"/>
 
         <!--Setting-->
         <activity android:name=".setting.Setting"/>
@@ -74,13 +75,12 @@
         <activity android:name=".Register_Company"/>
         <activity android:name=".Service_Edit" />
         <activity android:name=".Information_Edit" />
-        <activity android:name=".Setting_Announcement" />
         <activity android:name=".System_Vacation" />
         <activity android:name=".System_Schedule" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
 
-        <activity android:name=".bouns.Bonus_List_Detail">
+        <activity android:name=".setting.Setting_Announcement">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

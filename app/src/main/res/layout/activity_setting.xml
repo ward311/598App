@@ -156,7 +156,7 @@
         android:layout_height="1dp"
         android:background="#D5D5D5"/>
     <LinearLayout
-        android:id="@+id/systemAnnouncement_linearLayout"
+        android:id="@+id/announce_LL_S"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -185,7 +185,7 @@
         android:layout_height="1dp"
         android:background="#D5D5D5"/>
     <LinearLayout
-        android:id="@+id/historyRecord_linearLayout"
+        android:id="@+id/history_LL_S"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
