@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.homerenting_prototype_one.DataModel;
+import com.example.homerenting_prototype_one.R;
 
 import java.util.ArrayList;
 

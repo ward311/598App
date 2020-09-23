@@ -58,7 +58,8 @@
             android:layout_height="wrap_content"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:shrinkColumns="1, 5, 7">
+            android:shrinkColumns="1"
+            android:stretchColumns="4">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -143,7 +144,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
 
                 <Button
                     android:id="@+id/button4"
@@ -164,7 +166,7 @@
                 <Switch
                     android:id="@+id/switch4"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
                 <EditText
                     android:id="@+id/editTextNumber"
@@ -185,9 +187,10 @@
 
                 <TextView
                     android:id="@+id/shortStart_text_SDC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="55dp"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edittext_rectanngle"
+                    android:gravity="center"
                     android:padding="3dp"
                     android:text="2020-10-01"
                     android:textSize="18sp" />
@@ -196,14 +199,17 @@
                     android:id="@+id/textView16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:text="─"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/shortEnd_text_SDC"
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_rectanngle"
+                    android:gravity="center"
                     android:padding="3dp"
                     android:text="2020-11-01"
                     android:textSize="18sp" />
@@ -212,7 +218,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
 
                 <Button
                     android:id="@+id/button5"
@@ -254,9 +261,10 @@
 
                 <TextView
                     android:id="@+id/longStart_text_SDC"
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_rectanngle"
+                    android:gravity="center"
                     android:padding="3dp"
                     android:text="2020-01-01"
                     android:textSize="18sp" />
@@ -265,13 +273,16 @@
                     android:id="@+id/textView17"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:text="─" />
 
                 <TextView
                     android:id="@+id/longEnd_text_SDC"
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_rectanngle"
+                    android:gravity="center"
                     android:padding="3dp"
                     android:text="2021-01-01"
                     android:textSize="18sp" />

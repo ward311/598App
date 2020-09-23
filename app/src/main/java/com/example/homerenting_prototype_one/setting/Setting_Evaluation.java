@@ -52,6 +52,7 @@ public class Setting_Evaluation extends AppCompatActivity {
     ArrayList<Integer> stars;
 
     int commentcount = 0;
+    boolean lock = false;
 
     Context context = this;
     String TAG = "Setting_Evaluation";
@@ -69,6 +70,7 @@ public class Setting_Evaluation extends AppCompatActivity {
         stars = new ArrayList<>();
 
         getData();
+        setStars();
 
         LinearLayout first_evaluation = findViewById(R.id.first_evaluation_layout);
         first_evaluation.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +92,7 @@ public class Setting_Evaluation extends AppCompatActivity {
     }
 
     private void getData(){
+        lock = true;
         String function_name = "comment_data";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -125,11 +128,6 @@ public class Setting_Evaluation extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     commentcount = responseArr.length();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                        }
-                    });
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject comment = responseArr.getJSONObject(i);
                         Log.i(TAG, "comment: "+comment);
@@ -159,11 +157,11 @@ public class Setting_Evaluation extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                lock = false;
                 if(!responseData.equals("null")){
                     for(int i=0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                     setRList();
-//                    setStars();
                 }
             }
         });
@@ -182,18 +180,16 @@ public class Setting_Evaluation extends AppCompatActivity {
     }
 
     private void setStars(){
+        while (lock){ //等待stars收集好資料
+            Log.d(TAG, "wait for lock...");
+        }
         float allstar = 0;
         for(int i = 0; i < stars.size(); i++) allstar = allstar+stars.get(i);
         allstar = allstar/stars.size();
 
         final float finalAllStar = allstar;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                allStars.setText("評價 "+finalAllStar);
-                commentCount.setText("共"+commentcount+"則評論");
-            }
-        });
+        allStars.setText("評價 "+finalAllStar);
+        commentCount.setText("共"+commentcount+"則評論");
     }
 
     private void globalNav(){

@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one;
+package com.example.homerenting_prototype_one.adapter.base_adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.bouns.Bonus_List_Detail;
 
 import java.util.List;

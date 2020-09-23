@@ -80,8 +80,9 @@ public class Setting_Discount extends AppCompatActivity {
         period_discounts = new ArrayList<>();
         delete_discounts = new ArrayList<>();
 
-        getFreeData();
-        getPeriodData(true);
+        getFreeRow();
+        getPeriodRow(true);
+        getData();
 
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +150,7 @@ public class Setting_Discount extends AppCompatActivity {
                 Log.d(TAG, "deposit is "+deposit.isChecked());
                 Log.d(TAG, "cancel is "+cancel.isChecked());
 
-                getPeriodData(false);
+                getPeriodRow(false);
 
                 Log.d(TAG, "size of period discount: "+period_discounts.size());
 //                for(int i = 0; i < period_discounts.size(); i++){
@@ -163,7 +164,7 @@ public class Setting_Discount extends AppCompatActivity {
 //                }
                 Log.d(TAG, "delete discount: "+itemsToString2(delete_discounts));
 
-//                updateDiscount();
+                updateDiscount();
             }
         });
 
@@ -178,7 +179,7 @@ public class Setting_Discount extends AppCompatActivity {
         globalNav();
     }
 
-    private void getFreeData(){
+    private void getFreeRow(){
         for(int i = 0; i < 3; i++){
             TableRow freeItem = (TableRow) discountTable.getChildAt(i);
             int switchPosition = 2;
@@ -199,7 +200,7 @@ public class Setting_Discount extends AppCompatActivity {
         Log.d(TAG, "cancel is "+cancel.isChecked());
     }
 
-    private void getPeriodData(boolean init){
+    private void getPeriodRow(boolean init){
         for(int i = 3; i < discountTable.getChildCount(); i++){
             final String[] period_discount = getRowData(i);
             if(init){
@@ -356,6 +357,7 @@ public class Setting_Discount extends AppCompatActivity {
         int dp8 = dip2px(context, 8);
         int dp5 = dip2px(context, 5);
 
+        newDiscount.setGravity(Gravity.CENTER_VERTICAL);
         deleteBtn.setBackgroundResource(R.drawable.dot);
         deleteBtn.setLayoutParams(new TableRow.LayoutParams(dp15, dp15));
         if(!deleteMode) deleteBtn.setVisibility(View.GONE);
@@ -382,6 +384,7 @@ public class Setting_Discount extends AppCompatActivity {
         percentIcon.setTextSize(18);
         percentIcon.setPadding(0, 0, 0 ,dp8);
         toIcon.setText("─");
+        toIcon.setPadding(dp5, 0, dp5, 0);
 
         newDiscount.addView(deleteBtn);
         newDiscount.addView(nameText);
@@ -396,10 +399,14 @@ public class Setting_Discount extends AppCompatActivity {
     }
 
     private TextView addNewDate(String date){
+        int dp60 = dip2px(context, 60);
+        int dp5 = dip2px(context, 5);
         int dp3 = dip2px(context, 3);
         TextView dateView =  new TextView(context);
+        dateView.setWidth(dp60);
         dateView.setText(date);
         dateView.setTextSize(18);
+        dateView.setGravity(Gravity.CENTER);
         dateView.setBackgroundResource(R.drawable.edittext_rectanngle);
         dateView.setPadding(dp3, dp3, dp3, dp3); //要在backgoundResource後設置才有用
         setDateBtn(dateView);
