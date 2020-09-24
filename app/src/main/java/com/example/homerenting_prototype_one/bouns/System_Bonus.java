@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -17,16 +20,33 @@ import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDay;
 import static com.example.homerenting_prototype_one.show.global_function.getMonth;
 import static com.example.homerenting_prototype_one.show.global_function.getToday;
 import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class System_Bonus extends AppCompatActivity {
-    TextView month, doneOrder, distributeOrder;
+    TextView month, doneOrderText, paidOrderText;
     Button viewBtn, distributedBtn, listBtn;
 
     private Context context = this;
+    private String TAG = "System_Bonus";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +54,8 @@ public class System_Bonus extends AppCompatActivity {
         setContentView(R.layout.activity_system__bonus);
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
         month = findViewById(R.id.monthdate_SB);
-        doneOrder = findViewById(R.id.doneOrder_text_SB);
-        distributeOrder = findViewById(R.id.distributeOrder_text_SB);
+        doneOrderText = findViewById(R.id.doneOrder_text_SB);
+        paidOrderText = findViewById(R.id.paidOrder_text_SB);
 
         viewBtn = findViewById(R.id.salaryView_btn_SB);
         distributedBtn = findViewById(R.id.bonusDistributed_btn_SB);
@@ -45,6 +65,7 @@ public class System_Bonus extends AppCompatActivity {
         String today = getToday("yyyy-MM-dd");
         month.setText("至"+getYear(today)+"年"+getMonth(today)+"月"+getDay(today)+"日");
 
+        setDoneOrder();
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +96,64 @@ public class System_Bonus extends AppCompatActivity {
         });
 
         globalNav();
+    }
+
+    private void setDoneOrder(){
+        String function_name = "done_paid_data";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    JSONObject doneOrder = responseArr.getJSONObject(0);
+                    final String finish_amount = doneOrder.getString("finish_amount");
+
+                    JSONObject paidOrder = responseArr.getJSONObject(1);
+                    final String paid_amount = paidOrder.getString("paid_amount");
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            doneOrderText.setText("完成"+finish_amount+"筆訂單");
+                            paidOrderText.setText("已分潤"+paid_amount+"筆工單");
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void globalNav(){

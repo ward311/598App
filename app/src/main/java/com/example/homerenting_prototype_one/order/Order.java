@@ -186,7 +186,7 @@ public class Order extends AppCompatActivity {
         clearDatalist();
         //傳至網頁的值
         String function_name = "order_member";
-        String startDate =  getStartOfWeek();
+        String startDate = getStartOfWeek();
         String endDate = getEndOfWeek();
         String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()

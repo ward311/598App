@@ -64,7 +64,7 @@
                 android:textSize="20sp"
                 android:textColor="#FFFFFF"/>
             <TextView
-                android:id="@+id/distributeOrder_text_SB"
+                android:id="@+id/paidOrder_text_SB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="已分潤140筆工單"
