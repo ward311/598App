@@ -98,7 +98,7 @@ public class Distribution_Detail extends AppCompatActivity {
         salaries = new ArrayList<>();
 
         //傳值
-        getOrder();
+        getData();
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,13 +110,7 @@ public class Distribution_Detail extends AppCompatActivity {
         globalNav();
     }
 
-    private void initSalaries(){
-        for(int i = 0; i < staffs.size(); i++){
-            salaries.add(-1);
-        }
-    }
-
-    private void getOrder(){
+    private void getData(){
         String function_name = "order_detail";
         String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
@@ -182,8 +176,10 @@ public class Distribution_Detail extends AppCompatActivity {
                         staff = staff+staff_assign.getString("staff_name")+" ";
                         staffs.add(staff_assign.getString("staff_name"));
                         staffIds.add(staff_assign.getString("staff_id"));
+
+                        String pay = staff_assign.getString("pay");
+                        salaries.add(Integer.parseInt(pay));
                     }
-                    initSalaries(); //初始化要分配的薪水
 
                     //顯示基本資訊
                     runOnUiThread(new Runnable() {
@@ -256,10 +252,13 @@ public class Distribution_Detail extends AppCompatActivity {
                     if(salaryPStr.isEmpty()) salaryPStr = "0";
                     Log.d(TAG, "(sp) salary(p): "+salaryPStr);
 
-                    int salary = 0;
+                    int salary = -1;
+                    String salaryStr = "";
                     if(!salaryPStr.equals("0")){
                         float salaryP = Float.parseFloat(salaryPStr);
                         salary = Math.round((Integer.parseInt(fee))*salaryP/100);
+                        if(salary == 0) salary = -1;
+                        else salaryStr = String.valueOf(salary);
                     }
                     salaryText.setText(String.valueOf(salary));
                     salaries.set(position, salary);
@@ -331,6 +330,10 @@ public class Distribution_Detail extends AppCompatActivity {
                     return false;
                 }
             });
+
+            if(salaries.get(position) != -1){
+                salaryEdit.setText(String.valueOf(salaries.get(position)));
+            }
         }
         else{
             feeText.setText(fee+"("+position+" null)");
