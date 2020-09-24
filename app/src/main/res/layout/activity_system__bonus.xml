@@ -56,7 +56,7 @@
             android:orientation="vertical"
             android:gravity="top">
             <TextView
-                android:id="@+id/total_order_text"
+                android:id="@+id/doneOrder_text_SB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="完成150筆訂單"
@@ -64,7 +64,7 @@
                 android:textSize="20sp"
                 android:textColor="#FFFFFF"/>
             <TextView
-                android:id="@+id/order_done_text"
+                android:id="@+id/distributeOrder_text_SB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="已分潤140筆工單"

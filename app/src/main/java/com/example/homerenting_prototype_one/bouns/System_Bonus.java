@@ -23,7 +23,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getToda
 import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class System_Bonus extends AppCompatActivity {
-    TextView month;
+    TextView month, doneOrder, distributeOrder;
     Button viewBtn, distributedBtn, listBtn;
 
     private Context context = this;
@@ -34,16 +34,13 @@ public class System_Bonus extends AppCompatActivity {
         setContentView(R.layout.activity_system__bonus);
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
         month = findViewById(R.id.monthdate_SB);
+        doneOrder = findViewById(R.id.doneOrder_text_SB);
+        distributeOrder = findViewById(R.id.distributeOrder_text_SB);
 
         viewBtn = findViewById(R.id.salaryView_btn_SB);
         distributedBtn = findViewById(R.id.bonusDistributed_btn_SB);
         listBtn = findViewById(R.id.bonusList_btn_SB);
 
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         String today = getToday("yyyy-MM-dd");
         month.setText("至"+getYear(today)+"年"+getMonth(today)+"月"+getDay(today)+"日");
@@ -77,6 +74,15 @@ public class System_Bonus extends AppCompatActivity {
             }
         });
 
+        globalNav();
+    }
+
+    private void globalNav(){
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -90,8 +90,8 @@ public class Distribution_Detail extends AppCompatActivity {
         checkBtn = findViewById(R.id.check_bonus_btn);
 
 
-//        bundle = getIntent().getExtras();
-        order_id = "60";//bundle.getString("order_id");
+        bundle = getIntent().getExtras();
+        order_id = bundle.getString("order_id");
 
         staffs = new ArrayList<>();
         staffIds = new ArrayList<>();

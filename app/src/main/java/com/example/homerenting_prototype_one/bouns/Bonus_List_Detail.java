@@ -16,11 +16,13 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.adapter.base_adapter.BonusAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SalaryAdapter;
@@ -32,9 +34,26 @@ import com.example.homerenting_prototype_one.sync_scroll.SyncedHorizontalScrollV
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.dip2px;
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getDay;
 
 public class Bonus_List_Detail extends AppCompatActivity {
     private ArrayList<ArrayList<String[]>> data;
@@ -42,7 +61,9 @@ public class Bonus_List_Detail extends AppCompatActivity {
 
     ScrollManager scrollManager;
 
-    String month;
+    String year, month;
+
+    volatile boolean lock = false; //會被多個執行緒用到的變數
 
     private Context context = this;
     private int DATA_WIDTH;
@@ -58,7 +79,8 @@ public class Bonus_List_Detail extends AppCompatActivity {
         Button export_btn = findViewById(R.id.export_bonus_btn);
 
         Bundle bundle = getIntent().getExtras();
-        month = bundle.getString( "month" );
+        year = bundle.getString("year");
+        month = bundle.getString("month");
 
         data = new ArrayList<>();
         date = new ArrayList<>();
@@ -67,25 +89,13 @@ public class Bonus_List_Detail extends AppCompatActivity {
 
         title_text.setText( month+"月獎金報表" );
 
-        ArrayList<String[]> data1 = new ArrayList();
-        for(int i = 0; i < 2; i++){
-            String[] row_data = {"員工1", String.valueOf(i+1), String.valueOf((i+1)*1)};
-            data1.add(row_data);
+        lock = true;
+        getData();
+        getDate();
+
+        while (lock){
+            Log.d(TAG, "wait for getting data lock...");
         }
-        data.add(data1);
-
-        ArrayList<String[]> data2 = new ArrayList();
-        for(int i = 0; i < 2; i++){
-            String[] row_data = {"員工2", String.valueOf(i+3), String.valueOf((i+1)*2)};
-            data2.add(row_data);
-        }
-        data.add(data2);
-
-        date.add(1);
-        date.add(1+1);
-        date.add(3);
-        date.add(1+3);
-
         setHeaderRow();
         setFixedTable();
         setSalaryTable();
@@ -111,6 +121,152 @@ public class Bonus_List_Detail extends AppCompatActivity {
         } );
 
         globalNav();
+    }
+
+    private void getData(){
+        String function_name = "pay_daily";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .add("year", year)
+                .add("month", month)
+                .build();
+        Log.i(TAG, "getData: year: "+year+", month: "+month);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData of getData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int staff_count = -1;
+                    String current_staff = "";
+                    String current_day = "";
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject staff_pay = responseArr.getJSONObject(i);
+                        Log.i(TAG,"staff_pay: "+staff_pay);
+
+                        String staff_name = staff_pay.getString("staff_name");
+                        String day = getDay(staff_pay.getString("moving_date"));
+                        int pay = Integer.parseInt(staff_pay.getString("pay"));
+                        if(pay == -1) pay = 0;
+
+                        String[] row_data = {staff_name, day, String.valueOf(pay)};
+
+                        if(!staff_name.equals(current_staff)){ //如果不同人，data 加一
+                            current_staff = staff_name;
+                            staff_count = staff_count+1;
+                            data.add(new ArrayList<String[]>());
+                        }
+                        else if(day.equals(current_day)){ //如果同個人而且和上一筆同一天，把pay加上去
+                            row_data = data.get(staff_count).get(data.get(staff_count).size()-1); //上一筆
+                            int day_pay = Integer.parseInt(row_data[2]);
+                            day_pay = day_pay + pay;
+                            row_data[2] = String.valueOf(day_pay);
+                            data.get(staff_count).set(data.get(staff_count).size()-1, row_data);
+                            continue;
+                        }
+
+                        current_day = day;
+                        data.get(staff_count).add(row_data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "data:");
+                for(int i = 0; i < data.size(); i++){
+                    for(int ii = 0; ii < data.get(i).size(); ii++)
+                        Log.d(TAG, Arrays.toString(data.get(i).get(ii)));
+                }
+            }
+        });
+    }
+
+    private void getDate(){
+        String function_name = "month_order_date";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .add("year", year)
+                .add("month", month)
+                .build();
+        Log.i(TAG, "getDate: year: "+year+", month: "+month);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                lock = false;
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData of getDate: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject pay_date = responseArr.getJSONObject(i);
+                        Log.i(TAG,"pay_date: "+pay_date);
+
+                        int pay_day = Integer.parseInt(getDay(pay_date.getString("moving_date")));
+                        if(!date.contains(pay_day)) date.add(pay_day);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                for(int i = 0; i < date.size(); i++)
+                    Log.d(TAG, "date: "+date.get(i));
+                lock = false;
+            }
+        });
     }
 
     private void setFixedTable(){
