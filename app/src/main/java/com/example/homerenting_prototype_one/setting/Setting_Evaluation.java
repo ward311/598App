@@ -139,6 +139,9 @@ public class Setting_Evaluation extends AppCompatActivity {
                         else nameTitle = "先生";
                         String date = comment.getString("comment_date");
                         String commentStr = comment.getString("comment");
+                        String commentSummary;
+                        if(commentStr.length() > 35) commentSummary = commentStr.substring(0, 30)+"...";
+                        else commentSummary = commentStr;
 
                         int service_star = comment.getInt("service_quality");
                         int work_star = comment.getInt("work_attitude");
@@ -149,7 +152,7 @@ public class Setting_Evaluation extends AppCompatActivity {
                         stars.add(work_star);
                         stars.add(price_star);
 
-                        String[] row_data = {comment_id, String.valueOf(starf), name, nameTitle, date, commentStr};
+                        String[] row_data = {comment_id, String.valueOf(starf), name, nameTitle, date, commentSummary};
                         Log.d(TAG, "row_data: "+Arrays.toString(row_data));
                         data.add(row_data);
                     }
