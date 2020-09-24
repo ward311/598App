@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,9 +33,11 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import okhttp3.Call;
@@ -85,14 +89,9 @@ public class Distribution_Detail extends AppCompatActivity {
         backBtn = findViewById(R.id.back_imgBtn);
         checkBtn = findViewById(R.id.check_bonus_btn);
 
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        bundle = getIntent().getExtras();
-        order_id = bundle.getString("order_id");
+//        bundle = getIntent().getExtras();
+        order_id = "60";//bundle.getString("order_id");
 
         staffs = new ArrayList<>();
         staffIds = new ArrayList<>();
@@ -101,19 +100,6 @@ public class Distribution_Detail extends AppCompatActivity {
         //傳值
         getOrder();
 
-//        取得薪水edittext的內容
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                for(int i = 0; i < distributionAdapter.getItemCount(); i++){
-//                    getItem(i); //取得分配薪水的edittext
-//                }
-//                setCheckBtn(); //設置確認送出按鈕
-//            }
-//        }, 3000);
-
-
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,43 +107,7 @@ public class Distribution_Detail extends AppCompatActivity {
             }
         });
 
-
-        //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Distribution_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Distribution_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Distribution_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Distribution_Detail.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Distribution_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
-        });
+        globalNav();
     }
 
     private void initSalaries(){
@@ -213,7 +163,7 @@ public class Distribution_Detail extends AppCompatActivity {
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
-                    fee = "1000";//order.getString("accurate_fee");
+                    fee = order.getString("accurate_fee");
 
                     int i;
                     //跳過車輛
@@ -284,28 +234,55 @@ public class Distribution_Detail extends AppCompatActivity {
         View view = salaryDistribution.getLayoutManager().findViewByPosition(position);
         if(view != null){
             Log.d(TAG, "view "+position+" is not null");
-//            final EditText salaryPEdit = view.findViewById(R.id.salaryP_DI);
+            final EditText salaryPEdit = view.findViewById(R.id.salaryP_DI);
             final TextView salaryPText = view.findViewById(R.id.salaryP_text_DI);
             final EditText salaryEdit = view.findViewById(R.id.salary_DI);
+            final TextView salaryText = view.findViewById(R.id.salary_text_DI);
 
-//            salaryPEdit.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                    String salaryPStr = salaryPEdit.getText().toString();
-//                    if(salaryPStr.isEmpty()) salaryPStr = "0";
-//                    Log.d(TAG, "(sp) salary(p): "+salaryPStr);
-//                }
-//            });
+            salaryPEdit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String salaryPStr = salaryPEdit.getText().toString();
+                    if(salaryPStr.isEmpty()) salaryPStr = "0";
+                    Log.d(TAG, "(sp) salary(p): "+salaryPStr);
+
+                    int salary = 0;
+                    if(!salaryPStr.equals("0")){
+                        float salaryP = Float.parseFloat(salaryPStr);
+                        salary = Math.round((Integer.parseInt(fee))*salaryP/100);
+                    }
+                    salaryText.setText(String.valueOf(salary));
+                    salaries.set(position, salary);
+                    setFeeText();
+                }
+            });
+
+            salaryPText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    String salaryPStr = salaryPText.getText().toString();
+                    salaryPEdit.setText(salaryPStr);
+                    salaryStr = salaryEdit.getText().toString();
+                    if(salaryStr.isEmpty()) salaryStr = "0";
+                    salaryText.setText(salaryStr);
+
+                    salaryPText.setVisibility(View.GONE);
+                    salaryPEdit.setVisibility(View.VISIBLE);
+                    salaryEdit.setVisibility(View.GONE);
+                    salaryText.setVisibility(View.VISIBLE);
+                    return false;
+                }
+            });
 
             salaryEdit.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -329,10 +306,29 @@ public class Distribution_Detail extends AppCompatActivity {
 
                     if(salary == 0) salaryPText.setText("0");
                     else{
-                        int salaryP =  Math.round(((float) salary/(Integer.parseInt(fee)))*100);
-                        Log.d(TAG, (position+1)+". salary percent("+salary+"/"+fee+"): "+salaryP);
-                        salaryPText.setText(String.valueOf(salaryP));
+                        float salaryP =  ((float) salary/(Integer.parseInt(fee)))*100;
+                        NumberFormat nf = NumberFormat.getInstance();
+                        nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
+                        String salaryPStr = nf.format(salaryP);
+                        Log.d(TAG, (position+1)+". salary percent("+salary+"/"+fee+"): "+salaryPStr);
+                        salaryPText.setText(salaryPStr);
                      }
+                }
+            });
+
+            salaryText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    String salaryPStr = salaryPEdit.getText().toString();
+                    salaryPText.setText(salaryPStr);
+                    salaryStr = salaryText.getText().toString();
+                    salaryEdit.setText(salaryStr);
+
+                    salaryPText.setVisibility(View.VISIBLE);
+                    salaryPEdit.setVisibility(View.GONE);
+                    salaryEdit.setVisibility(View.VISIBLE);
+                    salaryText.setVisibility(View.GONE);
+                    return false;
                 }
             });
         }
@@ -474,6 +470,50 @@ public class Distribution_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of change_status: " + responseData);
+            }
+        });
+    }
+
+    private void globalNav(){
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+        //底下nav
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(Distribution_Detail.this, Valuation.class);
+                startActivity(valuation_intent);
+            }
+        });
+        order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(Distribution_Detail.this, Order.class);
+                startActivity(order_intent);
+            }
+        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(Distribution_Detail.this, Calendar.class);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(Distribution_Detail.this, System.class);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(Distribution_Detail.this, Setting.class);
+                startActivity(setting_intent);
             }
         });
     }

@@ -57,8 +57,8 @@ public class Bonus_List_Detail extends AppCompatActivity {
         TextView title_text = findViewById( R.id.month_title_text );
         Button export_btn = findViewById(R.id.export_bonus_btn);
 
-//        Bundle bundle = getIntent().getExtras();
-        month = "7";//bundle.getString( "month" );
+        Bundle bundle = getIntent().getExtras();
+        month = bundle.getString( "month" );
 
         data = new ArrayList<>();
         date = new ArrayList<>();
