@@ -62,7 +62,7 @@ public class Distribution_Detail extends AppCompatActivity {
 
     private DistributionAdapter distributionAdapter;
 
-    private String order_id, name, gender, movingTime, fromAddress, toAddress, fee, car, staff;
+    private String order_id, name, gender, movingTime, fromAddress, toAddress, fee;
     private String TAG = "Distribution_Detail";
 
     private ArrayList<String> staffs, staffIds;
@@ -167,13 +167,10 @@ public class Distribution_Detail extends AppCompatActivity {
                     }
 
                     //取得員工資訊
-                    if(responseArr.length()-i < 1) staff = "尚未安排人員";
-                    else staff = "";
                     for (; i < responseArr.length(); i++) {
                         JSONObject staff_assign = responseArr.getJSONObject(i);
                         if(!staff_assign.has("staff_id")) break;
                         Log.i(TAG, "staff:" + staff_assign);
-                        staff = staff+staff_assign.getString("staff_name")+" ";
                         staffs.add(staff_assign.getString("staff_name"));
                         staffIds.add(staff_assign.getString("staff_id"));
 
@@ -197,12 +194,6 @@ public class Distribution_Detail extends AppCompatActivity {
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Toast.makeText(Today_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
                 }
 
                 //顯示安排人力
@@ -215,7 +206,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         Log.d(TAG, "setAdapter");
                     }
                 });
-                while(distributionAdapter.getReady() != -1){
+                while(distributionAdapter.getReady() != -1){ //lock
                     Log.d(TAG, "ready: "+distributionAdapter.getReady());
                 }
                 for(int i = 0; i < distributionAdapter.getItemCount(); i++){

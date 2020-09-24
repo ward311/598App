@@ -206,13 +206,20 @@
 
                 <TextView
                     android:id="@+id/shortEnd_text_SDC"
-                    android:layout_width="60dp"
+                    android:layout_width="54dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_rectanngle"
                     android:gravity="center"
                     android:padding="3dp"
                     android:text="2020-11-01"
                     android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/discount_id1_SDC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="id"
+                    android:visibility="gone" />
 
             </TableRow>
 
@@ -286,6 +293,13 @@
                     android:padding="3dp"
                     android:text="2021-01-01"
                     android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/discount_id2_SDC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="id"
+                    android:visibility="gone" />
             </TableRow>
 
         </TableLayout>

@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -21,6 +23,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -50,7 +54,10 @@ import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.dip2px;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getDay;
+import static com.example.homerenting_prototype_one.show.global_function.getMonth;
 import static com.example.homerenting_prototype_one.show.global_function.getToday;
+import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class Setting_Discount extends AppCompatActivity {
     TableLayout discountTable;
@@ -61,7 +68,7 @@ public class Setting_Discount extends AppCompatActivity {
     ArrayList<String[]> period_discounts;
     ArrayList<String> delete_discounts;
 
-    boolean deleteMode = false;
+    boolean deleteMode = false, disable = false;
 
     String TAG = "Setting_Discount";
     Context context = this;
@@ -82,7 +89,7 @@ public class Setting_Discount extends AppCompatActivity {
 
         getFreeRow();
         getPeriodRow(true);
-        getData();
+//        getData();
 
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,8 +117,8 @@ public class Setting_Discount extends AppCompatActivity {
                                     return;
                                 }
                                 String thisYear = getToday("yyyy");
-                                discountTable.addView(addNewRow(new_discount_name, -1, thisYear+"-01-01", thisYear+"-12-31", false));
-                                String[] period_discount = {new_discount_name, "-1", thisYear+"-01-01", thisYear+"-12-31", "false"};
+                                discountTable.addView(addNewRow("-1", new_discount_name, -1, thisYear+"-01-01", thisYear+"-12-31", false));
+                                String[] period_discount = {"-1", new_discount_name, "-1", thisYear+"-01-01", thisYear+"-12-31", "false"};
                                 period_discounts.add(period_discount);
                             }
                         })
@@ -153,15 +160,9 @@ public class Setting_Discount extends AppCompatActivity {
                 getPeriodRow(false);
 
                 Log.d(TAG, "size of period discount: "+period_discounts.size());
-//                for(int i = 0; i < period_discounts.size(); i++){
-//                    Log.d(TAG, Arrays.toString(period_discounts.get(i)));
-//                }
                 Log.d(TAG, "period discount: "+itemsToString(period_discounts));
 
                 Log.d(TAG, "size of delete discount: "+delete_discounts.size());
-//                for(int i = 0; i < delete_discounts.size(); i++){
-//                    Log.d(TAG, "delete item: "+delete_discounts.get(i));
-//                }
                 Log.d(TAG, "delete discount: "+itemsToString2(delete_discounts));
 
                 updateDiscount();
@@ -205,10 +206,20 @@ public class Setting_Discount extends AppCompatActivity {
             final String[] period_discount = getRowData(i);
             if(init){
                 final TableRow discountItem = (TableRow) discountTable.getChildAt(i);
-                TextView startView = (TextView) discountItem.getChildAt(5);
-                TextView endView = (TextView) discountItem.getChildAt(7);
-                setDateBtn(startView);
-                setDateBtn(endView);
+                final Switch switcher = (Switch) discountItem.getChildAt(2);
+                final TextView startView = (TextView) discountItem.getChildAt(5);
+                final TextView endView = (TextView) discountItem.getChildAt(7);
+
+                setSwitch(switcher, startView, endView, period_discount);
+
+                if(switcher.isChecked()){
+                    startView.setOnClickListener(null);
+                    endView.setOnClickListener(null);
+                }
+                else{
+                    setDateBtn(startView);
+                    setDateBtn(endView);
+                }
                 period_discounts.add(period_discount);
 
                 final Button deleteBtn = (Button) discountItem.getChildAt(0);
@@ -238,6 +249,7 @@ public class Setting_Discount extends AppCompatActivity {
         TextView startView = (TextView) discountItem.getChildAt(5);
         //6 : ─
         TextView endView = (TextView) discountItem.getChildAt(7);
+        TextView discountIdText = (TextView) discountItem.getChildAt(discountItem.getChildCount()-1);
 
         String name = nameText.getText().toString();
         if(name.isEmpty()) name = "";
@@ -249,9 +261,52 @@ public class Setting_Discount extends AppCompatActivity {
         if(startTime.isEmpty()) startTime = "";
         String endTime = endView.getText().toString();
         if(endTime.isEmpty()) endTime = "";
+        String discountId = discountIdText.getText().toString();
 
-        String[] period_discount = {name, discount, startTime, endTime, enable};
+        String[] period_discount = {discountId, name, discount, startTime, endTime, enable};
         return period_discount;
+    }
+
+    private void setSwitch(final Switch switcher, final TextView startView, final TextView endView, final String[] period_discount){
+        switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(switcher.isChecked()){
+                    startView.setOnClickListener(null);
+                    endView.setOnClickListener(null);
+                }
+                else{
+                    setDateBtn(startView);
+                    setDateBtn(endView);
+                    String startDate = startView.getText().toString();
+                    String endDate = endView.getText().toString();
+                    LocalDate now = LocalDate.now();
+                    LocalDate start = LocalDate.of(Integer.parseInt(getYear(startDate)), Integer.parseInt(getMonth(startDate)), Integer.parseInt(getDay(startDate)));
+                    LocalDate end = LocalDate.of(Integer.parseInt(getYear(endDate)), Integer.parseInt(getMonth(endDate)), Integer.parseInt(getDay(endDate)));
+
+                    if(start.isBefore(now) && end.isAfter(now) && !disable){
+                        switcher.setChecked(true);
+                        Log.d(TAG, start+" < "+now+" < "+end);
+                        new AlertDialog.Builder(context)
+                                .setTitle("現在進行折扣中，要強制取消嗎？")
+                                .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        disableDiscount(period_discount);
+                                        disable = true;
+                                        switcher.setChecked(false);
+                                        disable = false;
+                                    }
+                                })
+                                .setNegativeButton("取消", null)
+                                .create()
+                                .show();
+                    }
+                    else Log.d(TAG, "start: "+start+", end: "+end+", now: "+now);
+                }
+            }
+        });
     }
 
     private void setDateBtn(final TextView dateBtn){
@@ -323,14 +378,17 @@ public class Setting_Discount extends AppCompatActivity {
 
                     for(int i = 1; i < responseArr.length(); i++){
                         JSONObject discountItem = responseArr.getJSONObject(i);
+                        String discountId = discountItem.getString("discount_id");
                         String discountName = discountItem.getString("discount_name");
                         int percent = discountItem.getInt("discount");
                         String startTime = discountItem.getString("start_date");
                         String endTime = discountItem.getString("end_date");
-                        boolean enable = discountItem.getBoolean("turn_on");
+                        String disableTime = discountItem.getString("disable_time");
+                        boolean enable = false;
+                        if(!disableTime.isEmpty()) enable = true;
 
-                        discountTable.addView(addNewRow(discountName, percent, startTime, endTime, enable));
-                        String[] period_discount = {discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
+                        discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, enable));
+                        String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
                         period_discounts.add(period_discount);
                     }
                 } catch (JSONException e) {
@@ -340,7 +398,8 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
-    private TableRow addNewRow(final String discountName, int percent, String startTime, String endTime, boolean enable){
+    private TableRow addNewRow(String discountId, final String discountName, int percent, String startTime, String endTime, boolean enable){
+        String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
         final TableRow newDiscount = new TableRow(context);
 
         Button deleteBtn = new Button(context);
@@ -351,6 +410,7 @@ public class Setting_Discount extends AppCompatActivity {
         TextView startView = addNewDate(startTime);
         TextView toIcon =  new TextView(context);
         TextView endView = addNewDate(endTime);
+        TextView discountIdText = new TextView(context);
 
         int dp40 = dip2px(context, 40);
         int dp15 = dip2px(context, 15);
@@ -376,6 +436,7 @@ public class Setting_Discount extends AppCompatActivity {
         nameText.setPadding(0, 0, 0, dp5);
         enableSw.setPadding(dp15, 0, 0, 0);
         enableSw.setChecked(enable);
+        setSwitch(enableSw, startView, endView, period_discount);
         if(percent >= 0) discountEdit.setText(percent);
         else discountEdit.setHint("1");
         discountEdit.setWidth(dp40);
@@ -385,6 +446,8 @@ public class Setting_Discount extends AppCompatActivity {
         percentIcon.setPadding(0, 0, 0 ,dp8);
         toIcon.setText("─");
         toIcon.setPadding(dp5, 0, dp5, 0);
+        discountIdText.setText(discountId);
+        discountIdText.setVisibility(View.GONE);
 
         newDiscount.addView(deleteBtn);
         newDiscount.addView(nameText);
@@ -394,13 +457,13 @@ public class Setting_Discount extends AppCompatActivity {
         newDiscount.addView(startView);
         newDiscount.addView(toIcon);
         newDiscount.addView(endView);
+        newDiscount.addView(discountIdText);
 
         return newDiscount;
     }
 
     private TextView addNewDate(String date){
         int dp60 = dip2px(context, 60);
-        int dp5 = dip2px(context, 5);
         int dp3 = dip2px(context, 3);
         TextView dateView =  new TextView(context);
         dateView.setWidth(dp60);
@@ -457,7 +520,48 @@ public class Setting_Discount extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.d(TAG, "responseData of update_today_order: " + responseData);
+                Log.d(TAG, "responseData of update_discount: " + responseData);
+            }
+        });
+    }
+
+    private void disableDiscount(String[] period_discount){
+        String function_name = "disableDiscount";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .add("discount_id", period_discount[0])
+                .add("discount_name", period_discount[1])
+                .add("discount", period_discount[2])
+                .add("start_date", period_discount[3])
+                .add("end_date", period_discount[4])
+                .build();
+        Log.d(TAG, "disableDiscount: discount_id: "+period_discount[0]+", discount_name: "+period_discount[1]
+                +", discount: "+period_discount[2]+", start_date: "+period_discount[3]+", end_date: "+period_discount[4]);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData of disable_discount: " + responseData);
             }
         });
     }
