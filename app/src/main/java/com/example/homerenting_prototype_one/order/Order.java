@@ -82,7 +82,6 @@ public class Order extends AppCompatActivity {
         week_text = findViewById(R.id.week_O);
         lastWeek_btn = findViewById(R.id.lastWeek_btn_O);
         nextWeek_btn = findViewById(R.id.nextWeek_btn_O);
-        orderList = findViewById(R.id.order_listView_O);
         orderRList = findViewById(R.id.order_recyclerView_O);
 
         Button booking_order = findViewById(R.id.bookingOrder_btn);
@@ -284,7 +283,7 @@ public class Order extends AppCompatActivity {
     }
 
     private void setRList(){
-        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(this, data, Order_Detail.class);
+        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(context, data, Order_Detail.class);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

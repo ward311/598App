@@ -89,7 +89,7 @@ public class Setting_Discount extends AppCompatActivity {
 
         getFreeRow();
         getPeriodRow(true);
-//        getData();
+        getData();
 
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +163,7 @@ public class Setting_Discount extends AppCompatActivity {
                 Log.d(TAG, "period discount: "+itemsToString(period_discounts));
 
                 Log.d(TAG, "size of delete discount: "+delete_discounts.size());
-                Log.d(TAG, "delete discount: "+itemsToString2(delete_discounts));
+                Log.d(TAG, "delete discount: "+delete_discounts);
 
                 updateDiscount();
             }
@@ -281,19 +281,19 @@ public class Setting_Discount extends AppCompatActivity {
                     setDateBtn(endView);
                     String startDate = startView.getText().toString();
                     String endDate = endView.getText().toString();
-                    LocalDate now = LocalDate.now();
+                    final LocalDate disableTime = LocalDate.now();
                     LocalDate start = LocalDate.of(Integer.parseInt(getYear(startDate)), Integer.parseInt(getMonth(startDate)), Integer.parseInt(getDay(startDate)));
                     LocalDate end = LocalDate.of(Integer.parseInt(getYear(endDate)), Integer.parseInt(getMonth(endDate)), Integer.parseInt(getDay(endDate)));
 
-                    if(start.isBefore(now) && end.isAfter(now) && !disable){
+                    if(start.isBefore(disableTime) && end.isAfter(disableTime) && !disable){
                         switcher.setChecked(true);
-                        Log.d(TAG, start+" < "+now+" < "+end);
+                        Log.d(TAG, start+" < "+disableTime+" < "+end);
                         new AlertDialog.Builder(context)
                                 .setTitle("現在進行折扣中，要強制取消嗎？")
                                 .setPositiveButton("確認", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        disableDiscount(period_discount);
+                                        disableDiscount(period_discount, String.valueOf(disableTime));
                                         disable = true;
                                         switcher.setChecked(false);
                                         disable = false;
@@ -303,7 +303,7 @@ public class Setting_Discount extends AppCompatActivity {
                                 .create()
                                 .show();
                     }
-                    else Log.d(TAG, "start: "+start+", end: "+end+", now: "+now);
+                    else Log.d(TAG, "start: "+start+", end: "+end+", disableTime: "+disableTime);
                 }
             }
         });
@@ -368,6 +368,7 @@ public class Setting_Discount extends AppCompatActivity {
                     JSONArray responseArr = new JSONArray(responseData);
 
                     JSONObject freeItems = responseArr.getJSONObject(0);
+                    Log.i(TAG, "freeItems: "+freeItems);
                     boolean valuateBl = freeItems.getBoolean("valuate");
                     boolean depositBl = freeItems.getBoolean("deposit");
                     boolean cancelBl = freeItems.getBoolean("cancel");
@@ -376,18 +377,25 @@ public class Setting_Discount extends AppCompatActivity {
                     deposit.setChecked(depositBl);
                     cancel.setChecked(cancelBl);
 
-                    for(int i = 1; i < responseArr.length(); i++){
+                    for(int i = 0; i < responseArr.length(); i++){
                         JSONObject discountItem = responseArr.getJSONObject(i);
-                        String discountId = discountItem.getString("discount_id");
-                        String discountName = discountItem.getString("discount_name");
-                        int percent = discountItem.getInt("discount");
-                        String startTime = discountItem.getString("start_date");
-                        String endTime = discountItem.getString("end_date");
+                        Log.i(TAG, "discountItem: "+discountItem);
+                        final String discountId = discountItem.getString("discount_id");
+                        final String discountName = discountItem.getString("discount_name");
+                        final int percent = discountItem.getInt("discount");
+                        final String startTime = discountItem.getString("start_date");
+                        final String endTime = discountItem.getString("end_date");
                         String disableTime = discountItem.getString("disable_time");
                         boolean enable = false;
                         if(!disableTime.isEmpty()) enable = true;
 
-                        discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, enable));
+                        final boolean finalEnable = enable;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, finalEnable));
+                            }
+                        });
                         String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
                         period_discounts.add(period_discount);
                     }
@@ -398,7 +406,7 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
-    private TableRow addNewRow(String discountId, final String discountName, int percent, String startTime, String endTime, boolean enable){
+    private TableRow addNewRow(final String discountId, final String discountName, int percent, String startTime, String endTime, final boolean enable){
         String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
         final TableRow newDiscount = new TableRow(context);
 
@@ -426,7 +434,7 @@ public class Setting_Discount extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 discountTable.removeView(newDiscount);
-                delete_discounts.add(discountName);
+                delete_discounts.add(discountId);
                 pdRemoveBy(discountName);
             }
         });
@@ -437,7 +445,7 @@ public class Setting_Discount extends AppCompatActivity {
         enableSw.setPadding(dp15, 0, 0, 0);
         enableSw.setChecked(enable);
         setSwitch(enableSw, startView, endView, period_discount);
-        if(percent >= 0) discountEdit.setText(percent);
+        if(percent >= 0) discountEdit.setText(String.valueOf(percent));
         else discountEdit.setHint("1");
         discountEdit.setWidth(dp40);
         discountEdit.setGravity(Gravity.RIGHT);
@@ -494,10 +502,10 @@ public class Setting_Discount extends AppCompatActivity {
                 .add("deposit", String.valueOf(deposit.isChecked()))
                 .add("cancel", String.valueOf(cancel.isChecked()))
                 .add("period_items", itemsToString(period_discounts))
-                .add("delete_items", itemsToString2(delete_discounts))
+                .add("delete_items", String.valueOf(delete_discounts))
                 .build();
         Log.i(TAG, "valuate: "+valuate.isChecked()+", deposit: "+deposit.isChecked()+", cancel: "+cancel.isChecked()
-                +", period_item: "+itemsToString(period_discounts)+", "+itemsToString2(delete_discounts));
+                +", period_item: "+itemsToString(period_discounts)+", "+delete_discounts);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -525,7 +533,7 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
-    private void disableDiscount(String[] period_discount){
+    private void disableDiscount(String[] period_discount, String disableTime){
         String function_name = "disableDiscount";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -535,9 +543,10 @@ public class Setting_Discount extends AppCompatActivity {
                 .add("discount", period_discount[2])
                 .add("start_date", period_discount[3])
                 .add("end_date", period_discount[4])
+                .add("disableTime", disableTime)
                 .build();
         Log.d(TAG, "disableDiscount: discount_id: "+period_discount[0]+", discount_name: "+period_discount[1]
-                +", discount: "+period_discount[2]+", start_date: "+period_discount[3]+", end_date: "+period_discount[4]);
+                +", discount: "+period_discount[2]+", start_date: "+period_discount[3]+", end_date: "+period_discount[4]+", disableTime: "+disableTime);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -574,20 +583,6 @@ public class Setting_Discount extends AppCompatActivity {
         itemStr = itemStr+"[\""+items.get(0)[0] +"\", "+items.get(0)[1]+", \""+items.get(0)[2]+"\", \""+items.get(0)[3]+"\", "+items.get(0)[4]+"]";
         for(int i = 1; i < items.size(); i++){
             itemStr = itemStr+", [\""+items.get(i)[0] +"\", "+items.get(i)[1]+", \""+items.get(i)[2]+"\", \""+items.get(i)[3]+"\", "+items.get(i)[4]+"]";
-        }
-        itemStr = itemStr+"]";
-
-        return itemStr;
-    }
-
-    private String itemsToString2(ArrayList<String> items){
-        if(items.size() == 0) return "";
-
-        String itemStr;
-        itemStr = "[";
-        for(int i = 0; i < items.size(); i++){
-            itemStr = itemStr+"\""+items.get(i)+"\"";
-            if(i < items.size()-1) itemStr = itemStr+", ";
         }
         itemStr = itemStr+"]";
 

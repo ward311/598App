@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
     private ArrayList<String[]> cars;
+    private volatile int ready = 0;
 
     String TAG = "CarAdapter";
 
@@ -27,17 +28,27 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
     @Override
     public ViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.car_item, parent, false);
+        if(view == null) Log.d(TAG, "ready "+ready+". view is null!?");
+        else Log.d(TAG, "ready "+ready+". view is ok!");
+        ready = ready+1;
         return new ViewHoler(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHoler holder, int position) {
-
+        holder.weight.setText(cars.get(position)[0]);
+        holder.type.setText(cars.get(position)[1]);
+        holder.num.setText(cars.get(position)[2]);
     }
 
     @Override
     public int getItemCount() {
         return cars.size();
+    }
+
+    public int getReady(){
+        if(ready == getItemCount()) return -1;
+        else return ready;
     }
 
     public class ViewHoler extends RecyclerView.ViewHolder {
