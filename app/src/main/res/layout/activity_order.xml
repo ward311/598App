@@ -131,18 +131,6 @@
         android:layout_height="1dp"
         android:background="#989898" />
 
-
-    <ListView
-        android:id="@+id/order_listView_O"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="20dp"
-        android:layout_weight="7"
-        android:background="#FFFFFF"
-        android:visibility="gone">
-
-    </ListView>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/order_recyclerView_O"
         android:layout_width="match_parent"

@@ -113,19 +113,12 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
     }
 
     private void deleteOrderData(int position){
-        String order_id = s_adapter.getItem(position)[0];
-        String table = "orders";
-        if(s_adapter.type.equals("Valuation")){
-            table = "choose";
-        }
+        String order_id = t_adapter.getItem(position)[0];
 
-        String function_name = "change_status";
+        String function_name = "delete_order";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
-                .add("company_id", getCompany_id(context))
                 .add("order_id", order_id)
-                .add("table", table)
-                .add("status", "cancel")
                 .build();
         Log.i(TAG, "delete order: "+order_id);
 

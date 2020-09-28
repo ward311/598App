@@ -95,18 +95,18 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         final GregorianCalendar calendar = new GregorianCalendar();
 
         cars = new ArrayList<>();
-        String[] newString = {"", "", ""};
+        String[] newString = {"1", "2", "3"};
         cars.add(newString);
 
-        bundle = getIntent().getExtras();
+        bundle = new Bundle();
+        bundle.putString("order_id", "16");
+//        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
         linking(); //將xml裡的元件連至此java
 
         getOrder();
-
-//        getItems();
 
         furniture_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,94 +281,98 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         carAssignRList.setAdapter(carAdapter);
                     }
                 });
+                getItems();
             }
         });
     }
 
-//    private void getItems(){
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() { //delay 3 秒之後才抓得到東西
-//            @Override
-//            public void run() {
-//                int i;
-//                for(i = 0; i < carAdapter.getItemCount(); i++){
-//                    getItem(i);
-//                }
-//            }
-//        }, 3000);
-//    }
+    private void getItems(){
+        int counter = 0;
+        int limit = 7000000;
+        while(carAdapter.getReady() != -1 && counter < limit){ //lock
+//            Log.d(TAG, "ready: "+carAdapter.getReady());
+            counter++;
+        }
+        if(counter == limit) Log.d(TAG, "ready repeat over "+limit);
+        else{
+            Log.d(TAG, "all ready!");
+            for(int i = 0; i < carAdapter.getItemCount(); i++){
+                getItem(i);
+            }
+        }
+    }
 
-//    private boolean getItem(final int position){
-//        View view = carAssignRList.getLayoutManager().findViewByPosition(position);
-//        if(view != null){ //有可能太快輸入而導致view沒東西
-//            if(!isCarsExist(position)){
-//                Log.d(TAG, "add position "+position);
-//                String[] newString = {"", "", ""};
-//                cars.add(newString);
-//            }
-//            Log.d(TAG, "getItem: postion:"+position);
-//            EditText weight_edit = view.findViewById(R.id.weight_CI);
-//            EditText type_edit = view.findViewById(R.id.type_CI);
-//            EditText num_edit = view.findViewById(R.id.num_CI);
-//
-//            editTextChange(weight_edit, position, 0);
-//            editTextChange(type_edit, position, 1);
-//            editTextChange(num_edit, position, 2);
-//        }
-//        else{
-//            Log.d(TAG, position+". view is null");
-//        }
-//        return true;
-//    }
+    private boolean getItem(final int position){
+        View view = carAssignRList.getLayoutManager().findViewByPosition(position);
+        if(view != null){ //有可能太快輸入而導致view沒東西
+            if(!isCarsExist(position)){
+                Log.d(TAG, "add position "+position);
+                String[] newString = {"", "", ""};
+                cars.add(newString);
+            }
+            Log.d(TAG, "getItem: postion:"+position);
+            EditText weight_edit = view.findViewById(R.id.weight_CI);
+            EditText type_edit = view.findViewById(R.id.type_CI);
+            EditText num_edit = view.findViewById(R.id.num_CI);
 
-//    private void editTextChange(final EditText editText, final int position, final int i){
-//        editText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if(!isCarsExist(position)){
-//                    return;
-//                }
-//
-//                if(!editText.getText().toString().isEmpty()){
-//                    Log.d(TAG, position+". cars["+i+"] no empty");
-//
-//                    String str = editText.getText().toString();
-//                    cars.get(position)[i] = str;
-//
-//                    if(carAdapter.getItemCount() == position+1 && position < max_car-1){
-//                        if(!isCarsExist(position+1)){
-//                            Log.d(TAG, "add position "+position);
-//                            String[] newString = {"", "", ""};
-//                            cars.add(newString);
-//                        }
-//                        carAdapter.notifyItemInserted(cars.size()-1);
-//                    }
-//                    getItems();
-//                }
-//                else{
-//                    cars.get(position)[i] = "";
-//                    Log.d(TAG, "carAdapter.getItemCount: "+carAdapter.getItemCount());
-//                    //如果該列為空，而且場上還會留下1個，而且不是最後一列(因為最後一列常保持空的)
-//                    //要是輸入的字沒偵測到，就有可能發生明明有輸字卻整列刪除的狀況
-//                    if(isRowEmpty(position) && carAdapter.getItemCount() > 1 && position+1 != carAdapter.getItemCount()){
-//                        cars.remove(position);
-//                        showCars();
-//                        carAdapter.notifyItemRemoved(position);
-//                    }
-//                }
-//            }
-//        });
-//    }
+            editTextChange(weight_edit, position, 0);
+            editTextChange(type_edit, position, 1);
+            editTextChange(num_edit, position, 2);
+        }
+        else{
+            Log.d(TAG, position+". view is null");
+        }
+        return true;
+    }
+
+    private void editTextChange(final EditText editText, final int position, final int i){
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!isCarsExist(position)){
+                    return;
+                }
+
+                if(!editText.getText().toString().isEmpty()){
+                    Log.d(TAG, position+". cars["+i+"] no empty");
+
+                    String str = editText.getText().toString();
+                    cars.get(position)[i] = str;
+                    Log.d(TAG, position+". car: "+str);
+
+                    if(carAdapter.getItemCount() == position+1 && position < max_car-1){
+                        if(!isCarsExist(position+1)){
+                            Log.d(TAG, "add position "+position);
+                            String[] newString = {"", "", ""};
+                            cars.add(newString);
+                        }
+                        carAdapter.notifyItemInserted(cars.size()-1);
+                    }
+                }
+                else{
+                    cars.get(position)[i] = "";
+                    Log.d(TAG, "carAdapter.getItemCount: "+carAdapter.getItemCount());
+                    //如果該列為空，而且場上還會留下1個，而且不是最後一列(因為最後一列常保持空的)
+                    //要是輸入的字沒偵測到，就有可能發生明明有輸字卻整列刪除的狀況
+                    if(isRowEmpty(position) && carAdapter.getItemCount() > 1 && position+1 != carAdapter.getItemCount()){
+                        cars.remove(position);
+                        showCars();
+                        carAdapter.notifyItemRemoved(position);
+                    }
+                }
+            }
+        });
+    }
 
     private boolean isRowEmpty(int position){
         int check = 0;
