@@ -23,6 +23,11 @@
         <item name="shapeAppearanceOverlay">@null</item>
     </style>
 
+    <!--  變換chip點擊文字顏色  -->
+    <style name="chipTextColor" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/text_chip_state_list</item>
+    </style>
+
     <style name="Shape_rectangle0" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">1dp</item>

@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:textColor="@color/text_chip_state_list"
         android:networkSecurityConfig="@xml/network_security_config">
 
         <!--Main-->
@@ -73,12 +74,12 @@
         <activity android:name=".setting.Record_Detail"/>
 
         <activity android:name=".Register_Company"/>
-        <activity android:name=".System_Vacation" />
+        <activity android:name=".setting.Setting_Discount" />
         <activity android:name=".System_Schedule" />
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
 
-        <activity android:name=".setting.Setting_Discount">
+        <activity android:name=".system.System_Vacation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
