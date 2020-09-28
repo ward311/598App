@@ -23,6 +23,7 @@ import static com.example.homerenting_prototype_one.show.global_function.dip2px;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
 
 public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.ViewHolder> {
+    public String type = "";
     private ArrayList<String[]> data;
     private Context context;
     private Class mTarget;

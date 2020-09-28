@@ -113,11 +113,12 @@
         android:layout_height="1dp"
         android:background="#989898"/>
 
-    <ListView
-        android:id="@+id/order_listView_OB"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/order_recyclerView_OB"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7" />
+        android:layout_weight="7"
+        android:background="#FFFFFF" />
 
     <ScrollView
         android:id="@+id/bookingOrder_scrollView"

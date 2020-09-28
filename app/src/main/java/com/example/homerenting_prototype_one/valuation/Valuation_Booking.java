@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
+import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
+import com.example.homerenting_prototype_one.order.Order_Detail;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
@@ -55,7 +64,7 @@ public class Valuation_Booking extends AppCompatActivity {
     TextView month_text;
     TextView week_text;
     ImageButton lastWeek_btn, nextWeek_btn;
-    ListView valuationBookingList;
+    RecyclerView valuationBookingList;
 
     ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter = new ListAdapter(data);
@@ -63,6 +72,7 @@ public class Valuation_Booking extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
 
     String TAG = "Valuation_Booking";
+    Context context = this;
     private final String PHP = "/user_data.php";
 
     @Override
@@ -73,7 +83,7 @@ public class Valuation_Booking extends AppCompatActivity {
         week_text = findViewById(R.id.week_VB);
         lastWeek_btn = findViewById(R.id.lastWeek_btn_VB);
         nextWeek_btn = findViewById(R.id.nextWeek_btn_VB);
-        valuationBookingList = findViewById(R.id.order_listView_VB);
+        valuationBookingList = findViewById(R.id.order_recyclerView_VB);
 
         Button self_btn = findViewById(R.id.selfEvaluation_btn);
         Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
@@ -246,8 +256,10 @@ public class Valuation_Booking extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                valuationBookingList.setAdapter(noData);
+                                Log.d(TAG, "NO DATA");
+                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                                valuationBookingList.setLayoutManager(new LinearLayoutManager(context));
+                                valuationBookingList.setAdapter(noDataAdapter);
                             }
                             //else Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
@@ -255,33 +267,27 @@ public class Valuation_Booking extends AppCompatActivity {
                 }
                 //顯示資訊
                 if(!responseData.equals("null")){
-                    for(int i = 0; i < data.size(); i++)
+                    for(int i=0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            valuationBookingList.setAdapter(listAdapter);
-                            valuationBookingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[])parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                    String order_id = row_data[0];
-
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
-
-                                    removeNew(order_id, Valuation_Booking.this);
-
-                                    Intent intent = new Intent();
-                                    intent.setClass(Valuation_Booking.this, ValuationBooking_Detail.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
-                    });
+                    setRList();
                 }
+            }
+        });
+    }
+
+    private void setRList(){
+        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(context, data, Order_Detail.class);
+        adapter.type = "Valuation";
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                valuationBookingList.setLayoutManager(new LinearLayoutManager(context));
+                valuationBookingList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
+                valuationBookingList.setAdapter(adapter);
+
+                //側滑刪除
+                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
+                helper.attachToRecyclerView(valuationBookingList);
             }
         });
     }

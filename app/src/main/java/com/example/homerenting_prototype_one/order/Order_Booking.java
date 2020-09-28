@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.order;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +13,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
+import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
@@ -59,9 +67,11 @@ public class Order_Booking extends AppCompatActivity {
     TextView week_text;
     TextView month_text;
     ImageButton lastWeek_btn, nextWeek_btn;
-    ListView orderList;
+    //    ListView orderList;
+    RecyclerView orderRList;
 
     private final String PHP = "/user_data.php";
+    Context context = this;
     String TAG = "Order_Booking";
 
     @Override
@@ -72,7 +82,7 @@ public class Order_Booking extends AppCompatActivity {
         month_text = findViewById(R.id.month_OB);
         lastWeek_btn = findViewById(R.id.lastWeek_btn_OB);
         nextWeek_btn = findViewById(R.id.nextWeek_btn_OB);
-        orderList = findViewById(R.id.order_listView_OB);
+        orderRList = findViewById(R.id.order_recyclerView_OB);
 
         Button order = findViewById(R.id.order_btn);
         Button booking_order = findViewById(R.id.bookingOrder_btn);
@@ -253,8 +263,10 @@ public class Order_Booking extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
+                                Log.d(TAG, "NO DATA");
+                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                                orderRList.setLayoutManager(new LinearLayoutManager(context));
+                                orderRList.setAdapter(noDataAdapter);
                             }
                             //else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                         }
@@ -262,35 +274,27 @@ public class Order_Booking extends AppCompatActivity {
                 }
 
                 //顯示資訊
-                if(!responseData.equals("null")) {
-                    for (int i = 0; i < data.size(); i++)
-                        Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
-                    final ListAdapter listAdapter = new ListAdapter(data);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            orderList.setAdapter(listAdapter);
-                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
-                                    String order_id = row_data[0];
-
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
-
-                                    removeNew(order_id, Order_Booking.this);
-
-                                    Intent intent = new Intent();
-                                    intent.setClass(Order_Booking.this, Order_Detail.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
-                    });
+                if(!responseData.equals("null")){
+                    for(int i=0; i < data.size(); i++)
+                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                    setRList();
                 }
+            }
+        });
+    }
+
+    private void setRList(){
+        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(this, data, Order_Detail.class);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                orderRList.setLayoutManager(new LinearLayoutManager(context));
+                orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
+                orderRList.setAdapter(adapter);
+
+                //側滑刪除
+                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
+                helper.attachToRecyclerView(orderRList);
             }
         });
     }
