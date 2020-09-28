@@ -37,7 +37,7 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
     SwipeDeleteAdapter s_adapter;
     TextAdapter t_adapter;
     int current = 0;
-    String TAG = "RecyclerViewAction";
+    String TAG = "RecyclerViewAction ";
 
     public RecyclerViewAction(Context context, SwipeDeleteAdapter adapter){
         this.context = context;
