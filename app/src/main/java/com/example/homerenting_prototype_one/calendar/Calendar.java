@@ -74,7 +74,7 @@ public class Calendar extends AppCompatActivity {
 
     Boolean VB, OB;
 
-    Context context;
+    Context context = Calendar.this;
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Calendar";
 
@@ -82,7 +82,6 @@ public class Calendar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-        context = Calendar.this;
         data = new ArrayList<>();
         data_v = new ArrayList<>();
         data_o = new ArrayList<>();

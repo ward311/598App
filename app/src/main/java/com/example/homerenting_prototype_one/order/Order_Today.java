@@ -62,10 +62,8 @@ public class Order_Today extends AppCompatActivity {
     TextView month_text;
     RecyclerView orderRList;
 
-    OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Order_Today";
     Context context = this;
-    private final String PHP = "/user_data.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,11 +99,12 @@ public class Order_Today extends AppCompatActivity {
 
         //連線要求
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
                 .post(body)
                 .build();
 
         //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             //連線失敗
@@ -117,7 +116,7 @@ public class Order_Today extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Order_Today.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                     }
                 });
             }

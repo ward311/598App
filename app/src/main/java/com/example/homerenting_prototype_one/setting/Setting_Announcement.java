@@ -126,7 +126,7 @@ public class Setting_Announcement extends AppCompatActivity {
 
                         String annouceId = announce.getString("announcement_id");
                         String title = announce.getString("title");
-                        String date = announce.getString("date");
+                        String date = announce.getString("announcement_date");
                         String summary = announce.getString("outline");
                         String announceContent = announce.getString("content");
                         String isNew = announce.getString("new");

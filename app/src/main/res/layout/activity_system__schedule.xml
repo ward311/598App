@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".System_Schedule">
+    tools:context=".system.System_Schedule">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -29,295 +29,125 @@
             android:layout_marginLeft="95dp"
             android:layout_gravity="center"/>
     </LinearLayout>
+
     <ScrollView
+        android:id="@+id/calender_sv_SSD"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5">
+        android:layout_weight="5"
+        android:visibility="visible">
+
         <CalendarView
-            android:id="@+id/schedule_calendar"
+            android:id="@+id/calendar_SSD"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </ScrollView>
 <!--    <CalendarView-->
 <!--        android:id="@+id/schedule_calendar"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="0dp"-->
 <!--        android:layout_weight="5"/>-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/orderList_rv_SSD"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:visibility="gone">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#989898"/>
+        android:background="#989898" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp">
+
             <TextView
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:text="員工"
-                android:textColor="#FB8527"
-                android:textSize="20sp"/>
+                android:textColor="#000000"
+                android:textSize="24sp" />
+
             <HorizontalScrollView
-                android:id="@+id/employee_hScrollView"
-                android:layout_width="match_parent"
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
+
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/staffCG_SSD"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <LinearLayout
+                    android:padding="10dp"
+                    android:theme="@style/Theme.MaterialComponents.Light"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="415dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip1_SSD"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="王小明"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="劉案全"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    2-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="陳聰明"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="王守興"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    3-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="劉光明"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="彭玉唱"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    4-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="吳輝明"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="徐將義"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    5-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="邱朝明"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="劉曹可"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    6-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="葉大名"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="秦因文"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    7-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="方子優"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="朱柯基"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    8-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="古蘭花"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-<!--                        <Button-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="劉案全"-->
-<!--                            android:textColor="#989898"-->
-<!--                            android:background="@drawable/system_schedule_btn_drawable"/>-->
-                    </LinearLayout>
-                </LinearLayout>
+                        android:text="test"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textSize="18sp"
+                        android:visibility="gone" />
+
+                </com.google.android.material.chip.ChipGroup>
+
             </HorizontalScrollView>
+
             <TextView
+                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="車輛"
-                android:textColor="#19B0ED"
-                android:textSize="20sp"/>
+                android:textColor="#000000"
+                android:textSize="24sp" />
+
             <HorizontalScrollView
-                android:id="@+id/car_hScrollView"
-                android:layout_width="match_parent"
+                android:id="@+id/horizontalScrollView2"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/carCG_SSD"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <LinearLayout
+                    android:padding="10dp"
+                    android:theme="@style/Theme.MaterialComponents.Light"
+                    tools:layout_editor_absoluteX="85dp"
+                    tools:layout_editor_absoluteY="370dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip6"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸平斗車NRT-134"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸箱型車NKC-456"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    2-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸平斗車HWE-353"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸箱型車ZXE-654"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    3-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸平斗車ITE-774"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="7.7噸箱型車RSF-673"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    4-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸平斗車BTU-255"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="7.7噸箱型車ESF-553"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-<!--                    5-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3.5噸平斗車YEU-712"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="7.7噸箱型車KMS-352"
-                            android:textColor="#989898"
-                            android:background="@drawable/system_schedule_btn_drawable"/>
-                    </LinearLayout>
-                </LinearLayout>
+                        android:checkable="true"
+                        android:checked="false"
+                        android:text="test6"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textSize="18sp"
+                        android:visibility="gone" />
+                </com.google.android.material.chip.ChipGroup>
+
             </HorizontalScrollView>
         </LinearLayout>
     </ScrollView>

@@ -1,9 +1,5 @@
 package com.example.homerenting_prototype_one.system;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -13,12 +9,26 @@ import android.view.View;
 import android.widget.CalendarView;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.order.Order;
+import com.example.homerenting_prototype_one.order.Order_Detail;
+import com.example.homerenting_prototype_one.schedule.New_Schedule_Detail;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.google.android.material.chip.Chip;
@@ -32,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -41,51 +52,61 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
-import static com.example.homerenting_prototype_one.show.global_function.getToday;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
-public class System_Vacation extends AppCompatActivity {
+public class System_Schedule extends AppCompatActivity {
+    ScrollView calendar_sv;
     CalendarView calendar;
+    RecyclerView orderList;
     ChipGroup staffGroup,  carGroup;
 
+    ArrayList<String[]> data = new ArrayList<>();
     ArrayList<String> staffs_text, cars_text;
     ArrayList<Integer> staffs, cars;
 
-    String current_date;
     boolean lock = false;
 
     Context context = this;
-    String TAG = "System_Vacation";
+    String TAG = "System_Schedule";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_system__vacation);
-        calendar = findViewById(R.id.calendar_SV);
-        staffGroup = findViewById(R.id.staffCG_SV);
-        carGroup = findViewById(R.id.carCG_SV);
+        setContentView(R.layout.activity_system__schedule);
+        calendar_sv = findViewById(R.id.calender_sv_SSD);
+        calendar = findViewById(R.id.calendar_SSD);
+        orderList = findViewById(R.id.orderList_rv_SSD);
+        staffGroup = findViewById(R.id.staffCG_SSD);
+        carGroup = findViewById(R.id.carCG_SSD);
 
         staffs_text = new ArrayList<>();
         staffs = new ArrayList<>();
         cars_text = new ArrayList<>();
         cars = new ArrayList<>();
 
+        orderList.setLayoutManager(new LinearLayoutManager(context));
+        orderList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
+
         getChip();
 
-        current_date = getToday("yyyy-MM-dd");
-        getVacation("2020-09-27");
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                update_leave();
-
                 String monthStr = String.valueOf(month + 1);
                 if (month + 1 < 10) monthStr = "0" + monthStr;
                 String dayOfMonthStr = String.valueOf(dayOfMonth);
                 if (dayOfMonth < 10) dayOfMonthStr = "0" + dayOfMonthStr;
                 String date = year + "-" + monthStr + "-" + dayOfMonthStr;
                 Log.i(TAG, "Date Change: " + date);
-                current_date = date;
+
+                getOrder(date);
+                orderList.setVisibility(View.VISIBLE);
+                calendar_sv.setVisibility(View.GONE);
+
                 initArray();
                 getVacation(date);
             }
@@ -96,7 +117,6 @@ public class System_Vacation extends AppCompatActivity {
 
     private void getChip(){
         lock = true;
-        final Chip chip1 = findViewById(R.id.chip1_SV); //控制形狀用的chip
 
         String function_name = "staff-vehicle_data";
         RequestBody body = new FormBody.Builder()
@@ -152,7 +172,7 @@ public class System_Vacation extends AppCompatActivity {
                             @Override
                             public void run() {
                                 //在staffGroup底下新增chip，加入ID和Tag
-                                staffGroup.addView(setChipDetail(staffGroup, staff_id, staff_name, chip1));
+                                staffGroup.addView(setChipDetail(staffGroup, staff_id, staff_name));
                             }
                         });
                     }
@@ -169,7 +189,7 @@ public class System_Vacation extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num, chip1));
+                                carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num));
                             }
                         });
                     }
@@ -193,22 +213,19 @@ public class System_Vacation extends AppCompatActivity {
         });
     }
 
-    private Chip setChipDetail(ChipGroup chipGroup, String id, String name, Chip chip1){
+    private Chip setChipDetail(ChipGroup chipGroup, String id, String name){
         final Chip chip = new Chip(chipGroup.getContext());
         chip.setId(Integer.parseInt(id));
         chip.setTag(Integer.parseInt(id));
 
         chip.setText(name); //顯示員工姓名
-        chip.setCheckable(true); //可點擊
-
         chip.setTextSize(16); //文字的大小
 
         //選擇chip的模式:choice
         ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(chipGroup.getContext(), null, 0 ,R.style.Widget_MaterialComponents_Chip_Choice);
         chip.setChipDrawable(chipDrawable);
 
-        //將邊框設為方形圓角
-        chip.setShapeAppearanceModel(chip1.getShapeAppearanceModel());
+        chip.setCheckable(false); //可點擊
 
         chip.setChipBackgroundColorResource(R.color.bg_chip_state_list); //變換chip點擊背景顏色
         chip.setTextAppearance(R.style.chipTextColor); //變換chip點擊文字顏色
@@ -242,6 +259,114 @@ public class System_Vacation extends AppCompatActivity {
                 Log.i(TAG, item_name+"_text: " + items_text);
                 Log.i(TAG, item_name+": " + items);
 
+            }
+        });
+    }
+
+    private void getOrder(String date){
+        clearDatalist();
+        data.clear();
+        //傳至網頁的值，傳function_name
+        String function_name = "order_member_oneDay";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .add("date", date)
+                .add("isOrder", "TRUE")
+                .build();
+        Log.d(TAG, "getOrder: date: "+date);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .post(body)
+                .build();
+
+        //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData: "+responseData); //顯示資料
+
+                try {
+                    //轉換成json格式，array或object
+                    final JSONArray responseArr = new JSONArray(responseData);
+//                    Log.d(TAG,"responseObj: "+ responseArr);
+
+                    //一筆一筆的取JSONArray中的json資料
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject member = responseArr.getJSONObject(i);
+                        Log.d(TAG,"member:"+member);
+
+                        //取欄位資料
+                        String order_id = member.getString("order_id");
+                        String datetime = member.getString("moving_date");
+                        String name = member.getString("member_name");
+                        String nameTitle;
+                        if(member.getString("gender").equals("女")) nameTitle = "小姐";
+                        else nameTitle = "先生";
+                        final String phone = member.getString("phone");
+                        String contact_address = member.getString("contact_address");
+                        if(contact_address.equals("null")) contact_address = "";
+                        String auto = member.getString("auto");
+                        String newicon = member.getString("new");
+                        String status = member.getString("order_status");
+                        if(status.equals("done")) status = "done_today";
+
+
+                        //將資料放入陣列
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, status};
+                        data.add(row_data);
+                        addDatalist(order_id);
+                    }
+                } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("null")){
+                                Log.d(TAG, "NO DATA");
+                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                                orderList.setLayoutManager(new LinearLayoutManager(context));
+                                orderList.setAdapter(noDataAdapter);
+                            }
+                        }
+                    });
+                }
+                //顯示資訊
+                if(!responseData.equals("null")){
+                    for(int i=0; i < data.size(); i++)
+                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                    setList();
+                }
+            }
+        });
+    }
+
+    private void setList(){
+        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(this, data, New_Schedule_Detail.class);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                orderList.setAdapter(null);
+                orderList.setAdapter(adapter);
             }
         });
     }
@@ -334,56 +459,11 @@ public class System_Vacation extends AppCompatActivity {
     private void setChipCheck(ChipGroup chipGroup, ArrayList<String> items_text){
         for(int i = 1; i < chipGroup.getChildCount(); i++){
             Chip chip = (Chip) chipGroup.getChildAt(i);
-//            Log.d(TAG, "checking chip "+chip.getText().toString()+"...");
-            if(items_text.contains(chip.getText().toString())){
-                chip.setChecked(true); //把本單有的員工列為已點擊
-//                Log.d(TAG, chip.getText().toString()+" is checked");
-            }
-            else{
-                chip.setChecked(false);
-//                Log.d(TAG, chip.getText().toString()+" is not checked");
-            }
+            chip.setCheckable(true);
+            if(items_text.contains(chip.getText().toString())) chip.setChecked(true); //把本單有的員工列為已點擊
+            else chip.setChecked(false);
+            chip.setCheckable(false);
         }
-    }
-
-    private void update_leave(){
-        String function_name = "";
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("company_id", getCompany_id(context))
-                .add("date", current_date)
-                .add("", String.valueOf(staffs))
-                .add("", String.valueOf(cars))
-                .build();
-        Log.d(TAG, "update_leave: date: "+current_date+", staffs:"+staffs+staffs_text+", cars:"+cars+cars_text);
-
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/functional.php")
-                .post(body)
-                .build();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String responseData = response.body().string();
-                Log.d(TAG,"responseData of update_leave: "+responseData); //顯示資料
-            }
-        });
     }
 
     private void globalNav(){
@@ -397,44 +477,52 @@ public class System_Vacation extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent system_intent = new Intent(System_Vacation.this, System.class);
-                startActivity(system_intent);
+                finish();
             }
         });
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent valuation_intent = new Intent(System_Vacation.this, Valuation.class);
+                Intent valuation_intent = new Intent(System_Schedule.this, Valuation.class);
                 startActivity(valuation_intent);
             }
         });
         order_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent order_intent = new Intent(System_Vacation.this, Order.class);
+                Intent order_intent = new Intent(System_Schedule.this, Order.class);
                 startActivity(order_intent);
             }
         });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent calender_intent = new Intent(System_Vacation.this, Calendar.class);
+                Intent calender_intent = new Intent(System_Schedule.this, Calendar.class);
                 startActivity(calender_intent);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent system_intent = new Intent(System_Vacation.this, System.class);
+                Intent system_intent = new Intent(System_Schedule.this, System.class);
                 startActivity(system_intent);
             }
         });
         setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent setting_intent = new Intent(System_Vacation.this, Setting.class);
+                Intent setting_intent = new Intent(System_Schedule.this, Setting.class);
                 startActivity(setting_intent);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(calendar_sv.getVisibility() == View.GONE){
+            calendar_sv.setVisibility(View.VISIBLE);
+            orderList.setVisibility(View.GONE);
+        }
+        else super.onBackPressed();
     }
 }
