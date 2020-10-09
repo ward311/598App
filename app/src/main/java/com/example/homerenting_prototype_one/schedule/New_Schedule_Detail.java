@@ -157,6 +157,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                lock = false;
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 runOnUiThread(new Runnable() {
@@ -171,7 +172,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of getChip: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -218,18 +219,21 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     int ii = 0;
                     while((staffGroup.getChildCount()-1+carGroup.getChildCount()-1) != responseArr.length()){
                         ii++;
-                        if(ii%1000 == 0)
+                        if(ii%1000000 == 0)
                             Log.d(TAG, "waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
                     lock = false;
                 } catch (JSONException e) {
+                    lock = false;
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Toast onResponse failed because JSON in getChip", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -348,6 +352,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .add("company_id", getCompany_id(context))
                 .add("assign", "true")
                 .build();
+        Log.i(TAG, "order_id: "+order_id+", company_id: "+getCompany_id(context)+", assign: true");
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/user_data.php")
@@ -402,14 +407,15 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         JSONObject vehicle_demand = responseArr.getJSONObject(i);
                         if(!vehicle_demand.has("vehicle_type")) break;
                         Log.i(TAG, "vehicle_demand:" + vehicle_demand);
+                        if(i != 1) demandCar = demandCar + "\n";
                         demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
                                 +vehicle_demand.getString("vehicle_type")
-                                +vehicle_demand.getString("num")+"輛\n";
+                                +vehicle_demand.getString("num")+"輛";
                     }
-                    if(i == 1) demandCar = "";
+                    if(i == 1) demandCar = "無填寫需求車輛";
                     Log.d(TAG, "demandCar: "+demandCar);
 
-                    car = "";
+                    if(responseArr.length()-i < 1) car = "尚未安排車輛";
                     for (; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
@@ -418,7 +424,6 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         cars_text.add(vehicle_assign.getString("plate_num"));
                         cars.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
                     }
-                    if(i == 1) car = "尚未安排車輛";
                     Log.d(TAG, "car: "+car);
 
                     if(responseArr.length()-i < 1) staff = "尚未安排人員";
@@ -451,18 +456,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Toast onResponse failed because JSON in getOrder", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
 
                 int ii = 0;
                 while (lock){
                     ii++;
-                    if(ii%10000 == 0) Log.d(TAG, "waiting for lock in getOrder...");
+                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getOrder...");
                 }
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 getVacation(movingDateWithoutTime);
@@ -474,6 +481,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
     }
 
     private void getVacation(String date){
+        if(date == null){
+            Log.d(TAG, "date is null in getVacation");
+            return;
+        }
         String function_name = "all_vehicle_staff_leave";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -529,11 +540,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    if(!responseData.equals("null")) {
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Toast onResponse failed because JSON in getVacation", Toast.LENGTH_LONG).show();
                             }
                         });
                     }
@@ -542,7 +553,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 int ii = 0;
                 while (lock){
                     ii++;
-                    if(ii%10000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
+                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
                 }
                 Log.d(TAG, "getVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_vacation, "vacation");
@@ -552,6 +563,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
     }
 
     private void getOverlap(String date){
+        if(date == null){
+            Log.d(TAG, "date is null in getOvelap");
+            return;
+        }
         String function_name = "";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -607,11 +622,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    if(!responseData.equals("null")) {
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Toast onResponse failed because JSON in getOverlap", Toast.LENGTH_LONG).show();
                             }
                         });
                     }
@@ -620,7 +635,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 int ii = 0;
                 while (lock){
                     ii++;
-                    if(ii%10000 == 0) Log.d(TAG, "waiting for lock in getOverlap...");
+                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getOverlap...");
                 }
                 Log.d(TAG, "getOverlap: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_vacation, "overlap");
@@ -670,6 +685,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
+                        .add("company_id", getCompany_id(context))
                         .add("vehicle_assign", String.valueOf(cars))
                         .add("staff_assign", String.valueOf(staffs))
                         .build();

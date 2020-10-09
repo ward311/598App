@@ -251,7 +251,20 @@ public class Valuation_Detail extends AppCompatActivity {
             public void onClick(View v) {
                 String valDate = pickDate_edit.getText().toString();
                 String valTime = pickTime_edit.getText().toString()+"~"+pickTime2_edit.getText().toString();
-
+                boolean check = true;
+                if(valDate.isEmpty()){
+                    pickDate_edit.setError("請輸入日期");
+                    check = false;
+                }
+                if(pickTime_edit.getText().toString().isEmpty()){
+                    pickTime_edit.setError("請輸入時間");
+                    check = false;
+                }
+                if(pickTime2_edit.getText().toString().isEmpty()){
+                    pickTime2_edit.setError("請輸入時間");
+                    check = false;
+                }
+                if(!check) return;
 
                 String function_name = "update_selfValuation";
                 String company_id = getCompany_id(context);
@@ -263,7 +276,7 @@ public class Valuation_Detail extends AppCompatActivity {
                         .add("valuation_time", valTime)
                         .build();
                 Log.d(TAG,"check_price_btn: order_id: " + order_id +
-                        ", valuation_date" + valDate +
+                        ", valuation_date: " + valDate +
                         ", valuation_time: " + valTime);
 
                 Request request = new Request.Builder()

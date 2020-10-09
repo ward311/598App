@@ -73,11 +73,12 @@ public class System_Vacation extends AppCompatActivity {
         getChip();
 
         current_date = getToday("yyyy-MM-dd");
-        getVacation("2020-09-27");
+//        getVacation("2020-09-27");
+        getVacation(current_date);
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                update_leave();
+                update_leave(current_date);
 
                 String monthStr = String.valueOf(month + 1);
                 if (month + 1 < 10) monthStr = "0" + monthStr;
@@ -225,12 +226,13 @@ public class System_Vacation extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int tag = (int) buttonView.getTag();
                 String sname = chip.getText().toString();
-                if(isChecked){ //取消選擇
-                    items.add(tag);
-                    if(!items_text.contains(name))
+                if(isChecked){ //加入選擇
+                    if(!items_text.contains(name)) {
+                        items.add(tag);
                         items_text.add(sname);
+                    }
                 }
-                else{ //加入選擇
+                else{ //取消選擇
                     items.remove(Integer.valueOf(tag));
                     items_text.remove(sname);
                 }
@@ -334,28 +336,25 @@ public class System_Vacation extends AppCompatActivity {
     private void setChipCheck(ChipGroup chipGroup, ArrayList<String> items_text){
         for(int i = 1; i < chipGroup.getChildCount(); i++){
             Chip chip = (Chip) chipGroup.getChildAt(i);
-//            Log.d(TAG, "checking chip "+chip.getText().toString()+"...");
             if(items_text.contains(chip.getText().toString())){
                 chip.setChecked(true); //把本單有的員工列為已點擊
-//                Log.d(TAG, chip.getText().toString()+" is checked");
             }
             else{
                 chip.setChecked(false);
-//                Log.d(TAG, chip.getText().toString()+" is not checked");
             }
         }
     }
 
-    private void update_leave(){
+    private void update_leave(final String date){
         String function_name = "modify_vehicle_staff_leave";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
-                .add("date", current_date)
+                .add("date", date)
                 .add("staffItems", String.valueOf(staffs))
                 .add("vehicleItems", String.valueOf(cars))
                 .build();
-        Log.d(TAG, "update_leave: date: "+current_date+", staffs:"+staffs+staffs_text+", cars:"+cars+cars_text);
+        Log.d(TAG, "update_leave: date: "+date+", staffs:"+staffs+staffs_text+", cars:"+cars+cars_text);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -381,7 +380,7 @@ public class System_Vacation extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData of update_leave: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of update_leave("+date+"): "+responseData); //顯示資料
             }
         });
     }
@@ -397,8 +396,7 @@ public class System_Vacation extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent system_intent = new Intent(System_Vacation.this, System.class);
-                startActivity(system_intent);
+                Log.d(TAG, "back. date: "+current_date+", staffs:"+staffs+staffs_text+", cars:"+cars+cars_text);
             }
         });
         valuation_btn.setOnClickListener(new View.OnClickListener() {
@@ -440,7 +438,7 @@ public class System_Vacation extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        update_leave();
+        update_leave(current_date);
         super.onBackPressed();
     }
 }

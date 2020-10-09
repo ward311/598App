@@ -34,7 +34,6 @@ import com.example.homerenting_prototype_one.valuation.Valuation;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;

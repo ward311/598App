@@ -36,6 +36,9 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
         ViewHoler viewHoler = new ViewHoler(view);
         viewHolers.add(viewHoler);
         Log.d(TAG, "create holder:"+viewHolers.size());
+        for(int i = 0; i < viewHolers.size(); i++){
+            viewHolers.get(i).position = i;
+        }
         return viewHoler;
     }
 
@@ -69,7 +72,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
                     cars.remove(holder.position);
                     viewHolers.remove(holder.position);
                     notifyItemRemoved(holder.position);
-                    for(int i = 0; i < cars.size(); i++){
+                    for(int i = 0; i < viewHolers.size(); i++){
                         viewHolers.get(i).position = i;
                     }
                     Log.d(TAG, position+". remove holder("+viewHolers.size()+").position:"+holder.position+", cars.size:"+cars.size());

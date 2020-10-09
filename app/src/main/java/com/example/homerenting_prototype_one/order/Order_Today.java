@@ -254,7 +254,7 @@ public class Order_Today extends AppCompatActivity {
         });
     }
     private void setRList(){
-        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(this, data, Order_Detail.class);
+        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(this, data, Today_Detail.class);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
