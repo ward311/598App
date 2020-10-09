@@ -276,7 +276,7 @@ public class Valuation_Booking extends AppCompatActivity {
     }
 
     private void setRList(){
-        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(context, data, Order_Detail.class);
+        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(context, data, ValuationBooking_Detail.class);
         adapter.type = "Valuation";
         runOnUiThread(new Runnable() {
             @Override
@@ -286,8 +286,8 @@ public class Valuation_Booking extends AppCompatActivity {
                 valuationBookingList.setAdapter(adapter);
 
                 //側滑刪除
-                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
-                helper.attachToRecyclerView(valuationBookingList);
+//                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
+//                helper.attachToRecyclerView(valuationBookingList);
             }
         });
     }

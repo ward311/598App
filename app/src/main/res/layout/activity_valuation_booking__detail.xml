@@ -13,11 +13,11 @@
         android:background="#00BFFF">
 
         <ImageView
-            android:id="@+id/back_imgBtn"
+            android:id="@+id/back_imgBtn_VBD"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:paddingTop="6dp"
             android:paddingLeft="16dp"
+            android:paddingTop="6dp"
             app:srcCompat="@drawable/back_white" />
     </LinearLayout>
     <TextView

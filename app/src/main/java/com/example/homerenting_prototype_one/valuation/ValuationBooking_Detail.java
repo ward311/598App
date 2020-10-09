@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -95,7 +96,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         final GregorianCalendar calendar = new GregorianCalendar();
 
         cars = new ArrayList<>();
-        String[] newString = {"1", "2", "3"};
+        String[] newString = {"", "", ""};
         cars.add(newString);
 
         bundle = new Bundle();
@@ -281,29 +282,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         carAssignRList.setAdapter(carAdapter);
                     }
                 });
-                getItems();
             }
         });
     }
 
-    private void getItems(){
-        int counter = 0;
-        int limit = 7000000;
-        while(carAdapter.getReady() != -1 && counter < limit){ //lock
-//            Log.d(TAG, "ready: "+carAdapter.getReady());
-            counter++;
-        }
-        if(counter == limit) Log.d(TAG, "ready repeat over "+limit);
-        else{
-            Log.d(TAG, "all ready!");
-            for(int i = 0; i < carAdapter.getItemCount(); i++){
-                getItem(i);
-            }
-        }
-    }
-
-    private boolean getItem(final int position){
-        View view = carAssignRList.getLayoutManager().findViewByPosition(position);
+    private void getItem(final int position){
+        View view = carAssignRList.getLayoutManager().getChildAt(position);
         if(view != null){ //有可能太快輸入而導致view沒東西
             if(!isCarsExist(position)){
                 Log.d(TAG, "add position "+position);
@@ -322,7 +306,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         else{
             Log.d(TAG, position+". view is null");
         }
-        return true;
     }
 
     private void editTextChange(final EditText editText, final int position, final int i){
@@ -352,7 +335,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
                     if(carAdapter.getItemCount() == position+1 && position < max_car-1){
                         if(!isCarsExist(position+1)){
-                            Log.d(TAG, "add position "+position);
+                            Log.d(TAG, "add position "+(position+1));
                             String[] newString = {"", "", ""};
                             cars.add(newString);
                         }
@@ -402,7 +385,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                checkCars();
 
                 String movingDate = movingDateText.getText().toString().trim();
                 String movingTime = movingTimeText.getText().toString().trim();
@@ -599,11 +581,19 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     }
 
     private void globalNav(){
+        ImageView back_btn = findViewById(R.id.back_imgBtn_VBD);
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         valuation_btn.setOnClickListener(new View.OnClickListener() {
             @Override

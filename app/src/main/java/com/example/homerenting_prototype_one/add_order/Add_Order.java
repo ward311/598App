@@ -55,6 +55,8 @@ public class Add_Order extends AppCompatActivity {
 
     String gender = "男";
 
+    Bundle bundle;
+
     GregorianCalendar calendar = new GregorianCalendar();
     OkHttpClient okHttpClient = new OkHttpClient();
 
@@ -65,13 +67,16 @@ public class Add_Order extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add__order);
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         linking();
+
+        if(getIntent().getExtras() != null){
+            bundle = getIntent().getExtras();
+            Log.d(TAG, "furniture_data: "+bundle.getString("furniture_data"));
+        }
+        else{
+            bundle = new Bundle();
+        }
 
         movingDate_text.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -132,7 +137,6 @@ public class Add_Order extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent intent = new Intent();
-                Bundle bundle = new Bundle();
                 bundle.putString("order_id", "-1");
                 intent.putExtras(bundle);
                 intent.setClass(context, Edit_Furniture.class);
@@ -140,108 +144,149 @@ public class Add_Order extends AppCompatActivity {
             }
         });
 
-        addOrderBtn.setOnClickListener(new View.OnClickListener() {
+//        addOrderBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                addOrder();
+//
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        finish();
+//                    }
+//                }, 1000);
+//            }
+//        });
+
+        addOrderBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                String name = name_edit.getText().toString();
-                String cAddress = cAddress_edit.getText().toString();
-                String phone = phone_edit.getText().toString();
-                String fromAddress = moveOut_edit.getText().toString();
-                String toAddress = moveIn_edit.getText().toString();
-                String price = price_edit.getText().toString();
-                String worktime = worktime_edit.getText().toString();
-                String notice = notice_edit.getText().toString();
-                String date = movingDate_text.getText().toString();
-                date = date+" "+movingTime_text.getText().toString()+":00";
-
-                switch(genderRG.getCheckedRadioButtonId()){
-                    case R.id.male_rbtn_AO:
-                        gender = "男";
-                        break;
-                    case R.id.female_rbtn_AO:
-                        gender = "女";
-                        break;
-                    case R.id.other_rbtn_AO:
-                        gender = "其他";
-                        break;
+            public boolean onLongClick(View v) {
+                if(bundle.getString("furniture_data") != null){
+                    String furniture_data = bundle.getString("furniture_data");
+                    Log.d(TAG, "furniture_data: "+furniture_data);
                 }
-                Log.i(TAG, "gender = "+gender);
-
-                String function_name = "add_order";
-                String company_id = getCompany_id(context);
-                RequestBody body = new FormBody.Builder()
-                        .add("function_name", function_name)
-                        .add("company_id", company_id)
-                        .add("member_name", name)
-                        .add("gender", gender)
-                        .add("contact_address", cAddress)
-                        .add("phone", phone)
-                        .add("from_address", fromAddress)
-                        .add("to_address", toAddress)
-                        .add("accurate_fee", price)
-                        .add("worktime", worktime)
-                        .add("additional", notice)
-                        .add("moving_date", date)
-                        .build();
-                Log.i(TAG,"function_name: " + function_name +
-                        ", member_name: " + name +
-                        ", gender: " + gender +
-                        ", contact_address: " + cAddress +
-                        ", phone: " + phone +
-                        ", from_address: " + fromAddress+
-                        ", to_address: " + toAddress +
-                        ", accurate_fee: " + price +
-                        ", worktime: " + worktime +
-                        ", additional: " + notice +
-                        ", moving_date: " + date);
-
-                Request request = new Request.Builder()
-                        .url(BuildConfig.SERVER_URL+"/functional.php")
-                        .post(body)
-                        .build();
-
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        final String responseData = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(responseData.equals("success"))
-                                    Toast.makeText(context, "新增訂單成功", Toast.LENGTH_LONG).show();
-                                else
-                                    Toast.makeText(context, "新增訂單失敗", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        Log.d(TAG, "add_btn, responseData: " + responseData);
-                    }
-                });
-
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-//                        Intent intent = new Intent();
-//                        intent.setClass(context, Order.class);
-//                        startActivity(intent);
-                        finish();
-                    }
-                }, 1000);
+                else{
+                    Log.d(TAG, "no furniture_data");
+                }
+                return false;
             }
         });
+
+        globalNav();
+    }
+
+    private void addOrder(){
+        String name = name_edit.getText().toString();
+        String cAddress = cAddress_edit.getText().toString();
+        String phone = phone_edit.getText().toString();
+        String fromAddress = moveOut_edit.getText().toString();
+        String toAddress = moveIn_edit.getText().toString();
+        String price = price_edit.getText().toString();
+        String worktime = worktime_edit.getText().toString();
+        String notice = notice_edit.getText().toString();
+        String date = movingDate_text.getText().toString();
+        date = date+" "+movingTime_text.getText().toString()+":00";
+
+        switch(genderRG.getCheckedRadioButtonId()){
+            case R.id.male_rbtn_AO:
+                gender = "男";
+                break;
+            case R.id.female_rbtn_AO:
+                gender = "女";
+                break;
+            case R.id.other_rbtn_AO:
+                gender = "其他";
+                break;
+        }
+        Log.i(TAG, "gender = "+gender);
+
+        String function_name = "add_order";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .add("member_name", name)
+                .add("gender", gender)
+                .add("contact_address", cAddress)
+                .add("phone", phone)
+                .add("from_address", fromAddress)
+                .add("to_address", toAddress)
+                .add("accurate_fee", price)
+                .add("worktime", worktime)
+                .add("additional", notice)
+                .add("moving_date", date)
+                .build();
+        Log.i(TAG,"function_name: " + function_name +
+                ", member_name: " + name +
+                ", gender: " + gender +
+                ", contact_address: " + cAddress +
+                ", phone: " + phone +
+                ", from_address: " + fromAddress+
+                ", to_address: " + toAddress +
+                ", accurate_fee: " + price +
+                ", worktime: " + worktime +
+                ", additional: " + notice +
+                ", moving_date: " + date);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(responseData.equals("success"))
+                            Toast.makeText(context, "新增訂單成功", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(context, "新增訂單失敗", Toast.LENGTH_LONG).show();
+                    }
+                });
+                Log.d(TAG, "add_btn, responseData: " + responseData);
+            }
+        });
+    }
+
+    private void linking(){
+        name_edit = findViewById(R.id.name_AO);
+        cAddress_edit = findViewById(R.id.contactAddress_AO);
+        phone_edit = findViewById(R.id.phone_AO);
+        moveOut_edit = findViewById(R.id.fromAddress_AO);
+        moveIn_edit = findViewById(R.id.toAddress_AO);
+        editFurnitureBtn = findViewById(R.id.edit_furniture_btn_AO);
+        furniture_list = findViewById(R.id.furniture_list_AO);
+        price_edit = findViewById(R.id.price_AO);
+        worktime_edit = findViewById(R.id.worktime_AO);
+        notice_edit = findViewById(R.id.notice_AO);
+        movingDate_text = findViewById(R.id.pickDate_AO);
+        movingTime_text = findViewById(R.id.pictTime_AO);
+        genderRG = findViewById(R.id.genderRG_AO);
+        addOrderBtn = findViewById(R.id.addOrder_btn_AO);
+    }
+
+    private void globalNav(){
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
@@ -280,22 +325,4 @@ public class Add_Order extends AppCompatActivity {
             }
         });
     }
-
-    private void linking(){
-        name_edit = findViewById(R.id.name_AO);
-        cAddress_edit = findViewById(R.id.contactAddress_AO);
-        phone_edit = findViewById(R.id.phone_AO);
-        moveOut_edit = findViewById(R.id.fromAddress_AO);
-        moveIn_edit = findViewById(R.id.toAddress_AO);
-        editFurnitureBtn = findViewById(R.id.edit_furniture_btn_AO);
-        furniture_list = findViewById(R.id.furniture_list_AO);
-        price_edit = findViewById(R.id.price_AO);
-        worktime_edit = findViewById(R.id.worktime_AO);
-        notice_edit = findViewById(R.id.notice_AO);
-        movingDate_text = findViewById(R.id.pickDate_AO);
-        movingTime_text = findViewById(R.id.pictTime_AO);
-        genderRG = findViewById(R.id.genderRG_AO);
-        addOrderBtn = findViewById(R.id.addOrder_btn_AO);
-    }
-
 }

@@ -293,8 +293,8 @@ public class Order_Booking extends AppCompatActivity {
                 orderRList.setAdapter(adapter);
 
                 //側滑刪除
-                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
-                helper.attachToRecyclerView(orderRList);
+//                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
+//                helper.attachToRecyclerView(orderRList);
             }
         });
     }

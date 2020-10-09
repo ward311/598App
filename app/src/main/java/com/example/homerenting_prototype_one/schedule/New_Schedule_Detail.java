@@ -58,14 +58,14 @@ public class New_Schedule_Detail extends AppCompatActivity {
     Bundle bundle;
     String order_id;
 
-    TextView titleText, nameText, nameTitleText, movingDateText, fromAddressText, toAddressText;
+    TextView titleText, nameText, nameTitleText, movingDateText, fromAddressText, toAddressText, demandCarText;
     TextView staffText, carText;
     ChipGroup staffGroup,  carGroup;
     Chip chip1;
     ImageButton backBtn, lastBtn, nextBtn;
     Button submitBtn;
 
-    String name, nameTitle, movingDate, fromAddress, toAddress;
+    String name, nameTitle, movingDate, fromAddress, toAddress, demandCar;
     String staff, car;
 
     boolean lock = false;
@@ -397,8 +397,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     movingDateWithoutTime = date[0];
 
                     int i;
-                    car = "";
+                    demandCar = "";
                     for (i = 1; i < responseArr.length(); i++) {
+                        JSONObject vehicle_demand = responseArr.getJSONObject(i);
+                        if(!vehicle_demand.has("vehicle_type")) break;
+                        Log.i(TAG, "vehicle_demand:" + vehicle_demand);
+                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
+                                +vehicle_demand.getString("vehicle_type")
+                                +vehicle_demand.getString("num")+"輛\n";
+                    }
+                    if(i == 1) demandCar = "";
+                    Log.d(TAG, "demandCar: "+demandCar);
+
+                    car = "";
+                    for (; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle_assign:" + vehicle_assign);
@@ -430,6 +442,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                             movingDateText.setText(movingDate);
                             fromAddressText.setText(fromAddress);
                             toAddressText.setText(toAddress);
+                            demandCarText.setText(demandCar);
                             staffText.setText(staff);
                             carText.setText(car);
                         }
@@ -731,6 +744,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         movingDateText = findViewById(R.id.date_SD);
         fromAddressText = findViewById(R.id.FromAddress_SD);
         toAddressText = findViewById(R.id.ToAddress_SD);
+        demandCarText = findViewById(R.id.demandCar_SD);
         staffText = findViewById(R.id.staff_SD);
         carText = findViewById(R.id.car_SD);
         staffGroup = findViewById(R.id.staffCG_SD);

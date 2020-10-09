@@ -216,44 +216,42 @@ public class Edit_Furniture extends AppCompatActivity {
                         check_btn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if(order_id.equals("-1")){
-                                    Intent intent = new Intent();
-                                    intent.setClass(context, Add_Order.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intent);
-                                }
-                                else{
-                                    if(datalist()){
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                        builder.setTitle("確認送出");
-                                        String message = "確定後，數量為0的";
-                                        int i;
-                                        for(i = 0; i < zeroFurniture.size(); i++){
-                                            message = message+zeroFurniture.get(i);
-                                            if(i!=(zeroFurniture.size()-1)) message = message+", ";
-                                            else message = message+"將會從家具清單中刪除";
-                                        }
-                                        builder.setMessage(message);
-                                        builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                modifyFurniture();
-                                                finish();
-                                            }
-                                        });
-                                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
+                                if(datalist()){
+                                    if(order_id.equals("-1")){
+                                        bundle.putString("furniture_data", Arrays.deepToString(furniture_data));
+                                        Log.d(TAG, "furniture_data of add_order: "+ Arrays.deepToString(furniture_data));
+                                        Intent intent = new Intent();
+                                        intent.putExtras(bundle);
+                                        intent.setClass(context, Add_Order.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                    }
 
-                                            }
-                                        });
-                                        AlertDialog dialog = builder.create();
-                                        dialog.show();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("確認送出");
+                                    String message = "確定後，數量為0的";
+                                    int i;
+                                    for(i = 0; i < zeroFurniture.size(); i++){
+                                        message = message+zeroFurniture.get(i);
+                                        if(i!=(zeroFurniture.size()-1)) message = message+", ";
+                                        else message = message+"將會從家具清單中刪除";
                                     }
-                                    else{
-                                        modifyFurniture();
-                                        finish();
-                                    }
+                                    builder.setMessage(message);
+                                    builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            modifyFurniture();
+                                            finish();
+                                        }
+                                    });
+                                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
                                 }
                             }
                         });
