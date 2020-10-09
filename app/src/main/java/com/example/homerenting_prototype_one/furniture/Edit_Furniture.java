@@ -84,12 +84,6 @@ public class Edit_Furniture extends AppCompatActivity {
         check_btn = findViewById(R.id.check_furniture_btn);
         add_btn = findViewById(R.id.add_furniture_btn);
 
-        final ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        final ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        final ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        final ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        final ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-
         data = new ArrayList<>();
         space_data = new ArrayList<>();
         spaceAL = new ArrayList<>();
@@ -97,7 +91,6 @@ public class Edit_Furniture extends AppCompatActivity {
         furnitureIDs = new ArrayList<>();
         zeroFurniture = new ArrayList<>();
         list = findViewById(R.id.furniture_listView);
-
 
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
@@ -108,157 +101,14 @@ public class Edit_Furniture extends AppCompatActivity {
 
         setSpaceSpr();
 
-        String function_name = "furniture_detail";
-        String company_id = getCompany_id(this);
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("order_id", order_id)
-                .add("company_id", company_id)
-                .build();
-        Log.d(TAG, "order_id: "+order_id);
-
-        //連線要求
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
-                .post(body)
-                .build();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Call call = okHttpClient.newCall(request);
-
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String responseData = response.body().string();
-                Log.d(TAG,"responseData of furniture_list: "+responseData);
-
-                try {
-                    JSONArray responseArr = new JSONArray(responseData);
-
-                    ArrayList<String[]> livingRoom_data = new ArrayList<>();
-                    ArrayList<String[]> outside_data = new ArrayList<>();
-                    ArrayList<String[]> studyRoom_data = new ArrayList<>();
-                    ArrayList<String[]> bedRoom_data = new ArrayList<>();
-                    ArrayList<String[]> diningRoom_data = new ArrayList<>();
-
-                    //取得資料
-                    for(int i = 0 ; i < responseArr.length() ; i++) {
-                        JSONObject furniture = responseArr.getJSONObject(i);
-                        String furniture_id = furniture.getString("furniture_id");
-                        String name = furniture.getString("furniture_name");
-                        String num = furniture.getString("num");
-                        String space_type = furniture.getString("space_type");
-
-                        String[] row_data = {furniture_id, name, num, space_type};
-                        Log.d(TAG, "row_data: "+Arrays.toString(row_data));
-                        data.add(row_data);
-                        switch(space_type){
-                            case "客廳":
-                                livingRoom_data.add(row_data);
-                                break;
-                            case "戶外陽台":
-                                outside_data.add(row_data);
-                                break;
-                            case "書房":
-                                studyRoom_data.add(row_data);
-                                break;
-                            case "臥室":
-                                bedRoom_data.add(row_data);
-                                break;
-                            case "餐廳":
-                                diningRoom_data.add(row_data);
-                                break;
-                            default:
-                                Log.d(TAG, name+" no space type");
-                        }
-                    }
-                    space_data.add(0, livingRoom_data);
-                    space_data.add(1, outside_data);
-                    space_data.add(2, studyRoom_data);
-                    space_data.add(3, bedRoom_data);
-                    space_data.add(4, diningRoom_data);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Toast.makeText(Edit_Furniture.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    int i;
-                    for(i = 0; i < 5; i++){
-                        space_data.add(new ArrayList<String[]>());
-                    }
-                }
-
-                Log.d(TAG, "data.size(): "+data.size());
-                for(int i=0; i < data.size(); i++)
-                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                adapter = new FurnitureAdapter(data, fspace);
-                adapter.setOrder_id(order_id);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        list.setAdapter(adapter);
-                        check_btn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if(datalist()){
-                                    if(order_id.equals("-1")){
-                                        bundle.putString("furniture_data", Arrays.deepToString(furniture_data));
-                                        Log.d(TAG, "furniture_data of add_order: "+ Arrays.deepToString(furniture_data));
-                                        Intent intent = new Intent();
-                                        intent.putExtras(bundle);
-                                        intent.setClass(context, Add_Order.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
-                                    }
-
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                    builder.setTitle("確認送出");
-                                    String message = "確定後，數量為0的";
-                                    int i;
-                                    for(i = 0; i < zeroFurniture.size(); i++){
-                                        message = message+zeroFurniture.get(i);
-                                        if(i!=(zeroFurniture.size()-1)) message = message+", ";
-                                        else message = message+"將會從家具清單中刪除";
-                                    }
-                                    builder.setMessage(message);
-                                    builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            modifyFurniture();
-                                            finish();
-                                        }
-                                    });
-                                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    });
-                                    AlertDialog dialog = builder.create();
-                                    dialog.show();
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
+        if(order_id.equals("-1")) {
+            String furniture_data_str = bundle.getString("furniture_data");
+            if(furniture_data_str == null) furniture_data_str = "null";
+            getListData(furniture_data_str);
+            setFurnitureList();
+            setCheck_btn();
+        }
+        else getFurnitureData();
 
         add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,39 +147,165 @@ public class Edit_Furniture extends AppCompatActivity {
         });
 
 
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
+        globalNav();
+    }
+
+    private void getFurnitureData(){
+        String function_name = "furniture_detail";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id", company_id)
+                .build();
+        Log.d(TAG, "order_id: "+order_id);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/furniture.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+
+        call.enqueue(new Callback() {
             @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Edit_Furniture.this, Valuation.class);
-                startActivity(valuation_intent);
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of furniture_list: "+responseData);
+
+                getListData(responseData);
+                setFurnitureList();
+                setCheck_btn();
             }
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void getListData(String responseData){
+        try {
+            JSONArray responseArr = new JSONArray(responseData);
+
+            ArrayList<String[]> livingRoom_data = new ArrayList<>();
+            ArrayList<String[]> outside_data = new ArrayList<>();
+            ArrayList<String[]> studyRoom_data = new ArrayList<>();
+            ArrayList<String[]> bedRoom_data = new ArrayList<>();
+            ArrayList<String[]> diningRoom_data = new ArrayList<>();
+
+            //取得資料
+            for(int i = 0 ; i < responseArr.length() ; i++) {
+                JSONObject furniture = responseArr.getJSONObject(i);
+
+                String furniture_id = furniture.getString("furniture_id");
+                String name = furniture.getString("furniture_name");
+                String num = furniture.getString("num");
+                String space_type = furniture.getString("space_type");
+
+                String[] row_data = {furniture_id, name, num, space_type};
+                Log.d(TAG, "row_data: "+Arrays.toString(row_data));
+                data.add(row_data);
+                switch(space_type){
+                    case "客廳":
+                        livingRoom_data.add(row_data);
+                        break;
+                    case "戶外陽台":
+                        outside_data.add(row_data);
+                        break;
+                    case "書房":
+                        studyRoom_data.add(row_data);
+                        break;
+                    case "臥室":
+                        bedRoom_data.add(row_data);
+                        break;
+                    case "餐廳":
+                        diningRoom_data.add(row_data);
+                        break;
+                    default:
+                        Log.d(TAG, name+" no space type");
+                }
+            }
+            space_data.add(0, livingRoom_data);
+            space_data.add(1, outside_data);
+            space_data.add(2, studyRoom_data);
+            space_data.add(3, bedRoom_data);
+            space_data.add(4, diningRoom_data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            for(int i = 0; i < 5; i++){
+                space_data.add(new ArrayList<String[]>());
+            }
+        }
+    }
+
+    private void setFurnitureList(){
+        Log.d(TAG, "data.size(): "+data.size());
+        for(int i=0; i < data.size(); i++)
+            Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+        adapter = new FurnitureAdapter(data, fspace);
+        adapter.setOrder_id(order_id);
+
+        runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Edit_Furniture.this, Order.class);
-                startActivity(order_intent);
+            public void run() {
+                list.setAdapter(adapter);
             }
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void setCheck_btn(){
+        check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent calender_intent = new Intent(Edit_Furniture.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Edit_Furniture.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Edit_Furniture.this, Setting.class);
-                startActivity(setting_intent);
+                if(datalist()){
+                    if(order_id.equals("-1")) orderFurniture();
+                    else{
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setTitle("確認送出");
+                        String message = "確定後，數量為0的";
+                        int i;
+                        for(i = 0; i < zeroFurniture.size(); i++){
+                            message = message+zeroFurniture.get(i);
+                            if(i!=(zeroFurniture.size()-1)) message = message+", ";
+                            else message = message+"將會從家具清單中刪除";
+                        }
+                        builder.setMessage(message);
+                        builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                modifyFurniture();
+                                finish();
+                            }
+                        });
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                }
+                else{
+                    if(order_id.equals("-1")) orderFurniture();
+                    else {
+                        modifyFurniture();
+                        finish();
+                    }
+                }
             }
         });
     }
@@ -602,6 +578,16 @@ public class Edit_Furniture extends AppCompatActivity {
         return checkZero;
     }
 
+    private void orderFurniture(){
+        bundle.putString("furniture_data", Arrays.deepToString(furniture_data));
+        Log.d(TAG, "furniture_data of add_order: "+ Arrays.deepToString(furniture_data));
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        intent.setClass(context, Add_Order.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
+    }
+
     private void modifyFurniture(){
         String function_name = "modify_furniture";
         String company_id = getCompany_id(context);
@@ -642,6 +628,50 @@ public class Edit_Furniture extends AppCompatActivity {
                     }
                 });
                 Log.d(TAG, "responseData of modify_furniture: " + responseData);
+            }
+        });
+    }
+
+    private void globalNav(){
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(Edit_Furniture.this, Valuation.class);
+                startActivity(valuation_intent);
+            }
+        });
+        order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(Edit_Furniture.this, Order.class);
+                startActivity(order_intent);
+            }
+        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(Edit_Furniture.this, Calendar.class);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(Edit_Furniture.this, System.class);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(Edit_Furniture.this, Setting.class);
+                startActivity(setting_intent);
             }
         });
     }

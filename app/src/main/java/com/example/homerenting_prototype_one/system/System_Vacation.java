@@ -347,13 +347,13 @@ public class System_Vacation extends AppCompatActivity {
     }
 
     private void update_leave(){
-        String function_name = "";
+        String function_name = "modify_vehicle_staff_leave";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .add("date", current_date)
-                .add("", String.valueOf(staffs))
-                .add("", String.valueOf(cars))
+                .add("staffItems", String.valueOf(staffs))
+                .add("vehicleItems", String.valueOf(cars))
                 .build();
         Log.d(TAG, "update_leave: date: "+current_date+", staffs:"+staffs+staffs_text+", cars:"+cars+cars_text);
 
@@ -436,5 +436,11 @@ public class System_Vacation extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        update_leave();
+        super.onBackPressed();
     }
 }

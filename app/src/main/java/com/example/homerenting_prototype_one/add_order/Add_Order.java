@@ -34,6 +34,7 @@ import com.example.homerenting_prototype_one.valuation.Valuation;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -53,7 +54,7 @@ public class Add_Order extends AppCompatActivity {
     RadioGroup genderRG;
     Button editFurnitureBtn, addOrderBtn;
 
-    String gender = "男";
+    String gender = "男", furniture_data = "";
 
     Bundle bundle;
 
@@ -73,6 +74,7 @@ public class Add_Order extends AppCompatActivity {
         if(getIntent().getExtras() != null){
             bundle = getIntent().getExtras();
             Log.d(TAG, "furniture_data: "+bundle.getString("furniture_data"));
+            setTextData();
         }
         else{
             bundle = new Bundle();
@@ -138,42 +140,57 @@ public class Add_Order extends AppCompatActivity {
             public void onClick(View v){
                 Intent intent = new Intent();
                 bundle.putString("order_id", "-1");
+                getTextData();
                 intent.putExtras(bundle);
                 intent.setClass(context, Edit_Furniture.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
             }
         });
 
-//        addOrderBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                addOrder();
-//
-//                Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        finish();
-//                    }
-//                }, 1000);
-//            }
-//        });
-
-        addOrderBtn.setOnLongClickListener(new View.OnLongClickListener() {
+        addOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                if(bundle.getString("furniture_data") != null){
-                    String furniture_data = bundle.getString("furniture_data");
-                    Log.d(TAG, "furniture_data: "+furniture_data);
-                }
-                else{
-                    Log.d(TAG, "no furniture_data");
-                }
-                return false;
+            public void onClick(View v) {
+                if(bundle.getString("furniture_data") != null)
+                    furniture_data = bundle.getString("furniture_data");
+
+                addOrder();
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                }, 1000);
             }
         });
 
         globalNav();
+    }
+
+    private void getTextData(){
+        bundle.putString("name", name_edit.getText().toString());
+        bundle.putString("cAddress", cAddress_edit.getText().toString());
+        bundle.putString("phone", phone_edit.getText().toString());
+        bundle.putString("fromAddress", moveOut_edit.getText().toString());
+        bundle.putString("toAddress", moveIn_edit.getText().toString());
+        bundle.putString("price", price_edit.getText().toString());
+        bundle.putString("worktime", worktime_edit.getText().toString());
+        bundle.putString("notice", notice_edit.getText().toString());
+        bundle.putString("date", movingDate_text.getText().toString());
+    }
+
+    private void setTextData(){
+        name_edit.setText(bundle.getString("name"));
+        cAddress_edit.setText(bundle.getString("cAddress"));
+        phone_edit.setText(bundle.getString("phone"));
+        moveOut_edit.setText(bundle.getString("fromAddress"));
+        moveIn_edit.setText(bundle.getString("toAddress"));
+        price_edit.setText(bundle.getString("price"));
+        worktime_edit.setText(bundle.getString("worktime"));
+        notice_edit.setText(bundle.getString("notice"));
+        movingDate_text.setText(bundle.getString("date"));
     }
 
     private void addOrder(){
@@ -216,6 +233,7 @@ public class Add_Order extends AppCompatActivity {
                 .add("worktime", worktime)
                 .add("additional", notice)
                 .add("moving_date", date)
+                .add("furniture_data", furniture_data)
                 .build();
         Log.i(TAG,"function_name: " + function_name +
                 ", member_name: " + name +
@@ -227,7 +245,8 @@ public class Add_Order extends AppCompatActivity {
                 ", accurate_fee: " + price +
                 ", worktime: " + worktime +
                 ", additional: " + notice +
-                ", moving_date: " + date);
+                ", moving_date: " + date +
+                ", furniture_data" + furniture_data);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
