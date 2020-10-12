@@ -394,7 +394,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("staff_id", staffIds.get(i))
-                .add("pay", "-1") //String.valueOf(salaries.get(i))
+                .add("pay", String.valueOf(salaries.get(i)))
                 .build();
         Log.d(TAG, "order_id: "+order_id+", staff_id: "+staffIds.get(i)+", pay: "+salaries.get(i));
 
@@ -434,7 +434,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(context))
                 .add("table", "orders")
-                .add("status", "done")
+                .add("status", "paid")
                 .build();
         Log.d(TAG, "order_id: "+order_id+", table: orders, status: paid");
 
