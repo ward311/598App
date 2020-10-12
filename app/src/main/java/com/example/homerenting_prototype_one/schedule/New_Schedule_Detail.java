@@ -37,6 +37,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 
 import okhttp3.Call;
@@ -71,7 +76,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
     boolean lock = false;
 
     ArrayList<String> staffs_text, cars_text, staffs_vacation, cars_vacation, staffs_lap, cars_lap;
-    ArrayList<Integer> staffs, cars, staffs_v, cars_v, staffs_l, cars_l;
+    ArrayList<Integer> staffs, cars, staffs_v, cars_v;
+    ArrayList<int[]> staffs_l, cars_l;
 
     Context context = this;
 
@@ -83,9 +89,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
         initArray();
 
-//        bundle = new Bundle();
-//        bundle.putString("order_id", "6");
-        bundle = getIntent().getExtras();
+        bundle = new Bundle();
+        bundle.putString("order_id", "5");
+//        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
@@ -280,7 +286,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     items.remove(Integer.valueOf(tag));
                     items_text.remove(sname);
                 }
-                Log.i(TAG, "click chip: " + sname);
+//                Log.i(TAG, "click chip: " + sname);
 
                 String item_name;
                 if(items == staffs){
@@ -291,8 +297,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     item_name = "cars";
                     setCarText();
                 }
-                Log.i(TAG, item_name+"_text: " + items_text);
-                Log.i(TAG, item_name+": " + items);
+//                Log.i(TAG, item_name+"_text: " + items_text);
+//                Log.i(TAG, item_name+": " + items);
             }
         });
     }
@@ -378,12 +384,15 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 });
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData of getOrder: "+responseData); //顯示資料
+//                Log.d(TAG,"responseData of getOrder: "+responseData); //顯示資料
 
                 String movingDateWithoutTime = null;
+                String datetime = null;
+                String endtime = "";
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
@@ -399,9 +408,17 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
 
-                    String datetime= order.getString("moving_date");
+                    datetime= order.getString("moving_date");
                     String[] date = datetime.split(" ");
                     movingDateWithoutTime = date[0];
+
+                    int estimate_worktime = Integer.parseInt(order.getString("estimate_worktime"));
+                    LocalDateTime localDate = LocalDateTime.parse(date[0]+"T"+date[1]);
+                    localDate = localDate.plusHours(estimate_worktime);
+                    Log.d(TAG, "endtime 1: "+localDate);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    endtime = localDate.format(formatter);
+                    Log.d(TAG, "endtime 2: "+endtime);
 
                     int i;
                     demandCar = "";
@@ -418,6 +435,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     Log.d(TAG, "demandCar: "+demandCar);
 
                     if(responseArr.length()-i < 1) car = "尚未安排車輛";
+                    else car = "";
                     for (; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
@@ -471,11 +489,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 int ii = 0;
                 while (lock){
                     ii++;
-                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getOrder...");
+//                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getOrder...");
                 }
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 getVacation(movingDateWithoutTime);
-                getOverlap(movingDate);
+                getOverlap(datetime, endtime);
                 setChipCheck(staffGroup, staffs_text, "assign");
                 setChipCheck(carGroup, cars_text, "assign");
             }
@@ -518,26 +536,26 @@ public class New_Schedule_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData of getVocation: "+responseData); //顯示資料
+//                Log.d(TAG,"responseData of getVocation: "+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
 
                     int i;
                     for (i = 0; i < responseArr.length(); i++) {
-                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
-                        if(!vehicle_assign.has("vehicle_id")) break;
-                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
-                        cars_vacation.add(vehicle_assign.getString("plate_num"));
-                        cars_v.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
+                        JSONObject vehicle_vacation = responseArr.getJSONObject(i);
+                        if(!vehicle_vacation.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle_vacation:" + vehicle_vacation);
+                        cars_vacation.add(vehicle_vacation.getString("plate_num"));
+                        cars_v.add(Integer.parseInt(vehicle_vacation.getString("vehicle_id")));
                     }
 
                     for (; i < responseArr.length(); i++) {
-                        JSONObject staff_assign = responseArr.getJSONObject(i);
-                        if(!staff_assign.has("staff_id")) break;
-                        Log.i(TAG, "staff_assign:" + staff_assign);
-                        staffs_vacation.add(staff_assign.getString("staff_name"));
-                        staffs_v.add(Integer.parseInt(staff_assign.getString("staff_id")));
+                        JSONObject staff_vacation = responseArr.getJSONObject(i);
+                        if(!staff_vacation.has("staff_id")) break;
+                        Log.i(TAG, "staff_vacation:" + staff_vacation);
+                        staffs_vacation.add(staff_vacation.getString("staff_name"));
+                        staffs_v.add(Integer.parseInt(staff_vacation.getString("staff_id")));
                     }
 
                 } catch (JSONException e) {
@@ -555,7 +573,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 int ii = 0;
                 while (lock){
                     ii++;
-                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
+//                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
                 }
                 Log.d(TAG, "getVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_vacation, "vacation");
@@ -564,7 +582,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         });
     }
 
-    private void getOverlap(String date){
+    private void getOverlap(String date, String endtime){
         if(date == null){
             Log.d(TAG, "date is null in getOvelap");
             return;
@@ -574,7 +592,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .add("datetime", date)
+                .add("endtime", endtime)
                 .build();
+        Log.d(TAG, "overlap_order. datetime: "+date+", endtime: "+endtime);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/user_data.php")
@@ -605,22 +625,26 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
 
-//                    int i;
-//                    for (i = 0; i < responseArr.length(); i++) {
-//                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
-//                        if(!vehicle_assign.has("vehicle_id")) break;
-//                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
-//                        cars_lap.add(vehicle_assign.getString("plate_num"));
-//                        cars_l.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
-//                    }
-//
-//                    for (; i < responseArr.length(); i++) {
-//                        JSONObject staff_assign = responseArr.getJSONObject(i);
-//                        if(!staff_assign.has("staff_id")) break;
-//                        Log.i(TAG, "staff_assign:" + staff_assign);
-//                        staffs_lap.add(staff_assign.getString("staff_name"));
-//                        staffs_l.add(Integer.parseInt(staff_assign.getString("staff_id")));
-//                    }
+                    int i;
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_overlap = responseArr.getJSONObject(i);
+                        if(!vehicle_overlap.has("vehicle_id")) break;
+                        if(vehicle_overlap.getString("order_id").equals(order_id)) continue;
+                        Log.i(TAG, "vehicle_overlap:" + vehicle_overlap);
+                        cars_lap.add(vehicle_overlap.getString("plate_num"));
+                        int[] row_data = {Integer.parseInt(vehicle_overlap.getString("order_id")), Integer.parseInt(vehicle_overlap.getString("vehicle_id"))};
+                        cars_l.add(row_data);
+                    }
+
+                    for (; i < responseArr.length(); i++) {
+                        JSONObject staff_overlap = responseArr.getJSONObject(i);
+                        if(!staff_overlap.has("staff_id")) break;
+                        if(staff_overlap.getString("order_id").equals(order_id)) continue;
+                        Log.i(TAG, "staff_overlap:" + staff_overlap);
+                        staffs_lap.add(staff_overlap.getString("staff_name"));
+                        int[] row_data = {Integer.parseInt(staff_overlap.getString("order_id")), Integer.parseInt(staff_overlap.getString("staff_id"))};
+                        staffs_l.add(row_data);
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -640,8 +664,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getOverlap...");
                 }
                 Log.d(TAG, "getOverlap: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                setChipCheck(staffGroup, staffs_vacation, "overlap");
-                setChipCheck(carGroup, cars_vacation, "overlap");
+                setChipCheck(staffGroup, staffs_lap, "overlap");
+                setChipCheck(carGroup, cars_lap, "overlap");
             }
         });
     }
@@ -690,8 +714,13 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         .add("company_id", getCompany_id(context))
                         .add("vehicle_assign", String.valueOf(cars))
                         .add("staff_assign", String.valueOf(staffs))
+                        .add("staff_change_assign", arrayToString(staffs_l))
                         .build();
-                Log.i(TAG, "order_id: "+order_id+", vehicle_assign: "+cars+", staff_assign: "+staffs);
+
+                Log.i(TAG, "order_id: "+order_id
+                        +", vehicle_assign: "+cars+cars_text
+                        +", staff_assign: "+staffs+staffs_text
+                        +", staff_change_assign: "+arrayToString(staffs_l));
 
                 Request request = new Request.Builder()
                         .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -733,11 +762,21 @@ public class New_Schedule_Detail extends AppCompatActivity {
 //                        Intent intent = new Intent(context, Order_Booking.class);
 //                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 //                        startActivity(intent);
-                        finish();
+//                        finish();
                     }
                 }, 1000);
             }
         });
+    }
+
+    private String arrayToString(ArrayList<int[]> array){
+        String array_str = "[";
+        for(int i = 0; i < array.size(); i++){
+            if(i != 0) array_str = array_str + ", ";
+            array_str = array_str + "[" + array.get(i)[0] + ", " + array.get(i)[1] + "]";
+        }
+        array_str = array_str+"]";
+        return array_str;
     }
 
     private void initArray(){

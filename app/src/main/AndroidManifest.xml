@@ -23,7 +23,7 @@
         <!--Order-->
         <activity android:name=".order.Order"/>
         <activity android:name=".order.Order_Detail"/>
-        <activity android:name=".schedule.New_Schedule_Detail"/>
+        <activity android:name=".order.Order_Booking"/>
         <activity android:name=".order.Order_Today"/>
         <activity android:name=".order.Today_Detail"/>
         <activity android:name=".order.Order_Cancel"/>
@@ -79,7 +79,7 @@
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
 
-        <activity android:name=".order.Order_Booking">
+        <activity android:name=".schedule.New_Schedule_Detail">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

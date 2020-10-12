@@ -163,6 +163,8 @@ public class System_Data extends AppCompatActivity {
             Ani a = new Ani(0);
             a.setDuration(250);
             employee_text.startAnimation(a);
+            addEmployee_btn.setVisibility(View.VISIBLE);
+            addCar_btn.setVisibility(View.GONE);
             currentList = 0;
         }
     }
@@ -174,6 +176,8 @@ public class System_Data extends AppCompatActivity {
             Ani a = new Ani(1);
             a.setDuration(250);
             car_text.startAnimation(a);
+            addEmployee_btn.setVisibility(View.GONE);
+            addCar_btn.setVisibility(View.VISIBLE);
             currentList = 1;
         }
     }
@@ -360,7 +364,7 @@ public class System_Data extends AppCompatActivity {
                 type_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(context, "type("+position+"): "+types[position], Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "type("+position+"): "+types[position], Toast.LENGTH_SHORT).show();
                         if(position == types.length-1) {
                             type_edit.setVisibility(View.VISIBLE);
                             new_carType = null;
@@ -398,7 +402,7 @@ public class System_Data extends AppCompatActivity {
                         showCarList();
 
                         if(isEmtpy(weight_edit, type_edit, plateNum_edit)){
-                            Toast.makeText(context, "新增車輛失敗，有空白欄位", Toast.LENGTH_LONG).show(); //有空白欄位，顯示錯誤訊息
+                            Toast.makeText(context, "新增車輛失敗，有空白欄位", Toast.LENGTH_SHORT).show(); //有空白欄位，顯示錯誤訊息
                         }
                         else{
                             add_car(new_weight, new_carType, new_plateNum); //寫入資料庫

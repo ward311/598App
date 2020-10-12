@@ -109,7 +109,8 @@
             android:background="#19B0ED"
             android:text="新增"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
