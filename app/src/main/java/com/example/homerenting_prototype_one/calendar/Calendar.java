@@ -3,6 +3,8 @@ package com.example.homerenting_prototype_one.calendar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +20,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.applandeo.materialcalendarview.EventDay;
+import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 import com.example.homerenting_prototype_one.add_order.Add_Order;
 import com.example.homerenting_prototype_one.add_order.Add_Valuation;
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -43,6 +48,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,12 +61,16 @@ import okhttp3.Response;
 import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getDay;
+import static com.example.homerenting_prototype_one.show.global_function.getMonth;
 import static com.example.homerenting_prototype_one.show.global_function.getStartTime;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getYear;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
 
 public class Calendar extends AppCompatActivity {
     CalendarView calendar;
+    com.applandeo.materialcalendarview.CalendarView mCalendar;
     ImageButton valuation_btn, order_btn, calendar_btn, system_btn, setting_btn;
     TextView valuation_bar, order_bar, dateText;
     ListView orderList;
@@ -71,11 +81,12 @@ public class Calendar extends AppCompatActivity {
     View v;
     New_CalendarAdapter calendarAdapter, calendarAdapter_v, calendarAdapter_o;
     ArrayList<String[]> data, data_v, data_o;
+    ArrayList<Integer> checkedMonth = new ArrayList<>();
+    List<EventDay> events = new ArrayList<>();
 
     Boolean VB, OB;
 
     Context context = Calendar.this;
-    OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Calendar";
 
     @Override
@@ -170,51 +181,17 @@ public class Calendar extends AppCompatActivity {
             }
         });
 
-        
+        setmCalendar();
 
 
 
 
-        //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(context, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(context, Order.class);
-                startActivity(order_intent);
-            }
-        });
-//        calendar_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent calender_intent = new Intent(context, Calendar.class);
-//                startActivity(calender_intent);
-//            }
-//        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(context, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(context, Setting.class);
-                startActivity(setting_intent);
-            }
-        });
+        globalNav();
     }
 
     private void linking() {
         calendar = findViewById(R.id.main_calendar);
+        mCalendar = findViewById(R.id.mCalendar_main);
         valuation_btn = findViewById(R.id.valuationBlue_Btn);
         order_btn = findViewById(R.id.order_imgBtn);
         calendar_btn = findViewById(R.id.calendar_imgBtn);
@@ -259,6 +236,7 @@ public class Calendar extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             //連線失敗
@@ -278,7 +256,7 @@ public class Calendar extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG, "responseData: "+responseData); //顯示資料
+                Log.d(TAG, "responseData of getOrder: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -378,5 +356,165 @@ public class Calendar extends AppCompatActivity {
         if (VB && OB) orderList.setAdapter(calendarAdapter);
         else if (VB) orderList.setAdapter(calendarAdapter_v);
         else if (OB) orderList.setAdapter(calendarAdapter_o);
+    }
+
+    private void setmCalendar(){
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        int year = calendar.get(java.util.Calendar.YEAR);
+        int month = 9;//(calendar.get(java.util.Calendar.MONTH)+1);
+        Log.d(TAG, "check "+year+"/"+month);
+
+        if(!checkedMonth.contains((year*100)+month)){
+            getOrders(String.valueOf(year), String.valueOf(month));
+            checkedMonth.add((year*100)+month);
+        }
+    }
+
+    private void getOrders(String year, String month){
+        String function_name = "order_member_oneMonth";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .add("year", year)
+                .add("month", month)
+                .build();
+        Log.i(TAG, "function_name: "+function_name+", year: "+year+", month: "+month);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+//                Log.d(TAG, "responseData of getOrders: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    String last_date = "";
+                    int last_isOrder = -1;
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject order = responseArr.getJSONObject(i);
+//                        Log.d(TAG, "order:" + order);
+
+                        int isOrder = 1;
+                        String order_id = order.getString("order_id");
+                        String status = order.getString("order_status");
+                        if(status.equals("cancel")){
+                            Log.d(TAG, "order_id: "+order_id+", status: order_cancel");
+                            continue;
+                        }
+                        if(status.equals("evaluating")) {
+                            isOrder = 0;
+                            status = order.getString("valuation_status");
+                            if(status.equals("cancel")){
+                                Log.d(TAG, "order_id: "+order_id+", status: valuation_cancel");
+                                continue;
+                            }
+                        }
+                        String date;
+                        if(order.getString("moving_date").equals("null")) {
+                            date = order.getString("valuation_date");
+                        }
+                        else {
+                            date = order.getString("moving_date");
+                            String[] token = date.split(" ");
+                            date = token[0];
+                        }
+                        Log.d(TAG, "order_id: "+order_id+", date: "+date+", isOrder:"+isOrder+", status: "+status);
+
+
+                        java.util.Calendar calendar = java.util.Calendar.getInstance();
+                        calendar.set(java.util.Calendar.YEAR, Integer.parseInt(getYear(date)));
+                        calendar.set(java.util.Calendar.MONTH, Integer.parseInt(getMonth(date)));
+                        calendar.set(java.util.Calendar.DATE, Integer.parseInt(getDay(date)));
+
+                        EventDay eventDay;
+                        if(date.equals(last_date)){
+//                            Log.d(TAG, "isOrder: "+isOrder+", last_isOrder: "+last_isOrder);
+                            if(isOrder == 1 && last_isOrder == 0) {
+                                Log.d(TAG, "DOUBLE ORDER");
+                                eventDay = new EventDay(calendar, R.drawable.calendar_double_dot);
+                                events.set(events.size()-1, eventDay);
+                                last_date = date;
+                                last_isOrder = 4;
+                            }
+                            continue;
+                        }
+
+                        if(isOrder == 1) {
+                            Log.d(TAG, "BLUE");
+                            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.calendar_dot2);
+                            eventDay = new EventDay(calendar, new InsetDrawable(drawable, 55));
+                        }
+                        else {
+                            Log.d(TAG, "ORANGE");
+                            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.calendar_dot);
+                            eventDay = new EventDay(calendar, new InsetDrawable(drawable, 55));
+                        }
+
+                        events.add(eventDay);
+                        last_date = date;
+                        last_isOrder = isOrder;
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                runOnUiThread(() -> mCalendar.setEvents(events));
+            }
+        });
+    }
+
+    private void globalNav(){
+        //底下nav
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(context, Valuation.class);
+                startActivity(valuation_intent);
+            }
+        });
+        order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(context, Order.class);
+                startActivity(order_intent);
+            }
+        });
+//        calendar_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent calender_intent = new Intent(context, Calendar.class);
+//                startActivity(calender_intent);
+//            }
+//        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(context, System.class);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(context, Setting.class);
+                startActivity(setting_intent);
+            }
+        });
     }
 }

@@ -83,6 +83,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
         initArray();
 
+//        bundle = new Bundle();
+//        bundle.putString("order_id", "6");
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
 
@@ -405,7 +407,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     demandCar = "";
                     for (i = 1; i < responseArr.length(); i++) {
                         JSONObject vehicle_demand = responseArr.getJSONObject(i);
-                        if(!vehicle_demand.has("vehicle_type")) break;
+                        if(!vehicle_demand.has("num")) break;
                         Log.i(TAG, "vehicle_demand:" + vehicle_demand);
                         if(i != 1) demandCar = demandCar + "\n";
                         demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
@@ -473,7 +475,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 getVacation(movingDateWithoutTime);
-                getOverlap(movingDateWithoutTime);
+                getOverlap(movingDate);
                 setChipCheck(staffGroup, staffs_text, "assign");
                 setChipCheck(carGroup, cars_text, "assign");
             }
@@ -567,11 +569,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
             Log.d(TAG, "date is null in getOvelap");
             return;
         }
-        String function_name = "";
+        String function_name = "overlap_order";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
-                .add("date", date)
+                .add("datetime", date)
                 .build();
 
         Request request = new Request.Builder()
@@ -603,22 +605,22 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
 
-                    int i;
-                    for (i = 0; i < responseArr.length(); i++) {
-                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
-                        if(!vehicle_assign.has("vehicle_id")) break;
-                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
-                        cars_lap.add(vehicle_assign.getString("plate_num"));
-                        cars_l.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
-                    }
-
-                    for (; i < responseArr.length(); i++) {
-                        JSONObject staff_assign = responseArr.getJSONObject(i);
-                        if(!staff_assign.has("staff_id")) break;
-                        Log.i(TAG, "staff_assign:" + staff_assign);
-                        staffs_lap.add(staff_assign.getString("staff_name"));
-                        staffs_l.add(Integer.parseInt(staff_assign.getString("staff_id")));
-                    }
+//                    int i;
+//                    for (i = 0; i < responseArr.length(); i++) {
+//                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
+//                        if(!vehicle_assign.has("vehicle_id")) break;
+//                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
+//                        cars_lap.add(vehicle_assign.getString("plate_num"));
+//                        cars_l.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
+//                    }
+//
+//                    for (; i < responseArr.length(); i++) {
+//                        JSONObject staff_assign = responseArr.getJSONObject(i);
+//                        if(!staff_assign.has("staff_id")) break;
+//                        Log.i(TAG, "staff_assign:" + staff_assign);
+//                        staffs_lap.add(staff_assign.getString("staff_name"));
+//                        staffs_l.add(Integer.parseInt(staff_assign.getString("staff_id")));
+//                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

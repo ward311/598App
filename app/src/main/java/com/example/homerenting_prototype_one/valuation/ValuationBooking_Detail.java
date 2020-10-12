@@ -100,8 +100,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         cars.add(newString);
 
         bundle = new Bundle();
-//        bundle.putString("order_id", "16");
-        bundle = getIntent().getExtras();
+        bundle.putString("order_id", "16");
+//        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 

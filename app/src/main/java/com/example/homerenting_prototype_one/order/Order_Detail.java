@@ -149,7 +149,7 @@ public class Order_Detail extends AppCompatActivity {
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
                     movingDatetime = order.getString("moving_date");
-                    if(movingDatetime.isEmpty()) movingTime = getDate(movingDatetime)+" "+getTime(movingDatetime);
+                    if(!movingDatetime.isEmpty()) movingTime = getDate(movingDatetime)+" "+getTime(movingDatetime);
                     else movingTime = "";
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");

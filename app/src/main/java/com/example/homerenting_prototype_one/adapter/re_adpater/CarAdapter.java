@@ -21,7 +21,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
     private ArrayList<ViewHoler> viewHolers = new ArrayList<>();
     private ArrayList<String[]> cars;
 
-    private int limit = 4;
+    private int limit = 40;
 
     String TAG = "CarAdapter";
 
