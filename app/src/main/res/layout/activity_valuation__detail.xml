@@ -312,6 +312,57 @@
                     app:layout_constraintTop_toBottomOf="@+id/notice_scroll" />
 
                 <TextView
+                    android:id="@+id/sysValPriceText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="系統估價"
+                    android:textColor="#000000"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_V1"
+                    app:layout_constraintTop_toBottomOf="@id/view5" />
+
+                <TextView
+                    android:id="@+id/sysValPrice_VD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3600~8000"
+                    app:layout_constraintBottom_toBottomOf="@+id/sysValPriceText"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_V2"
+                    app:layout_constraintTop_toTopOf="@+id/sysValPriceText" />
+
+                <TextView
+                    android:id="@+id/valPriceText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="線上估價"
+                    android:textColor="#000000"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_V1"
+                    app:layout_constraintTop_toBottomOf="@+id/sysValPriceText" />
+
+                <TextView
+                    android:id="@+id/valPrice_VD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3800"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/valPriceText"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_V2"
+                    app:layout_constraintTop_toTopOf="@+id/valPriceText" />
+
+                <View
+                    android:id="@+id/view7"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="#F2F2F2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sysValPriceText" />
+
+                <TextView
                     android:id="@+id/valTimeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -319,7 +370,7 @@
                     android:text="估價時間"
                     android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="@+id/guideline_V1"
-                    app:layout_constraintTop_toBottomOf="@+id/view5" />
+                    app:layout_constraintTop_toBottomOf="@id/view7" />
 
 
                 <EditText
@@ -381,56 +432,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/pickDate_editText" />
-
-                <View
-                    android:id="@+id/view7"
-                    android:layout_width="416dp"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="4dp"
-                    android:background="#F2F2F2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/check_date_btn_VD" />
-
-
-                <TextView
-                    android:id="@+id/sysValPriceText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="系統估價"
-                    android:textColor="#000000"
-                    app:layout_constraintStart_toStartOf="@+id/guideline_V1"
-                    app:layout_constraintTop_toBottomOf="@+id/view7" />
-
-                <TextView
-                    android:id="@+id/sysValPrice_VD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="3000~4000"
-                    app:layout_constraintBottom_toBottomOf="@+id/sysValPriceText"
-                    app:layout_constraintStart_toStartOf="@+id/guideline_V2"
-                    app:layout_constraintTop_toTopOf="@+id/sysValPriceText" />
-
-                <TextView
-                    android:id="@+id/valPriceText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="線上估價"
-                    android:textColor="#000000"
-                    app:layout_constraintStart_toStartOf="@+id/guideline_V1"
-                    app:layout_constraintTop_toBottomOf="@+id/sysValPriceText" />
-
-                <TextView
-                    android:id="@+id/valPrice_VD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="3800"
-                    app:layout_constraintBottom_toBottomOf="@+id/valPriceText"
-                    app:layout_constraintStart_toStartOf="@+id/guideline_V2"
-                    app:layout_constraintTop_toTopOf="@+id/valPriceText" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

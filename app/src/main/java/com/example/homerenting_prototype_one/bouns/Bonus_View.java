@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,19 +57,16 @@ import static com.example.homerenting_prototype_one.show.global_function.getYear
 
 public class Bonus_View extends AppCompatActivity {
 
-    private String[] employees = {"王小明","陳聰明","劉光明","吳輝明","邱朝明","葉大明","劉案全",
-            "王守興","彭玉唱","徐將義","劉曹可","秦因文","方子優","古蘭花","朱柯基"};
-    private String[] total = {"30000","40000","25000","55000","35000","30000","30000",
-            "25000","35000","20000","25000","30000","30000","25000","25000"};
-
+    TextView title;
     RecyclerView salaryView;
     ImageButton backBtn;
     Button chartBtn;
 
     ArrayList<String[]> data;
-    ArrayList<String[]> emp = new ArrayList<>();
     ArrayList<String> employee_names;
     ArrayList<Integer> salaries;
+
+    String year, month;
 
     private Context context = this;
     String TAG = "Bonus_View";
@@ -78,15 +76,17 @@ public class Bonus_View extends AppCompatActivity {
         setContentView(R.layout.activity_bonus__view);
         Button total_btn = findViewById(R.id.total_salary_btn);
 
+        title = findViewById(R.id.title_BV);
         salaryView = findViewById(R.id.salaryList_BV);
         backBtn = findViewById(R.id.back_imgBtn);
         chartBtn = findViewById(R.id.chart_btn_BV);
 
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+        year = getToday("yyyy");
+        month = "7";//getToday("MM");
+        title.setText("員工薪資一覽 "+month+"月");
+        getData(year, month);
+
+        backBtn.setOnClickListener(v -> finish());
 
 
         total_btn.setOnClickListener(new View.OnClickListener() {
@@ -94,65 +94,26 @@ public class Bonus_View extends AppCompatActivity {
             public void onClick(View v) {
 //                salary_list.setVisibility(View.GONE);
 //                date_salary_list.setVisibility(View.VISIBLE);
+                Bundle bundle = new Bundle();
+                bundle.putString("year", year);
+                bundle.putString("month", month);
+                Intent intent = new Intent();
+                intent.setClass(context, Bonus_List_Detail.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
-        getData();
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Bonus_View.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Bonus_View.this, Order.class);
-                startActivity(order_intent);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Bonus_View.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Bonus_View.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Bonus_View.this, Setting.class);
-                startActivity(setting_intent);
-            }
-        });
+        globalNav();
     }
 
-    private void getData(){
+    private void getData(String year, String month){
         employee_names = new ArrayList<>();
         salaries = new ArrayList<>();
         data = new ArrayList<>();
 
         String function_name = "pay_oneMonth";
         String company_id = getCompany_id(context);
-        String year = getYear(getToday("yyyy-MM-dd"));
-        String month = "7";//getMonth(getToday("yyyy-MM-dd"));
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", company_id)
@@ -223,8 +184,6 @@ public class Bonus_View extends AppCompatActivity {
     }
 
     private void setChart(){ //圖表
-        String[] row_data = {"一號", "55000"}; emp.add(row_data);
-        String[] row_data2 = {"二號", "25000"}; emp.add(row_data2);
 
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.bonus_dialog);
@@ -265,7 +224,7 @@ public class Bonus_View extends AppCompatActivity {
         });
         barDataSet.setDrawValues(true); //在bar上顯示數值
         barDataSet.setColor(Color.parseColor("#FB8527")); //bar的顏色
-        barDataSet.setValueTextColor(Color.parseColor("#000000")); //數值文字顏色
+        barDataSet.setValueTextColor(Color.parseColor("#FFE7D3")); //數值文字顏色
 
         BarData barData = new BarData(barDataSet);
         barData.setHighlightEnabled(false); //不能點擊反光
@@ -322,5 +281,49 @@ public class Bonus_View extends AppCompatActivity {
         SalaryAdapter salaryAdapter = new SalaryAdapter(data);
         salaryView.setLayoutManager(new LinearLayoutManager(context));
         salaryView.setAdapter(salaryAdapter);
+    }
+
+    private void globalNav(){
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+        //底下nav
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(Bonus_View.this, Valuation.class);
+                startActivity(valuation_intent);
+            }
+        });
+        order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(Bonus_View.this, Order.class);
+                startActivity(order_intent);
+            }
+        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(Bonus_View.this, Calendar.class);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(Bonus_View.this, System.class);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(Bonus_View.this, Setting.class);
+                startActivity(setting_intent);
+            }
+        });
     }
 }

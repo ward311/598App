@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +45,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -62,7 +66,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getDate
 public class ValuationBooking_Detail extends AppCompatActivity {
     LinearLayout furnitureLL;
 
-    TextView nameText, nameTitleText, phoneText, valuationTimeText;
+    TextView nameText, nameTitleText, phoneText, contactTimeText, valuationTimeText;
     TextView fromAddressText, toAddressText, remainderText;
     TextView movingDateText, movingTimeText, valPriceText;
 
@@ -71,16 +75,16 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     RecyclerView carAssignRList;
 
-    Button check_btn, furniture_btn;
+    Button check_btn, furniture_btn, phoneCall_btn;
 
     String order_id;
-    String name, gender, phone, valuationTime, fromAddress, toAddress, remainder, memo;
-    String valPrice = "4000";
+    String name, gender, phone, contactTime, valuationTime, fromAddress, toAddress, remainder, memo;
 
     CarAdapter carAdapter;
 
     ArrayList<String[]> cars;
-    int max_car = 4; //超過4輛車就會出現第一列和最後一列對調的狀況，我也不懂為什麼
+    int max_car = 4;
+    int valPrice = -1;
 
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
@@ -92,16 +96,15 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation_booking__detail);
-        Button phoneCall_btn = findViewById(R.id.call_btn);
         final GregorianCalendar calendar = new GregorianCalendar();
 
         cars = new ArrayList<>();
         String[] newString = {"", "", ""};
         cars.add(newString);
 
-        bundle = new Bundle();
-        bundle.putString("order_id", "16");
-//        bundle = getIntent().getExtras();
+//        bundle = new Bundle();
+//        bundle.putString("order_id", "16");
+        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
@@ -144,42 +147,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             }
         } );
 
+
+        setPhoneBtn();
+
         setCheckBtn();
 
-        phoneCall_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent call_intent = new Intent(Intent.ACTION_DIAL);
-                call_intent.setData(Uri.parse("tel:"+phone));
-                startActivity(call_intent);
-            }
-        });
-
         globalNav(); //底下nav
-    }
-
-    public void linking(){
-        nameText = findViewById(R.id.name_VBD);
-        nameTitleText = findViewById(R.id.nameTitle_VBD);
-        phoneText = findViewById(R.id.phone_VBD);
-        valuationTimeText = findViewById(R.id.valuationTime_VBD);
-        fromAddressText = findViewById(R.id.FromAddress_VBD);
-        toAddressText = findViewById(R.id.ToAddress_VBD);
-        furniture_btn = findViewById(R.id.edit_furniture_btn_VBD);
-        remainderText = findViewById(R.id.notice_VBD);
-        movingDateText = findViewById(R.id.movingDate_VBD);
-        movingTimeText = findViewById(R.id.movingTime_VBD);
-        carNumEdit = findViewById(R.id.num_VBD);
-        carWeightEdit = findViewById(R.id.weight_VBD);
-        carTypeEdit = findViewById(R.id.type_VBD);
-        worktimeEdit = findViewById(R.id.worktime_VBD);
-        priceEdit = findViewById(R.id.price_VBD);
-        check_btn = findViewById(R.id.check_evaluation_btn);
-        furnitureLL = findViewById(R.id.furniture_LL_VBD);
-        valPriceText = findViewById(R.id.valPrice_VBD);
-        memoEdit = findViewById(R.id.PS_VBD);
-
-        carAssignRList = findViewById(R.id.car_assign_VBD);
     }
 
     private void getOrder(){
@@ -229,6 +202,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
+                    contactTime = order.getString("contact_time");
                     valuationTime = getDate(order.getString("valuation_date"));
                     if(!order.getString("valuation_time").equals("null"))
                         valuationTime = valuationTime+" "+order.getString("valuation_time");
@@ -247,6 +221,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                             else if(gender.equals("男")) nameTitleText.setText("先生");
                             else nameTitleText.setText("");
                             phoneText.setText(phone);
+                            contactTimeText.setText(contactTime);
                             valuationTimeText.setText(valuationTime);
                             fromAddressText.setText(fromAddress);
                             toAddressText.setText(toAddress);
@@ -381,6 +356,72 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         }
     }
 
+    private void setPhoneBtn(){
+        phoneCall_btn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                LocalDateTime now = LocalDateTime.now();
+                if(isContactTime(timeToStr(
+                        isWeekend(String.valueOf(now.getDayOfWeek())),
+                        isNight(now.getHour())))){
+                    callIntent();
+                }
+                else{
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setTitle("聯絡時間");
+                    dialog.setMessage("現在並非客戶偏好的聯絡時間，確定要繼續前往撥電話畫面？");
+                    dialog.setPositiveButton("確定", (dialog1, which) -> callIntent());
+                    dialog.setNegativeButton("取消", null);
+                    dialog.create().show();
+                }
+            }
+        });
+    }
+
+    private boolean isWeekend(String dayOfWeek){
+        switch (dayOfWeek){
+            case "MONDAY":
+            case "TUESDAY":
+            case "WEDNESDAY":
+            case "THURSDAY":
+            case "FRIDAY":
+                return false;
+            case "SUNDAY":
+            case "SATURDAY":
+                return true;
+            default:
+                Log.i(TAG, "the today dayOfWeek error");
+        }
+        return false;
+    }
+
+    private boolean isNight(int hour){
+        return (hour < 6 || hour > 19);
+    }
+
+    private String timeToStr(boolean isWeekend, boolean isNight){
+        if(isWeekend && isNight) return "假日晚上";
+        if(!isWeekend && isNight) return "平日晚上";
+        if(isWeekend) return "假日白天";
+        return "平日白天";
+    }
+
+    private boolean isContactTime(String currentTime){
+        String[] token = contactTime.split(",");
+        for (String ct : token) {
+            if (ct.equals(currentTime))
+                return true;
+        }
+        return false;
+    }
+
+    private void callIntent(){
+        Intent call_intent = new Intent(Intent.ACTION_DIAL);
+        call_intent.setData(Uri.parse("tel:"+phone));
+        startActivity(call_intent);
+    }
+
     private void setCheckBtn(){
         check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -439,29 +480,24 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             priceEdit.setError("請輸入搬家價格");
             check = true;
         }
-//        if(Integer.parseInt(fee) > Integer.parseInt(valPrice)){
-//            priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
-//            check = true;
-//        }
+
+        if(Integer.parseInt(fee) > getValPrice()){
+            priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
+            check = true;
+        }
 
         return check;
     }
 
-//    private void checkCars(){
-//        if(getCarStr(true)) {
-//            Log.d(TAG, "update car");
-//
-//            int carSize = cars.size();
-//            if(isRowEmpty(carSize-1)) carSize = carSize-1;
-//            Log.d(TAG, "actual car size: "+carSize);
-//
-//            for(int i = 0; i < carSize; i++)
-//                updateCarDemand(i);
-//        }
-//        else Log.d(TAG, "update but empty");
-//
-//        showCars();
-//    }
+    private int getValPrice(){
+        if(valPrice < 0){
+            TextView valPriceText = findViewById(R.id.valPrice_VBD);
+            String valPriceStr = valPriceText.getText().toString();
+            String[] token = valPriceStr.split("~");
+            valPrice = Integer.parseInt(token[1]);
+        }
+        return valPrice;
+    }
 
     private boolean getCarStr(boolean errorMsg){
         boolean check = true;
@@ -578,6 +614,32 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 Log.d(TAG, "submit update_valuation responseData: " + responseData);
             }
         });
+    }
+
+    public void linking(){
+        nameText = findViewById(R.id.name_VBD);
+        nameTitleText = findViewById(R.id.nameTitle_VBD);
+        phoneText = findViewById(R.id.phone_VBD);
+        phoneCall_btn = findViewById(R.id.call_btn_VBD);
+        contactTimeText = findViewById(R.id.contactTime_VBD);
+        valuationTimeText = findViewById(R.id.valuationTime_VBD);
+        fromAddressText = findViewById(R.id.FromAddress_VBD);
+        toAddressText = findViewById(R.id.ToAddress_VBD);
+        furniture_btn = findViewById(R.id.edit_furniture_btn_VBD);
+        remainderText = findViewById(R.id.notice_VBD);
+        movingDateText = findViewById(R.id.movingDate_VBD);
+        movingTimeText = findViewById(R.id.movingTime_VBD);
+        carNumEdit = findViewById(R.id.num_VBD);
+        carWeightEdit = findViewById(R.id.weight_VBD);
+        carTypeEdit = findViewById(R.id.type_VBD);
+        worktimeEdit = findViewById(R.id.worktime_VBD);
+        priceEdit = findViewById(R.id.price_VBD);
+        check_btn = findViewById(R.id.check_evaluation_btn);
+        furnitureLL = findViewById(R.id.furniture_LL_VBD);
+        valPriceText = findViewById(R.id.valPrice_VBD);
+        memoEdit = findViewById(R.id.PS_VBD);
+
+        carAssignRList = findViewById(R.id.car_assign_VBD);
     }
 
     private void globalNav(){

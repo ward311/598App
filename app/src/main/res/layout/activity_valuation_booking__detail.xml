@@ -88,7 +88,7 @@
                         android:text="電話號碼" />
 
                     <Button
-                        android:id="@+id/call_btn"
+                        android:id="@+id/call_btn_VBD"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -97,6 +97,28 @@
                         android:text="撥打電話"
                         android:textColor="#FB8527" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="聯絡時間"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:id="@+id/contactTime_VBD"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:text="偏好時間" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -348,9 +370,9 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="搬運費用"
                         android:gravity="center_vertical"
-                        android:textColor="#000000"/>
+                        android:text="估價費用"
+                        android:textColor="#000000" />
 
                     <EditText
                         android:id="@+id/price_VBD"
@@ -386,7 +408,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="3600~4000" />
+                        android:text="3600~8000" />
 <!--                    android:text="系統估計價格"-->
                 </LinearLayout>
                 <LinearLayout

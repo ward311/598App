@@ -54,6 +54,8 @@ import static com.example.homerenting_prototype_one.show.global_function.getTime
 
 public class Distribution_Detail extends AppCompatActivity {
     TextView nameText, nameTitleText, fromAddressText, toAddressText, movingTimeText, feeText;
+    TextView csalaryPText, csalaryText;
+    EditText csalaryPEdit, csalaryEdit;
     RecyclerView salaryDistribution;
     ImageButton backBtn;
     Button checkBtn;
@@ -79,18 +81,11 @@ public class Distribution_Detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_distribution__detail);
 
-        nameText = findViewById(R.id.member_name_DD);
-        nameTitleText = findViewById(R.id.nameTitle_DD);
-        fromAddressText = findViewById(R.id.fromAddress_DD);
-        toAddressText = findViewById(R.id.toAddress_DD);
-        movingTimeText = findViewById(R.id.movingTime_DD);
-        feeText = findViewById(R.id.price_DD);
-        salaryDistribution = findViewById(R.id.salaryDistribution_DD);
-        backBtn = findViewById(R.id.back_imgBtn);
-        checkBtn = findViewById(R.id.check_bonus_btn);
+        linking();
 
-
-        bundle = getIntent().getExtras();
+        bundle = new Bundle();
+        bundle.putString("order_id", "59");
+//        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
 
         staffs = new ArrayList<>();
@@ -100,12 +95,7 @@ public class Distribution_Detail extends AppCompatActivity {
         //傳值
         getData();
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        backBtn.setOnClickListener(v -> finish());
 
         globalNav();
     }
@@ -177,6 +167,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         String pay = staff_assign.getString("pay");
                         salaries.add(Integer.parseInt(pay));
                     }
+                    salaries.add(0); //公司分潤
 
                     //顯示基本資訊
                     runOnUiThread(new Runnable() {
@@ -206,12 +197,14 @@ public class Distribution_Detail extends AppCompatActivity {
                         Log.d(TAG, "setAdapter");
                     }
                 });
-                while(distributionAdapter.getReady() != -1){ //lock
-                    Log.d(TAG, "ready: "+distributionAdapter.getReady());
+
+                for(int i = 0; distributionAdapter.getReady() != -1; i++){ //lock
+                    if(i%1000000 == 0) Log.d(TAG, "ready: "+distributionAdapter.getReady());
                 }
                 for(int i = 0; i < distributionAdapter.getItemCount(); i++){
                     getItem(i); //取得分配薪水的edittext
                 }
+                setSalaryEdit(csalaryPEdit, csalaryPText, csalaryEdit, csalaryText, distributionAdapter.getItemCount());
                 setCheckBtn(); //設置確認送出按鈕
             }
         });
@@ -221,106 +214,12 @@ public class Distribution_Detail extends AppCompatActivity {
         View view = salaryDistribution.getLayoutManager().findViewByPosition(position);
         if(view != null){
             Log.d(TAG, "view "+position+" is not null");
-            final EditText salaryPEdit = view.findViewById(R.id.salaryP_DI);
-            final TextView salaryPText = view.findViewById(R.id.salaryP_text_DI);
-            final EditText salaryEdit = view.findViewById(R.id.salary_DI);
-            final TextView salaryText = view.findViewById(R.id.salary_text_DI);
+            EditText salaryPEdit = view.findViewById(R.id.salaryP_DI);
+            TextView salaryPText = view.findViewById(R.id.salaryP_text_DI);
+            EditText salaryEdit = view.findViewById(R.id.salary_DI);
+            TextView salaryText = view.findViewById(R.id.salary_text_DI);
 
-            salaryPEdit.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    String salaryPStr = salaryPEdit.getText().toString();
-                    if(salaryPStr.isEmpty()) salaryPStr = "0";
-                    Log.d(TAG, "(sp) salary(p): "+salaryPStr);
-
-                    int salary = -1;
-                    String salaryStr = "";
-                    if(!salaryPStr.equals("0")){
-                        float salaryP = Float.parseFloat(salaryPStr);
-                        salary = Math.round((Integer.parseInt(fee))*salaryP/100);
-                        if(salary == 0) salary = -1;
-                        else salaryStr = String.valueOf(salary);
-                    }
-                    salaryText.setText(String.valueOf(salary));
-                    salaries.set(position, salary);
-                    setFeeText();
-                }
-            });
-
-            salaryPText.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    String salaryPStr = salaryPText.getText().toString();
-                    salaryPEdit.setText(salaryPStr);
-                    salaryStr = salaryEdit.getText().toString();
-                    if(salaryStr.isEmpty()) salaryStr = "0";
-                    salaryText.setText(salaryStr);
-
-                    salaryPText.setVisibility(View.GONE);
-                    salaryPEdit.setVisibility(View.VISIBLE);
-                    salaryEdit.setVisibility(View.GONE);
-                    salaryText.setVisibility(View.VISIBLE);
-                    return false;
-                }
-            });
-
-            salaryEdit.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    int salary = 0;
-                    salaryStr = salaryEdit.getText().toString();
-                    if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr);
-                    Log.d(TAG, "(s) salary: "+salary);
-                    salaries.set(position, salary);
-                    setFeeText();
-
-                    if(salary == 0) salaryPText.setText("0");
-                    else{
-                        float salaryP =  ((float) salary/(Integer.parseInt(fee)))*100;
-                        NumberFormat nf = NumberFormat.getInstance();
-                        nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
-                        String salaryPStr = nf.format(salaryP);
-                        Log.d(TAG, (position+1)+". salary percent("+salary+"/"+fee+"): "+salaryPStr);
-                        salaryPText.setText(salaryPStr);
-                     }
-                }
-            });
-
-            salaryText.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    String salaryPStr = salaryPEdit.getText().toString();
-                    salaryPText.setText(salaryPStr);
-                    salaryStr = salaryText.getText().toString();
-                    salaryEdit.setText(salaryStr);
-
-                    salaryPText.setVisibility(View.VISIBLE);
-                    salaryPEdit.setVisibility(View.GONE);
-                    salaryEdit.setVisibility(View.VISIBLE);
-                    salaryText.setVisibility(View.GONE);
-                    return false;
-                }
-            });
+            setSalaryEdit(salaryPEdit, salaryPText, salaryEdit, salaryText, position);
 
             if(salaries.get(position) != -1){
                 salaryEdit.setText(String.valueOf(salaries.get(position)));
@@ -330,6 +229,102 @@ public class Distribution_Detail extends AppCompatActivity {
             feeText.setText(fee+"("+position+" null)");
             Log.d(TAG, "view "+position+" is null");
         }
+    }
+
+    private void setSalaryEdit(EditText salaryPEdit, TextView salaryPText, EditText salaryEdit, TextView salaryText, int position){
+        salaryPEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String salaryPStr = salaryPEdit.getText().toString();
+                if(salaryPStr.isEmpty()) salaryPStr = "0";
+                Log.d(TAG, "(sp) salary(p): "+salaryPStr);
+
+                int salary = -1;
+                if(!salaryPStr.equals("0")){
+                    float salaryP = Float.parseFloat(salaryPStr);
+                    salary = Math.round((Integer.parseInt(fee))*salaryP/100);
+                    if(salary == 0) salary = -1;
+                }
+                salaryText.setText(String.valueOf(salary));
+                salaries.set(position, salary);
+                setFeeText();
+            }
+        });
+
+        salaryPText.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String salaryPStr = salaryPText.getText().toString();
+                salaryPEdit.setText(salaryPStr);
+                salaryStr = salaryEdit.getText().toString();
+                if(salaryStr.isEmpty()) salaryStr = "0";
+                salaryText.setText(salaryStr);
+
+                salaryPText.setVisibility(View.GONE);
+                salaryPEdit.setVisibility(View.VISIBLE);
+                salaryEdit.setVisibility(View.GONE);
+                salaryText.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
+        salaryEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int salary = 0;
+                salaryStr = salaryEdit.getText().toString();
+                if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr);
+                Log.d(TAG, "(s) salary: "+salary);
+                salaries.set(position, salary);
+                setFeeText();
+
+                if(salary == 0) salaryPText.setText("0");
+                else{
+                    float salaryP =  ((float) salary/(Integer.parseInt(fee)))*100;
+                    NumberFormat nf = NumberFormat.getInstance();
+                    nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
+                    String salaryPStr = nf.format(salaryP);
+                    Log.d(TAG, (position+1)+". salary percent("+salary+"/"+fee+"): "+salaryPStr);
+                    salaryPText.setText(salaryPStr);
+                }
+            }
+        });
+
+        salaryText.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String salaryPStr = salaryPEdit.getText().toString();
+                salaryPText.setText(salaryPStr);
+                salaryStr = salaryText.getText().toString();
+                salaryEdit.setText(salaryStr);
+
+                salaryPText.setVisibility(View.VISIBLE);
+                salaryPEdit.setVisibility(View.GONE);
+                salaryEdit.setVisibility(View.VISIBLE);
+                salaryText.setVisibility(View.GONE);
+                return false;
+            }
+        });
     }
 
     private void setFeeText(){
@@ -361,7 +356,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 }
                 else{
                     boolean checkAll = true;
-                    for(int i = 0; i < salaries.size(); i++){
+                    for(int i = 0; i < salaries.size()-1; i++){
                         Log.i(TAG, "salaries("+i+"): "+salaries.get(i));
                         if(salaries.get(i) == -1){
                             checkAll = false;
@@ -370,21 +365,24 @@ public class Distribution_Detail extends AppCompatActivity {
                         }
                         update_staff_salary(i);
                     }
-                    if(checkAll){
+                    if(net == 0 && checkAll){
                         Log.d(TAG, "complete, finish the distirbution");
                         changeStatus();
-                    }
 
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent intent = new Intent(context, Bonus_Distribution.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            Toast.makeText(context, "done", Toast.LENGTH_LONG).show();
-                        }
-                    }, 1000);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(context, Bonus_Distribution.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                Toast.makeText(context, "done", Toast.LENGTH_LONG).show();
+                            }
+                        }, 1000);
+                    }
+                    else{
+                        Toast.makeText(context, "金額尚未分潤完畢", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -396,7 +394,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("staff_id", staffIds.get(i))
-                .add("pay", String.valueOf(salaries.get(i)))
+                .add("pay", "-1") //String.valueOf(salaries.get(i))
                 .build();
         Log.d(TAG, "order_id: "+order_id+", staff_id: "+staffIds.get(i)+", pay: "+salaries.get(i));
 
@@ -434,8 +432,9 @@ public class Distribution_Detail extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", getCompany_id(context))
                 .add("table", "orders")
-                .add("status", "paid")
+                .add("status", "done")
                 .build();
         Log.d(TAG, "order_id: "+order_id+", table: orders, status: paid");
 
@@ -466,6 +465,22 @@ public class Distribution_Detail extends AppCompatActivity {
                 Log.d(TAG, "responseData of change_status: " + responseData);
             }
         });
+    }
+
+    private void linking(){
+        nameText = findViewById(R.id.member_name_DD);
+        nameTitleText = findViewById(R.id.nameTitle_DD);
+        fromAddressText = findViewById(R.id.fromAddress_DD);
+        toAddressText = findViewById(R.id.toAddress_DD);
+        movingTimeText = findViewById(R.id.movingTime_DD);
+        feeText = findViewById(R.id.price_DD);
+        csalaryPText = findViewById(R.id.csalaryP_text_DD);
+        csalaryPEdit = findViewById(R.id.csalaryP_DD);
+        csalaryText = findViewById(R.id.csalary_text_DD);
+        csalaryEdit = findViewById(R.id.csalary_DD);
+        salaryDistribution = findViewById(R.id.salaryDistribution_DD);
+        backBtn = findViewById(R.id.back_imgBtn);
+        checkBtn = findViewById(R.id.check_bonus_btn);
     }
 
     private void globalNav(){
