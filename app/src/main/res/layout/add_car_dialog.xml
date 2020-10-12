@@ -72,6 +72,7 @@
         android:digits="0123456789abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-"
         android:ems="10"
         android:inputType="text"
+        android:maxLength="6"
         app:layout_constraintBottom_toBottomOf="@+id/plateNum_text"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
         app:layout_constraintTop_toTopOf="@+id/plateNum_text"

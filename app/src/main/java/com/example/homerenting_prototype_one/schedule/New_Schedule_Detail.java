@@ -89,9 +89,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
         initArray();
 
-        bundle = new Bundle();
-        bundle.putString("order_id", "5");
-//        bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
 
         linking(); //將xml裡的元件連至此java
