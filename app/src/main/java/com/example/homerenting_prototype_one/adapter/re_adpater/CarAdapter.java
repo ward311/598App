@@ -18,7 +18,6 @@ import com.example.homerenting_prototype_one.R;
 import java.util.ArrayList;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
-    private ArrayList<ViewHoler> viewHolers = new ArrayList<>();
     private ArrayList<String[]> cars;
 
     private int limit = 40;
@@ -34,11 +33,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
     public ViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.car_item, parent, false);
         ViewHoler viewHoler = new ViewHoler(view);
-        viewHolers.add(viewHoler);
-        Log.d(TAG, "create holder:"+viewHolers.size());
-        for(int i = 0; i < viewHolers.size(); i++){
-            viewHolers.get(i).position = i;
-        }
         return viewHoler;
     }
 
@@ -47,7 +41,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
         holder.weight.setText(cars.get(position)[0]);
         holder.type.setText(cars.get(position)[1]);
         holder.num.setText(cars.get(position)[2]);
-        holder.position = position;
 
         if(position == 0){
             holder.add.setVisibility(View.VISIBLE);
@@ -59,7 +52,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
                         String[] n = {"", "", String.valueOf(cars.size())};
                         cars.add(n);
                         notifyDataSetChanged();
-                        Log.d(TAG, position+". add holder("+viewHolers.size()+").position:"+holder.position+", cars.size:"+cars.size());
                     }
                 }
             });
@@ -69,13 +61,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
             @Override
             public void onClick(View v) {
                 if (position != 0) {
-                    cars.remove(holder.position);
-                    viewHolers.remove(holder.position);
-                    notifyItemRemoved(holder.position);
-                    for(int i = 0; i < viewHolers.size(); i++){
-                        viewHolers.get(i).position = i;
-                    }
-                    Log.d(TAG, position+". remove holder("+viewHolers.size()+").position:"+holder.position+", cars.size:"+cars.size());
+                    holder.getAdapterPosition();
                 }
             }
         });
@@ -90,7 +76,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
         EditText weight, type, num;
         TextView ton;
         Button add, delete;
-        int position;
 
         public ViewHoler(@NonNull View itemView) {
             super(itemView);

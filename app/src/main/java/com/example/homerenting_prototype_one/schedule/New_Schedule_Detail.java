@@ -74,7 +74,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
     String name, nameTitle, movingDate, fromAddress, toAddress, demandCar;
     String staff, car;
 
-    boolean lock = false;
+    boolean lock;
     int overlap_counter_s = 0, overlap_counter_c = 0;
 
     ArrayList<String> staffs_text, cars_text, staffs_vacation, cars_vacation, staffs_lap, cars_lap, new_staffs_lap, new_cars_lap;
@@ -89,6 +89,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_schedule_detail);
 
+        lock = false;
         initArray();
 
         bundle = getIntent().getExtras();
@@ -155,8 +156,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
     }
 
     private void getChip(){
+        Log.d(TAG, "start getChip()");
         lock = true;
-        final  //控制形狀用的chip
 
         String function_name = "staff-vehicle_data";
         RequestBody body = new FormBody.Builder()
@@ -240,6 +241,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         if(ii%1000000 == 0)
                             Log.d(TAG, "waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
+                    Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     lock = false;
                 } catch (JSONException e) {
                     lock = false;
@@ -328,6 +330,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
     }
 
     private void getOrder(){
+        Log.d(TAG, "start getOrder()");
+
         String function_name = "order_detail";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -464,7 +468,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 int ii = 0;
                 while (lock){
                     ii++;
-//                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getOrder...");
+                    if(ii%5000000 == 0) Log.d(TAG, "waiting for lock in getOrder...");
                 }
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 getVacation(movingDateWithoutTime);
@@ -480,6 +484,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
             Log.d(TAG, "date is null in getVacation");
             return;
         }
+
+        Log.d(TAG, "start getVacation()");
+
         String function_name = "all_vehicle_staff_leave";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -562,6 +569,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
             Log.d(TAG, "date is null in getOvelap");
             return;
         }
+
+        Log.d(TAG, "start getOverlap()");
+
         String function_name = "overlap_order";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -607,6 +617,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                             if(!vehicle_overlap.has("vehicle_id")) break;
                             if(vehicle_overlap.getString("order_id").equals(order_id)) continue;
                             Log.i(TAG, "vehicle_overlap:" + vehicle_overlap);
+                            if(vehicle_overlap.getString("vehicle_id").equals("null")) break;
                             cars_lap.add(vehicle_overlap.getString("plate_num"));
                             int[] row_data = {Integer.parseInt(vehicle_overlap.getString("order_id")), Integer.parseInt(vehicle_overlap.getString("vehicle_id"))};
                             cars_l.add(row_data);
@@ -617,6 +628,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                             if(!staff_overlap.has("staff_id")) break;
                             if(staff_overlap.getString("order_id").equals(order_id)) continue;
                             Log.i(TAG, "staff_overlap:" + staff_overlap);
+                            if(staff_overlap.getString("staff_id").equals("null")) break;
                             staffs_lap.add(staff_overlap.getString("staff_name"));
                             int[] row_data = {Integer.parseInt(staff_overlap.getString("order_id")), Integer.parseInt(staff_overlap.getString("staff_id"))};
                             staffs_l.add(row_data);
@@ -775,66 +787,66 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .add("company_id", getCompany_id(context))
                 .add("vehicle_assign", String.valueOf(cars))
                 .add("staff_assign", String.valueOf(staffs))
-                .add("transform_order_staff", arrayToString(new_staffs_l))
-                .add("transform_order_vehicle", arrayToString(new_cars_l))
+                .add("vehicle_transform", arrayToString(new_cars_l))
+                .add("staff_transform", arrayToString(new_staffs_l))
                 .build();
 
         Log.i(TAG, "order_id: "+order_id
                 +", vehicle_assign: "+cars+cars_text
                 +", staff_assign: "+staffs+staffs_text
-                +", transform_order_vehicle: "+arrayToString(new_cars_l)+new_cars_lap
-                +", transform_order_staff: "+arrayToString(new_staffs_l)+new_staffs_lap);
-//
-//        Request request = new Request.Builder()
-//                .url(BuildConfig.SERVER_URL+"/functional.php")
-//                .post(body)
-//                .build();
-//
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        Call call = okHttpClient.newCall(request);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                e.printStackTrace();
-//                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        //在app畫面上呈現錯誤訊息
-//                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                final String responseData = response.body().string();
-//                Log.d(TAG, "submit: "+responseData);
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        //Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//            }
-//        });
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
+                +", vehicle_transform: "+arrayToString(new_cars_l)+new_cars_lap
+                +", staff_transform: "+arrayToString(new_staffs_l)+new_staffs_lap);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "submit: "+responseData);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
 //                Intent intent = new Intent(context, Order_Booking.class);
 //                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 //                startActivity(intent);
-////                        finish();
-//            }
-//        }, 1000);
+                finish();
+            }
+        }, 1000);
     }
 
     private String arrayToString(ArrayList<int[]> array){
         String array_str = "[";
         for(int i = 0; i < array.size(); i++){
             if(i != 0) array_str = array_str + ", ";
-            array_str = array_str + "[" + array.get(i)[0] + ", " + array.get(i)[1] + "]";
+            array_str = array_str + "[" + array.get(i)[0] + "," + array.get(i)[1] + "]";
         }
         array_str = array_str+"]";
         return array_str;

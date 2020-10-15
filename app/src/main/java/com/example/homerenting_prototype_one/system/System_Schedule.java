@@ -198,7 +198,7 @@ public class System_Schedule extends AppCompatActivity {
                     int ii = 0;
                     while((staffGroup.getChildCount()-1+carGroup.getChildCount()-1) != responseArr.length()){
                         ii++;
-                        if(ii%1000 == 0)
+                        if(ii%1000000 == 0)
                             Log.d(TAG, "waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
                     lock = false;
