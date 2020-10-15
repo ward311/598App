@@ -273,6 +273,10 @@ public class global_function {
         datalist.clear();
     }
 
+    public static ArrayList<String> getDatalist(){
+        return datalist;
+    }
+
     public static String getlastDatalist(String value){
         int current = datalist.indexOf(value);
         if(current == 0) return null;

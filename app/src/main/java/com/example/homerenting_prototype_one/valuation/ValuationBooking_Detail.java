@@ -481,7 +481,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             check = true;
         }
 
-        if(Integer.parseInt(fee) > getValPrice()){
+        if(Integer.parseInt(fee) < getValPrice(0)){
+            priceEdit.setError("所輸入之搬家價格不得低於系統估價計價格");
+            check = true;
+        }
+
+        if(Integer.parseInt(fee) > getValPrice(1)){
             priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
             check = true;
         }
@@ -489,12 +494,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         return check;
     }
 
-    private int getValPrice(){
+    private int getValPrice(int i){
         if(valPrice < 0){
             TextView valPriceText = findViewById(R.id.valPrice_VBD);
             String valPriceStr = valPriceText.getText().toString();
             String[] token = valPriceStr.split("~");
-            valPrice = Integer.parseInt(token[1]);
+            valPrice = Integer.parseInt(token[i]);
         }
         return valPrice;
     }

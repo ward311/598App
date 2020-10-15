@@ -57,6 +57,7 @@ import static com.example.homerenting_prototype_one.show.global_function.clearDa
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getToday;
 
 public class System_Schedule extends AppCompatActivity {
     ScrollView calendar_sv;
@@ -93,6 +94,7 @@ public class System_Schedule extends AppCompatActivity {
 
         getChip();
 
+        getVacation(getToday("yyyy-MM-dd"));
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
@@ -447,7 +449,7 @@ public class System_Schedule extends AppCompatActivity {
                 int ii = 0;
                 while (lock){
                     ii++;
-                    if(ii%1000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
+                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
                 }
                 Log.d(TAG, "getVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_text);
@@ -477,7 +479,11 @@ public class System_Schedule extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                if(calendar_sv.getVisibility() == View.GONE){
+                    calendar_sv.setVisibility(View.VISIBLE);
+                    orderList.setVisibility(View.GONE);
+                }
+                else finish();
             }
         });
         valuation_btn.setOnClickListener(new View.OnClickListener() {

@@ -33,6 +33,7 @@
         android:layout_marginLeft="32dp"
         android:text="06.30"
         android:textColor="#19B0ED"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="@+id/title_SD"

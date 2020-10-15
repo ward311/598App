@@ -218,21 +218,21 @@
                         android:id="@+id/sitem1_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="鋼琴"
+                        android:text="吊掛作業"
                         app:closeIconVisible="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sitem2_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="系統家具" />
+                        android:text="鋼琴"
+                        app:closeIconVisible="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sitem3_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="雕像"
-                        app:closeIconVisible="false" />
+                        android:text="系統家具" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/addsItem_SS"
@@ -309,19 +309,37 @@
                         android:id="@+id/box1_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="綜合紙箱" />
+                        android:text="大紙箱" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/box2_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="重物紙箱" />
+                        android:text="小紙箱" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/box3_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="環保紙箱" />
+                        android:text="大環保箱" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/box4_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="小環保箱" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/box5_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="電腦箱" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/box6_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="掛衣箱" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/addbox_SS"
@@ -382,13 +400,19 @@
                         android:id="@+id/wrapper4_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="環保物流箱" />
+                        android:text="標籤" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/wrapper5_SS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="環保綜合箱" />
+                        android:text="貼紙" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/wrapper6_SS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="膠帶" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/addwrapper_SS"

@@ -408,7 +408,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="3600~8000" />
+                        android:text="3600~8000"
+                        android:textSize="18sp" />
 <!--                    android:text="系統估計價格"-->
                 </LinearLayout>
                 <LinearLayout

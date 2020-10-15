@@ -66,8 +66,16 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
         else holder.add_text.setVisibility(View.GONE);
 
         //icon zone
-        if(!data.get(position)[i++].equals("1") || Arrays.asList(data.get(position)).contains("done_today"))
-            holder.new_icon.setVisibility(View.INVISIBLE);
+        if(Arrays.asList(data.get(position)).contains("assigned")){
+            holder.new_icon.setVisibility(View.GONE);
+            holder.assign_text.setVisibility(View.VISIBLE);
+        }
+        else {
+            if(!data.get(position)[i++].equals("1") || Arrays.asList(data.get(position)).contains("done_today"))
+                holder.new_icon.setVisibility(View.INVISIBLE);
+        }
+
+        //main zone color
         if(Arrays.asList(data.get(position)).contains("cancel") || Arrays.asList(data.get(position)).contains("done_today")){
             holder.date_text.setTextColor(Color.rgb(152, 152, 152));
             holder.time_text.setTextColor(Color.rgb(152, 152, 152));
@@ -116,7 +124,7 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
         View view;
         LinearLayout item_layout;
         LinearLayout time_layout, main_layout;
-        TextView date_text, time_text, name_text, gender_text, add_text, phone_text, address_text;
+        TextView date_text, time_text, name_text, gender_text, add_text, phone_text, address_text, assign_text;
         ImageView add_icon, new_icon;
 
         public ViewHolder(@NonNull View itemView) {
@@ -134,6 +142,7 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
             phone_text = itemView.findViewById(R.id.phone_text);
             address_text = itemView.findViewById(R.id.address_text);
             new_icon = itemView.findViewById(R.id.new_icon_img);
+            assign_text = itemView.findViewById(R.id.assign_text);
         }
 
         public void setOnItemClick(View.OnClickListener listener){

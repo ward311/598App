@@ -53,6 +53,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getYear;
@@ -74,10 +75,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
     String staff, car;
 
     boolean lock = false;
+    int overlap_counter_s = 0, overlap_counter_c = 0;
 
-    ArrayList<String> staffs_text, cars_text, staffs_vacation, cars_vacation, staffs_lap, cars_lap;
+    ArrayList<String> staffs_text, cars_text, staffs_vacation, cars_vacation, staffs_lap, cars_lap, new_staffs_lap, new_cars_lap;
     ArrayList<Integer> staffs, cars, staffs_v, cars_v;
-    ArrayList<int[]> staffs_l, cars_l;
+    ArrayList<int[]> staffs_l, cars_l, new_staffs_l, new_cars_l;
 
     Context context = this;
 
@@ -97,6 +99,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
         getChip();
         getOrder();
 
+        ArrayList<String> datalist = getDatalist();
+        titleText.setText("人車派遣 "+(datalist.indexOf(order_id)+1)+"/"+datalist.size());
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,8 +115,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 String new_order_id = getlastDatalist(order_id);
                 bundle.putString("order_id", new_order_id);
                 if(new_order_id == null)
-                    Toast.makeText(context, "This is the last order.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "This is the first order.", Toast.LENGTH_LONG).show();
                 else{
+                    submit();
                     Intent intent = new Intent(context, New_Schedule_Detail.class);
                     intent.putExtras(bundle);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -128,6 +134,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 if(new_order_id == null)
                     Toast.makeText(context, "This is the final order.", Toast.LENGTH_LONG).show();
                 else{
+                    submit();
                     Intent intent = new Intent(context, New_Schedule_Detail.class);
                     intent.putExtras(bundle);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -136,7 +143,12 @@ public class New_Schedule_Detail extends AppCompatActivity {
             }
         });
 
-        setSubmitBtn();
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submit();
+            }
+        });
 
         globalNav();
 
@@ -297,41 +309,6 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
 //                Log.i(TAG, item_name+"_text: " + items_text);
 //                Log.i(TAG, item_name+": " + items);
-            }
-        });
-    }
-
-    private void setUnavailableChipCheckedListener(final Chip chip, final ArrayList<Integer> items, final ArrayList<String> items_text, final String message){
-        chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                final int tag = (Integer) chip.getTag();
-                final String sname = chip.getText().toString();
-                if(!isChecked && chip.getTextColors() != chip1.getTextColors()){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("確認選擇");
-                    builder.setMessage(message);
-                    builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            clearChipBackGround(chip);
-                            if(!items_text.contains(chip.getText().toString())){
-                                items.add(tag);
-                                items_text.add(sname);
-                            }
-                        }
-                    });
-                    builder.setNegativeButton("取消", null);
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                    chip.setChecked(true);
-                }
-                else {
-                    setChipBackGround(chip);
-                    items.remove(Integer.valueOf(tag));
-                    items_text.remove(sname);
-                    chip.setChecked(true);
-                }
             }
         });
     }
@@ -681,10 +658,24 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         else if(type.equals("vacation") || type.equals("overlap")){
                             setChipBackGround(chip);
                             String message = null;
-                            if(type.equals("vacation")) message = chip.getText().toString()+"當日不能出動，請問依舊要選擇？";
-                            if(type.equals("overlap")) message = chip.getText().toString()+"已被其他訂單選用，請問依舊要選擇？";
-                            if(chipGroup == staffGroup) setUnavailableChipCheckedListener(chip, staffs, staffs_text, message);
-                            else setUnavailableChipCheckedListener(chip, cars, cars_text, message);
+                            if(type.equals("vacation")) {
+                                message = chip.getText().toString()+"當日不能出動，請問依舊要選擇？";
+                                if(chipGroup == staffGroup) setVacationChipCheckedListener(chip, staffs, staffs_text, message);
+                                else setVacationChipCheckedListener(chip, cars, cars_text, message);
+                            }
+                            if(type.equals("overlap")) {
+                                message = chip.getText().toString()+"已被其他訂單選用，請問依舊要選擇？";
+                                if(chipGroup == staffGroup) {
+                                    chip.setTag(overlap_counter_s);
+                                    overlap_counter_s++;
+                                    setOverlapChipCheckedListener(chip, staffs_l, new_staffs_l, new_staffs_lap, message);
+                                }
+                                else {
+                                    chip.setTag(overlap_counter_c);
+                                    overlap_counter_c++;
+                                    setOverlapChipCheckedListener(chip, cars_l, new_cars_l, new_cars_lap, message);
+                                }
+                            }
                         }
                         chip.setChecked(true); //把本單有的員工列為已點擊
                         Log.d(TAG, chip.getText().toString()+"("+type+") check");
@@ -692,6 +683,78 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void setVacationChipCheckedListener(final Chip chip, final ArrayList<Integer> items, final ArrayList<String> items_text, final String message){
+        chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                final int tag = (Integer) chip.getTag();
+                final String sname = chip.getText().toString();
+                if(!isChecked && chip.getTextColors() != chip1.getTextColors()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("確認選擇");
+                    builder.setMessage(message);
+                    builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearChipBackGround(chip);
+                            if(!items_text.contains(chip.getText().toString())){
+                                items.add(tag);
+                                items_text.add(sname);
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("取消", null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    chip.setChecked(true);
+                }
+                else {
+                    setChipBackGround(chip);
+                    items.remove(Integer.valueOf(tag));
+                    items_text.remove(sname);
+                    chip.setChecked(true);
+                }
+            }
+        });
+    }
+
+    private void setOverlapChipCheckedListener(final Chip chip, final ArrayList<int[]> originItems, final ArrayList<int[]> items, final ArrayList<String> items_text, final String message){
+        chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                final int tag = (Integer) chip.getTag();
+                final String sname = chip.getText().toString();
+                if(!isChecked && chip.getTextColors() != chip1.getTextColors()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("確認選擇");
+                    builder.setMessage(message);
+                    builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearChipBackGround(chip);
+                            if(!items_text.contains(chip.getText().toString())){
+                                items.add(originItems.get(tag));
+                                items_text.add(sname);
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("取消", null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    chip.setChecked(true);
+                }
+                else {
+                    setChipBackGround(chip);
+                    if(items_text.contains(sname)){
+                        items.remove(items_text.indexOf(sname));
+                        items_text.remove(sname);
+                    }
+                    chip.setChecked(true);
+                }
+            }
+        });
     }
 
     private void setChipBackGround(Chip chip){
@@ -704,72 +767,67 @@ public class New_Schedule_Detail extends AppCompatActivity {
         chip.setTextColor(chip1.getTextColors());
     }
 
-    private void setSubmitBtn(){
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String function_name = "modify_staff_vehicle";
-                RequestBody body = new FormBody.Builder()
-                        .add("function_name", function_name)
-                        .add("order_id", order_id)
-                        .add("company_id", getCompany_id(context))
-                        .add("vehicle_assign", String.valueOf(cars))
-                        .add("staff_assign", String.valueOf(staffs))
-                        .add("transform_order_staff", arrayToString(staffs_l))
-                        .add("transform_order_vehicle", arrayToString(cars_l))
-                        .build();
+    private void submit(){
+        String function_name = "modify_staff_vehicle";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id", getCompany_id(context))
+                .add("vehicle_assign", String.valueOf(cars))
+                .add("staff_assign", String.valueOf(staffs))
+                .add("transform_order_staff", arrayToString(new_staffs_l))
+                .add("transform_order_vehicle", arrayToString(new_cars_l))
+                .build();
 
-                Log.i(TAG, "order_id: "+order_id
-                        +", vehicle_assign: "+cars+cars_text
-                        +", staff_assign: "+staffs+staffs_text
-                        +", transform_order_staff: "+arrayToString(staffs_l)
-                        +", transform_order_vehicle: "+arrayToString(cars_l));
-
-                Request request = new Request.Builder()
-                        .url(BuildConfig.SERVER_URL+"/functional.php")
-                        .post(body)
-                        .build();
-
-                OkHttpClient okHttpClient = new OkHttpClient();
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        e.printStackTrace();
-                        Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //在app畫面上呈現錯誤訊息
-                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        final String responseData = response.body().string();
-                        Log.d(TAG, "submit: "+responseData);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                });
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(context, Order_Booking.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-//                        finish();
-                    }
-                }, 1000);
-            }
-        });
+        Log.i(TAG, "order_id: "+order_id
+                +", vehicle_assign: "+cars+cars_text
+                +", staff_assign: "+staffs+staffs_text
+                +", transform_order_vehicle: "+arrayToString(new_cars_l)+new_cars_lap
+                +", transform_order_staff: "+arrayToString(new_staffs_l)+new_staffs_lap);
+//
+//        Request request = new Request.Builder()
+//                .url(BuildConfig.SERVER_URL+"/functional.php")
+//                .post(body)
+//                .build();
+//
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//        Call call = okHttpClient.newCall(request);
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//                e.printStackTrace();
+//                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //在app畫面上呈現錯誤訊息
+//                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//                final String responseData = response.body().string();
+//                Log.d(TAG, "submit: "+responseData);
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //Toast.makeText(context, responseData, Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//        });
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Intent intent = new Intent(context, Order_Booking.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+////                        finish();
+//            }
+//        }, 1000);
     }
 
     private String arrayToString(ArrayList<int[]> array){
@@ -789,16 +847,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
         staffs_v = new ArrayList<>();
         staffs_lap = new ArrayList<>();
         staffs_l = new ArrayList<>();
+        new_staffs_lap = new ArrayList<>();
+        new_staffs_l = new ArrayList<>();
         cars_text = new ArrayList<>();
         cars = new ArrayList<>();
         cars_vacation = new ArrayList<>();
         cars_v = new ArrayList<>();
         cars_lap = new ArrayList<>();
         cars_l = new ArrayList<>();
+        new_cars_lap = new ArrayList<>();
+        new_cars_l = new ArrayList<>();
     }
 
     private void linking() {
-        titleText = findViewById(R.id.title_nSD);
+        titleText = findViewById(R.id.title_SD);
         nameText = findViewById(R.id.name_SD);
         nameTitleText = findViewById(R.id.nameTitle_SD);
         movingDateText = findViewById(R.id.date_SD);

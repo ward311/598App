@@ -109,7 +109,7 @@ public class Setting_Service extends AppCompatActivity {
                 }
                 if(deleteItems.size() == 0) Log.d(TAG, "deleteItems no item");
 
-                update_serviceItem();
+//                update_serviceItem();
 
 //                finish();
             }
@@ -251,7 +251,7 @@ public class Setting_Service extends AppCompatActivity {
                                             @Override
                                             public void run() {
                                                 item.setChecked(false);
-                                                Log.d(TAG, item_name+" is disable");
+                                                Log.d(TAG, item_name+" is enable");
                                             }
                                         });
                                         break;
@@ -351,10 +351,6 @@ public class Setting_Service extends AppCompatActivity {
         final Chip chip = new Chip(chipGroup.getContext());
         chip.setId(R.id.added_chip_id);
         chip.setText(newItem);
-        if(checked){
-            String[] item = {chipGroup.getTag().toString(), newItem};
-            enableItems.add(item);
-        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -467,10 +463,12 @@ public class Setting_Service extends AppCompatActivity {
     private void removeItem(ArrayList<String[]> items, String[] item){
         for(int i = 0; i < items.size(); i++){
             if(items.get(i)[1].equals(item[1])){
+                Log.d(TAG, "remove "+Arrays.toString(items.get(i)));
                 items.remove(i);
-                break;
+                return;
             }
         }
+        Log.d(TAG, "no remove "+Arrays.toString(item));
     }
 
     private void removeOriginItem(){
