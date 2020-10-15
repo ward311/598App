@@ -134,13 +134,13 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     String moving_date = order.getString("moving_date");
                     if(moving_date.equals("null")) movingTime = "未安排搬家時間";
                     else movingTime = getDate(moving_date)+" "+getTime(moving_date);
-                    if(order.getString("vehicle_type").equals("null")) car = "尚未安排車輛";
-                    else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     worktime = order.getString("estimate_worktime");
                     if(worktime.equals("null")) worktime = "未預計搬家時長";
                     if(order.getString("accurate_fee").equals("null")) price = "0元";
                     else price = order.getString("accurate_fee")+"元";
 
+//                    if(order.getString("vehicle_type").equals("null")) car = "尚未安排車輛";
+//                    else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
 
                     runOnUiThread(new Runnable() {
                         @Override

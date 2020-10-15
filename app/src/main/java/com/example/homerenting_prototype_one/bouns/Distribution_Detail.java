@@ -2,6 +2,7 @@ package com.example.homerenting_prototype_one.bouns;
 
 import android.content.Context;
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -54,7 +55,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getTime
 
 public class Distribution_Detail extends AppCompatActivity {
     TextView nameText, nameTitleText, fromAddressText, toAddressText, movingTimeText, feeText;
-    TextView csalaryPText, csalaryText;
+    TextView csalaryPText, csalaryText, dsalaryText;
     EditText csalaryPEdit, csalaryEdit;
     RecyclerView salaryDistribution;
     ImageButton backBtn;
@@ -69,7 +70,7 @@ public class Distribution_Detail extends AppCompatActivity {
 
     private ArrayList<String> staffs, staffIds;
     private ArrayList<Integer> salaries;
-    private String salaryStr;
+//    private String salaryStr;
     int net;
     boolean lock = false;
 
@@ -84,7 +85,7 @@ public class Distribution_Detail extends AppCompatActivity {
         linking();
 
         bundle = new Bundle();
-        bundle.putString("order_id", "59");
+        bundle.putString("order_id", "73");
 //        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
 
@@ -181,6 +182,7 @@ public class Distribution_Detail extends AppCompatActivity {
                             fromAddressText.setText(fromAddress);
                             toAddressText.setText(toAddress);
                             feeText.setText(fee);
+                            dsalaryText.setText(fee);
                         }
                     });
                 } catch (JSONException e) {
@@ -204,7 +206,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 for(int i = 0; i < distributionAdapter.getItemCount(); i++){
                     getItem(i); //取得分配薪水的edittext
                 }
-                setSalaryEdit(csalaryPEdit, csalaryPText, csalaryEdit, csalaryText, distributionAdapter.getItemCount());
+                setCsalaryEdit();
                 setCheckBtn(); //設置確認送出按鈕
             }
         });
@@ -213,6 +215,7 @@ public class Distribution_Detail extends AppCompatActivity {
     private void getItem(final int position){
         View view = salaryDistribution.getLayoutManager().findViewByPosition(position);
         if(view != null){
+            feeText.setText(fee);
             Log.d(TAG, "view "+position+" is not null");
             EditText salaryPEdit = view.findViewById(R.id.salaryP_DI);
             TextView salaryPText = view.findViewById(R.id.salaryP_text_DI);
@@ -228,6 +231,168 @@ public class Distribution_Detail extends AppCompatActivity {
         else{
             feeText.setText(fee+"("+position+" null)");
             Log.d(TAG, "view "+position+" is null");
+            getItem(position);
+        }
+    }
+
+    private void setCsalaryEdit() {
+        csalaryPEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int ds = Integer.parseInt(fee); //剩餘可分配金額
+                String salaryPStr = csalaryPEdit.getText().toString(); //取得百分比的值(string)
+                if(salaryPStr.isEmpty()) salaryPStr = "0";
+                Log.d(TAG, "(csp) salary(p): "+salaryPStr);
+
+                int salary = -1; //會放到arraylist的值，沒有值預設是-1
+                String salaryStr = "0"; //會顯示出來的值，沒有值預設是0
+                if(!salaryPStr.equals("0")){
+                    float salaryP = Float.parseFloat(salaryPStr); //取得百分比的值(float)
+                    salary = Math.round((Integer.parseInt(fee))*salaryP/100); //算出數值
+                    ds = Integer.parseInt(fee)-salary; //取得剩餘可分配金額
+                    if(salary == 0) salary = -1; //如果salary是0，就回復原狀
+                    else salaryStr = String.valueOf(salary); //否則取得salary的值(string)
+                }
+                csalaryText.setText(salaryStr); //顯示根據百分比連動的數值
+
+                salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
+                setFeeText(); //修改金額的算式
+
+                dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
+
+                //修改員工的百分比或數值
+                for(int i = 0; i < distributionAdapter.getItemCount(); i++)
+                    snycESalary(i);
+            }
+        });
+
+        csalaryPText.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String salaryPStr = csalaryPText.getText().toString(); //取得百分比
+                csalaryPEdit.setText(salaryPStr);  //同步Edit版版分比
+                String salaryStr = csalaryEdit.getText().toString(); //取得數值
+                if(salaryStr.isEmpty()) salaryStr = "0";
+                csalaryText.setText(salaryStr); //同步文字版數值
+
+                //改為修改百分比模式
+                csalaryPText.setVisibility(View.GONE);
+                csalaryPEdit.setVisibility(View.VISIBLE);
+                csalaryEdit.setVisibility(View.GONE);
+                csalaryText.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
+        csalaryEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int ds = Integer.parseInt(fee); //剩餘可分配金額
+
+                String salaryStr = csalaryEdit.getText().toString(); //取得數值
+                int csalary = -1;
+                if(!salaryStr.isEmpty()) {
+                    csalary = Integer.parseInt(salaryStr); //將數值轉換成integer
+                    ds = Integer.parseInt(fee)-csalary; //取得剩餘可分配金額
+                }
+                Log.d(TAG, "(s) salary: "+csalary);
+                salaries.set(salaries.size()-1, csalary); //修改arraylist中的公司金額
+                setFeeText(); //修改金額的算式
+
+                String csalaryPStr = "0";
+                if(csalary != -1 && csalary != 0) {
+                    float salaryP =  ((float) csalary/(Integer.parseInt(fee)))*100; //算出百分比
+                    NumberFormat nf = NumberFormat.getInstance();
+                    nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
+                    csalaryPStr = nf.format(salaryP); //取得百分比(string)
+                    Log.d(TAG, "company. salary percent("+csalary+"/"+fee+"): "+csalaryPStr);
+                }
+                csalaryPText.setText(csalaryPStr); //顯示百分比
+
+                dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
+
+                //修改員工的百分比或數值
+                for(int i = 0; i < distributionAdapter.getItemCount(); i++)
+                    snycESalary(i);
+            }
+        });
+
+        csalaryText.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String salaryPStr = csalaryPEdit.getText().toString(); //取得Edit版百分比
+                csalaryPText.setText(salaryPStr); //同步文字版百分比
+                String salaryStr = csalaryText.getText().toString(); //取得文字版數值
+                csalaryEdit.setText(salaryStr); //同步Edit版數值
+
+                //改為修改數值模式
+                csalaryPText.setVisibility(View.VISIBLE);
+                csalaryPEdit.setVisibility(View.GONE);
+                csalaryEdit.setVisibility(View.VISIBLE);
+                csalaryText.setVisibility(View.GONE);
+                return false;
+            }
+        });
+    }
+
+    private void snycESalary(int position){
+        View view = salaryDistribution.getLayoutManager().findViewByPosition(position);
+        if(view != null) {
+            EditText salaryPEdit = view.findViewById(R.id.salaryP_DI);
+            TextView salaryPText = view.findViewById(R.id.salaryP_text_DI);
+            EditText salaryEdit = view.findViewById(R.id.salary_DI);
+            TextView salaryText = view.findViewById(R.id.salary_text_DI);
+
+            int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
+            int salary = 0;
+            if (salaryEdit.getVisibility() == View.VISIBLE) {
+                salary = Integer.parseInt(salaryEdit.getText().toString());
+                String salaryPStr = "0";
+                if (salary != 0) {
+                    float salaryP = ((float) salary / ds) * 100; //算出百分比
+                    NumberFormat nf = NumberFormat.getInstance();
+                    nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
+                    salaryPStr = nf.format(salaryP); //取得百分比(string)
+                    Log.d(TAG, (position + 1) + ". salary percent(" + salary + "/" + ds + "): " + salaryPStr);
+                }
+                salaryPText.setText(salaryPStr); //顯示百分比
+            }
+            else {
+                float salaryP = Integer.parseInt(salaryPEdit.getText().toString());
+                String salaryStr = "0";
+                if(salaryP != 0){
+                    salary = Math.round(salaryP*ds/100);
+                    salaryStr = String.valueOf(salary);
+                    Log.d(TAG, (position+1)+". "+salaryP+" * "+ds+" = salary: "+salaryStr);
+                }
+                salaryText.setText(salaryStr);
+            }
+            salaries.set(position, salary); //修改arraylist中的員工金額
+            setFeeText(); //修改金額的算式
+        }
+        else{
+            Log.d(TAG, "view "+position+" is null");
+            snycESalary(position);
         }
     }
 
@@ -245,31 +410,35 @@ public class Distribution_Detail extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String salaryPStr = salaryPEdit.getText().toString();
-                if(salaryPStr.isEmpty()) salaryPStr = "0";
+                String salaryPStr = salaryPEdit.getText().toString(); //取得百分比的值(string)
+                if(salaryPStr.isEmpty()) salaryPStr = "0"; //轉成數值
                 Log.d(TAG, "(sp) salary(p): "+salaryPStr);
 
-                int salary = -1;
+                int salary = -1; //會放到arraylist的值，沒有值預設是-1
+                String salaryStr = "0"; //會顯示出來的值，沒有值預設是0
                 if(!salaryPStr.equals("0")){
-                    float salaryP = Float.parseFloat(salaryPStr);
-                    salary = Math.round((Integer.parseInt(fee))*salaryP/100);
-                    if(salary == 0) salary = -1;
+                    float salaryP = Float.parseFloat(salaryPStr); //取得百分比的值(float)
+                    int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
+                    salary = Math.round(ds*salaryP/100);
+                    if(salary == 0) salary = -1; //如果salary是0，就回復原狀
+                    else salaryStr = String.valueOf(salary); //否則取得salary的值(string)
                 }
-                salaryText.setText(String.valueOf(salary));
-                salaries.set(position, salary);
-                setFeeText();
+                salaryText.setText(salaryStr); //顯示根據百分比連動的數值
+                salaries.set(position, salary); //修改arraylist中的員工金額
+                setFeeText(); //修改金額的算式
             }
         });
 
         salaryPText.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                String salaryPStr = salaryPText.getText().toString();
-                salaryPEdit.setText(salaryPStr);
-                salaryStr = salaryEdit.getText().toString();
+                String salaryPStr = salaryPText.getText().toString(); //取得百分比的值(string)
+                salaryPEdit.setText(salaryPStr); //修改Edit版百分比的值(與文字版同步)
+                String salaryStr = salaryEdit.getText().toString(); //取得數值
                 if(salaryStr.isEmpty()) salaryStr = "0";
-                salaryText.setText(salaryStr);
+                salaryText.setText(salaryStr); //修改文字版數值的值(與Edit版同步)
 
+                //改為修改百分比模式
                 salaryPText.setVisibility(View.GONE);
                 salaryPEdit.setVisibility(View.VISIBLE);
                 salaryEdit.setVisibility(View.GONE);
@@ -291,22 +460,23 @@ public class Distribution_Detail extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                int salary = 0;
-                salaryStr = salaryEdit.getText().toString();
-                if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr);
+                String salaryStr = salaryEdit.getText().toString(); //取得數值
+                int salary = -1;
+                if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr); //將數值轉換成integer
                 Log.d(TAG, "(s) salary: "+salary);
-                salaries.set(position, salary);
-                setFeeText();
+                salaries.set(position, salary); //修改arraylist中的員工金額
+                setFeeText(); //修改金額的算式
 
-                if(salary == 0) salaryPText.setText("0");
-                else{
-                    float salaryP =  ((float) salary/(Integer.parseInt(fee)))*100;
+                String salaryPStr = "0";
+                if(salary != -1 && salary != 0) {
+                    int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
+                    float salaryP =  ((float) salary/ds)*100; //算出百分比
                     NumberFormat nf = NumberFormat.getInstance();
                     nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
-                    String salaryPStr = nf.format(salaryP);
-                    Log.d(TAG, (position+1)+". salary percent("+salary+"/"+fee+"): "+salaryPStr);
-                    salaryPText.setText(salaryPStr);
+                    salaryPStr = nf.format(salaryP); //取得百分比(string)
+                    Log.d(TAG, (position+1)+". salary percent("+salary+"/"+ds+"): "+salaryPStr);
                 }
+                salaryPText.setText(salaryPStr); //顯示百分比
             }
         });
 
@@ -315,7 +485,7 @@ public class Distribution_Detail extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 String salaryPStr = salaryPEdit.getText().toString();
                 salaryPText.setText(salaryPStr);
-                salaryStr = salaryText.getText().toString();
+                String salaryStr = salaryText.getText().toString();
                 salaryEdit.setText(salaryStr);
 
                 salaryPText.setVisibility(View.VISIBLE);
@@ -478,6 +648,7 @@ public class Distribution_Detail extends AppCompatActivity {
         csalaryPEdit = findViewById(R.id.csalaryP_DD);
         csalaryText = findViewById(R.id.csalary_text_DD);
         csalaryEdit = findViewById(R.id.csalary_DD);
+        dsalaryText = findViewById(R.id.distribution_price_DD);
         salaryDistribution = findViewById(R.id.salaryDistribution_DD);
         backBtn = findViewById(R.id.back_imgBtn);
         checkBtn = findViewById(R.id.check_bonus_btn);

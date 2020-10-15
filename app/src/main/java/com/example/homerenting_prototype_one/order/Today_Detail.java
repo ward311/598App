@@ -165,6 +165,7 @@ public class Today_Detail extends AppCompatActivity {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_type")) break;
                         Log.i(TAG, "vehicle:" + vehicle_assign);
+                        if(i != 1) car = car + "\n";
                         car = car+
                                 vehicle_assign.getString("num")+"輛"
                                 +vehicle_assign.getString("vehicle_weight")+"噸"

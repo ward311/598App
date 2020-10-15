@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.applandeo.materialcalendarview.EventDay;
+import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 import com.example.homerenting_prototype_one.add_order.Add_Order;
 import com.example.homerenting_prototype_one.add_order.Add_Valuation;
@@ -46,8 +47,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -364,6 +367,16 @@ public class Calendar extends AppCompatActivity {
         int month = 9;//(calendar.get(java.util.Calendar.MONTH)+1);
         Log.d(TAG, "check "+year+"/"+month);
 
+        calendar.set(java.util.Calendar.MONTH, month-1);
+        calendar.set(java.util.Calendar.DATE, 30);
+        try {
+            Log.d(TAG, "setDate "+calendar.getTime());
+            mCalendar.setDate(calendar);
+            mCalendar.setMaximumDate(calendar);
+        } catch (OutOfDateRangeException e) {
+            e.printStackTrace();
+        }
+
         if(!checkedMonth.contains((year*100)+month)){
             getOrders(String.valueOf(year), String.valueOf(month));
             checkedMonth.add((year*100)+month);
@@ -437,7 +450,7 @@ public class Calendar extends AppCompatActivity {
 
                         java.util.Calendar calendar = java.util.Calendar.getInstance();
                         calendar.set(java.util.Calendar.YEAR, Integer.parseInt(getYear(date)));
-                        calendar.set(java.util.Calendar.MONTH, Integer.parseInt(getMonth(date)));
+                        calendar.set(java.util.Calendar.MONTH, Integer.parseInt(getMonth(date))-1);
                         calendar.set(java.util.Calendar.DATE, Integer.parseInt(getDay(date)));
 
                         EventDay eventDay;
