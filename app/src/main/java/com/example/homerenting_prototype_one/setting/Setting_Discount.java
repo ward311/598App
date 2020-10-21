@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -42,6 +43,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -69,6 +71,9 @@ public class Setting_Discount extends AppCompatActivity {
     ArrayList<String> delete_discounts;
 
     boolean deleteMode = false, disable = false;
+
+    final int DELETE_INDEX = 0, NAME_INDEX = 1, SWITCH_INDEX = 2, DISCOUNT_INDEX = 3, START_INDEX = 5, END_INDEX = 7, ID_INDEX = 8;
+    final int START_TIME_VIEW = 0, END_TIME_VIEW = 1;
 
     String TAG = "Setting_Discount";
     Context context = this;
@@ -116,10 +121,11 @@ public class Setting_Discount extends AppCompatActivity {
                                     Toast.makeText(context, "未輸入優惠名稱", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                String thisYear = getToday("yyyy");
-                                discountTable.addView(addNewRow("-1", new_discount_name, -1, thisYear+"-01-01", thisYear+"-12-31", false));
-                                String[] period_discount = {"-1", new_discount_name, "-1", thisYear+"-01-01", thisYear+"-12-31", "false"};
+                                String thisYear = getToday("yyyy");String[] period_discount = {"-1", new_discount_name, "-1", thisYear+"-01-01", thisYear+"-12-31", "false"};
                                 period_discounts.add(period_discount);
+                                Log.d(TAG, "add period_discount("+(period_discounts.size()-1)+"/"+period_discounts.size()+"): "
+                                        +Arrays.toString(period_discounts.get(period_discounts.size()-1)));
+                                runOnUiThread(() -> discountTable.addView(addNewRow("-1", new_discount_name, -1, thisYear+"-01-01", thisYear+"-12-31", false, discountTable.getChildCount())));
                             }
                         })
                         .setNegativeButton("取消",null)
@@ -205,25 +211,27 @@ public class Setting_Discount extends AppCompatActivity {
         for(int i = 3; i < discountTable.getChildCount(); i++){
             final String[] period_discount = getRowData(i);
             if(init){
+                final int finalI = i-3;
                 final TableRow discountItem = (TableRow) discountTable.getChildAt(i);
-                final Switch switcher = (Switch) discountItem.getChildAt(2);
-                final TextView startView = (TextView) discountItem.getChildAt(5);
-                final TextView endView = (TextView) discountItem.getChildAt(7);
+                final Switch switcher = (Switch) discountItem.getChildAt(SWITCH_INDEX);
+                final TextView startView = (TextView) discountItem.getChildAt(START_INDEX);
+                final TextView endView = (TextView) discountItem.getChildAt(END_INDEX);
 
-                setSwitch(switcher, startView, endView, period_discount);
+                setSwitch(switcher, startView, endView, finalI, period_discount);
 
                 if(switcher.isChecked()){
                     startView.setOnClickListener(null);
                     endView.setOnClickListener(null);
                 }
                 else{
-                    setDateBtn(startView);
-                    setDateBtn(endView);
+                    setDateBtn(startView, START_TIME_VIEW, finalI);
+                    setDateBtn(endView, END_TIME_VIEW, finalI);
                 }
                 period_discounts.add(period_discount);
+                Log.d(TAG, "add period_discount("+(period_discounts.size()-1)+"/"+period_discounts.size()+"): "
+                        +Arrays.toString(period_discounts.get(period_discounts.size()-1)));
 
-                final Button deleteBtn = (Button) discountItem.getChildAt(0);
-                final int finalI = i-3;
+                final Button deleteBtn = (Button) discountItem.getChildAt(DELETE_INDEX);
                 deleteBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -242,14 +250,14 @@ public class Setting_Discount extends AppCompatActivity {
     private String[] getRowData(int i){
         TableRow discountItem = (TableRow) discountTable.getChildAt(i);
         //0 : X
-        TextView nameText = (TextView) discountItem.getChildAt(1);
-        Switch enableSw = (Switch) discountItem.getChildAt(2);
-        EditText discountEdit = (EditText) discountItem.getChildAt(3);
+        TextView nameText = (TextView) discountItem.getChildAt(NAME_INDEX);
+        Switch enableSw = (Switch) discountItem.getChildAt(SWITCH_INDEX);
+        EditText discountEdit = (EditText) discountItem.getChildAt(DISCOUNT_INDEX);
         //4 : %
-        TextView startView = (TextView) discountItem.getChildAt(5);
+        TextView startView = (TextView) discountItem.getChildAt(START_INDEX);
         //6 : ─
-        TextView endView = (TextView) discountItem.getChildAt(7);
-        TextView discountIdText = (TextView) discountItem.getChildAt(discountItem.getChildCount()-1);
+        TextView endView = (TextView) discountItem.getChildAt(END_INDEX);
+        TextView discountIdText = (TextView) discountItem.getChildAt(ID_INDEX);
 
         String name = nameText.getText().toString();
         if(name.isEmpty()) name = "";
@@ -267,7 +275,7 @@ public class Setting_Discount extends AppCompatActivity {
         return period_discount;
     }
 
-    private void setSwitch(final Switch switcher, final TextView startView, final TextView endView, final String[] period_discount){
+    private void setSwitch(final Switch switcher, final TextView startView, final TextView endView, final int index, final String[] period_discount){
         switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -277,8 +285,8 @@ public class Setting_Discount extends AppCompatActivity {
                     endView.setOnClickListener(null);
                 }
                 else{
-                    setDateBtn(startView);
-                    setDateBtn(endView);
+                    setDateBtn(startView, START_TIME_VIEW, index);
+                    setDateBtn(endView, END_TIME_VIEW, index);
                     String startDate = startView.getText().toString();
                     String endDate = endView.getText().toString();
                     final LocalDate disableTime = LocalDate.now();
@@ -286,17 +294,19 @@ public class Setting_Discount extends AppCompatActivity {
                     LocalDate end = LocalDate.of(Integer.parseInt(getYear(endDate)), Integer.parseInt(getMonth(endDate)), Integer.parseInt(getDay(endDate)));
 
                     if(start.isBefore(disableTime) && end.isAfter(disableTime) && !disable){
-                        switcher.setChecked(true);
+                        runOnUiThread(() -> switcher.setChecked(true));
+
                         Log.d(TAG, start+" < "+disableTime+" < "+end);
                         new AlertDialog.Builder(context)
                                 .setTitle("現在進行折扣中，要強制取消嗎？")
                                 .setPositiveButton("確認", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        disableDiscount(period_discount, String.valueOf(disableTime));
-                                        disable = true;
-                                        switcher.setChecked(false);
-                                        disable = false;
+                                        runOnUiThread(() -> {
+                                            disable = true;
+                                            switcher.setChecked(false);
+                                            disable = false;
+                                        });
                                     }
                                 })
                                 .setNegativeButton("取消", null)
@@ -309,7 +319,8 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
-    private void setDateBtn(final TextView dateBtn){
+    private void setDateBtn(final TextView dateBtn, int type, int index){
+        Log.d(TAG, "setDateBtn: "+index);
         dateBtn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -322,6 +333,8 @@ public class Setting_Discount extends AppCompatActivity {
                         String dayStr = String.valueOf(dayOfMonth);
                         if(dayOfMonth < 10) dayStr = "0"+dayStr;
                         dateBtn.setText(year+"-"+monthStr+"-"+dayStr);
+                        period_discounts.get(index-3)[type+3] = year+"-"+monthStr+"-"+dayStr;
+                        Log.d(TAG, "date change("+(index-3)+"/"+period_discounts.size()+"): "+ Arrays.toString(period_discounts.get(index-3)));
                     }
                 },calendar.get(GregorianCalendar.YEAR),calendar.get(GregorianCalendar.MONTH),calendar.get(GregorianCalendar.DAY_OF_MONTH));
                 date_picker.show();
@@ -369,15 +382,20 @@ public class Setting_Discount extends AppCompatActivity {
 
                     JSONObject freeItems = responseArr.getJSONObject(0);
                     Log.i(TAG, "freeItems: "+freeItems);
-                    boolean valuateBl = freeItems.getBoolean("valuate");
-                    boolean depositBl = freeItems.getBoolean("deposit");
-                    boolean cancelBl = freeItems.getBoolean("cancel");
+                    boolean valuateBl = freeItems.getString("valuate").equals("1");
+                    boolean depositBl = freeItems.getString("deposit").equals("1");
+                    boolean cancelBl = freeItems.getString("cancel").equals("1");
 
-                    valuate.setChecked(valuateBl);
-                    deposit.setChecked(depositBl);
-                    cancel.setChecked(cancelBl);
 
-                    for(int i = 0; i < responseArr.length(); i++){
+                    runOnUiThread(() -> {
+                        valuate.setChecked(valuateBl);
+                        deposit.setChecked(depositBl);
+                        cancel.setChecked(cancelBl);
+                    });
+
+
+                    int i;
+                    for(i = 1; i < responseArr.length(); i++){
                         JSONObject discountItem = responseArr.getJSONObject(i);
                         Log.i(TAG, "discountItem: "+discountItem);
                         final String discountId = discountItem.getString("discount_id");
@@ -386,19 +404,50 @@ public class Setting_Discount extends AppCompatActivity {
                         final String startTime = discountItem.getString("start_date");
                         final String endTime = discountItem.getString("end_date");
                         String disableTime = discountItem.getString("disable_time");
-                        boolean enable = false;
-                        if(!disableTime.isEmpty()) enable = true;
+                        boolean enable = discountItem.getString("enable").equals("1");
+//                        if(!disableTime.isEmpty()) enable = true;
+
+
+                        String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
 
                         final boolean finalEnable = enable;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, finalEnable));
+                                int row_index = 0;
+                                if (discountName.equals("短期優惠")) row_index = 3;
+                                else if (discountName.equals("長期優惠")) row_index = 4;
+
+                                if(row_index != 0){
+                                    TableRow discountItem = (TableRow) discountTable.getChildAt(row_index);
+                                    //0 : X
+                                    Switch enableSw = (Switch) discountItem.getChildAt(SWITCH_INDEX);
+                                    EditText discountEdit = (EditText) discountItem.getChildAt(DISCOUNT_INDEX);
+                                    //4 : %
+                                    TextView startView = (TextView) discountItem.getChildAt(START_INDEX);
+                                    //6 : ─
+                                    TextView endView = (TextView) discountItem.getChildAt(END_INDEX);
+                                    TextView discountIdText = (TextView) discountItem.getChildAt(ID_INDEX);
+
+                                    enableSw.setChecked(finalEnable);
+                                    discountEdit.setText(String.valueOf(percent));
+                                    startView.setText(startTime);
+                                    endView.setText(endTime);
+                                    discountIdText.setText(discountId);
+
+                                    period_discounts.set(row_index-3, period_discount);
+                                }
+                                else {
+                                    period_discounts.add(period_discount);
+                                    Log.d(TAG, "add period_discount("+(period_discounts.size()-1)+"/"+period_discounts.size()+"): "
+                                            +Arrays.toString(period_discounts.get(period_discounts.size()-1)));
+
+                                    discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, finalEnable, discountTable.getChildCount()));
+                                }
                             }
                         });
-                        String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
-                        period_discounts.add(period_discount);
                     }
+                    if(i <= 1) Log.i(TAG, "no period discount");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -406,7 +455,7 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
-    private TableRow addNewRow(final String discountId, final String discountName, int percent, String startTime, String endTime, final boolean enable){
+    private TableRow addNewRow(final String discountId, final String discountName, int percent, String startTime, String endTime, final boolean enable, int index){
         String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
         final TableRow newDiscount = new TableRow(context);
 
@@ -415,9 +464,9 @@ public class Setting_Discount extends AppCompatActivity {
         Switch enableSw = new Switch(context);
         EditText discountEdit = new EditText(context);
         TextView percentIcon =  new TextView(context);
-        TextView startView = addNewDate(startTime);
+        TextView startView = addNewDate(startTime, START_TIME_VIEW, index);
         TextView toIcon =  new TextView(context);
-        TextView endView = addNewDate(endTime);
+        TextView endView = addNewDate(endTime, END_TIME_VIEW, index);
         TextView discountIdText = new TextView(context);
 
         int dp40 = dip2px(context, 40);
@@ -426,8 +475,10 @@ public class Setting_Discount extends AppCompatActivity {
         int dp5 = dip2px(context, 5);
 
         newDiscount.setGravity(Gravity.CENTER_VERTICAL);
-        deleteBtn.setBackgroundResource(R.drawable.dot);
-        deleteBtn.setLayoutParams(new TableRow.LayoutParams(dp15, dp15));
+        deleteBtn.setBackgroundResource(R.drawable.ic_baseline_cancel_24);
+        TableRow.LayoutParams p = new TableRow.LayoutParams(dp15, dp15);
+        p.setMargins(0, 0, dp15, 0);
+        deleteBtn.setLayoutParams(p);
         if(!deleteMode) deleteBtn.setVisibility(View.GONE);
         else deleteBtn.setVisibility(View.VISIBLE);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -443,8 +494,8 @@ public class Setting_Discount extends AppCompatActivity {
         nameText.setTextColor(Color.parseColor("#000000"));
         nameText.setPadding(0, 0, 0, dp5);
         enableSw.setPadding(dp15, 0, 0, 0);
-        enableSw.setChecked(enable);
-        setSwitch(enableSw, startView, endView, period_discount);
+        runOnUiThread(() -> enableSw.setChecked(enable));
+        setSwitch(enableSw, startView, endView, index, period_discount);
         if(percent >= 0) discountEdit.setText(String.valueOf(percent));
         else discountEdit.setHint("1");
         discountEdit.setWidth(dp40);
@@ -470,7 +521,7 @@ public class Setting_Discount extends AppCompatActivity {
         return newDiscount;
     }
 
-    private TextView addNewDate(String date){
+    private TextView addNewDate(String date, int type, int index){
         int dp60 = dip2px(context, 60);
         int dp3 = dip2px(context, 3);
         TextView dateView =  new TextView(context);
@@ -480,7 +531,7 @@ public class Setting_Discount extends AppCompatActivity {
         dateView.setGravity(Gravity.CENTER);
         dateView.setBackgroundResource(R.drawable.edittext_rectanngle);
         dateView.setPadding(dp3, dp3, dp3, dp3); //要在backgoundResource後設置才有用
-        setDateBtn(dateView);
+        setDateBtn(dateView, type, index);
         return dateView;
     }
 
@@ -494,18 +545,18 @@ public class Setting_Discount extends AppCompatActivity {
     }
 
     private void updateDiscount(){
-        String function_name = "updateDiscount";
+        String function_name = "modify_discount";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .add("valuate", String.valueOf(valuate.isChecked()))
                 .add("deposit", String.valueOf(deposit.isChecked()))
                 .add("cancel", String.valueOf(cancel.isChecked()))
-                .add("period_items", itemsToString(period_discounts))
-                .add("delete_items", String.valueOf(delete_discounts))
+                .add("periodItems", itemsToString(period_discounts))
+                .add("deleteItems", String.valueOf(delete_discounts))
                 .build();
-        Log.i(TAG, "valuate: "+valuate.isChecked()+", deposit: "+deposit.isChecked()+", cancel: "+cancel.isChecked()
-                +", period_item: "+itemsToString(period_discounts)+", "+delete_discounts);
+//        Log.i(TAG, "valuate: "+valuate.isChecked()+", deposit: "+deposit.isChecked()+", cancel: "+cancel.isChecked()
+//                +", periodItems: "+itemsToString(period_discounts)+", deleteItems: "+delete_discounts);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -533,56 +584,20 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
-    private void disableDiscount(String[] period_discount, String disableTime){
-        String function_name = "disableDiscount";
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("company_id", getCompany_id(context))
-                .add("discount_id", period_discount[0])
-                .add("discount_name", period_discount[1])
-                .add("discount", period_discount[2])
-                .add("start_date", period_discount[3])
-                .add("end_date", period_discount[4])
-                .add("disableTime", disableTime)
-                .build();
-        Log.d(TAG, "disableDiscount: discount_id: "+period_discount[0]+", discount_name: "+period_discount[1]
-                +", discount: "+period_discount[2]+", start_date: "+period_discount[3]+", end_date: "+period_discount[4]+", disableTime: "+disableTime);
-
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/functional.php")
-                .post(body)
-                .build();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseData = response.body().string();
-                Log.d(TAG, "responseData of disable_discount: " + responseData);
-            }
-        });
-    }
-
     private String itemsToString(ArrayList<String[]> items){
         if(items.size() == 0) return "";
 
         String itemStr;
         itemStr = "[";
-        itemStr = itemStr+"[\""+items.get(0)[0] +"\", "+items.get(0)[1]+", \""+items.get(0)[2]+"\", \""+items.get(0)[3]+"\", "+items.get(0)[4]+"]";
-        for(int i = 1; i < items.size(); i++){
-            itemStr = itemStr+", [\""+items.get(i)[0] +"\", "+items.get(i)[1]+", \""+items.get(i)[2]+"\", \""+items.get(i)[3]+"\", "+items.get(i)[4]+"]";
+        for(int i = 0; i < items.size(); i++){
+            if(i != 0) itemStr = itemStr + ", ";
+            itemStr = itemStr
+                    +"[\""+items.get(i)[0]
+                    +"\", \""+items.get(i)[1]
+                    +"\", \""+items.get(i)[2]
+                    +"\", \""+items.get(i)[3]
+                    +"\", \""+items.get(i)[4]
+                    +"\", \""+items.get(i)[5]+"\"]";
         }
         itemStr = itemStr+"]";
 

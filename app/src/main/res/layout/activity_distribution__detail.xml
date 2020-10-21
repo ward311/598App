@@ -195,7 +195,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="3"
                         android:gravity="center_vertical"
-                        android:text="6000" />
+                        android:text="6000"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -281,26 +282,27 @@
                         android:layout_height="match_parent"
                         android:layout_weight="3"
                         android:gravity="center_vertical"
-                        android:text="1000" />
+                        android:text="1000"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:paddingTop="10dp">
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="5dp"
                         android:text="安排人力"
                         android:textColor="#000000" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/salaryDistribution_DD"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="3" />
 

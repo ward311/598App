@@ -284,7 +284,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         csalaryText.setText(salaryStr); //顯示根據百分比連動的數值
 
                         salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
-                        setFeeText(); //修改金額的算式
+//                        setFeeText(); //修改金額的算式
 
                         dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
 
@@ -345,7 +345,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         }
                         Log.d(TAG, "(s) salary: "+csalary);
                         salaries.set(salaries.size()-1, csalary); //修改arraylist中的公司金額
-                        setFeeText(); //修改金額的算式
+//                        setFeeText(); //修改金額的算式
 
                         String csalaryPStr = "0";
                         if(csalary != -1 && csalary != 0) {
@@ -425,7 +425,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 salaryText.setText(salaryStr);
             }
             salaries.set(position, salary); //修改arraylist中的員工金額
-            setFeeText(); //修改金額的算式
+//            setFeeText(); //修改金額的算式
         }
         else{
             Log.d(TAG, "view "+position+" is null");
@@ -465,7 +465,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         }
                         salaryText.setText(salaryStr); //顯示根據百分比連動的數值
                         salaries.set(position, salary); //修改arraylist中的員工金額
-                        setFeeText(); //修改金額的算式
+//                        setFeeText(); //修改金額的算式
                     }
                 });
             }
@@ -515,7 +515,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr); //將數值轉換成integer
                         Log.d(TAG, "(s) salary: "+salary);
                         salaries.set(position, salary); //修改arraylist中的員工金額
-                        setFeeText(); //修改金額的算式
+//                        setFeeText(); //修改金額的算式
 
                         String salaryPStr = "0";
                         if(salary != -1 && salary != 0) {

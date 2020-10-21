@@ -64,13 +64,14 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="37dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
                 <Button
                     android:id="@+id/button1"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
+                    android:background="@drawable/background_transparent"
                     android:visibility="gone" />
 
                 <TextView
@@ -92,13 +93,14 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
                 <Button
                     android:id="@+id/button2"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
+                    android:background="@drawable/background_transparent"
                     android:visibility="gone" />
 
                 <TextView
@@ -119,13 +121,14 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
                 <Button
                     android:id="@+id/button3"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
+                    android:background="@drawable/background_transparent"
                     android:visibility="gone" />
 
                 <TextView
@@ -151,7 +154,8 @@
                     android:id="@+id/button4"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/dot"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/ic_baseline_cancel_24"
                     android:visibility="gone" />
 
                 <TextView
@@ -174,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:gravity="right"
-                    android:hint="5"
+                    android:hint="0"
                     android:inputType="number" />
 
                 <TextView
@@ -218,7 +222,7 @@
                     android:id="@+id/discount_id1_SDC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="id"
+                    android:text="-1"
                     android:visibility="gone" />
 
             </TableRow>
@@ -232,7 +236,8 @@
                     android:id="@+id/button5"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/dot"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/ic_baseline_cancel_24"
                     android:visibility="gone" />
 
                 <TextView
@@ -255,7 +260,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:gravity="right"
-                    android:hint="10"
+                    android:hint="0"
                     android:inputType="number" />
 
                 <TextView
@@ -298,7 +303,7 @@
                     android:id="@+id/discount_id2_SDC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="id"
+                    android:text="-1"
                     android:visibility="gone" />
             </TableRow>
 

@@ -358,7 +358,7 @@ public class System_Data extends AppCompatActivity {
                 final EditText plateNum_edit = view.findViewById(R.id.plateNum_edit_ACD);
 
                 Spinner type_sp = view.findViewById(R.id.type_sp_ACD);
-                final String[] types = {"箱型車", "平斗車", "其他"};
+                final String[] types = {"箱型車", "平斗車"}; //其他
                 ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, types);
                 type_sp.setAdapter(typeAdapter);
                 type_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

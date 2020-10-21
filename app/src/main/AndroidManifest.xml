@@ -18,6 +18,7 @@
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".main.New_Login"/>
         <activity android:name=".main.Login"/>
+        <activity android:name=".calendar.Calendar" />
 
         <!--Order-->
         <activity android:name=".order.Order"/>
@@ -68,7 +69,6 @@
         <activity android:name=".setting.Setting"/>
         <activity android:name=".setting.Setting_Information"/>
         <activity android:name=".setting.Setting_Service"/>
-        <activity android:name=".setting.Setting_Discount" />
         <activity android:name=".setting.Setting_Evaluation"/>
         <activity android:name=".setting.Evaluation_Detail"/>
         <activity android:name=".setting.Setting_Announcement"/>
@@ -79,7 +79,7 @@
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
 
-        <activity android:name=".calendar.Calendar">
+        <activity android:name=".setting.Setting_Discount">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

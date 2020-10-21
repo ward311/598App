@@ -83,8 +83,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     CarAdapter carAdapter;
 
     ArrayList<String[]> cars;
-    int max_car = 4;
     int valPrice = -1;
+    boolean hasCarDemand = true;
 
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
@@ -340,10 +340,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 memo = memoEdit.getText().toString();
                 Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
-                if(checkEmpty(movingDate, movingTime, estimate_worktime, fee))
-                    return;
+                boolean check = true;
+                if(checkEmpty(estimate_worktime, fee)) check = false;
+                if(checkCars() && check) check = false;
+                if(!check) return;
 
-                updateValuation(moving_date, estimate_worktime, fee);
+//                updateValuation(moving_date, estimate_worktime, fee);
+                if(hasCarDemand) updateCarDemand();
+                else Log.d(TAG, "no carDemand");
 
                 new AlertDialog.Builder(context)
                         .setTitle("媒合中")
@@ -367,7 +371,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         });
     }
 
-    private boolean checkEmpty(String movingDate, String movingTime, String estimate_worktime, String fee){
+    private boolean checkEmpty(String estimate_worktime, String fee){
         boolean check = false;
         if(TextUtils.isEmpty(movingDateText.getText().toString())){
             movingDateText.setError("請輸入日期");
@@ -385,16 +389,18 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             priceEdit.setError("請輸入搬家價格");
             check = true;
         }
+        else{
+            if(Integer.parseInt(fee) < getValPrice(0)){
+                priceEdit.setError("所輸入之搬家價格不得低於系統估價計價格");
+                check = true;
+            }
 
-        if(Integer.parseInt(fee) < getValPrice(0)){
-            priceEdit.setError("所輸入之搬家價格不得低於系統估價計價格");
-            check = true;
+            if(Integer.parseInt(fee) > getValPrice(1)){
+                priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
+                check = true;
+            }
         }
 
-        if(Integer.parseInt(fee) > getValPrice(1)){
-            priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
-            check = true;
-        }
 
         return check;
     }
@@ -409,48 +415,37 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         return valPrice;
     }
 
-    private boolean getCarStr(boolean errorMsg){
-        boolean check = true;
-        for(int position = 0; position < cars.size(); position++){
-            View view = carAssignRList.getLayoutManager().findViewByPosition(position);
-            EditText weight_edit = view.findViewById(R.id.weight_CI);
-            String weightStr = weight_edit.getText().toString();
-            cars.get(position)[0] = weightStr;
-            if(errorMsg && TextUtils.isEmpty(weightStr)){
-                weight_edit.setError("請輸入噸位");
-                check = false;
+    private boolean checkCars(){
+        hasCarDemand = true;
+        for(int i = cars.size()-1; i >= 0; i--){
+            String[] car = cars.get(i);
+            int check_car = 0;
+            Log.d(TAG, "checkCars. car:"+Arrays.toString(car));
+            for(String item : car){
+                if(item.equals("") || item.isEmpty()) check_car++;
             }
-
-            EditText type_edit = view.findViewById(R.id.type_CI);
-            String typeStr = type_edit.getText().toString();
-            cars.get(position)[1] = typeStr;
-            if(errorMsg && TextUtils.isEmpty(typeStr)){
-                type_edit.setError("請輸入車輛種類");
-                check = false;
+            Log.d(TAG, "checkCars: check_car:"+check_car+", car.length: "+car.length);
+            if(check_car == car.length) {
+                Log.d(TAG, "checkCars: "+i+" row is empty");
+                if(cars.size()-1 != 0){
+                    cars.remove(i);
+                    carAdapter.notifyItemRemoved(i);
+                }
+                else hasCarDemand = false;
             }
-
-            EditText num_edit = view.findViewById(R.id.num_CI);
-            String numStr = num_edit.getText().toString();
-            cars.get(position)[2] = numStr;
-            if(errorMsg && TextUtils.isEmpty(numStr)){
-                num_edit.setError("請輸入數量");
-                check = false;
-            }
+            else if(check_car != 0) return true;
         }
-        return check;
+        return false;
     }
 
-    private void updateCarDemand(int i){
+    private void updateCarDemand(){
         String function_name = "add_vehicleDemand";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
-                .add("num",cars.get(i)[2])
-                .add("weight", cars.get(i)[0])
-                .add("type", cars.get(i)[1])
+                .add("cars", carsToString())
                 .build();
-        Log.d(TAG, "check_btn: order_id: "+order_id+", num:  "+cars.get(i)[2]+
-                ", weight: "+cars.get(i)[0]+", type: "+cars.get(i)[1]);
+        Log.i(TAG, "carDamand. order_id: "+order_id+", cars: "+carsToString());
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -477,6 +472,22 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 Log.d(TAG, "submit update_carDemand responseData: " + responseData);
             }
         });
+    }
+
+    private String carsToString(){
+        String str = "[";
+        for(int i = 0; i < cars.size(); i++){
+            if(i != 0) str = str + ", ";
+            String[] car = cars.get(i);
+            str = str + "[";
+            for(int ii = 0; ii < car.length; ii++){
+                if(ii != 0) str = str + ", ";
+                str = str + car[ii];
+            }
+            str = str + "]";
+        }
+        str = str + "]";
+        return str;
     }
 
     private void updateValuation(String moving_date, String estimate_worktime, String fee){

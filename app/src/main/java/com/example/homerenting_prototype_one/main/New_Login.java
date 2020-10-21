@@ -39,7 +39,6 @@ public class New_Login extends AppCompatActivity {
 
     Bundle bundle;
 
-    OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "New_Login";
     Context context;
 
@@ -64,6 +63,7 @@ public class New_Login extends AppCompatActivity {
                 .post(body)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

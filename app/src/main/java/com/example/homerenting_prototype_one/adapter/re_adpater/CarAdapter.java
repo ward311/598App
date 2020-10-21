@@ -32,8 +32,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
     @Override
     public ViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.car_item, parent, false);
-        ViewHoler viewHoler = new ViewHoler(view);
-        return viewHoler;
+        return new ViewHoler(view);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
                 @Override
                 public void onClick(View v) {
                     if (cars.size() < limit){
-                        String[] n = {"", "", String.valueOf(cars.size())};
+                        String[] n = {"", "", ""};
                         cars.add(n);
                         notifyDataSetChanged();
                     }
@@ -60,9 +59,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHoler> {
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (position != 0) {
-                    holder.getAdapterPosition();
-                }
+                cars.remove(holder.getAdapterPosition());
+                notifyItemRemoved(holder.getAdapterPosition());
             }
         });
     }
