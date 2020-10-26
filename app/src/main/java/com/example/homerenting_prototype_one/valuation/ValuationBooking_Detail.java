@@ -83,7 +83,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     CarAdapter carAdapter;
 
     ArrayList<String[]> cars;
-    int valPrice = -1;
+    int valPrice = -1, firstRowEmpty = 1;
     boolean hasCarDemand = true;
 
     String TAG = "Valuation_Booking_Detail";
@@ -338,16 +338,15 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 String estimate_worktime = worktimeEdit.getText().toString().trim();
                 String fee = priceEdit.getText().toString().trim();
                 memo = memoEdit.getText().toString();
-                Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+//                Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
                 boolean check = true;
                 if(checkEmpty(estimate_worktime, fee)) check = false;
-                if(checkCars() && check) check = false;
+                if(checkCarsViewEmpty()) check = false;
                 if(!check) return;
 
-//                updateValuation(moving_date, estimate_worktime, fee);
-                if(hasCarDemand) updateCarDemand();
-                else Log.d(TAG, "no carDemand");
+                updateValuation(moving_date, estimate_worktime, fee);
+                updateCarDemand();
 
                 new AlertDialog.Builder(context)
                         .setTitle("媒合中")
@@ -415,37 +414,91 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         return valPrice;
     }
 
-    private boolean checkCars(){
-        hasCarDemand = true;
-        for(int i = cars.size()-1; i >= 0; i--){
-            String[] car = cars.get(i);
-            int check_car = 0;
-            Log.d(TAG, "checkCars. car:"+Arrays.toString(car));
-            for(String item : car){
-                if(item.equals("") || item.isEmpty()) check_car++;
-            }
-            Log.d(TAG, "checkCars: check_car:"+check_car+", car.length: "+car.length);
-            if(check_car == car.length) {
-                Log.d(TAG, "checkCars: "+i+" row is empty");
-                if(cars.size()-1 != 0){
-                    cars.remove(i);
-                    carAdapter.notifyItemRemoved(i);
+    private boolean checkCarsViewEmpty(){
+        boolean isEmpty = false;
+        int CAR_LENGTH = 3;
+        for(int position = carAdapter.getItemCount()-1; position >= 0; position--){
+            View view = carAssignRList.getLayoutManager().findViewByPosition(position);
+            if(view != null){
+                int check_empty = 0;
+                EditText weight_edit = view.findViewById(R.id.weight_CI);
+                EditText type_edit = view.findViewById(R.id.type_CI);
+                EditText num_edit = view.findViewById(R.id.num_CI);
+
+                check_empty += checkCarViewStr(weight_edit, position, 0);
+                check_empty += checkCarViewStr(type_edit, position, 1);
+                check_empty += checkCarViewStr(num_edit, position, 2);
+
+                Log.d(TAG, "car: "+Arrays.toString(cars.get(position)));
+                if(check_empty == CAR_LENGTH) {
+                    Log.d(TAG, "car row "+position+" is empty");
+                    weight_edit.setError(null);
+                    type_edit.setError(null);
+                    num_edit.setError(null);
+                    if(position != 0){
+                        Log.d(TAG, "car row "+position+" delete");
+                        cars.remove(position);
+//                        carAdapter.notifyItemRemoved(position);
+                        carAdapter.notifyDataSetChanged();
+                    }
                 }
-                else hasCarDemand = false;
+                else if(check_empty > 0){
+                    isEmpty = true;
+                }
+
+                if(position == 0){
+                    if(check_empty == CAR_LENGTH) firstRowEmpty = 1;
+                    else firstRowEmpty = 0;
+                }
             }
-            else if(check_car != 0) return true;
+            else {
+                Log.d(TAG, "checkCarsViewEmpty. view "+position+" is null");
+                int check_empty = 0;
+
+                Log.d(TAG, "car: "+Arrays.toString(cars.get(position)));
+                for(int i = 0; i < CAR_LENGTH; i++)
+                    if(cars.get(position)[i].equals("")) check_empty += 1;
+
+                if(check_empty == CAR_LENGTH) {
+                    Log.d(TAG, "car row "+position+" empty(out of version)");
+                    if(position != 0){
+                        Log.d(TAG, "cars "+position+" delete(out of version)");
+                        cars.remove(position);
+//                        carAdapter.notifyItemRemoved(position);
+                        carAdapter.notifyDataSetChanged();
+                    }
+                }
+                else if(check_empty > 0){
+                    isEmpty = true;
+                }
+                else Log.d(TAG, "car row ("+(3-check_empty)+"): "+Arrays.toString(cars.get(position)));
+            }
         }
-        return false;
+
+        Log.d(TAG, "___________________________________");
+        return isEmpty;
+    }
+
+    private int checkCarViewStr(EditText editText, int position, int i){
+        String str = editText.getText().toString();
+        if(!str.isEmpty()) cars.get(position)[i] = str;
+        else {
+            editText.setError("未輸入");
+            cars.get(position)[i] = "";
+            return 1;
+        }
+        return 0;
     }
 
     private void updateCarDemand(){
-        String function_name = "add_vehicleDemand";
+        String function_name = "add_vehicleDemands";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
-                .add("cars", carsToString())
+                .add("company_id", getCompany_id(context))
+                .add("vehicleItems", carsToString())
                 .build();
-        Log.i(TAG, "carDamand. order_id: "+order_id+", cars: "+carsToString());
+        Log.i(TAG, "carDamand. order_id: "+order_id+", 'vehicleItems: "+carsToString());
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -476,13 +529,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     private String carsToString(){
         String str = "[";
-        for(int i = 0; i < cars.size(); i++){
-            if(i != 0) str = str + ", ";
+        for(int i = firstRowEmpty; i < cars.size(); i++){
+            if(i != firstRowEmpty) str = str + ", ";
             String[] car = cars.get(i);
             str = str + "[";
             for(int ii = 0; ii < car.length; ii++){
                 if(ii != 0) str = str + ", ";
-                str = str + car[ii];
+                if(ii == 1) str = str + "\""+ car[ii]+ "\"";
+                else str = str + car[ii];
             }
             str = str + "]";
         }

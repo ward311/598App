@@ -92,7 +92,9 @@ public class Edit_Furniture extends AppCompatActivity {
         zeroFurniture = new ArrayList<>();
         list = findViewById(R.id.furniture_listView);
 
-        bundle = getIntent().getExtras();
+        bundle = new Bundle();
+        bundle.putString("order_id", "16");
+//        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 

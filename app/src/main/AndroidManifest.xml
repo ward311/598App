@@ -41,7 +41,6 @@
         <!--Furniture-->
         <activity android:name=".furniture.Furniture_Detail"/>
         <activity android:name=".furniture.Furniture_Location"/>
-        <activity android:name=".furniture.Edit_Furniture"/>
 
         <!--Schedule-->
         <activity android:name=".schedule.New_Schedule_Detail"/>
@@ -69,6 +68,7 @@
         <activity android:name=".setting.Setting"/>
         <activity android:name=".setting.Setting_Information"/>
         <activity android:name=".setting.Setting_Service"/>
+        <activity android:name=".setting.Setting_Discount"/>
         <activity android:name=".setting.Setting_Evaluation"/>
         <activity android:name=".setting.Evaluation_Detail"/>
         <activity android:name=".setting.Setting_Announcement"/>
@@ -79,7 +79,7 @@
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
 
-        <activity android:name=".setting.Setting_Discount">
+        <activity android:name=".furniture.Edit_Furniture">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
