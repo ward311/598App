@@ -51,7 +51,7 @@
         <activity android:name=".add_order.Add_Valuation"/>
 
         <!--System-->
-        <activity android:name=".system.System"/>
+        <activity android:name=".furniture.Edit_Furniture"/>
         <activity android:name=".system.System_Data"/>
         <activity android:name=".system.System_Vacation"/>
         <activity android:name=".system.System_Schedule"/>
@@ -79,7 +79,7 @@
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
 
-        <activity android:name=".furniture.Edit_Furniture">
+        <activity android:name=".system.System">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

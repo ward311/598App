@@ -47,31 +47,11 @@ import static com.example.homerenting_prototype_one.show.global_function.getYear
 public class Order_Detail extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
 
-    TextView nameText;
-    TextView nameTitleText;
-    TextView phoneText;
-    TextView movingTimeText;
-    TextView fromAddressText;
-    TextView toAddressText;
-    TextView remainderText;
-    TextView carText;
-    TextView staffText;
-    TextView worktimeText;
-    TextView feeText;
+    TextView nameText, nameTitleText, phoneText, movingTimeText, fromAddressText, toAddressText;
+    TextView remainderText, carText, staffText, worktimeText, feeText;
 
-    String name;
-    String gender;
-    String phone;
-    String contact_address;
-    String movingDatetime;
-    String movingTime;
-    String fromAddress;
-    String toAddress;
-    String remainder;
-    String car;
-    String staff;
-    String worktime;
-    String fee;
+    String name, gender, phone, contact_address, movingDatetime, movingTime;
+    String fromAddress, toAddress, remainder, car, staff, worktime, fee;
     String order_id;
 
     Button call_btn, furniture_btn, check_btn;
@@ -177,7 +157,12 @@ public class Order_Detail extends AppCompatActivity {
                         JSONObject staff_assign = responseArr.getJSONObject(i);
                         if(!staff_assign.has("staff_id")) break;
                         Log.i(TAG, "staff:" + staff_assign);
-                        staff = staff+staff_assign.getString("staff_name")+" ";
+                        staff = staff+staff_assign.getString("staff_name");
+
+                        String pay = staff_assign.getString("pay");
+                        if(!pay.equals("-1")) staff = staff + "("+pay+")";
+
+                        staff = staff + " ";
                     }
 
                     //顯示資料

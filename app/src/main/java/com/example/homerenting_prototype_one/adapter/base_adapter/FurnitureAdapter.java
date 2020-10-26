@@ -1,6 +1,7 @@
 package com.example.homerenting_prototype_one.adapter.base_adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
     private static String space;
     private static String order_id;
     private ArrayList<String[]> data;
-    String TAG = "DetailAdapter";
+    String TAG = "FurnitureAdapter";
 
     public FurnitureAdapter(ArrayList<String[]> data, String space){
         this.data = data;
@@ -54,7 +55,7 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        Log.d(TAG,"position:"+position);
+//        Log.d(TAG,"position: "+position);
 
         ViewHolder viewHolder = null;
 
@@ -65,6 +66,8 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
             viewHolder = new ViewHolder();
             viewHolder.name = convertView.findViewById(R.id.furniture_text);
             viewHolder.number = convertView.findViewById(R.id.furniture_number_text);
+            viewHolder.originalNumber = convertView.findViewById(R.id.originalNum_FI);
+            viewHolder.to = convertView.findViewById(R.id.to_FI);
             viewHolder.minus_btn = convertView.findViewById(R.id.minus_btn);
             viewHolder.plus_btn = convertView.findViewById(R.id.plus_btn);
             viewHolder.add_btn = convertView.findViewById(R.id.add_furniture_btn);
@@ -74,28 +77,37 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
         viewHolder = (ViewHolder) convertView.getTag();
         viewHolder.name.setTag(R.id.furniture_text,position);
         viewHolder.name.setText(data.get(position)[1]);
-        Log.d(TAG, "name: "+data.get(position)[1]);
+
+        if(!data.get(position)[2].equals("-1")){
+            viewHolder.originalNumber.setTag(R.id.furniture_number_text,position);
+            viewHolder.originalNumber.setText(data.get(position)[2]);
+            viewHolder.originalNumber.setVisibility(View.VISIBLE);
+            viewHolder.to.setVisibility(View.VISIBLE);
+            viewHolder.item.setBackgroundColor(Color.parseColor("#FFE7E7"));
+        }
+
         viewHolder.number.setTag(R.id.furniture_number_text,position);
-        viewHolder.number.setText(data.get(position)[2]);
-        Log.d(TAG, "number: "+data.get(position)[2]);
+        viewHolder.number.setText(data.get(position)[3]);
+
+//        Log.d(TAG, "name: "+data.get(position)[1]+", number: "+data.get(position)[2]);
 
         final ViewHolder finalViewHolder = viewHolder;
         viewHolder.minus_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int num = Integer.parseInt(data.get(position)[2]);
+                int num = Integer.parseInt(data.get(position)[3]);
                 if(num > 0)
-                    data.get(position)[2] = String.valueOf(--num);
-                finalViewHolder.number.setText(data.get(position)[2]);
+                    data.get(position)[3] = String.valueOf(--num);
+                finalViewHolder.number.setText(data.get(position)[3]);
             }
         });
 
         viewHolder.plus_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int num = Integer.parseInt(data.get(position)[2]);
-                data.get(position)[2] = String.valueOf(++num);
-                finalViewHolder.number.setText(data.get(position)[2]);
+                int num = Integer.parseInt(data.get(position)[3]);
+                data.get(position)[3] = String.valueOf(++num);
+                finalViewHolder.number.setText(data.get(position)[3]);
             }
         });
 
@@ -103,7 +115,7 @@ public class FurnitureAdapter extends BaseAdapter implements View.OnClickListene
     }
 
     static class ViewHolder{
-        TextView name, number;
+        TextView name, number, originalNumber, to;
         Button minus_btn, plus_btn;
         Button add_btn;
         LinearLayout item;

@@ -215,10 +215,15 @@ public class Edit_Furniture extends AppCompatActivity {
                 String name = furniture.getString("furniture_name");
                 String num = furniture.getString("num");
                 String space_type = furniture.getString("space_type");
+                String furniture_company = furniture.getString("company_id");
 
-                String[] row_data = {furniture_id, name, num, space_type};
-                Log.d(TAG, "row_data: "+Arrays.toString(row_data));
-                data.add(row_data);
+                String[] row_data = {furniture_id, name, "-1", num, space_type, furniture_company};
+                if(data.size() > 0 && data.get(data.size()-1)[0].equals(furniture_id)) {
+                    data.get(data.size()-1)[2] = num;
+                }
+                else data.add(row_data);
+//                Log.d(TAG, "furniture_list_item: "+Arrays.toString(data.get(data.size()-1)));
+
                 switch(space_type){
                     case "客廳":
                         livingRoom_data.add(row_data);
@@ -288,7 +293,7 @@ public class Edit_Furniture extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 modifyFurniture();
-                                finish();
+//                                finish();
                             }
                         });
                         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -305,7 +310,7 @@ public class Edit_Furniture extends AppCompatActivity {
                     if(order_id.equals("-1")) orderFurniture();
                     else {
                         modifyFurniture();
-                        finish();
+//                        finish();
                     }
                 }
             }
@@ -428,13 +433,13 @@ public class Edit_Furniture extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.d(TAG, "responseData: "+responseData); //顯示資料
+                Log.d(TAG, "responseData of space: "+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject spaceJO = responseArr.getJSONObject(i);
-                        Log.d(TAG, "spaceJO:" + spaceJO);
+//                        Log.d(TAG, "spaceJO:" + spaceJO);
 
                         String space_type = spaceJO.getString("space_type");
                         spaceAL.add(space_type);
@@ -502,13 +507,13 @@ public class Edit_Furniture extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.d(TAG, "responseData: "+responseData); //顯示資料
+//                Log.d(TAG, "responseData of furniture: "+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject furnitureJO = responseArr.getJSONObject(i);
-                        Log.d(TAG, "furnitureJO:" + furnitureJO);
+//                        Log.d(TAG, "furnitureJO:" + furnitureJO);
 
                         String furniture_name = furnitureJO.getString("furniture_name");
                         String furniture_id = furnitureJO.getString("furniture_id");
