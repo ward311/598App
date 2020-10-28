@@ -95,7 +95,8 @@ public class Today_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-
+//        bundle = new Bundle();
+//        bundle.putString("order_id", "74");
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
 

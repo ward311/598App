@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/to_FI"
@@ -29,7 +29,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:text="->"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <Button
         android:id="@+id/minus_btn"
@@ -40,8 +40,9 @@
 
     <TextView
         android:id="@+id/furniture_number_text"
-        android:layout_width="wrap_content"
+        android:layout_width="25dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="0"
         android:visibility="visible" />
 

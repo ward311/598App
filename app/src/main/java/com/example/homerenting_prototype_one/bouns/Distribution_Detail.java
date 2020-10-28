@@ -299,9 +299,27 @@ public class Distribution_Detail extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                csalaryPText.setOnLongClickListener(new View.OnLongClickListener() {
+//                csalaryPText.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        String salaryPStr = csalaryPText.getText().toString(); //取得百分比
+//                        csalaryPEdit.setText(salaryPStr);  //同步Edit版版分比
+//                        String salaryStr = csalaryEdit.getText().toString(); //取得數值
+//                        if(salaryStr.isEmpty()) salaryStr = "0";
+//                        csalaryText.setText(salaryStr); //同步文字版數值
+//
+//                        //改為修改百分比模式
+//                        csalaryPText.setVisibility(View.GONE);
+//                        csalaryPEdit.setVisibility(View.VISIBLE);
+//                        csalaryEdit.setVisibility(View.GONE);
+//                        csalaryText.setVisibility(View.VISIBLE);
+//                        return false;
+//                    }
+//                });
+
+                csalaryPText.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onLongClick(View v) {
+                    public void onClick(View v) {
                         String salaryPStr = csalaryPText.getText().toString(); //取得百分比
                         csalaryPEdit.setText(salaryPStr);  //同步Edit版版分比
                         String salaryStr = csalaryEdit.getText().toString(); //取得數值
@@ -313,7 +331,6 @@ public class Distribution_Detail extends AppCompatActivity {
                         csalaryPEdit.setVisibility(View.VISIBLE);
                         csalaryEdit.setVisibility(View.GONE);
                         csalaryText.setVisibility(View.VISIBLE);
-                        return false;
                     }
                 });
             }
@@ -370,9 +387,26 @@ public class Distribution_Detail extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                csalaryText.setOnLongClickListener(new View.OnLongClickListener() {
+//                csalaryText.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        String salaryPStr = csalaryPEdit.getText().toString(); //取得Edit版百分比
+//                        csalaryPText.setText(salaryPStr); //同步文字版百分比
+//                        String salaryStr = csalaryText.getText().toString(); //取得文字版數值
+//                        csalaryEdit.setText(salaryStr); //同步Edit版數值
+//
+//                        //改為修改數值模式
+//                        csalaryPText.setVisibility(View.VISIBLE);
+//                        csalaryPEdit.setVisibility(View.GONE);
+//                        csalaryEdit.setVisibility(View.VISIBLE);
+//                        csalaryText.setVisibility(View.GONE);
+//                        return false;
+//                    }
+//                });
+
+                csalaryText.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onLongClick(View v) {
+                    public void onClick(View v) {
                         String salaryPStr = csalaryPEdit.getText().toString(); //取得Edit版百分比
                         csalaryPText.setText(salaryPStr); //同步文字版百分比
                         String salaryStr = csalaryText.getText().toString(); //取得文字版數值
@@ -383,7 +417,6 @@ public class Distribution_Detail extends AppCompatActivity {
                         csalaryPEdit.setVisibility(View.GONE);
                         csalaryEdit.setVisibility(View.VISIBLE);
                         csalaryText.setVisibility(View.GONE);
-                        return false;
                     }
                 });
             }
@@ -474,9 +507,27 @@ public class Distribution_Detail extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                salaryPText.setOnLongClickListener(new View.OnLongClickListener() {
+//                salaryPText.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        String salaryPStr = salaryPText.getText().toString(); //取得百分比的值(string)
+//                        salaryPEdit.setText(salaryPStr); //修改Edit版百分比的值(與文字版同步)
+//                        String salaryStr = salaryEdit.getText().toString(); //取得數值
+//                        if(salaryStr.isEmpty()) salaryStr = "0";
+//                        salaryText.setText(salaryStr); //修改文字版數值的值(與Edit版同步)
+//
+//                        //改為修改百分比模式
+//                        salaryPText.setVisibility(View.GONE);
+//                        salaryPEdit.setVisibility(View.VISIBLE);
+//                        salaryEdit.setVisibility(View.GONE);
+//                        salaryText.setVisibility(View.VISIBLE);
+//                        return false;
+//                    }
+//                });
+
+                salaryPText.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onLongClick(View v) {
+                    public void onClick(View v) {
                         String salaryPStr = salaryPText.getText().toString(); //取得百分比的值(string)
                         salaryPEdit.setText(salaryPStr); //修改Edit版百分比的值(與文字版同步)
                         String salaryStr = salaryEdit.getText().toString(); //取得數值
@@ -488,7 +539,6 @@ public class Distribution_Detail extends AppCompatActivity {
                         salaryPEdit.setVisibility(View.VISIBLE);
                         salaryEdit.setVisibility(View.GONE);
                         salaryText.setVisibility(View.VISIBLE);
-                        return false;
                     }
                 });
             }
@@ -535,9 +585,25 @@ public class Distribution_Detail extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                salaryText.setOnLongClickListener(new View.OnLongClickListener() {
+//                salaryText.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        String salaryPStr = salaryPEdit.getText().toString();
+//                        salaryPText.setText(salaryPStr);
+//                        String salaryStr = salaryText.getText().toString();
+//                        salaryEdit.setText(salaryStr);
+//
+//                        salaryPText.setVisibility(View.VISIBLE);
+//                        salaryPEdit.setVisibility(View.GONE);
+//                        salaryEdit.setVisibility(View.VISIBLE);
+//                        salaryText.setVisibility(View.GONE);
+//                        return false;
+//                    }
+//                });
+
+                salaryText.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onLongClick(View v) {
+                    public void onClick(View v) {
                         String salaryPStr = salaryPEdit.getText().toString();
                         salaryPText.setText(salaryPStr);
                         String salaryStr = salaryText.getText().toString();
@@ -547,7 +613,6 @@ public class Distribution_Detail extends AppCompatActivity {
                         salaryPEdit.setVisibility(View.GONE);
                         salaryEdit.setVisibility(View.VISIBLE);
                         salaryText.setVisibility(View.GONE);
-                        return false;
                     }
                 });
             }

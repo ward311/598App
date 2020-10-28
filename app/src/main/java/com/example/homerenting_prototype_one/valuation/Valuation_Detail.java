@@ -1,10 +1,12 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -33,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -65,6 +69,7 @@ public class Valuation_Detail extends AppCompatActivity {
 
     Button furniture_btn;
     Button check_date_btn;
+    Button phoneCall_btn;
 
     String name;
     String gender;
@@ -89,7 +94,7 @@ public class Valuation_Detail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation__detail);
-        Button phoneCall_btn = findViewById(R.id.call_btn);
+        phoneCall_btn = findViewById(R.id.call_btn);
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
@@ -330,19 +335,7 @@ public class Valuation_Detail extends AppCompatActivity {
 
 
 
-        phoneCall_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent call_intent = new Intent(Intent.ACTION_DIAL);
-                call_intent.setData(Uri.parse("tel:0933669877"));
-//              call_intent.setData(Uri.parse("tel"+phone_number));
-//                if (ActivityCompat.checkSelfPermission(Valuation_Detail.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
-//                    return;
-//                }
-//                Intent call_intent = new Intent("android.intent.action.CALL",Uri.parse("tel:0933669877"));
-                startActivity(call_intent);
-            }
-        });
+        setPhoneBtn();
 
 
         valuation_btn.setOnClickListener(new View.OnClickListener() {
@@ -380,6 +373,72 @@ public class Valuation_Detail extends AppCompatActivity {
                 startActivity(setting_intent);
             }
         });
+    }
+
+    private void setPhoneBtn(){
+        phoneCall_btn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                LocalDateTime now = LocalDateTime.now();
+                if(isContactTime(timeToStr(
+                        isWeekend(String.valueOf(now.getDayOfWeek())),
+                        isNight(now.getHour())))){
+                    callIntent();
+                }
+                else{
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setTitle("聯絡時間");
+                    dialog.setMessage("現在並非客戶偏好的聯絡時間，確定要繼續前往撥電話畫面？");
+                    dialog.setPositiveButton("確定", (dialog1, which) -> callIntent());
+                    dialog.setNegativeButton("取消", null);
+                    dialog.create().show();
+                }
+            }
+        });
+    }
+
+    private boolean isWeekend(String dayOfWeek){
+        switch (dayOfWeek){
+            case "MONDAY":
+            case "TUESDAY":
+            case "WEDNESDAY":
+            case "THURSDAY":
+            case "FRIDAY":
+                return false;
+            case "SUNDAY":
+            case "SATURDAY":
+                return true;
+            default:
+                Log.i(TAG, "the today dayOfWeek error");
+        }
+        return false;
+    }
+
+    private boolean isNight(int hour){
+        return (hour < 6 || hour > 19);
+    }
+
+    private String timeToStr(boolean isWeekend, boolean isNight){
+        if(isWeekend && isNight) return "假日晚上";
+        if(!isWeekend && isNight) return "平日晚上";
+        if(isWeekend) return "假日白天";
+        return "平日白天";
+    }
+
+    private boolean isContactTime(String currentTime){
+        String[] token = contactTime.split(",");
+        for (String ct : token) {
+            if (ct.equals(currentTime))
+                return true;
+        }
+        return false;
+    }
+
+    private void callIntent(){
+        Intent call_intent = new Intent(Intent.ACTION_DIAL);
+        call_intent.setData(Uri.parse("tel:"+phone));
+        startActivity(call_intent);
     }
 
     public void linking(){

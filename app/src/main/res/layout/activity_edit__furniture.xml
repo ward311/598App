@@ -77,11 +77,18 @@
                         android:textColor="#FFFFFF" />
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/textView19"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="數量"
+                        android:text="原始數量"
+                        android:textColor="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="125dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="最終數量"
                         android:textColor="@android:color/background_light" />
                     <!--                    <TextView-->
                     <!--                        android:layout_width="0dp"-->

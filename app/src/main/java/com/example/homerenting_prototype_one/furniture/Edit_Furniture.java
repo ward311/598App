@@ -125,7 +125,7 @@ public class Edit_Furniture extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(isNew(new_furniture[0])){
-                            String[] row_data = {new_furniture[0], new_furniture[1], "1"};
+                            String[] row_data = {new_furniture[0], new_furniture[1], "0", "1", spaceAL.get(Integer.parseInt(new_furniture[2])+1), getCompany_id(context)};
                             Log.d(TAG, "row_data: "+Arrays.toString(row_data));
                             data.add(row_data);
                             space_data.get(Integer.parseInt(new_furniture[2])).add(row_data);
@@ -217,32 +217,42 @@ public class Edit_Furniture extends AppCompatActivity {
                 String space_type = furniture.getString("space_type");
                 String furniture_company = furniture.getString("company_id");
 
-                String[] row_data = {furniture_id, name, "-1", num, space_type, furniture_company};
-                if(data.size() > 0 && data.get(data.size()-1)[0].equals(furniture_id)) {
-                    data.get(data.size()-1)[2] = num;
-                }
-                else data.add(row_data);
-//                Log.d(TAG, "furniture_list_item: "+Arrays.toString(data.get(data.size()-1)));
-
+                ArrayList<String[]> list = null;
                 switch(space_type){
                     case "客廳":
-                        livingRoom_data.add(row_data);
+                        list = livingRoom_data;
                         break;
                     case "戶外陽台":
-                        outside_data.add(row_data);
+                        list = outside_data;
                         break;
                     case "書房":
-                        studyRoom_data.add(row_data);
+                        list = studyRoom_data;
                         break;
                     case "臥室":
-                        bedRoom_data.add(row_data);
+                        list = bedRoom_data;
                         break;
                     case "餐廳":
-                        diningRoom_data.add(row_data);
+                        list = diningRoom_data;
                         break;
                     default:
                         Log.d(TAG, name+" no space type");
                 }
+
+
+                String[] row_data = {furniture_id, name, num, "-1", space_type, furniture_company};
+                if(data.size() > 0 && data.get(data.size()-1)[0].equals(furniture_id)) {
+                    data.get(data.size()-1)[2] = num;
+                    list.get(list.size()-1)[2] = num;
+                }
+                else {
+                    if(!furniture_company.equals("999")) {
+                        row_data[2] = "-1";
+                        row_data[3] = num;
+                    }
+                    data.add(row_data);
+                    if(list != null) list.add(row_data);
+                }
+//                Log.d(TAG, "furniture_list_item: "+Arrays.toString(data.get(data.size()-1)));
             }
             space_data.add(0, livingRoom_data);
             space_data.add(1, outside_data);
@@ -264,12 +274,7 @@ public class Edit_Furniture extends AppCompatActivity {
         adapter = new FurnitureAdapter(data, fspace);
         adapter.setOrder_id(order_id);
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                list.setAdapter(adapter);
-            }
-        });
+        runOnUiThread(() -> list.setAdapter(adapter));
     }
 
     private void setCheck_btn(){
@@ -346,12 +351,7 @@ public class Edit_Furniture extends AppCompatActivity {
         list.setAdapter(null);
         if(nowSpace == 0) spaceAdapter = new FurnitureAdapter(data, fspace);
         else spaceAdapter = new FurnitureAdapter(space_data.get(nowSpace-1), fspace);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                list.setAdapter(spaceAdapter);
-            }
-        });
+        runOnUiThread(() -> list.setAdapter(spaceAdapter));
     }
 
     private void setSpinner(){
