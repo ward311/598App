@@ -67,13 +67,6 @@ public class Order_Detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__detail);
 
-
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-
         linking(); //將xml裡的元件連至此java
 
         bundle = getIntent().getExtras();
@@ -82,7 +75,6 @@ public class Order_Detail extends AppCompatActivity {
             call_btn.setVisibility(View.GONE);
             check_btn.setVisibility(View.GONE);
         }
-
 
         //傳值
         String function_name = "order_detail";
@@ -104,13 +96,8 @@ public class Order_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -136,7 +123,9 @@ public class Order_Detail extends AppCompatActivity {
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
                     if(worktime.equals("null")) worktime = "未預計工時";
-                    fee = order.getString("accurate_fee")+"元";
+                    fee = order.getString("accurate_fee");
+                    if(fee.isEmpty()) fee = order.getString("estimate_fee");
+                    fee = fee+"元";
 
                     int i;
                     car = "";
@@ -166,103 +155,50 @@ public class Order_Detail extends AppCompatActivity {
                     }
 
                     //顯示資料
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            nameText.setText(name);
-                            if(gender.equals("女")) nameTitleText.setText("小姐");
-                            else if(gender.equals("男")) nameTitleText.setText("先生");
-                            else nameTitleText.setText("");
-                            phoneText.setText(phone);
-                            movingTimeText.setText(movingTime);
-                            fromAddressText.setText(fromAddress);
-                            toAddressText.setText(toAddress);
-                            remainderText.setText(remainder);
-                            carText.setText(car);
-                            staffText.setText(staff);
-                            worktimeText.setText(worktime);
-                            feeText.setText(fee);
-                        }
+                    runOnUiThread(() -> {
+                        nameText.setText(name);
+                        if(gender.equals("女")) nameTitleText.setText("小姐");
+                        else if(gender.equals("男")) nameTitleText.setText("先生");
+                        else nameTitleText.setText("");
+                        phoneText.setText(phone);
+                        movingTimeText.setText(movingTime);
+                        fromAddressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        remainderText.setText(remainder);
+                        carText.setText(car);
+                        staffText.setText(staff);
+                        worktimeText.setText(worktime);
+                        feeText.setText(fee);
                     });
 
                     setFurniture_btn(order.getInt("auto"));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Toast.makeText(Order_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+//                    runOnUiThread(() -> Toast.makeText(Order_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
             }
         });
 
-        check_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
-                Bundle bundle = new Bundle();
+        check_btn.setOnClickListener(v -> {
+            Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
+            Bundle bundle = new Bundle();
 //                bundle.putInt("year", Integer.parseInt(getYear(movingDatetime)));
 //                bundle.putInt("month", Integer.parseInt(getMonth(movingDatetime)));
 //                bundle.putInt("date", Integer.parseInt(getDay(movingDatetime)));
-                bundle.putString("order_id", order_id);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
+            bundle.putString("order_id", order_id);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
 
 
-
-
-
-
-        call_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent call_intent = new Intent(Intent.ACTION_DIAL);
-                call_intent.setData(Uri.parse("tel:0933669877"));
-                startActivity(call_intent);
-            }
+        call_btn.setOnClickListener(v -> {
+            Intent call_intent = new Intent(Intent.ACTION_DIAL);
+            call_intent.setData(Uri.parse("tel:0933669877"));
+            startActivity(call_intent);
         });
 
-
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Order_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Order_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Order_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Order_Detail.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Order_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
-        });
+        globalNav();
     }
 
     private void linking(){
@@ -284,16 +220,42 @@ public class Order_Detail extends AppCompatActivity {
 
     private void setFurniture_btn(int auto){
         if(auto==1){
-            furniture_btn.setOnClickListener( new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent detail_intent = new Intent();
-                    detail_intent.setClass( context, Furniture_Location.class);
-                    bundle.putString( "key","order" );
-                    detail_intent.putExtras(bundle);
-                    startActivity( detail_intent);
-                }
-            } );
+            furniture_btn.setOnClickListener(v -> {
+                Intent detail_intent = new Intent();
+                detail_intent.setClass( context, Furniture_Location.class);
+                bundle.putString( "key","order" );
+                detail_intent.putExtras(bundle);
+                startActivity( detail_intent);
+            });
         }
+    }
+
+    private void globalNav() {
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Order_Detail.this, Valuation.class);
+            startActivity(valuation_intent);
+        });
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Order_Detail.this, Order.class);
+            startActivity(order_intent);
+        });
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Order_Detail.this, Calendar.class);
+            startActivity(calender_intent);
+        });
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Order_Detail.this, System.class);
+            startActivity(system_intent);
+        });
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Order_Detail.this, Setting.class);
+            startActivity(setting_intent);
+        });
     }
 }

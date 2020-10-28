@@ -42,30 +42,12 @@ import static com.example.homerenting_prototype_one.show.global_function.getDate
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 
 public class MatchMaking_Detail extends AppCompatActivity {
-    TextView nameText;
-    TextView nameTitleText;
-    TextView phoneText;
-    TextView valuationTimeText;
-    TextView fromAddressText;
-    TextView toAddressText;
-    TextView noticeText;
-    TextView movingTimeText;
-    TextView carText;
-    TextView worktimeText;
-    TextView priceText;
+    TextView nameText, nameTitleText, phoneText, valuationTimeText, fromAddressText, toAddressText;
+    TextView noticeText, movingTimeText, carText, worktimeText, priceText;
 
     String order_id;
-    String name;
-    String gender;
-    String phone;
-    String valuationTime;
-    String fromAddress;
-    String toAddress;
-    String notice;
-    String movingTime;
-    String car;
-    String worktime;
-    String price;
+    String name, gender, phone, valuationTime, fromAddress, toAddress, notice, movingTime;
+    String car, worktime, price;
 
     Button confirmBtn;
 
@@ -137,7 +119,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     worktime = order.getString("estimate_worktime");
                     if(worktime.equals("null")) worktime = "未預計搬家時長";
                     if(order.getString("accurate_fee").equals("null")) price = "0元";
-                    else price = order.getString("accurate_fee")+"元";
+                    else price = order.getString("estimate_fee")+"元";
 
 //                    if(order.getString("vehicle_type").equals("null")) car = "尚未安排車輛";
 //                    else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");

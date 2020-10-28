@@ -125,13 +125,8 @@ public class Today_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -154,7 +149,7 @@ public class Today_Detail extends AppCompatActivity {
                     toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
-                    fee = order.getString("accurate_fee");
+                    fee = order.getString("estimate_fee");
                     price_origin = Integer.parseInt(fee);
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
@@ -184,178 +179,87 @@ public class Today_Detail extends AppCompatActivity {
                     }
 
                     //顯示資料
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            nameText.setText(name);
-                            if(gender.equals("female")) nameTitleText.setText("小姐");
-                            else if(gender.equals("male")) nameTitleText.setText("先生");
-                            else nameTitleText.setText("");
-                            phoneText.setText(phone);
-                            movingTimeText.setText(movingTime);
-                            fromAddressText.setText(fromAddress);
-                            toAddressText.setText(toAddress);
-                            remainderText.setText(remainder);
-                            carText.setText(car);
-                            staffText.setText(staff);
-                            worktimeText.setText(worktime);
-                            feeText.setText(fee);
-                            finalPriceText.setText(fee);
-                            memoEdit.setText(memo);
-                        }
+                    runOnUiThread(() -> {
+                        nameText.setText(name);
+                        if(gender.equals("female")) nameTitleText.setText("小姐");
+                        else if(gender.equals("male")) nameTitleText.setText("先生");
+                        else nameTitleText.setText("");
+                        phoneText.setText(phone);
+                        movingTimeText.setText(movingTime);
+                        fromAddressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        remainderText.setText(remainder);
+                        carText.setText(car);
+                        staffText.setText(staff);
+                        worktimeText.setText(worktime);
+                        feeText.setText(fee);
+                        finalPriceText.setText(fee);
+                        memoEdit.setText(memo);
                     });
 
                     setFurniture_btn();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Toast.makeText(Today_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+//                    runOnUiThread(() -> Toast.makeText(Today_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
             }
         });
 
-        check_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fee = finalPriceText.getText().toString();
-                memo = memoEdit.getText().toString();
-                Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+        check_btn.setOnClickListener(v -> {
+            fee = finalPriceText.getText().toString();
+            memo = memoEdit.getText().toString();
+            Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
-                update_today_order();
+            update_today_order();
 
-                LayoutInflater inflater = getLayoutInflater();
-                View view = inflater.inflate(R.layout.qrcode_image, null);
-                ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
-                String url = "http://140.117.71.91/598_new/appecpay.php";
-                try {
-                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                    Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
-                    qrcodeView.setImageBitmap(bitmap);
-                } catch (WriterException e){
-                    e.printStackTrace();
-                }
+            LayoutInflater inflater = getLayoutInflater();
+            View view = inflater.inflate(R.layout.qrcode_image, null);
+            ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
+            String url = "http://140.117.71.91/598_new/appecpay.php";
+            try {
+                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
+                qrcodeView.setImageBitmap(bitmap);
+            } catch (WriterException e){
+                e.printStackTrace();
+            }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("匯款QR CODE");
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("匯款QR CODE");
 //               builder.setMessage("請掃描QR CODE");
-                builder.setView(view);
-                builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(check){
-                            if(!status.equals("done") && change_order_status()){
-                                Toast.makeText(context, "網路錯誤", Toast.LENGTH_LONG).show();
-                            }
-                            else{
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Intent intent = new Intent(context, Order_Today.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                    }
-                                }, 500);
-                            }
+            builder.setView(view);
+            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(check){
+                        if(!status.equals("done") && change_order_status()){
+                            Toast.makeText(context, "網路錯誤", Toast.LENGTH_LONG).show();
                         }
-                        else {
-                            Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
+                        else{
+                            Handler handler = new Handler();
+                            handler.postDelayed(() -> {
+                                Intent intent = new Intent(context, Order_Today.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }, 500);
                         }
                     }
-                });
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
+                    else {
+                        Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
                     }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
+                }
+            });
+            builder.setNegativeButton("取消", (dialog, which) -> { });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
 
 
-
-
-
-
-        call_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent call_intent = new Intent(Intent.ACTION_DIAL);
-                call_intent.setData(Uri.parse("tel:"+phone));
-                startActivity(call_intent);
-            }
+        call_btn.setOnClickListener(v -> {
+            Intent call_intent = new Intent(Intent.ACTION_DIAL);
+            call_intent.setData(Uri.parse("tel:"+phone));
+            startActivity(call_intent);
         });
-
-        //收款按鈕
-//        check_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                new AlertDialog.Builder(Today_Detail.this)
-//                        .setTitle("收款")
-//                        .setMessage("確認家具完好無缺後，向您\n收搬家金額"+String.valueOf( price )+"元。\n通知已寄給您的信箱，完成後請您給我們意見回饋，感謝好評。")
-//                        .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                check_btn.setText("完成當日工單");
-//                                check_btn.setOnClickListener( new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        Intent next_intent = new Intent(Today_Detail.this, Order_Today.class);
-//                                        startActivity( next_intent );
-//                                    }
-//                                } );
-//                                new AlertDialog.Builder(Today_Detail.this)
-//                                        .setTitle("確認工單後顧客簽名")
-//                                        .setView(check_edit)
-//                                        .setPositiveButton("確認", new DialogInterface.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(DialogInterface dialog, int which) {
-//                                                check_btn.setText("收款");
-//                                                check_btn.setOnClickListener(new View.OnClickListener() {
-//                                                    @Override
-//                                                    public void onClick(View v) {
-//                                                        new AlertDialog.Builder( Today_Detail.this)
-//                                                                .setTitle("收款")
-//                                                                .setMessage("確認家具完好無缺後，向您\n收搬家金額6000元。\n通知已寄給您的信箱，完成後請您給我們意見回饋，感謝好評。")
-//                                                                .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
-//                                                                    @Override
-//                                                                    public void onClick(DialogInterface dialog, int which) {
-//                                                                        new AlertDialog.Builder(Today_Detail.this)
-//                                                                                .setTitle("待確認款項後顧客簽名")
-//                                                                                .setView(custoner_check_edit)
-//                                                                                .setPositiveButton("確認", new DialogInterface.OnClickListener() {
-//                                                                                    @Override
-//                                                                                    public void onClick(DialogInterface dialog, int which) {
-//                                                                                        check_btn.setText("完成當日工單");
-//                                                                                        check_btn.setOnClickListener(new View.OnClickListener() {
-//                                                                                            @Override
-//                                                                                            public void onClick(View v) {
-//                                                                                                Intent back_order_intent = new Intent(Today_Detail.this, Order_Today.class);
-//                                                                                                startActivity(back_order_intent);
-//                                                                                            }
-//                                                                                        });
-//                                                                                    }
-//                                                                                }).setNegativeButton("取消",null).create()
-//                                                                                .show();
-//                                                                    }
-//                                                                } ).create().show();
-//                                                    }
-//                                                });
-//                                            }
-//                                        }).setNegativeButton("取消",null).create()
-//                                        .show();
-//                            }
-//                        } )
-//                        .setNegativeButton("取消",null).create()
-//                        .show();
-//            }
-//        });
 
         //底下nav
         valuation_btn.setOnClickListener(new View.OnClickListener() {
@@ -396,21 +300,18 @@ public class Today_Detail extends AppCompatActivity {
     }
 
     private void changePriceMark(){
-        changePriceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(changePriceBtn.getText().toString().equals("+"))
-                    changePriceBtn.setText("-");
-                else changePriceBtn.setText("+");
+        changePriceBtn.setOnClickListener(v -> {
+            if(changePriceBtn.getText().toString().equals("+"))
+                changePriceBtn.setText("-");
+            else changePriceBtn.setText("+");
 
-                String changeprice = changePriceText.getText().toString();
-                if(!changeprice.isEmpty()){
-                    if(changePriceBtn.getText().toString().equals("+"))
-                        price = price_origin+Integer.parseInt(changeprice);
-                    else
-                        price = price_origin-Integer.parseInt(changeprice);
-                    finalPriceText.setText(String.valueOf(price));
-                }
+            String changeprice = changePriceText.getText().toString();
+            if(!changeprice.isEmpty()){
+                if(changePriceBtn.getText().toString().equals("+"))
+                    price = price_origin+Integer.parseInt(changeprice);
+                else
+                    price = price_origin-Integer.parseInt(changeprice);
+                finalPriceText.setText(String.valueOf(price));
             }
         });
     }
@@ -418,14 +319,10 @@ public class Today_Detail extends AppCompatActivity {
     private void changePrice(){
         changePriceText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -457,10 +354,8 @@ public class Today_Detail extends AppCompatActivity {
     private void setPriceUnitPlace(){
         ConstraintSet s = new ConstraintSet();
         s.clone(cLayout);
-        if(change)
-            s.connect(priceUnitText.getId(), ConstraintSet.START, finalPriceText.getId(), ConstraintSet.END, 5);
-        else
-            s.connect(priceUnitText.getId(), ConstraintSet.START, feeText.getId(), ConstraintSet.END, 5);
+        if(change) s.connect(priceUnitText.getId(), ConstraintSet.START, finalPriceText.getId(), ConstraintSet.END, 5);
+        else s.connect(priceUnitText.getId(), ConstraintSet.START, feeText.getId(), ConstraintSet.END, 5);
         s.applyTo(cLayout);
     }
 
@@ -488,16 +383,13 @@ public class Today_Detail extends AppCompatActivity {
     }
 
     private void setFurniture_btn(){
-        furnitureBtn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_intent = new Intent();
-                detail_intent.setClass( context, Furniture_Location.class);
-                bundle.putString( "key","order" );
-                detail_intent.putExtras(bundle);
-                startActivity( detail_intent);
-            }
-        } );
+        furnitureBtn.setOnClickListener(v -> {
+            Intent detail_intent = new Intent();
+            detail_intent.setClass( context, Furniture_Location.class);
+            bundle.putString( "key","order" );
+            detail_intent.putExtras(bundle);
+            startActivity( detail_intent);
+        });
     }
 
     private void update_today_order(){
@@ -521,21 +413,15 @@ public class Today_Detail extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                        check = false;
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                check = false;
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of update_today_order: " + responseData);
-                if(responseData.equals("success")) check = true;
-                else check = false;
+                check = responseData.equals("success");
             }
         });
     }
@@ -560,12 +446,7 @@ public class Today_Detail extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Today_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override

@@ -42,31 +42,11 @@ public class ValuationCancel_Detail extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
     Bundle bundle;
 
-    TextView nameText;
-    TextView nameTitleText;
-    TextView phoneText;
-    TextView valuationtimeText;
-    TextView movingTimeText;
-    TextView fromAddressText;
-    TextView toAddressText;
-    TextView remainderText;
-    TextView movedateText;
-    TextView carText;
-    TextView worktimeText;
-    TextView feeText;
+    TextView nameText, nameTitleText, phoneText, valuationtimeText, movingTimeText, fromAddressText, toAddressText;
+    TextView remainderText, movedateText, carText, worktimeText, feeText;
 
-    String name;
-    String gender;
-    String phone;
-    String valuationtime;
-    String movingTime;
-    String fromAddress;
-    String toAddress;
-    String remainder;
-    String movedate;
-    String car;
-    String worktime;
-    String fee;
+    String name, gender, phone, valuationtime, movingTime, fromAddress, toAddress;
+    String remainder, movedate, car, worktime, fee;
 
     String TAG = "Valuation_Cancel_Detail";
     private final String PHP = "/user_data.php";
@@ -101,13 +81,8 @@ public class ValuationCancel_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(ValuationCancel_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(ValuationCancel_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -135,34 +110,26 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                         car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
                     else car = "尚未安排車輛";
                     worktime = order.getString("estimate_worktime");
-                    fee = order.getString("accurate_fee");
+                    fee = order.getString("estimate_fee");
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            nameText.setText(name);
-                            if(gender.equals("female")) nameTitleText.setText("小姐");
-                            else if(gender.equals("male")) nameTitleText.setText("先生");
-                            else nameTitleText.setText("");
-                            phoneText.setText(phone);
-                            movingTimeText.setText(movingTime);
-                            fromAddressText.setText(fromAddress);
-                            toAddressText.setText(toAddress);
-                            remainderText.setText(remainder);
-                            worktimeText.setText(worktime);
-                            feeText.setText(fee);
-                            carText.setText(car);
-                            valuationtimeText.setText(valuationtime);
-                        }
+                    runOnUiThread(() -> {
+                        nameText.setText(name);
+                        if(gender.equals("female")) nameTitleText.setText("小姐");
+                        else if(gender.equals("male")) nameTitleText.setText("先生");
+                        else nameTitleText.setText("");
+                        phoneText.setText(phone);
+                        movingTimeText.setText(movingTime);
+                        fromAddressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        remainderText.setText(remainder);
+                        worktimeText.setText(worktime);
+                        feeText.setText(fee);
+                        carText.setText(car);
+                        valuationtimeText.setText(valuationtime);
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Toast.makeText(ValuationCancel_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+//                    runOnUiThread(() -> Toast.makeText(ValuationCancel_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
             }
         });

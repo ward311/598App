@@ -84,7 +84,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     ArrayList<String[]> cars;
     int valPrice = -1, firstRowEmpty = 1;
-    boolean hasCarDemand = true;
 
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
@@ -92,6 +91,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     Context context = this;
     Bundle bundle;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,40 +112,25 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         getOrder();
 
-        furniture_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, Edit_Furniture.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
+        furniture_btn.setOnClickListener(v -> {
+            Intent intent = new Intent(context, Edit_Furniture.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
 
-        movingDateText.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog date_picker = new DatePickerDialog( context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        movingDateText.setText(year+"-"+(month+1)+"-"+dayOfMonth);
-                    }
-                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
-                date_picker.show();
-            }
-        } );
+        movingDateText.setOnClickListener(v -> {
+            DatePickerDialog date_picker = new DatePickerDialog( context, (view, year, month, dayOfMonth) -> {
+                movingDateText.setText(year+"-"+(month+1)+"-"+dayOfMonth);
+            },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+            date_picker.show();
+        });
 
-        movingTimeText.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog time_picker = new TimePickerDialog( context, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        movingTimeText.setText(hourOfDay+":"+minute);
-                    }
-                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
-                time_picker.show();
-            }
-        } );
+        movingTimeText.setOnClickListener(v -> {
+            TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> {
+                movingTimeText.setText(hourOfDay+":"+minute);
+            },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+            time_picker.show();
+        });
 
 
         setPhoneBtn();
@@ -231,55 +216,35 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     });
 
                     int auto = order.getInt("auto");
-                    if(auto==0){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                furnitureLL.setVisibility(View.GONE);
-                            }
-                        });
-                    }
+                    if(auto==0) runOnUiThread(() -> furnitureLL.setVisibility(View.GONE));
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+//                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
 
                 carAdapter = new CarAdapter(cars);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        carAssignRList.setLayoutManager(new LinearLayoutManager(context));
-                        carAssignRList.setAdapter(carAdapter);
-                    }
+                runOnUiThread(() -> {
+                    carAssignRList.setLayoutManager(new LinearLayoutManager(context));
+                    carAssignRList.setAdapter(carAdapter);
                 });
             }
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setPhoneBtn(){
-        phoneCall_btn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                LocalDateTime now = LocalDateTime.now();
-                if(isContactTime(timeToStr(
-                        isWeekend(String.valueOf(now.getDayOfWeek())),
-                        isNight(now.getHour())))){
-                    callIntent();
-                }
-                else{
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                    dialog.setTitle("聯絡時間");
-                    dialog.setMessage("現在並非客戶偏好的聯絡時間，確定要繼續前往撥電話畫面？");
-                    dialog.setPositiveButton("確定", (dialog1, which) -> callIntent());
-                    dialog.setNegativeButton("取消", null);
-                    dialog.create().show();
-                }
+        phoneCall_btn.setOnClickListener(v -> {
+            LocalDateTime now = LocalDateTime.now();
+            if(isContactTime(timeToStr(isWeekend(String.valueOf(now.getDayOfWeek())), isNight(now.getHour())))){
+                callIntent();
+            }
+            else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setTitle("聯絡時間");
+                dialog.setMessage("現在並非客戶偏好的聯絡時間，確定要繼續前往撥電話畫面？");
+                dialog.setPositiveButton("確定", (dialog1, which) -> callIntent());
+                dialog.setNegativeButton("取消", null);
+                dialog.create().show();
             }
         });
     }
@@ -301,18 +266,18 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         return false;
     }
 
-    private boolean isNight(int hour){
+    private boolean isNight(int hour) {
         return (hour < 6 || hour > 19);
     }
 
-    private String timeToStr(boolean isWeekend, boolean isNight){
+    private String timeToStr(boolean isWeekend, boolean isNight) {
         if(isWeekend && isNight) return "假日晚上";
         if(!isWeekend && isNight) return "平日晚上";
         if(isWeekend) return "假日白天";
         return "平日白天";
     }
 
-    private boolean isContactTime(String currentTime){
+    private boolean isContactTime(String currentTime) {
         String[] token = contactTime.split(",");
         for (String ct : token) {
             if (ct.equals(currentTime))
@@ -328,45 +293,35 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     }
 
     private void setCheckBtn(){
-        check_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String movingDate = movingDateText.getText().toString().trim();
-                String movingTime = movingTimeText.getText().toString().trim();
-                String moving_date = movingDate + " " + movingTime;
-                String estimate_worktime = worktimeEdit.getText().toString().trim();
-                String fee = priceEdit.getText().toString().trim();
-                memo = memoEdit.getText().toString();
+        check_btn.setOnClickListener(v -> {
+            String movingDate = movingDateText.getText().toString().trim();
+            String movingTime = movingTimeText.getText().toString().trim();
+            String moving_date = movingDate + " " + movingTime;
+            String estimate_worktime = worktimeEdit.getText().toString().trim();
+            String fee = priceEdit.getText().toString().trim();
+            memo = memoEdit.getText().toString();
 //                Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
-                boolean check = true;
-                if(checkEmpty(estimate_worktime, fee)) check = false;
-                if(checkCarsViewEmpty()) check = false;
-                if(!check) return;
+            boolean check = true;
+            if(checkEmpty(estimate_worktime, fee)) check = false;
+            if(checkCarsViewEmpty()) check = false;
+            if(!check) return;
 
-                updateValuation(moving_date, estimate_worktime, fee);
-                updateCarDemand();
+            updateValuation(moving_date, estimate_worktime, fee);
+            updateCarDemand();
 
-                new AlertDialog.Builder(context)
-                        .setTitle("媒合中")
-                        .setMessage("到府估價單媒合中，成功媒\n合會成為訂單，請公司注意\n新訂單通知。")
-                        .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Intent intent = new Intent(context, Valuation_Booking.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                    }
-                                }, 1000);
-                            }
-                        } )
-                        .show();
-            }
+            new AlertDialog.Builder(context)
+                    .setTitle("媒合中")
+                    .setMessage("到府估價單媒合中，成功媒\n合會成為訂單，請公司注意\n新訂單通知。")
+                    .setPositiveButton( "確認", (dialog, which) -> {
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> {
+                            Intent intent = new Intent(context, Valuation_Booking.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }, 1000);
+                    })
+                    .show();
         });
     }
 
@@ -399,8 +354,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 check = true;
             }
         }
-
-
         return check;
     }
 
@@ -438,7 +391,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     if(position != 0){
                         Log.d(TAG, "car row "+position+" delete");
                         cars.remove(position);
-//                        carAdapter.notifyItemRemoved(position);
                         carAdapter.notifyDataSetChanged();
                     }
                 }
@@ -464,7 +416,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     if(position != 0){
                         Log.d(TAG, "cars "+position+" delete(out of version)");
                         cars.remove(position);
-//                        carAdapter.notifyItemRemoved(position);
                         carAdapter.notifyDataSetChanged();
                     }
                 }
@@ -569,23 +520,13 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "估價單已完成", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "估價單已完成", Toast.LENGTH_LONG).show());
                 Log.d(TAG, "submit update_valuation responseData: " + responseData);
             }
         });
@@ -613,7 +554,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         furnitureLL = findViewById(R.id.furniture_LL_VBD);
         valPriceText = findViewById(R.id.valPrice_VBD);
         memoEdit = findViewById(R.id.PS_VBD);
-
         carAssignRList = findViewById(R.id.car_assign_VBD);
     }
 
@@ -625,47 +565,27 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        back_btn.setOnClickListener(v -> finish());
 
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(context, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(context, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(context, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(context, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(context, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(context, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(context, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(context, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(context, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(context, Setting.class);
+            startActivity(setting_intent);
         });
     }
 }

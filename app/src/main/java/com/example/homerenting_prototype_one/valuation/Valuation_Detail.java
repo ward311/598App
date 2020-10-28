@@ -51,58 +51,29 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 
 public class Valuation_Detail extends AppCompatActivity {
-    TextView nameText;
-    TextView nameTitleText;
-    TextView phoneText;
-    TextView selfValTimeText;
-    TextView fromAddressText;
-    TextView toAddressText;
-    TextView contactTimeText;
-    TextView cusValTimeText;
-    TextView noticeText;
-    TextView sysValPriceText;
-    TextView valPriceText;
+    TextView nameText, nameTitleText, phoneText, selfValTimeText, fromAddressText, toAddressText;
+    TextView contactTimeText, cusValTimeText, noticeText, sysValPriceText, valPriceText;
 
-    EditText pickDate_edit;
-    EditText pickTime_edit;
-    EditText pickTime2_edit;
+    EditText pickDate_edit, pickTime_edit, pickTime2_edit;
 
-    Button furniture_btn;
-    Button check_date_btn;
-    Button phoneCall_btn;
+    Button furniture_btn, check_date_btn, phoneCall_btn;
 
-    String name;
-    String gender;
-    String nameTitle;
-    String phone;
-    String selfValTime;
-    String fromAddress;
-    String toAddress;
-    String contactTime;
-    String valTime;
-    String notice;
-    String sysValPrice;
-    String valPrice;
+    String name, gender, nameTitle, phone, selfValTime, fromAddress, toAddress;
+    String contactTime, valTime, notice;
+    String sysValPrice, valPrice;
 
     String TAG = "Valuation_Detail";
 
     final OkHttpClient okHttpClient = new OkHttpClient();
 
-    Context context;
+    Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation__detail);
         phoneCall_btn = findViewById(R.id.call_btn);
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         final GregorianCalendar calendar = new GregorianCalendar();
-
-        context = Valuation_Detail.this;
 
         final Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
@@ -133,12 +104,7 @@ public class Valuation_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Valuation_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(Valuation_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -187,12 +153,7 @@ public class Valuation_Detail extends AppCompatActivity {
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Toast.makeText(Valuation_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+//                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
             }
         });
@@ -294,12 +255,7 @@ public class Valuation_Detail extends AppCompatActivity {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
                         e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
                     }
 
                     @Override
@@ -308,10 +264,8 @@ public class Valuation_Detail extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(responseData.equals("success"))
-                                        Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
-                                    else
-                                        Toast.makeText(context, "上傳失敗", Toast.LENGTH_LONG).show();
+                                    if(responseData.equals("success")) Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
+                                    else Toast.makeText(context, "上傳失敗", Toast.LENGTH_LONG).show();
                                 }
                             });
                         Log.d(TAG, "check_price_btn, responseData: " + responseData);
@@ -333,46 +287,10 @@ public class Valuation_Detail extends AppCompatActivity {
 
 
 
-
-
         setPhoneBtn();
 
 
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Valuation_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Valuation_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Valuation_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Valuation_Detail.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Valuation_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
-        });
+        globalNav();
     }
 
     private void setPhoneBtn(){
@@ -458,5 +376,49 @@ public class Valuation_Detail extends AppCompatActivity {
         check_date_btn = findViewById(R.id.check_date_btn_VD);
         sysValPriceText = findViewById(R.id.sysValPrice_VD);
         valPriceText = findViewById(R.id.valPrice_VD);
+    }
+
+    private void globalNav() {
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+        valuation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent valuation_intent = new Intent(Valuation_Detail.this, Valuation.class);
+                startActivity(valuation_intent);
+            }
+        });
+        order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent order_intent = new Intent(Valuation_Detail.this, Order.class);
+                startActivity(order_intent);
+            }
+        });
+        calendar_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calender_intent = new Intent(Valuation_Detail.this, Calendar.class);
+                startActivity(calender_intent);
+            }
+        });
+        system_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent system_intent = new Intent(Valuation_Detail.this, System.class);
+                startActivity(system_intent);
+            }
+        });
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(Valuation_Detail.this, Setting.class);
+                startActivity(setting_intent);
+            }
+        });
     }
 }

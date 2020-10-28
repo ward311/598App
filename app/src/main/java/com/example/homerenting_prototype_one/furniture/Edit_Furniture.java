@@ -112,40 +112,29 @@ public class Edit_Furniture extends AppCompatActivity {
         }
         else getFurnitureData();
 
-        add_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSpinner();
+        add_btn.setOnClickListener(v -> {
+            setSpinner();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("家具名稱");
-                builder.setMessage("請輸入家具名稱");
-                builder.setView(view);
-                builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(isNew(new_furniture[0])){
-                            String[] row_data = {new_furniture[0], new_furniture[1], "0", "1", spaceAL.get(Integer.parseInt(new_furniture[2])+1), getCompany_id(context)};
-                            Log.d(TAG, "row_data: "+Arrays.toString(row_data));
-                            data.add(row_data);
-                            space_data.get(Integer.parseInt(new_furniture[2])).add(row_data);
-                            if(nowSpace != 0){
-                                nowSpace = Integer.parseInt(new_furniture[2])+1;
-                                furnitureSpaceSpr.setSelection(nowSpace);
-                            }
-                            setList();
-                        }
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("家具名稱");
+            builder.setMessage("請輸入家具名稱");
+            builder.setView(view);
+            builder.setPositiveButton("確定", (dialog, which) -> {
+                if(isNew(new_furniture[0])){
+                    String[] row_data = {new_furniture[0], new_furniture[1], "0", "1", spaceAL.get(Integer.parseInt(new_furniture[2])+1), getCompany_id(context)};
+                    Log.d(TAG, "row_data: "+Arrays.toString(row_data));
+                    data.add(row_data);
+                    space_data.get(Integer.parseInt(new_furniture[2])).add(row_data);
+                    if(nowSpace != 0){
+                        nowSpace = Integer.parseInt(new_furniture[2])+1;
+                        furnitureSpaceSpr.setSelection(nowSpace);
                     }
-                });
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
+                    setList();
+                }
+            });
+            builder.setNegativeButton("取消", (dialog, which) -> { });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
 
 
@@ -176,13 +165,8 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -278,45 +262,34 @@ public class Edit_Furniture extends AppCompatActivity {
     }
 
     private void setCheck_btn(){
-        check_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(datalist()){
-                    if(order_id.equals("-1")) orderFurniture();
-                    else{
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setTitle("確認送出");
-                        String message = "確定後，數量為0的";
-                        int i;
-                        for(i = 0; i < zeroFurniture.size(); i++){
-                            message = message+zeroFurniture.get(i);
-                            if(i!=(zeroFurniture.size()-1)) message = message+", ";
-                            else message = message+"將會從家具清單中刪除";
-                        }
-                        builder.setMessage(message);
-                        builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                modifyFurniture();
-//                                finish();
-                            }
-                        });
-                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    }
-                }
+        check_btn.setOnClickListener(v -> {
+            if(datalist()){
+                if(order_id.equals("-1")) orderFurniture();
                 else{
-                    if(order_id.equals("-1")) orderFurniture();
-                    else {
-                        modifyFurniture();
-//                        finish();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("確認送出");
+                    String message = "確定後，數量為0的";
+                    int i;
+                    for(i = 0; i < zeroFurniture.size(); i++){
+                        message = message+zeroFurniture.get(i);
+                        if(i!=(zeroFurniture.size()-1)) message = message+", ";
+                        else message = message+"將會從家具清單中刪除";
                     }
+                    builder.setMessage(message);
+                    builder.setPositiveButton("確定", (dialog, which) -> {
+                        modifyFurniture();
+                        finish();
+                    });
+                    builder.setNegativeButton("取消", (dialog, which) -> { });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+            }
+            else{
+                if(order_id.equals("-1")) orderFurniture();
+                else {
+                    modifyFurniture();
+                    finish();
                 }
             }
         });
@@ -340,9 +313,7 @@ public class Edit_Furniture extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
     }
 
@@ -376,9 +347,7 @@ public class Edit_Furniture extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         furnitureSpr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -395,9 +364,7 @@ public class Edit_Furniture extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
     }
 
@@ -422,12 +389,7 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -458,21 +420,11 @@ public class Edit_Furniture extends AppCompatActivity {
     private void setSpace(int choose){
         final ArrayAdapter<String> spaceList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, space);
         if(choose==1){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    furnitureSpaceSpr.setAdapter(spaceList);
-                }
-            });
+            runOnUiThread(() -> furnitureSpaceSpr.setAdapter(spaceList));
             spaceAL.clear();
         }
         if(choose==2){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    spaceSpr.setAdapter(spaceList);
-                }
-            });
+            runOnUiThread(() -> spaceSpr.setAdapter(spaceList));
         }
     }
 
@@ -496,12 +448,7 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -527,13 +474,10 @@ public class Edit_Furniture extends AppCompatActivity {
                 furniture = new String[furnitureAL.size()];
                 furniture = furnitureAL.toArray(furniture);
                 Log.i(TAG, "furniture: "+Arrays.toString(furniture));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ArrayAdapter<String> furnitureList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, furniture);
-                        furnitureSpr.setAdapter(null);
-                        furnitureSpr.setAdapter(furnitureList);
-                    }
+                runOnUiThread(() -> {
+                    ArrayAdapter<String> furnitureList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, furniture);
+                    furnitureSpr.setAdapter(null);
+                    furnitureSpr.setAdapter(furnitureList);
                 });
             }
         });
@@ -543,12 +487,9 @@ public class Edit_Furniture extends AppCompatActivity {
 
     private void initFSpinner(){
         final String[] init = {"-------"};
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ArrayAdapter<String> initAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, init);
-                furnitureSpr.setAdapter(initAdapter);
-            }
+        runOnUiThread(() -> {
+            ArrayAdapter<String> initAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, init);
+            furnitureSpr.setAdapter(initAdapter);
         });
     }
 
@@ -617,23 +558,13 @@ public class Edit_Furniture extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "修改家具完成", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "修改家具完成", Toast.LENGTH_LONG).show());
                 Log.d(TAG, "responseData of modify_furniture: " + responseData);
             }
         });
@@ -646,40 +577,25 @@ public class Edit_Furniture extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Edit_Furniture.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Edit_Furniture.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Edit_Furniture.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Edit_Furniture.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Edit_Furniture.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Edit_Furniture.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Edit_Furniture.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Edit_Furniture.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Edit_Furniture.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Edit_Furniture.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 }
