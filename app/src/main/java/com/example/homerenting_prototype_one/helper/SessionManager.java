@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.helper;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -21,10 +22,12 @@ public class SessionManager {
 
     Context _context;
 
+    @SuppressLint("StaticFieldLeak")
     private static SessionManager INSTANCE = null;
 
     User user;
 
+    @SuppressLint("CommitPrefEdits")
     private SessionManager(Context context){
         this._context = context;
         pref = _context.getSharedPreferences("MovingAppPref", Context.MODE_PRIVATE);

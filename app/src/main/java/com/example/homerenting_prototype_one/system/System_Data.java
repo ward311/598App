@@ -94,27 +94,14 @@ public class System_Data extends AppCompatActivity {
         getData();
 //        setList();
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(System_Data.this, System.class);
-                startActivity(system_intent);
-            }
+        back_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(System_Data.this, System.class);
+            startActivity(system_intent);
         });
 
-        employee_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showEmployeeList();
-            }
-        });
+        employee_text.setOnClickListener(v -> showEmployeeList());
 
-        car_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showCarList();
-            }
-        });
+        car_text.setOnClickListener(v -> showCarList());
 
         setAddEmployeeButton();
         setAddCarButton();
@@ -201,19 +188,14 @@ public class System_Data extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData); //顯示資料
+//                Log.d(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -244,17 +226,13 @@ public class System_Data extends AppCompatActivity {
                         String weight = vehicle.getString("vehicle_weight");
                         String type = vehicle.getString("vehicle_type");
                         String plate_num = vehicle.getString("plate_num");
-                        String[] row_data = {vehicle_id, weight, type, plate_num};
+                        String verified = vehicle.getString("verified");
+                        String[] row_data = {vehicle_id, weight, type, plate_num, verified};
                         vehicles.add(row_data);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
 
                 //顯示資訊
@@ -262,12 +240,9 @@ public class System_Data extends AppCompatActivity {
                     for(int i=0; i < employees.size(); i++)
                         Log.i(TAG, "employees: "+ Arrays.toString(employees.get(i)));
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setCarRList();
-                        setEmployeeRList();
-                    }
+                runOnUiThread(() -> {
+                    setCarRList();
+                    setEmployeeRList();
                 });
             }
         });
@@ -294,127 +269,116 @@ public class System_Data extends AppCompatActivity {
     }
 
     private void setAddEmployeeButton(){
-        addEmployee_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //輸入欄
-                final EditText employee_edit = new EditText(context);
-                //設定margin
-                FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.leftMargin = 80;
-                params.rightMargin = params.leftMargin;
-                employee_edit.setLayoutParams(params);
-                //要放到FrameLayout裡，margin才有用
-                FrameLayout container = new FrameLayout(context);
-                container.addView(employee_edit);
+        addEmployee_btn.setOnClickListener(v -> {
+            //輸入欄
+            final EditText employee_edit = new EditText(context);
+            //設定margin
+            FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = 80;
+            params.rightMargin = params.leftMargin;
+            employee_edit.setLayoutParams(params);
+            //要放到FrameLayout裡，margin才有用
+            FrameLayout container = new FrameLayout(context);
+            container.addView(employee_edit);
 
-                new AlertDialog.Builder(context)
-                        .setTitle( "新增員工" )
-                        .setView(container)
-                        .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String new_employee_name = employee_edit.getText().toString();
+            new AlertDialog.Builder(context)
+                    .setTitle( "新增員工" )
+                    .setView(container)
+                    .setPositiveButton( "確認", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String new_employee_name = employee_edit.getText().toString();
 
-                                //確認員工名字有無重複(目前不允許同名同姓)
-                                if(!isEmployeeExist(new_employee_name)){
-                                    String[] row_data = {"-1", new_employee_name};
-                                    employees.add(row_data);
-                                }
-                                //新增後的ArrayList
-                                for(int i=0; i < employees.size(); i++)
-                                    Log.i(TAG, "employees: "+ Arrays.toString(employees.get(i)));
-
-                                //呈現在list上
-                                e_adapter.notifyDataSetChanged();
-                                showEmployeeList();
-
-                                //寫入資料庫
-                                if(!TextUtils.isEmpty(employee_edit.getText().toString())){
-                                    add_staff(new_employee_name);
-                                }
+                            //確認員工名字有無重複(目前不允許同名同姓)
+                            if(!isEmployeeExist(new_employee_name)){
+                                String[] row_data = {"-1", new_employee_name};
+                                employees.add(row_data);
                             }
-                        } )
-                        .setNegativeButton( "取消",null )
-                        .create()
-                        .show();
-            }
+                            //新增後的ArrayList
+                            for(int i=0; i < employees.size(); i++)
+                                Log.i(TAG, "employees: "+ Arrays.toString(employees.get(i)));
+
+                            //呈現在list上
+                            e_adapter.notifyDataSetChanged();
+                            showEmployeeList();
+
+                            //寫入資料庫
+                            if(!TextUtils.isEmpty(employee_edit.getText().toString())){
+                                add_staff(new_employee_name);
+                            }
+                        }
+                    } )
+                    .setNegativeButton( "取消",null )
+                    .create()
+                    .show();
         });
     }
 
     private void setAddCarButton(){
-        addCar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder car_dialog = new AlertDialog.Builder(context);
-                car_dialog.setTitle("新增車輛");
-                LayoutInflater inflater = getLayoutInflater();
-                View view = inflater.inflate(R.layout.add_car_dialog, null);
-                car_dialog.setView(view);
+        addCar_btn.setOnClickListener(v -> {
+            final AlertDialog.Builder car_dialog = new AlertDialog.Builder(context);
+            car_dialog.setTitle("新增車輛");
+            LayoutInflater inflater = getLayoutInflater();
+            View view = inflater.inflate(R.layout.add_car_dialog, null);
+            car_dialog.setView(view);
 
-                //輸入欄
-                final EditText weight_edit = view.findViewById(R.id.weight_edit_ACD);
-                final EditText type_edit = view.findViewById(R.id.type_edit_ACD);
-                final EditText plateNum_edit = view.findViewById(R.id.plateNum_edit_ACD);
+            //輸入欄
+            final EditText weight_edit = view.findViewById(R.id.weight_edit_ACD);
+            final EditText type_edit = view.findViewById(R.id.type_edit_ACD);
+            final EditText plateNum_edit = view.findViewById(R.id.plateNum_edit_ACD);
 
-                Spinner type_sp = view.findViewById(R.id.type_sp_ACD);
-                final String[] types = {"箱型車", "平斗車"}; //其他
-                ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, types);
-                type_sp.setAdapter(typeAdapter);
-                type_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                        Toast.makeText(context, "type("+position+"): "+types[position], Toast.LENGTH_SHORT).show();
-                        if(position == types.length-1) {
-                            type_edit.setVisibility(View.VISIBLE);
-                            new_carType = null;
-                        }
-                        else {
-                            type_edit.setVisibility(View.GONE);
-                            new_carType = types[position];
-                        }
+            Spinner type_sp = view.findViewById(R.id.type_sp_ACD);
+            final String[] types = {"箱型車", "平斗車"}; //其他
+            ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, types);
+            type_sp.setAdapter(typeAdapter);
+            type_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    Toast.makeText(context, "type("+position+"): "+types[position], Toast.LENGTH_SHORT).show();
+                    if(position == 2) { //2:其他
+                        type_edit.setVisibility(View.VISIBLE);
+                        new_carType = null;
                     }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
+                    else {
+                        type_edit.setVisibility(View.GONE);
+                        new_carType = types[position];
                     }
-                });
+                }
 
-                car_dialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //輸入的內容
-                        String new_weight = weight_edit.getText().toString();
-                        String new_plateNum = plateNum_edit.getText().toString();
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) { }
+            });
 
-                        if(new_carType == null) new_carType = type_edit.getText().toString();
-                        else type_edit.setText(new_carType);
+            car_dialog.setPositiveButton("確認", (dialog, which) -> {
+                //輸入的內容
+                String new_weight = weight_edit.getText().toString();
+                String new_plateNum = plateNum_edit.getText().toString();
 
-                        //空白防呆+防止重複的車牌
-                        if(!isEmtpy(weight_edit, type_edit, plateNum_edit) && !isCarExist(new_plateNum)){
-                            String[] row_data = {"-1", new_weight, new_carType, new_plateNum};
-                            vehicles.add(row_data);
-                        }
+                if(new_carType == null) new_carType = type_edit.getText().toString();
+                else type_edit.setText(new_carType);
 
-                        //呈現在list上
-                        c_adapter.notifyDataSetChanged();
-                        showCarList();
+                //空白防呆+防止重複的車牌
+                if(!isEmtpy(weight_edit, type_edit, plateNum_edit) && !isCarExist(new_plateNum)){
+                    String[] row_data = {"-1", new_weight, new_carType, new_plateNum, "0"};
+                    vehicles.add(row_data);
+                }
 
-                        if(isEmtpy(weight_edit, type_edit, plateNum_edit)){
-                            Toast.makeText(context, "新增車輛失敗，有空白欄位", Toast.LENGTH_SHORT).show(); //有空白欄位，顯示錯誤訊息
-                        }
-                        else{
-                            add_car(new_weight, new_carType, new_plateNum); //寫入資料庫
-                            Log.i(TAG, new_weight+"噸"+new_carType+" "+new_plateNum);
-                        }
-                    }
-                });
+                //呈現在list上
+                c_adapter.notifyDataSetChanged();
+                showCarList();
 
-                car_dialog.setNegativeButton("取消", null);
+                if(isEmtpy(weight_edit, type_edit, plateNum_edit)){
+                    Toast.makeText(context, "新增車輛失敗，有空白欄位", Toast.LENGTH_SHORT).show(); //有空白欄位，顯示錯誤訊息
+                }
+                else{
+                    add_car(new_weight, new_carType, new_plateNum); //寫入資料庫
+                    Log.i(TAG, new_weight+"噸"+new_carType+" "+new_plateNum);
+                }
+            });
 
-                car_dialog.create().show();
-            }
+            car_dialog.setNegativeButton("取消", null);
+
+            car_dialog.create().show();
         });
     }
 
@@ -426,9 +390,8 @@ public class System_Data extends AppCompatActivity {
     }
 
     private boolean isCarExist(String plateNum){
-        for(int i = 0; i < vehicles.size(); i++){
+        for(int i = 0; i < vehicles.size(); i++)
             if(vehicles.get(i)[3].equals(plateNum)) return true;
-        }
         return false;
     }
 
@@ -462,13 +425,8 @@ public class System_Data extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -503,13 +461,8 @@ public class System_Data extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -521,40 +474,25 @@ public class System_Data extends AppCompatActivity {
     }
 
     private void globalNav(){
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(System_Data.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(System_Data.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(System_Data.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(System_Data.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(System_Data.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(System_Data.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(System_Data.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(System_Data.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(System_Data.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(System_Data.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 

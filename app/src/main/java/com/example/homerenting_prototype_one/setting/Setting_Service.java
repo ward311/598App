@@ -2,8 +2,11 @@ package com.example.homerenting_prototype_one.setting;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +18,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
@@ -54,7 +59,7 @@ public class Setting_Service extends AppCompatActivity {
 
     boolean lock = true, deleteMode = false;
     Context context = this;
-    String TAG = "Setting_Service";
+    String TAG = Setting_Service.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,40 +95,19 @@ public class Setting_Service extends AppCompatActivity {
         setAddChip(boxType);
         setAddChip(wrapItem);
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeOriginItem();
-                for(int i = 0; i < enableItems.size(); i++){
-                    Log.d(TAG, "enable: "+ Arrays.toString(enableItems.get(i)));
-                }
-                if(enableItems.size() == 0) Log.d(TAG, "enableItems no item");
-
-                for(int i = 0; i < disableItems.size(); i++){
-                    Log.d(TAG, "disable: "+ Arrays.toString(disableItems.get(i)));
-                }
-                if(disableItems.size() == 0) Log.d(TAG, "disableItems no item");
-
-                for(int i = 0; i < deleteItems.size(); i++){
-                    Log.d(TAG, "delete: "+ Arrays.toString(deleteItems.get(i)));
-                }
-                if(deleteItems.size() == 0) Log.d(TAG, "deleteItems no item");
-
-//                update_serviceItem();
-
-//                finish();
-            }
+        back_btn.setOnClickListener(v -> {
+            removeOriginItem();
+            showItems();
+//            update_serviceItem();
+//            finish();
         });
 
-        delete_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteMode = !deleteMode;
-                setDeleteMode(serviceItem);
-                setDeleteMode(specialItem);
-                setDeleteMode(boxType);
-                setDeleteMode(wrapItem);
-            }
+        delete_btn.setOnClickListener(v -> {
+            deleteMode = !deleteMode;
+            setDeleteMode(serviceItem);
+            setDeleteMode(specialItem);
+            setDeleteMode(boxType);
+            setDeleteMode(wrapItem);
         });
 
         globalNav();
@@ -139,7 +123,7 @@ public class Setting_Service extends AppCompatActivity {
     }
 
     private void getCarData(){
-        String function_name = "vehicle_type_data";
+        String function_name = "all_vehicle_data";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
@@ -157,15 +141,11 @@ public class Setting_Service extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
@@ -179,19 +159,44 @@ public class Setting_Service extends AppCompatActivity {
 
                         String vehicle_weight = vehicle.getString("vehicle_weight");
                         String vehicle_type = vehicle.getString("vehicle_type");
-                        String carTypeStr = vehicle_weight+"噸"+vehicle_type;
-                        addChip(carType, carTypeStr, false);
+
+
+                        float wf =  Float.parseFloat(vehicle_weight);
+                        if(wf <= 1.75) vehicle_weight = "1.75噸以下";
+                        else if (wf >= 3.45 && wf <= 3.5) vehicle_weight = "3.49噸";
+                        else if (wf >= 6.5 && wf <= 7.7) vehicle_weight = "6.5~7.7噸";
+                        else if (wf >= 10) vehicle_weight = "10噸以上";
+
+                        String carTypeStr = vehicle_weight+vehicle_type;
+                        Log.d(TAG, "carTypeStr: "+carTypeStr);
+                        if(!isCarChipExist(carTypeStr)){
+                            Chip chip = addChip(carType, carTypeStr, false);
+                            if(vehicle.getInt("verified") == 0) {
+                                chip.setCheckable(false);
+                                chip.setTextColor(Color.parseColor("#7B7B7B"));
+                                chip.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.frame_background, null));
+                            }
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
+                int ii = 0;
                 while(!lock){
-                    Log.d(TAG, "wait for lock..."); //等到chip都新增完畢之後再執行下個程式
+                    if((ii++)%1000000 == 0) Log.d(TAG, "wait for lock..."); //等到chip都新增完畢之後再執行下個程式
                 }
                 getCheckedData();
             }
         });
+    }
+
+    private boolean isCarChipExist(String newCarStr) {
+        for(int i = 0; i < carType.getChildCount()-1; i++){
+            Chip chip = (Chip) carType.getChildAt(i);
+            if(chip.getText().toString().equals(newCarStr)) return true;
+        }
+        return false;
     }
 
     private void getCheckedData(){
@@ -215,13 +220,8 @@ public class Setting_Service extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -247,21 +247,15 @@ public class Setting_Service extends AppCompatActivity {
                                 Log.d(TAG, "get item:"+item.getText().toString()+"("+chipGroup.getTag()+")");
                                 if(item.getText().toString().equals(item_name)){
                                     if(!end_time.equals("null")){
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                item.setChecked(false);
-                                                Log.d(TAG, item_name+" is enable");
-                                            }
+                                        runOnUiThread(() -> {
+                                            item.setChecked(false);
+                                            Log.d(TAG, item_name+" is enable");
                                         });
                                         break;
                                     }
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            item.setChecked(true);
-                                            Log.d(TAG, item.getText().toString()+" is checked");
-                                        }
+                                    runOnUiThread(() -> {
+                                        item.setChecked(true);
+                                        Log.d(TAG, item.getText().toString()+" is checked");
                                     });
                                     String[] originalItem = {chipGroup.getTag().toString(), item_name};
                                     originItems.add(originalItem);
@@ -276,20 +270,16 @@ public class Setting_Service extends AppCompatActivity {
                                 }
                                 else addChip(chipGroup, item_name, false);
                             }
-
                         }
-                        else{
-                            Log.d(TAG, "chipGroup: "+service_name+" is null");
-                        }
+                        else Log.d(TAG, "chipGroup: "+service_name+" is null");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 Log.d(TAG, "OriginItem.size:"+originItems.size());
-                for(int i = 0; i < originItems.size(); i++){
+                for(int i = 0; i < originItems.size(); i++)
                     Log.d(TAG, "originItem: "+ Arrays.toString(originItems.get(i)));
-                }
             }
         });
     }
@@ -330,12 +320,9 @@ public class Setting_Service extends AppCompatActivity {
                 AlertDialog.Builder newItem_dialog = new AlertDialog.Builder(context);
                 newItem_dialog.setTitle("新增項目");
                 newItem_dialog.setView(container);
-                newItem_dialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String newItem = newItem_edit.getText().toString();
-                        addChip(chipGroup, newItem, true);
-                    }
+                newItem_dialog.setPositiveButton("確認", (dialog, which) -> {
+                    String newItem = newItem_edit.getText().toString();
+                    addChip(chipGroup, newItem, true);
                 });
                 newItem_dialog.setNegativeButton("取消", null);
 
@@ -351,59 +338,48 @@ public class Setting_Service extends AppCompatActivity {
         final Chip chip = new Chip(chipGroup.getContext());
         chip.setId(R.id.added_chip_id);
         chip.setText(newItem);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                chip.setChecked(checked);
+        runOnUiThread(() -> {
+            chip.setChecked(checked);
 
-                //先移除 新增+ 的Chip
-                Chip addChip = (Chip) chipGroup.getChildAt(chipGroup.getChildCount()-1);
-                chipGroup.removeViewAt(chipGroup.getChildCount()-1);
+            //先移除 新增+ 的Chip
+            Chip addChip = (Chip) chipGroup.getChildAt(chipGroup.getChildCount()-1);
+            chipGroup.removeViewAt(chipGroup.getChildCount()-1);
 
-                chipGroup.addView(chip);
-                chipGroup.addView(addChip); //把 新增+ 給加回來
-                lock = true;
-            }
+            chipGroup.addView(chip);
+            chipGroup.addView(addChip); //把 新增+ 給加回來
+            lock = true;
         });
 
         setChipClick(chipGroup, chip);
+
         return chip;
     }
 
     private void setChipClick(final ChipGroup chipGroup, final Chip chip){
         String name = chip.getText().toString();
         final String[] item = {chipGroup.getTag().toString(), name};
-        chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    enableItems.add(item);
-                    removeItem(disableItems, item);
-                }
-                else{
-                    removeItem(enableItems, item);
-                    disableItems.add(item);
-                }
+        chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                enableItems.add(item);
+                removeItem(disableItems, item);
+            }
+            else{
+                removeItem(enableItems, item);
+                disableItems.add(item);
             }
         });
 
-        chip.setOnCloseIconClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder deleteItem_dialog = new AlertDialog.Builder(context);
-                deleteItem_dialog.setTitle("確定要刪除 "+chip.getText().toString()+"?");
-                deleteItem_dialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        removeItem(enableItems, item);
-                        removeItem(disableItems, item);
-                        deleteItems.add(item);
-                        chip.setVisibility(View.GONE);
-                    }
-                });
-                deleteItem_dialog.setNegativeButton("取消", null);
-                deleteItem_dialog.create().show();
-            }
+        chip.setOnCloseIconClickListener(v -> {
+            AlertDialog.Builder deleteItem_dialog = new AlertDialog.Builder(context);
+            deleteItem_dialog.setTitle("確定要刪除 "+chip.getText().toString()+"?");
+            deleteItem_dialog.setPositiveButton("確認", (dialog, which) -> {
+                removeItem(enableItems, item);
+                removeItem(disableItems, item);
+                deleteItems.add(item);
+                chip.setVisibility(View.GONE);
+            });
+            deleteItem_dialog.setNegativeButton("取消", null);
+            deleteItem_dialog.create().show();
         });
     }
 
@@ -436,26 +412,15 @@ public class Setting_Service extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d(TAG,"responseData of deleteItem: "+responseData); //顯示資料
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        Toast.makeText(context, "response!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                runOnUiThread(() -> Toast.makeText(context, "response!", Toast.LENGTH_SHORT).show());
             }
         });
     }
@@ -481,15 +446,12 @@ public class Setting_Service extends AppCompatActivity {
 
     private String itemsToString(ArrayList<String[]> items){
         if(items.size() == 0) return "";
-
         String itemStr;
         itemStr = "[";
         itemStr = itemStr+"[\""+items.get(0)[0] +"\", \""+items.get(0)[1]+"\"]";
-        for(int i = 1; i < items.size(); i++){
+        for(int i = 1; i < items.size(); i++)
             itemStr = itemStr+", [\""+items.get(i)[0] +"\", \""+items.get(i)[1]+"\"]";
-        }
         itemStr = itemStr+"]";
-
         return itemStr;
     }
 
@@ -500,61 +462,46 @@ public class Setting_Service extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Setting_Service.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Setting_Service.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Setting_Service.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Setting_Service.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Setting_Service.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Setting_Service.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Setting_Service.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Setting_Service.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Setting_Service.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Setting_Service.this, Setting.class);
+            startActivity(setting_intent);
         });
+    }
+
+    private void showItems(){
+        for(int i = 0; i < enableItems.size(); i++)
+            Log.d(TAG, "enable: "+ Arrays.toString(enableItems.get(i)));
+        if(enableItems.size() == 0) Log.d(TAG, "enableItems no item");
+
+        for(int i = 0; i < disableItems.size(); i++)
+            Log.d(TAG, "disable: "+ Arrays.toString(disableItems.get(i)));
+        if(disableItems.size() == 0) Log.d(TAG, "disableItems no item");
+
+        for(int i = 0; i < deleteItems.size(); i++)
+            Log.d(TAG, "delete: "+ Arrays.toString(deleteItems.get(i)));
+        if(deleteItems.size() == 0) Log.d(TAG, "deleteItems no item");
     }
 
     @Override
     public void onBackPressed() {
         removeOriginItem();
-        for(int i = 0; i < enableItems.size(); i++){
-            Log.d(TAG, "enable: "+ Arrays.toString(enableItems.get(i)));
-        }
-        if(enableItems.size() == 0) Log.d(TAG, "enableItems no item");
-
-        for(int i = 0; i < disableItems.size(); i++){
-            Log.d(TAG, "disable: "+ Arrays.toString(disableItems.get(i)));
-        }
-        if(disableItems.size() == 0) Log.d(TAG, "disableItems no item");
-
-        for(int i = 0; i < deleteItems.size(); i++){
-            Log.d(TAG, "delete: "+ Arrays.toString(deleteItems.get(i)));
-        }
-        if(deleteItems.size() == 0) Log.d(TAG, "deleteItems no item");
-
+        showItems();
         update_serviceItem();
         super.onBackPressed();
     }

@@ -29,6 +29,7 @@ import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.example.homerenting_prototype_one.valuation.ValuationBooking_Detail;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -77,6 +78,8 @@ public class Edit_Furniture extends AppCompatActivity {
     Bundle bundle;
     Context context = Edit_Furniture.this;
 
+    boolean newFurnitureLock = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,9 +95,9 @@ public class Edit_Furniture extends AppCompatActivity {
         zeroFurniture = new ArrayList<>();
         list = findViewById(R.id.furniture_listView);
 
-        bundle = new Bundle();
-        bundle.putString("order_id", "16");
-//        bundle = getIntent().getExtras();
+//        bundle = new Bundle();
+//        bundle.putString("order_id", "16");
+        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
@@ -114,15 +117,20 @@ public class Edit_Furniture extends AppCompatActivity {
 
         add_btn.setOnClickListener(v -> {
             setSpinner();
+            newFurnitureLock = true;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("家具名稱");
             builder.setMessage("請輸入家具名稱");
             builder.setView(view);
             builder.setPositiveButton("確定", (dialog, which) -> {
+                int i = 0;
+                while (newFurnitureLock){
+                    if(i++%10000000 == 0) Log.d(TAG, "waiting for new furniture lock...");
+                }
                 if(isNew(new_furniture[0])){
                     String[] row_data = {new_furniture[0], new_furniture[1], "0", "1", spaceAL.get(Integer.parseInt(new_furniture[2])+1), getCompany_id(context)};
-                    Log.d(TAG, "row_data: "+Arrays.toString(row_data));
+                    Log.d(TAG, "add new furniture row_data: "+Arrays.toString(row_data));
                     data.add(row_data);
                     space_data.get(Integer.parseInt(new_furniture[2])).add(row_data);
                     if(nowSpace != 0){
@@ -132,7 +140,7 @@ public class Edit_Furniture extends AppCompatActivity {
                     setList();
                 }
             });
-            builder.setNegativeButton("取消", (dialog, which) -> { });
+            builder.setNegativeButton("取消", (dialog, which) -> { newFurnitureLock = false; });
             AlertDialog dialog = builder.create();
             dialog.show();
         });
@@ -222,18 +230,20 @@ public class Edit_Furniture extends AppCompatActivity {
                         Log.d(TAG, name+" no space type");
                 }
 
-
+                //家具id, 家具名稱, 原始數量, 改變數量, 家具房間, 公司id
                 String[] row_data = {furniture_id, name, num, "-1", space_type, furniture_company};
                 if(data.size() > 0 && data.get(data.size()-1)[0].equals(furniture_id)) {
                     data.get(data.size()-1)[2] = num;
-                    list.get(list.size()-1)[2] = num;
+                    if(list != null) list.get(list.size()-1)[2] = num;
+                    Log.i(TAG, "data.get: "+Arrays.toString(data.get(data.size()-1)));
                 }
                 else {
-                    if(!furniture_company.equals("999")) {
-                        row_data[2] = "-1";
+                    if(!furniture_company.equals("999")) { //如果家具有公司id(已改變)
+                        row_data[2] = "0";
                         row_data[3] = num;
                     }
                     data.add(row_data);
+                    Log.i(TAG, "data.add: "+Arrays.toString(row_data));
                     if(list != null) list.add(row_data);
                 }
 //                Log.d(TAG, "furniture_list_item: "+Arrays.toString(data.get(data.size()-1)));
@@ -246,7 +256,7 @@ public class Edit_Furniture extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
             for(int i = 0; i < 5; i++){
-                space_data.add(new ArrayList<String[]>());
+                space_data.add(new ArrayList<>());
             }
         }
     }
@@ -278,7 +288,7 @@ public class Edit_Furniture extends AppCompatActivity {
                     builder.setMessage(message);
                     builder.setPositiveButton("確定", (dialog, which) -> {
                         modifyFurniture();
-                        finish();
+                        toValuationBookingDetail();
                     });
                     builder.setNegativeButton("取消", (dialog, which) -> { });
                     AlertDialog dialog = builder.create();
@@ -289,10 +299,20 @@ public class Edit_Furniture extends AppCompatActivity {
                 if(order_id.equals("-1")) orderFurniture();
                 else {
                     modifyFurniture();
-                    finish();
+                    toValuationBookingDetail();
                 }
             }
         });
+    }
+
+    private void toValuationBookingDetail() {
+        bundle.putBoolean("isEdited", isEdited());
+        Log.d(TAG, "edited furniture: "+isEdited());
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        intent.setClass(context, ValuationBooking_Detail.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void setSpaceSpr(){
@@ -304,9 +324,7 @@ public class Edit_Furniture extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0) fspace = "all";
-                else{
-                    fspace = space[position];
-                }
+                else fspace = space[position];
                 nowSpace = position;
                 Toast.makeText(context, "選擇"+fspace, Toast.LENGTH_SHORT).show();
                 setList();
@@ -360,6 +378,7 @@ public class Edit_Furniture extends AppCompatActivity {
                     Log.d(TAG, "furnitureIDs: "+furnitureIDs.get(0));
                     new_furniture[0]=furnitureIDs.get(position);
                     new_furniture[1]=furniture[position];
+                    newFurnitureLock = false;
                 }
             }
 
@@ -509,8 +528,9 @@ public class Edit_Furniture extends AppCompatActivity {
         ArrayList<int[]> fd = new ArrayList<>();
         for(int i = 0 ; i < adapter.getCount() ; i++){
             String[] row_data = (String[])adapter.getItem(i);
-            int[] row_data2 = {Integer.parseInt(row_data[0]), Integer.parseInt(row_data[2])};
-            if(Integer.parseInt(row_data[2])==0){
+            int[] row_data2 = {Integer.parseInt(row_data[0]), Integer.parseInt(row_data[3])};
+            if(row_data[3].equals("-1")) row_data2[1] =  Integer.parseInt(row_data[2]);
+            if(row_data2[1]==0){
                 zeroFurniture.add(row_data[1]);
                 checkZero = true;
             }
@@ -568,6 +588,12 @@ public class Edit_Furniture extends AppCompatActivity {
                 Log.d(TAG, "responseData of modify_furniture: " + responseData);
             }
         });
+    }
+
+    private boolean isEdited() {
+        for(int i = 0; i < data.size(); i++)
+            if(!data.get(i)[5].equals("999")) return true;
+        return false;
     }
 
     private void globalNav(){

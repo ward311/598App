@@ -70,9 +70,9 @@ public class Distribution_Detail extends AppCompatActivity {
 
     private ArrayList<String> staffs, staffIds;
     private ArrayList<Integer> salaries;
-//    private String salaryStr;
     int net;
     boolean lock = false;
+    boolean init = true;
 
     private Context context = this;
 
@@ -103,11 +103,10 @@ public class Distribution_Detail extends AppCompatActivity {
 
     private void getData(){
         String function_name = "order_detail";
-        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
-                .add("company_id", company_id)
+                .add("company_id", getCompany_id(this))
                 .build();
         Log.d(TAG, "order_id:"+order_id);
 
@@ -123,19 +122,14 @@ public class Distribution_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of order_detail: "+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -168,22 +162,19 @@ public class Distribution_Detail extends AppCompatActivity {
                         String pay = staff_assign.getString("pay");
                         salaries.add(Integer.parseInt(pay));
                     }
-                    salaries.add(0); //公司分潤
+                    salaries.add(-1); //公司分潤
 
                     //顯示基本資訊
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            nameText.setText(name);
-                            if(gender.equals("female")) nameTitleText.setText("小姐");
-                            else if(gender.equals("male")) nameTitleText.setText("先生");
-                            else nameTitleText.setText("");
-                            movingTimeText.setText(movingTime);
-                            fromAddressText.setText(fromAddress);
-                            toAddressText.setText(toAddress);
-                            feeText.setText(fee);
-                            dsalaryText.setText(fee);
-                        }
+                    runOnUiThread(() -> {
+                        nameText.setText(name);
+                        if(gender.equals("female")) nameTitleText.setText("小姐");
+                        else if(gender.equals("male")) nameTitleText.setText("先生");
+                        else nameTitleText.setText("");
+                        movingTimeText.setText(movingTime);
+                        fromAddressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        feeText.setText(fee);
+                        dsalaryText.setText(fee);
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -191,22 +182,23 @@ public class Distribution_Detail extends AppCompatActivity {
 
                 //顯示安排人力
                 distributionAdapter = new DistributionAdapter(staffs);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        salaryDistribution.setLayoutManager(new LinearLayoutManager(context));
-                        salaryDistribution.setAdapter(distributionAdapter);
-                        Log.d(TAG, "setAdapter");
-                    }
+                runOnUiThread(() -> {
+                    salaryDistribution.setLayoutManager(new LinearLayoutManager(context));
+                    salaryDistribution.setAdapter(distributionAdapter);
+                    Log.d(TAG, "setAdapter");
                 });
 
                 for(int i = 0; distributionAdapter.getReady() != -1; i++){ //lock
                     if(i%1000000 == 0) Log.d(TAG, "ready: "+distributionAdapter.getReady());
                 }
-                for(int i = 0; i < distributionAdapter.getItemCount(); i++){
-                    getItem(i); //取得分配薪水的edittext
-                }
+
+                lock = true;
                 setCsalaryEdit();
+                for(int i = 0; lock; i++){ //lock
+                    if(i%1000000 == 0) Log.d(TAG, "waiting for company distribution: "+csalaryText.getText().toString());
+                }
+                for(int i = 0; i < distributionAdapter.getItemCount(); i++)
+                    getItem(i); //取得分配薪水的edittext
                 setCheckBtn(); //設置確認送出按鈕
             }
         });
@@ -215,12 +207,7 @@ public class Distribution_Detail extends AppCompatActivity {
     private void getItem(final int position){
         View view = salaryDistribution.getLayoutManager().findViewByPosition(position);
         if(view != null){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    feeText.setText(fee);
-                }
-            });
+            runOnUiThread(() -> feeText.setText(fee));
             Log.d(TAG, "view "+position+" is not null");
             EditText salaryPEdit = view.findViewById(R.id.salaryP_DI);
             TextView salaryPText = view.findViewById(R.id.salaryP_text_DI);
@@ -228,47 +215,180 @@ public class Distribution_Detail extends AppCompatActivity {
             TextView salaryText = view.findViewById(R.id.salary_text_DI);
 
             setSalaryEdit(salaryPEdit, salaryPText, salaryEdit, salaryText, position);
-
-            if(salaries.get(position) != -1){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        salaryEdit.setText(String.valueOf(salaries.get(position)));
-                    }
+            if(init && (salaries.get(position) == -1 || salaries.get(position) == 0)){
+                float divP = 100f/(salaries.size()-1);
+                int ds = Integer.parseInt(fee)-salaries.get(salaries.size()-1);
+                int div = Math.round((float) ds/(salaries.size()-1));
+                runOnUiThread(() -> {
+                    salaryPText.setText(String.valueOf(divP));
+                    salaryPEdit.setText(String.valueOf(divP));
+                    salaryText.setText(String.valueOf(div));
+                    salaryEdit.setText(String.valueOf(div));
                 });
+                Log.d(TAG, position+". init "+divP+"%("+div+")");
+                salaries.set(position, div);
+                init = false;
             }
+
+            if(salaries.get(position) != -1)
+                runOnUiThread(() -> salaryEdit.setText(String.valueOf(salaries.get(position))));
         }
         else{
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    feeText.setText(fee+"("+position+" null)");
-                    Log.d(TAG, "view "+position+" is null");
-                    getItem(position);
-                }
+            runOnUiThread(() -> {
+                feeText.setText(fee+"("+position+" null)");
+                Log.d(TAG, "view "+position+" is null");
+                getItem(position);
             });
         }
     }
 
     private void setCsalaryEdit() {
-        runOnUiThread(new Runnable() {
+        runOnUiThread(() -> csalaryPEdit.addTextChangedListener(new TextWatcher() {
             @Override
-            public void run() {
-                csalaryPEdit.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-                    }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override
+            public void afterTextChanged(Editable s) {
+                int ds = Integer.parseInt(fee); //剩餘可分配金額
+                String salaryPStr = csalaryPEdit.getText().toString(); //取得百分比的值(string)
+                if(salaryPStr.isEmpty()) salaryPStr = "0";
+                Log.d(TAG, "(csp) salary(p): "+salaryPStr);
 
-                    }
+                int salary = -1; //會放到arraylist的值，沒有值預設是-1
+                String salaryStr = "0"; //會顯示出來的值，沒有值預設是0
+                if(!salaryPStr.equals("0")){
+                    float salaryP = Float.parseFloat(salaryPStr); //取得百分比的值(float)
+                    salary = Math.round((Integer.parseInt(fee))*salaryP/100); //算出數值
+                    ds = Integer.parseInt(fee)-salary; //取得剩餘可分配金額
+                    if(salary == 0) salary = -1; //如果salary是0，就回復原狀
+                    else salaryStr = String.valueOf(salary); //否則取得salary的值(string)
+                }
+                csalaryText.setText(salaryStr); //顯示根據百分比連動的數值
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
+                salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
+//                setFeeText(); //修改金額的算式
+
+                dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
+
+                //修改員工的百分比或數值
+                for(int i = 0; i < distributionAdapter.getItemCount(); i++)
+                    snycESalary(i);
+            }
+        }));
+
+        runOnUiThread(() -> csalaryPText.setOnClickListener(v -> {
+            String salaryPStr = csalaryPText.getText().toString(); //取得百分比
+            csalaryPEdit.setText(salaryPStr);  //同步Edit版版分比
+            String salaryStr = csalaryEdit.getText().toString(); //取得數值
+            if(salaryStr.isEmpty()) salaryStr = "0";
+            csalaryText.setText(salaryStr); //同步文字版數值
+
+            //改為修改百分比模式
+            csalaryPText.setVisibility(View.GONE);
+            csalaryPEdit.setVisibility(View.VISIBLE);
+            csalaryEdit.setVisibility(View.GONE);
+            csalaryText.setVisibility(View.VISIBLE);
+        }));
+
+        runOnUiThread(() -> csalaryEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int ds = Integer.parseInt(fee); //剩餘可分配金額
+
+                String salaryStr = csalaryEdit.getText().toString(); //取得數值
+                int csalary = -1;
+                if(!salaryStr.isEmpty()) {
+                    csalary = Integer.parseInt(salaryStr); //將數值轉換成integer
+                    ds = Integer.parseInt(fee)-csalary; //取得剩餘可分配金額
+                }
+                Log.d(TAG, "(s) salary: "+csalary);
+                salaries.set(salaries.size()-1, csalary); //修改arraylist中的公司金額
+//                        setFeeText(); //修改金額的算式
+
+                String csalaryPStr = "0";
+                if(csalary != -1 && csalary != 0) {
+                    float salaryP =  ((float) csalary/(Integer.parseInt(fee)))*100; //算出百分比
+                    NumberFormat nf = NumberFormat.getInstance();
+                    nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
+                    csalaryPStr = nf.format(salaryP); //取得百分比(string)
+                    Log.d(TAG, "company. salary percent("+csalary+"/"+fee+"): "+csalaryPStr);
+                }
+                csalaryPText.setText(csalaryPStr); //顯示百分比
+
+                dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
+
+                //修改員工的百分比或數值
+                for(int i = 0; i < distributionAdapter.getItemCount(); i++)
+                    snycESalary(i);
+            }
+        }));
+
+        runOnUiThread(() -> csalaryText.setOnClickListener(v -> {
+            String salaryPStr = csalaryPEdit.getText().toString(); //取得Edit版百分比
+            csalaryPText.setText(salaryPStr); //同步文字版百分比
+            String salaryStr = csalaryText.getText().toString(); //取得文字版數值
+            csalaryEdit.setText(salaryStr); //同步Edit版數值
+
+            //改為修改數值模式
+            csalaryPText.setVisibility(View.VISIBLE);
+            csalaryPEdit.setVisibility(View.GONE);
+            csalaryEdit.setVisibility(View.VISIBLE);
+            csalaryText.setVisibility(View.GONE);
+        }));
+        getCompanyDetail();
+    }
+
+    private void getCompanyDetail(){
+        String function_name = "company_detail";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(this))
+                .build();
+        Log.d(TAG, "order_id:"+order_id);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of company: "+responseData); //顯示資料
+
+                JSONArray responseArr = null;
+                try {
+                    responseArr = new JSONArray(responseData);
+                    JSONObject company = responseArr.getJSONObject(0);
+                    Log.i(TAG,"company: "+company);
+
+                    String company_dis = company.getString("last_distribution");
+                    runOnUiThread(() -> {
+                        csalaryPEdit.setText(company_dis);
+                        csalaryPText.setText(company_dis);
+
                         int ds = Integer.parseInt(fee); //剩餘可分配金額
-                        String salaryPStr = csalaryPEdit.getText().toString(); //取得百分比的值(string)
+                        String salaryPStr = company_dis; //取得百分比的值(string)
                         if(salaryPStr.isEmpty()) salaryPStr = "0";
                         Log.d(TAG, "(csp) salary(p): "+salaryPStr);
 
@@ -282,143 +402,15 @@ public class Distribution_Detail extends AppCompatActivity {
                             else salaryStr = String.valueOf(salary); //否則取得salary的值(string)
                         }
                         csalaryText.setText(salaryStr); //顯示根據百分比連動的數值
+                        csalaryEdit.setText(salaryStr);
 
                         salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
-//                        setFeeText(); //修改金額的算式
-
                         dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
-
-                        //修改員工的百分比或數值
-                        for(int i = 0; i < distributionAdapter.getItemCount(); i++)
-                            snycESalary(i);
-                    }
-                });
-            }
-        });
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-//                csalaryPText.setOnLongClickListener(new View.OnLongClickListener() {
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        String salaryPStr = csalaryPText.getText().toString(); //取得百分比
-//                        csalaryPEdit.setText(salaryPStr);  //同步Edit版版分比
-//                        String salaryStr = csalaryEdit.getText().toString(); //取得數值
-//                        if(salaryStr.isEmpty()) salaryStr = "0";
-//                        csalaryText.setText(salaryStr); //同步文字版數值
-//
-//                        //改為修改百分比模式
-//                        csalaryPText.setVisibility(View.GONE);
-//                        csalaryPEdit.setVisibility(View.VISIBLE);
-//                        csalaryEdit.setVisibility(View.GONE);
-//                        csalaryText.setVisibility(View.VISIBLE);
-//                        return false;
-//                    }
-//                });
-
-                csalaryPText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String salaryPStr = csalaryPText.getText().toString(); //取得百分比
-                        csalaryPEdit.setText(salaryPStr);  //同步Edit版版分比
-                        String salaryStr = csalaryEdit.getText().toString(); //取得數值
-                        if(salaryStr.isEmpty()) salaryStr = "0";
-                        csalaryText.setText(salaryStr); //同步文字版數值
-
-                        //改為修改百分比模式
-                        csalaryPText.setVisibility(View.GONE);
-                        csalaryPEdit.setVisibility(View.VISIBLE);
-                        csalaryEdit.setVisibility(View.GONE);
-                        csalaryText.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
-        });
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                csalaryEdit.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        int ds = Integer.parseInt(fee); //剩餘可分配金額
-
-                        String salaryStr = csalaryEdit.getText().toString(); //取得數值
-                        int csalary = -1;
-                        if(!salaryStr.isEmpty()) {
-                            csalary = Integer.parseInt(salaryStr); //將數值轉換成integer
-                            ds = Integer.parseInt(fee)-csalary; //取得剩餘可分配金額
-                        }
-                        Log.d(TAG, "(s) salary: "+csalary);
-                        salaries.set(salaries.size()-1, csalary); //修改arraylist中的公司金額
-//                        setFeeText(); //修改金額的算式
-
-                        String csalaryPStr = "0";
-                        if(csalary != -1 && csalary != 0) {
-                            float salaryP =  ((float) csalary/(Integer.parseInt(fee)))*100; //算出百分比
-                            NumberFormat nf = NumberFormat.getInstance();
-                            nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
-                            csalaryPStr = nf.format(salaryP); //取得百分比(string)
-                            Log.d(TAG, "company. salary percent("+csalary+"/"+fee+"): "+csalaryPStr);
-                        }
-                        csalaryPText.setText(csalaryPStr); //顯示百分比
-
-                        dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
-
-                        //修改員工的百分比或數值
-                        for(int i = 0; i < distributionAdapter.getItemCount(); i++)
-                            snycESalary(i);
-                    }
-                });
-            }
-        });
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-//                csalaryText.setOnLongClickListener(new View.OnLongClickListener() {
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        String salaryPStr = csalaryPEdit.getText().toString(); //取得Edit版百分比
-//                        csalaryPText.setText(salaryPStr); //同步文字版百分比
-//                        String salaryStr = csalaryText.getText().toString(); //取得文字版數值
-//                        csalaryEdit.setText(salaryStr); //同步Edit版數值
-//
-//                        //改為修改數值模式
-//                        csalaryPText.setVisibility(View.VISIBLE);
-//                        csalaryPEdit.setVisibility(View.GONE);
-//                        csalaryEdit.setVisibility(View.VISIBLE);
-//                        csalaryText.setVisibility(View.GONE);
-//                        return false;
-//                    }
-//                });
-
-                csalaryText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String salaryPStr = csalaryPEdit.getText().toString(); //取得Edit版百分比
-                        csalaryPText.setText(salaryPStr); //同步文字版百分比
-                        String salaryStr = csalaryText.getText().toString(); //取得文字版數值
-                        csalaryEdit.setText(salaryStr); //同步Edit版數值
-
-                        //改為修改數值模式
-                        csalaryPText.setVisibility(View.VISIBLE);
-                        csalaryPEdit.setVisibility(View.GONE);
-                        csalaryEdit.setVisibility(View.VISIBLE);
-                        csalaryText.setVisibility(View.GONE);
-                    }
-                });
+                        lock = false;
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -467,157 +459,88 @@ public class Distribution_Detail extends AppCompatActivity {
     }
 
     private void setSalaryEdit(EditText salaryPEdit, TextView salaryPText, EditText salaryEdit, TextView salaryText, int position){
-        runOnUiThread(new Runnable() {
+        runOnUiThread(() -> salaryPEdit.addTextChangedListener(new TextWatcher() {
             @Override
-            public void run() {
-                salaryPEdit.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        String salaryPStr = salaryPEdit.getText().toString(); //取得百分比的值(string)
-                        if(salaryPStr.isEmpty()) salaryPStr = "0"; //轉成數值
-                        Log.d(TAG, "(sp) salary(p): "+salaryPStr);
-
-                        int salary = -1; //會放到arraylist的值，沒有值預設是-1
-                        String salaryStr = "0"; //會顯示出來的值，沒有值預設是0
-                        if(!salaryPStr.equals("0")){
-                            float salaryP = Float.parseFloat(salaryPStr); //取得百分比的值(float)
-                            int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
-                            salary = Math.round(ds*salaryP/100);
-                            if(salary == 0) salary = -1; //如果salary是0，就回復原狀
-                            else salaryStr = String.valueOf(salary); //否則取得salary的值(string)
-                        }
-                        salaryText.setText(salaryStr); //顯示根據百分比連動的數值
-                        salaries.set(position, salary); //修改arraylist中的員工金額
-//                        setFeeText(); //修改金額的算式
-                    }
-                });
-            }
-        });
-
-        runOnUiThread(new Runnable() {
             @Override
-            public void run() {
-//                salaryPText.setOnLongClickListener(new View.OnLongClickListener() {
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        String salaryPStr = salaryPText.getText().toString(); //取得百分比的值(string)
-//                        salaryPEdit.setText(salaryPStr); //修改Edit版百分比的值(與文字版同步)
-//                        String salaryStr = salaryEdit.getText().toString(); //取得數值
-//                        if(salaryStr.isEmpty()) salaryStr = "0";
-//                        salaryText.setText(salaryStr); //修改文字版數值的值(與Edit版同步)
-//
-//                        //改為修改百分比模式
-//                        salaryPText.setVisibility(View.GONE);
-//                        salaryPEdit.setVisibility(View.VISIBLE);
-//                        salaryEdit.setVisibility(View.GONE);
-//                        salaryText.setVisibility(View.VISIBLE);
-//                        return false;
-//                    }
-//                });
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
-                salaryPText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String salaryPStr = salaryPText.getText().toString(); //取得百分比的值(string)
-                        salaryPEdit.setText(salaryPStr); //修改Edit版百分比的值(與文字版同步)
-                        String salaryStr = salaryEdit.getText().toString(); //取得數值
-                        if(salaryStr.isEmpty()) salaryStr = "0";
-                        salaryText.setText(salaryStr); //修改文字版數值的值(與Edit版同步)
-
-                        //改為修改百分比模式
-                        salaryPText.setVisibility(View.GONE);
-                        salaryPEdit.setVisibility(View.VISIBLE);
-                        salaryEdit.setVisibility(View.GONE);
-                        salaryText.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
-        });
-
-        runOnUiThread(new Runnable() {
             @Override
-            public void run() {
-                salaryEdit.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void afterTextChanged(Editable s) {
+                String salaryPStr = salaryPEdit.getText().toString(); //取得百分比的值(string)
+                if(salaryPStr.isEmpty()) salaryPStr = "0"; //轉成數值
+                Log.d(TAG, "(sp) salary(p): "+salaryPStr);
 
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        String salaryStr = salaryEdit.getText().toString(); //取得數值
-                        int salary = -1;
-                        if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr); //將數值轉換成integer
-                        Log.d(TAG, "(s) salary: "+salary);
-                        salaries.set(position, salary); //修改arraylist中的員工金額
-//                        setFeeText(); //修改金額的算式
-
-                        String salaryPStr = "0";
-                        if(salary != -1 && salary != 0) {
-                            int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
-                            float salaryP =  ((float) salary/ds)*100; //算出百分比
-                            NumberFormat nf = NumberFormat.getInstance();
-                            nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
-                            salaryPStr = nf.format(salaryP); //取得百分比(string)
-                            Log.d(TAG, (position+1)+". salary percent("+salary+"/"+ds+"): "+salaryPStr);
-                        }
-                        salaryPText.setText(salaryPStr); //顯示百分比
-                    }
-                });
+                int salary = -1; //會放到arraylist的值，沒有值預設是-1
+                String salaryStr = "0"; //會顯示出來的值，沒有值預設是0
+                if(!salaryPStr.equals("0")){
+                    float salaryP = Float.parseFloat(salaryPStr); //取得百分比的值(float)
+                    int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
+                    salary = Math.round(ds*salaryP/100);
+                    if(salary == 0) salary = -1; //如果salary是0，就回復原狀
+                    else salaryStr = String.valueOf(salary); //否則取得salary的值(string)
+                }
+                salaryText.setText(salaryStr); //顯示根據百分比連動的數值
+                salaries.set(position, salary); //修改arraylist中的員工金額
+//                setFeeText(); //修改金額的算式
             }
-        });
+        }));
 
-        runOnUiThread(new Runnable() {
+        runOnUiThread(() -> salaryPText.setOnClickListener(v -> {
+            String salaryPStr = salaryPText.getText().toString(); //取得百分比的值(string)
+            salaryPEdit.setText(salaryPStr); //修改Edit版百分比的值(與文字版同步)
+            String salaryStr = salaryEdit.getText().toString(); //取得數值
+            if(salaryStr.isEmpty()) salaryStr = "0";
+            salaryText.setText(salaryStr); //修改文字版數值的值(與Edit版同步)
+
+            //改為修改百分比模式
+            salaryPText.setVisibility(View.GONE);
+            salaryPEdit.setVisibility(View.VISIBLE);
+            salaryEdit.setVisibility(View.GONE);
+            salaryText.setVisibility(View.VISIBLE);
+        }));
+
+        runOnUiThread(() -> salaryEdit.addTextChangedListener(new TextWatcher() {
             @Override
-            public void run() {
-//                salaryText.setOnLongClickListener(new View.OnLongClickListener() {
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        String salaryPStr = salaryPEdit.getText().toString();
-//                        salaryPText.setText(salaryPStr);
-//                        String salaryStr = salaryText.getText().toString();
-//                        salaryEdit.setText(salaryStr);
-//
-//                        salaryPText.setVisibility(View.VISIBLE);
-//                        salaryPEdit.setVisibility(View.GONE);
-//                        salaryEdit.setVisibility(View.VISIBLE);
-//                        salaryText.setVisibility(View.GONE);
-//                        return false;
-//                    }
-//                });
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-                salaryText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String salaryPStr = salaryPEdit.getText().toString();
-                        salaryPText.setText(salaryPStr);
-                        String salaryStr = salaryText.getText().toString();
-                        salaryEdit.setText(salaryStr);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
-                        salaryPText.setVisibility(View.VISIBLE);
-                        salaryPEdit.setVisibility(View.GONE);
-                        salaryEdit.setVisibility(View.VISIBLE);
-                        salaryText.setVisibility(View.GONE);
-                    }
-                });
+            @Override
+            public void afterTextChanged(Editable s) {
+                String salaryStr = salaryEdit.getText().toString(); //取得數值
+                int salary = -1;
+                if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr); //將數值轉換成integer
+                Log.d(TAG, "(s) salary: "+salary);
+                salaries.set(position, salary); //修改arraylist中的員工金額
+//                setFeeText(); //修改金額的算式
+
+                String salaryPStr = "0";
+                if(salary != -1 && salary != 0) {
+                    int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
+                    float salaryP =  ((float) salary/ds)*100; //算出百分比
+                    NumberFormat nf = NumberFormat.getInstance();
+                    nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
+                    salaryPStr = nf.format(salaryP); //取得百分比(string)
+                    Log.d(TAG, (position+1)+". salary percent("+salary+"/"+ds+"): "+salaryPStr);
+                }
+                salaryPText.setText(salaryPStr); //顯示百分比
             }
-        });
+        }));
 
+        runOnUiThread(() -> salaryText.setOnClickListener(v -> {
+            String salaryPStr = salaryPEdit.getText().toString();
+            salaryPText.setText(salaryPStr);
+            String salaryStr = salaryText.getText().toString();
+            salaryEdit.setText(salaryStr);
+
+            salaryPText.setVisibility(View.VISIBLE);
+            salaryPEdit.setVisibility(View.GONE);
+            salaryEdit.setVisibility(View.VISIBLE);
+            salaryText.setVisibility(View.GONE);
+        }));
     }
 
     private void setFeeText(){
@@ -641,42 +564,33 @@ public class Distribution_Detail extends AppCompatActivity {
     }
 
     private void setCheckBtn(){
-        checkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(net < 0){
-                    Toast.makeText(context, "工錢總額大於搬家費用", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    boolean checkAll = true;
-                    for(int i = 0; i < salaries.size()-1; i++){
-                        Log.i(TAG, "salaries("+i+"): "+salaries.get(i));
-                        if(salaries.get(i) == -1){
-                            checkAll = false;
-                            Log.d(TAG, "not complete thd distribution");
-                            continue;
-                        }
-                        update_staff_salary(i);
+        checkBtn.setOnClickListener(v -> {
+            if(net < 0) Toast.makeText(context, "工錢總額大於搬家費用", Toast.LENGTH_SHORT).show();
+            else{
+                boolean checkAll = true;
+                for(int i = 0; i < salaries.size()-1; i++){
+                    Log.i(TAG, "salaries("+i+"): "+salaries.get(i));
+                    if(salaries.get(i) == -1){
+                        checkAll = false;
+                        Log.d(TAG, "not complete thd distribution");
+                        continue;
                     }
-                    if(net == 0 && checkAll){
-                        Log.d(TAG, "complete, finish the distirbution");
-                        changeStatus();
+                    update_staff_salary(i);
+                    updateComDis();
+                }
+                if(Integer.parseInt(dsalaryText.getText().toString()) == 0 && checkAll){
+                    Log.d(TAG, "complete, finish the distirbution");
+                    changeStatus();
 
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(context, Bonus_Distribution.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                Toast.makeText(context, "done", Toast.LENGTH_LONG).show();
-                            }
-                        }, 1000);
-                    }
-                    else{
-                        Toast.makeText(context, "金額尚未分潤完畢", Toast.LENGTH_SHORT).show();
-                    }
+                    Handler handler = new Handler();
+                    handler.postDelayed(() -> {
+                        Intent intent = new Intent(context, Bonus_Distribution.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        Toast.makeText(context, "done", Toast.LENGTH_LONG).show();
+                    }, 1000);
                 }
+                else Toast.makeText(context, "金額尚未分潤完畢", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -703,19 +617,49 @@ public class Distribution_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of update_staff_salary("+i+"): " + responseData);
+            }
+        });
+    }
+
+    private void updateComDis(){
+        String company_dis = csalaryPText.getText().toString();
+        if(csalaryPEdit.getVisibility() == View.VISIBLE) company_dis = csalaryPEdit.getText().toString();
+        String function_name = "update_companyDistribute";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .add("last_distribution", company_dis)
+                .build();
+        Log.i(TAG, "company_distribution: "+company_dis);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of update company distribution: " + responseData);
             }
         });
     }
@@ -743,13 +687,8 @@ public class Distribution_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -784,40 +723,25 @@ public class Distribution_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Distribution_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Distribution_Detail.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Distribution_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Distribution_Detail.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Distribution_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Distribution_Detail.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Distribution_Detail.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Distribution_Detail.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Distribution_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Distribution_Detail.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 }

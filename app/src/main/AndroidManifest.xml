@@ -16,7 +16,6 @@
 
         <!--Main-->
         <activity android:name=".main.MainActivity"/>
-        <activity android:name=".main.New_Login"/>
         <activity android:name=".main.Login"/>
         <activity android:name=".calendar.Calendar" />
 
@@ -29,6 +28,7 @@
         <activity android:name=".order.Order_Cancel"/>
 
         <!--Valuation-->
+        <activity android:name=".valuation.Valuation"/>
         <activity android:name=".valuation.Valuation_Detail"/>
         <activity android:name=".valuation.Valuation_Booking"/>
         <activity android:name=".valuation.ValuationBooking_Detail"/>
@@ -79,7 +79,7 @@
         <activity android:name=".ForgetPassword" />
         <activity android:name=".Register" />
 
-        <activity android:name=".valuation.Valuation">
+        <activity android:name=".main.New_Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

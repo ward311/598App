@@ -137,7 +137,7 @@ public class Today_Detail extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
-//                    Log.i(TAG,"order:"+order);
+                    Log.i(TAG,"order:"+order);
 
                     //取得資料
                     name = order.getString("member_name");
@@ -150,6 +150,7 @@ public class Today_Detail extends AppCompatActivity {
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
                     fee = order.getString("estimate_fee");
+                    if(fee.equals("null")) fee = "0";
                     price_origin = Integer.parseInt(fee);
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";

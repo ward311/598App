@@ -33,6 +33,7 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
         String text = data.get(position)[1];
         if(data.get(position).length > 2){
             text = text+"噸"+data.get(position)[2]+" "+data.get(position)[3];
+            if(data.get(position)[4].equals("1")) text = text + " (verified)";
         }
         holder.item.setText(text);
     }

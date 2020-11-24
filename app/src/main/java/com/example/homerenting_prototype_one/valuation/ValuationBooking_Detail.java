@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     TextView nameText, nameTitleText, phoneText, contactTimeText, valuationTimeText;
     TextView fromAddressText, toAddressText, remainderText;
-    TextView movingDateText, movingTimeText, valPriceText;
+    TextView movingDateText, movingTimeText, valPriceText, newValPriceText;
 
     EditText carNumEdit, carWeightEdit, carTypeEdit;
     EditText worktimeEdit, priceEdit, memoEdit;
@@ -102,19 +103,24 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         String[] newString = {"", "", ""};
         cars.add(newString);
 
-//        bundle = new Bundle();
-//        bundle.putString("order_id", "16");
-        bundle = getIntent().getExtras();
+//        if(getIntent().getExtras() != null)
+            bundle = getIntent().getExtras();
+//        else {
+//            bundle = new Bundle();
+//            bundle.putString("order_id", "16");
+//        }
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
         linking(); //將xml裡的元件連至此java
+        setValPrice();
 
         getOrder();
 
         furniture_btn.setOnClickListener(v -> {
             Intent intent = new Intent(context, Edit_Furniture.class);
             intent.putExtras(bundle);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
 
@@ -164,13 +170,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -198,21 +199,18 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     if(memo.equals("null")) memo = "";
 
                     //顯示資料
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            nameText.setText(name);
-                            if(gender.equals("女")) nameTitleText.setText("小姐");
-                            else if(gender.equals("男")) nameTitleText.setText("先生");
-                            else nameTitleText.setText("");
-                            phoneText.setText(phone);
-                            contactTimeText.setText(contactTime);
-                            valuationTimeText.setText(valuationTime);
-                            fromAddressText.setText(fromAddress);
-                            toAddressText.setText(toAddress);
-                            remainderText.setText(remainder);
-                            memoEdit.setText(memo);
-                        }
+                    runOnUiThread(() -> {
+                        nameText.setText(name);
+                        if(gender.equals("女")) nameTitleText.setText("小姐");
+                        else if(gender.equals("男")) nameTitleText.setText("先生");
+                        else nameTitleText.setText("");
+                        phoneText.setText(phone);
+                        contactTimeText.setText(contactTime);
+                        valuationTimeText.setText(valuationTime);
+                        fromAddressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        remainderText.setText(remainder);
+                        memoEdit.setText(memo);
                     });
 
                     int auto = order.getInt("auto");
@@ -343,18 +341,29 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             priceEdit.setError("請輸入搬家價格");
             check = true;
         }
-        else{
-            if(Integer.parseInt(fee) < getValPrice(0)){
-                priceEdit.setError("所輸入之搬家價格不得低於系統估價計價格");
-                check = true;
-            }
-
-            if(Integer.parseInt(fee) > getValPrice(1)){
-                priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
-                check = true;
-            }
-        }
+//        else{
+//            if(Integer.parseInt(fee) < getValPrice(0)){
+//                priceEdit.setError("所輸入之搬家價格不得低於系統估價計價格");
+//                check = true;
+//            }
+//
+//            if(Integer.parseInt(fee) > getValPrice(1)){
+//                priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
+//                check = true;
+//            }
+//        }
         return check;
+    }
+
+    private void setValPrice() {
+        if (bundle.getBoolean("isEdited")){
+            valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            newValPriceText.setVisibility(View.VISIBLE);
+        }
+        else {
+            valPriceText.setPaintFlags(valPriceText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            newValPriceText.setVisibility(View.INVISIBLE);
+        }
     }
 
     private int getValPrice(int i){
@@ -545,14 +554,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         remainderText = findViewById(R.id.notice_VBD);
         movingDateText = findViewById(R.id.movingDate_VBD);
         movingTimeText = findViewById(R.id.movingTime_VBD);
-        carNumEdit = findViewById(R.id.num_VBD);
-        carWeightEdit = findViewById(R.id.weight_VBD);
-        carTypeEdit = findViewById(R.id.type_VBD);
         worktimeEdit = findViewById(R.id.worktime_VBD);
         priceEdit = findViewById(R.id.price_VBD);
         check_btn = findViewById(R.id.check_evaluation_btn);
         furnitureLL = findViewById(R.id.furniture_LL_VBD);
         valPriceText = findViewById(R.id.valPrice_VBD);
+        newValPriceText = findViewById(R.id.newValPrice_VBD);
         memoEdit = findViewById(R.id.PS_VBD);
         carAssignRList = findViewById(R.id.car_assign_VBD);
     }

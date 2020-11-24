@@ -89,7 +89,7 @@ public class Order_Today extends AppCompatActivity {
         month_text.setText(getMonthStr());
 
         //傳至網頁的值，傳function_name
-        String function_name = "order_member_oneDay";
+        String function_name = "order_member_today";
         String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)

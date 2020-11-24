@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -233,15 +234,15 @@ public class Valuation_Detail extends AppCompatActivity {
                 if(!check) return;
 
                 String function_name = "update_selfValuation";
-                String company_id = getCompany_id(context);
                 RequestBody body = new FormBody.Builder()
                         .add("function_name", function_name)
                         .add("order_id", order_id)
-                        .add("company_id",company_id)
+                        .add("company_id", getCompany_id(context))
                         .add("valuation_date", valDate)
                         .add("valuation_time", valTime)
                         .build();
                 Log.d(TAG,"check_price_btn: order_id: " + order_id +
+                        ", company_id: " + getCompany_id(context) +
                         ", valuation_date: " + valDate +
                         ", valuation_time: " + valTime);
 
@@ -298,7 +299,8 @@ public class Valuation_Detail extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+                Log.i(TAG, "現在是"+now);
                 if(isContactTime(timeToStr(
                         isWeekend(String.valueOf(now.getDayOfWeek())),
                         isNight(now.getHour())))){
@@ -345,6 +347,7 @@ public class Valuation_Detail extends AppCompatActivity {
     }
 
     private boolean isContactTime(String currentTime){
+        Log.i(TAG, "現在是"+currentTime);
         String[] token = contactTime.split(",");
         for (String ct : token) {
             if (ct.equals(currentTime))

@@ -67,6 +67,7 @@ public class Valuation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation);
+
         month_text = findViewById(R.id.month_V);
         week_text = findViewById(R.id.week_V);
         lastWeek_btn = findViewById(R.id.lastWeek_btn_V);
@@ -81,7 +82,7 @@ public class Valuation extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        setwCount(0);
+//        setwCount(0);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         getValuation();
@@ -176,7 +177,7 @@ public class Valuation extends AppCompatActivity {
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .build();
-        Log.i(TAG, "getOrder:\n"+"startDate:"+startDate+", endDate:"+endDate+", status:"+"self");
+        Log.i(TAG, "getOrder: company_id: "+company_id+", startDate:"+startDate+", endDate:"+endDate+", status:"+"self");
 
         //連線要求
         Request request = new Request.Builder()
