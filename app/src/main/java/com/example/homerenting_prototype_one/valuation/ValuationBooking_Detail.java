@@ -48,6 +48,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -214,7 +215,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     });
 
                     int auto = order.getInt("auto");
-                    if(auto==0) runOnUiThread(() -> furnitureLL.setVisibility(View.GONE));
+//                    if(auto==0) runOnUiThread(() -> furnitureLL.setVisibility(View.GONE));
                 } catch (JSONException e) {
                     e.printStackTrace();
 //                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
@@ -232,8 +233,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setPhoneBtn(){
         phoneCall_btn.setOnClickListener(v -> {
-            LocalDateTime now = LocalDateTime.now();
-            if(isContactTime(timeToStr(isWeekend(String.valueOf(now.getDayOfWeek())), isNight(now.getHour())))){
+            LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+            Log.i(TAG, "現在是"+now);
+            if(isContactTime(timeToStr(
+                    isWeekend(String.valueOf(now.getDayOfWeek())),
+                    isNight(now.getHour())))){
                 callIntent();
             }
             else{

@@ -137,7 +137,7 @@ public class Calendar extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-//                Log.d(TAG, "responseData of getOrder: "+responseData); //顯示資料
+                Log.d(TAG, "responseData of getOrder: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -272,7 +272,6 @@ public class Calendar extends AppCompatActivity {
             dialog = new AlertDialog.Builder(context);
             inflater = getLayoutInflater();
             v = inflater.inflate(R.layout.calendar_dialog, null);
-            v.setMinimumHeight(2000);
             dialog.setView(v);
             linking2();
             dateText.setText(date);
@@ -317,7 +316,7 @@ public class Calendar extends AppCompatActivity {
             final AlertDialog alertDialog = dialog.create();
             cancel_btn.setOnClickListener(v -> alertDialog.dismiss());
             alertDialog.show();
-            alertDialog.getWindow().setLayout(dip2px(context, 400), dip2px(context, 600));
+            alertDialog.getWindow().setLayout(dip2px(context, 370), dip2px(context, 600));
         });
     }
 
@@ -352,7 +351,7 @@ public class Calendar extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-//                Log.d(TAG, "responseData of getOrders: "+responseData); //顯示資料
+                Log.d(TAG, "responseData of getOrders: "+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);

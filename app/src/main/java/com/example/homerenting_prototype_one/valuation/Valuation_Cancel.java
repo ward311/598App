@@ -166,17 +166,15 @@ public class Valuation_Cancel extends AppCompatActivity {
 
     private void getValuationCancel(){
         //將傳至網頁的值
-        String function_name = "valuation_member";
+        String function_name = "cancel_valuation_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
-        String status = "cancel";
-        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
-                .add("company_id",company_id)
+                .add("company_id", getCompany_id(this))
                 .add("startDate", startDate)
                 .add("endDate", endDate)
-                .add("status", status)
+                .add("status", "cancel")
                 .build();
 
         //連線要求

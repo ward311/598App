@@ -234,15 +234,12 @@ public class Valuation extends AppCompatActivity {
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                valuationList.setAdapter(noData);
-                            }
-                            //else Toast.makeText(Valuation.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            NoDataAdapter noData = new NoDataAdapter();
+                            valuationList.setAdapter(noData);
                         }
+                        //else Toast.makeText(Valuation.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -250,29 +247,26 @@ public class Valuation extends AppCompatActivity {
                 if(!responseData.equals("null")){
                     for(int i = 0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            valuationList.setAdapter(listAdapter);
-                            valuationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[])parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                    String order_id = row_data[0];
+                    runOnUiThread(() -> {
+                        valuationList.setAdapter(listAdapter);
+                        valuationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[])parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                String order_id = row_data[0];
 
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
 
-                                    removeNew(order_id, Valuation.this);
+                                removeNew(order_id, Valuation.this);
 
-                                    Intent intent = new Intent();
-                                    intent.setClass(Valuation.this, Valuation_Detail.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
+                                Intent intent = new Intent();
+                                intent.setClass(Valuation.this, Valuation_Detail.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
                     });
                 }
 

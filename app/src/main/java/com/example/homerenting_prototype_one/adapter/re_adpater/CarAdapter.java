@@ -1,13 +1,17 @@
 package com.example.homerenting_prototype_one.adapter.re_adpater;
 
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +26,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
     private int limit = 40;
 
+    Context context;
+
     String TAG = "CarAdapter";
 
     public CarAdapter(ArrayList cars){
@@ -32,6 +38,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.car_item, parent, false);
+        context = parent.getContext();
         return new ViewHolder(view);
     }
 
@@ -42,8 +49,23 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         holder.num.setText(cars.get(position)[2]);
 
         setCarStr(holder.weight, position, 0);
-        setCarStr(holder.type, position, 1);
+//        setCarStr(holder.type, position, 1);
         setCarStr(holder.num, position, 2);
+
+        final String[] types = {"箱型車", "平斗車"}; //其他
+        ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, types);
+        holder.type_sp.setAdapter(typeAdapter);
+        holder.type_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 2) cars.get(position)[1] = null;
+                else cars.get(position)[1] = types[position];
+                holder.type.setText(cars.get(position)[1]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
 
         holder.setIsRecyclable(false);
         if(holder.getAdapterPosition() == 0) showAddBtn(holder.add, holder.delete);
@@ -52,21 +74,18 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             holder.delete.setVisibility(View.VISIBLE);
         }
 
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.weight.setError(null);
-                holder.type.setError(null);
-                holder.num.setError(null);
-                cars.remove(holder.getAdapterPosition());
+        holder.delete.setOnClickListener(v -> {
+            holder.weight.setError(null);
+            holder.type.setError(null);
+            holder.num.setError(null);
+            cars.remove(holder.getAdapterPosition());
 //                notifyItemInserted(cars.size()-1);
-                notifyDataSetChanged();
+            notifyDataSetChanged();
 
-                for(int i = holder.getAdapterPosition(); i < getItemCount(); i++){
-                    setCarStr(holder.weight, i, 0);
-                    setCarStr(holder.type, i, 1);
-                    setCarStr(holder.num, i, 2);
-                }
+            for(int i = holder.getAdapterPosition(); i < getItemCount(); i++){
+                setCarStr(holder.weight, i, 0);
+                setCarStr(holder.type, i, 1);
+                setCarStr(holder.num, i, 2);
             }
         });
     }
@@ -79,14 +98,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     public void showAddBtn(Button add, Button delete){
         add.setVisibility(View.VISIBLE);
         delete.setVisibility(View.GONE);
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (cars.size() < limit){
-                    String[] n = {"", "", ""};
-                    cars.add(n);
-                    notifyItemInserted(cars.size()-1);
-                }
+        add.setOnClickListener(v -> {
+            if (cars.size() < limit){
+                String[] n = {"", "", ""};
+                cars.add(n);
+                notifyItemInserted(cars.size()-1);
             }
         });
     }
@@ -94,14 +110,10 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     public void setCarStr(EditText editText, int position, int i){
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -117,6 +129,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         EditText weight, type, num;
         TextView ton;
+        Spinner type_sp;
         Button add, delete;
 
         public ViewHolder(@NonNull View itemView) {
@@ -125,6 +138,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             type = itemView.findViewById(R.id.type_CI);
             num = itemView.findViewById(R.id.num_CI);
             ton = itemView.findViewById(R.id.ton_CI);
+            type_sp = itemView.findViewById(R.id.type_sp_CI);
             add = itemView.findViewById(R.id.add_btn_CI);
             delete = itemView.findViewById(R.id.delete_btn_CI);
         }

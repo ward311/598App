@@ -96,7 +96,9 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
-                    valuationtime = getDate(order.getString("valuation_date"));
+                    if(!order.getString("valuation_date").equals("null"))
+                        valuationtime = getDate(order.getString("valuation_date"));
+                    else valuationtime = "";
                     if(order.getString("valuation_time").equals("null"))
                         valuationtime = valuationtime+" "+order.getString("valuation_time");
                     if(!order.getString("moving_date").equals("null"))
@@ -106,9 +108,6 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                     toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
                     movedate = order.getString("moving_date");
-                    if(!order.getString("num").equals("null"))
-                        car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
-                    else car = "尚未安排車輛";
                     worktime = order.getString("estimate_worktime");
                     fee = order.getString("estimate_fee");
 
@@ -124,7 +123,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                         remainderText.setText(remainder);
                         worktimeText.setText(worktime);
                         feeText.setText(fee);
-                        carText.setText(car);
+//                        carText.setText(car);
                         valuationtimeText.setText(valuationtime);
                     });
                 } catch (JSONException e) {
@@ -142,14 +141,8 @@ public class ValuationCancel_Detail extends AppCompatActivity {
 
 
         //返回鍵
-//        ImageButton back_btn = findViewById( R.id.back_imgBtn );
-//        back_btn.setOnClickListener( new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent back_intent = new Intent(ValuationCancel_Detail.this, Valuation_Cancel.class);
-//                startActivity( back_intent );
-//            }
-//        } );
+        ImageButton back_btn = findViewById( R.id.back_imgBtn );
+        back_btn.setOnClickListener(v -> finish());
 
         //家具清單
         Button detail_btn = findViewById(R.id.furniture_btn_CD);
@@ -170,40 +163,25 @@ public class ValuationCancel_Detail extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(ValuationCancel_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(ValuationCancel_Detail.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(ValuationCancel_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(ValuationCancel_Detail.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(ValuationCancel_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(ValuationCancel_Detail.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(ValuationCancel_Detail.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(ValuationCancel_Detail.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(ValuationCancel_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(ValuationCancel_Detail.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 

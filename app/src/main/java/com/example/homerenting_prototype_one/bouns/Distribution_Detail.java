@@ -578,7 +578,7 @@ public class Distribution_Detail extends AppCompatActivity {
                     update_staff_salary(i);
                     updateComDis();
                 }
-                if(Integer.parseInt(dsalaryText.getText().toString()) == 0 && checkAll){
+                if((net == 0 || net < 10) && checkAll){
                     Log.d(TAG, "complete, finish the distirbution");
                     changeStatus();
 

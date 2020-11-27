@@ -96,29 +96,17 @@ public class Add_Order extends AppCompatActivity {
             }
         } );
 
-        movingTime_text.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog time_picker = new TimePickerDialog( context, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        movingTime_text.setText(hourOfDay+":"+minute);
-                    }
-                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
-                time_picker.show();
-            }
-        } );
+        movingTime_text.setOnClickListener(v -> {
+            TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> movingTime_text.setText(hourOfDay+":"+minute),calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+            time_picker.show();
+        });
 
         cAddress_edit.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -147,22 +135,14 @@ public class Add_Order extends AppCompatActivity {
             }
         });
 
-        addOrderBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(bundle.getString("furniture_data") != null)
-                    furniture_data = bundle.getString("furniture_data");
+        addOrderBtn.setOnClickListener(v -> {
+            if(bundle.getString("furniture_data") != null)
+                furniture_data = bundle.getString("furniture_data");
 
-                addOrder();
+            addOrder();
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                }, 1000);
-            }
+            Handler handler = new Handler();
+            handler.postDelayed(() -> finish(), 1000);
         });
 
         globalNav();
@@ -228,7 +208,7 @@ public class Add_Order extends AppCompatActivity {
                 .add("phone", phone)
                 .add("from_address", fromAddress)
                 .add("to_address", toAddress)
-                .add("accurate_fee", price)
+                .add("estimate_fee", price)
                 .add("worktime", worktime)
                 .add("additional", notice)
                 .add("moving_date", date)
@@ -241,7 +221,7 @@ public class Add_Order extends AppCompatActivity {
                 ", phone: " + phone +
                 ", from_address: " + fromAddress+
                 ", to_address: " + toAddress +
-                ", accurate_fee: " + price +
+                ", estimate_fee: " + price +
                 ", worktime: " + worktime +
                 ", additional: " + notice +
                 ", moving_date: " + date +

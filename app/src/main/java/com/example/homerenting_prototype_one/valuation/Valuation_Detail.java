@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -69,6 +70,7 @@ public class Valuation_Detail extends AppCompatActivity {
 
     Context context = this;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,20 +139,17 @@ public class Valuation_Detail extends AppCompatActivity {
                     else valTime = "no time";
                     notice = order.getString("additional");
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //dialog.dismiss();
-                            nameText.setText(name);
-                            nameTitleText.setText(nameTitle);
-                            phoneText.setText(phone);
-                            selfValTimeText.setText(selfValTime);
-                            fromAddressText.setText(fromAddress);
-                            toAddressText.setText(toAddress);
-                            contactTimeText.setText(contactTime);
-                            cusValTimeText.setText(valTime);
-                            noticeText.setText(notice);
-                        }
+                    runOnUiThread(() -> {
+                        //dialog.dismiss();
+                        nameText.setText(name);
+                        nameTitleText.setText(nameTitle);
+                        phoneText.setText(phone);
+                        selfValTimeText.setText(selfValTime);
+                        fromAddressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        contactTimeText.setText(contactTime);
+                        cusValTimeText.setText(valTime);
+                        noticeText.setText(notice);
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -159,130 +158,112 @@ public class Valuation_Detail extends AppCompatActivity {
             }
         });
 
-        furniture_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_intent = new Intent(  );
-                detail_intent.setClass( Valuation_Detail.this, Furniture_Detail.class );
-                bundle.putString("key","valuation");
-                detail_intent.putExtras(bundle);
-                startActivity( detail_intent );
-            }
-        } );
+        furniture_btn.setOnClickListener(v -> {
+            Intent detail_intent = new Intent(  );
+            detail_intent.setClass( Valuation_Detail.this, Furniture_Detail.class );
+            bundle.putString("key","valuation");
+            detail_intent.putExtras(bundle);
+            startActivity( detail_intent );
+        });
 
-        pickDate_edit.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog date_picker = new DatePickerDialog( Valuation_Detail.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        pickDate_edit.setText(year +"-"+(month+1)+"-"+dayOfMonth);
-                    }
-                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
-                date_picker.show();
-            }
-        } );
-
-        pickTime_edit.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        String m = String.valueOf(minute);
-                        if(minute == 0) m = "00";
-                        pickTime_edit.setText(hourOfDay+":"+m);
-                    }
-                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
-                time_picker.show();
-            }
-        } );
-
-        pickTime2_edit.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        String m = String.valueOf(minute);
-                        if(minute < 10) m = "0"+minute;
-                        pickTime2_edit.setText(hourOfDay+":"+m);
-                    }
-                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
-                time_picker.show();
-            }
-        } );
-
-        check_date_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String valDate = pickDate_edit.getText().toString();
-                String valTime = pickTime_edit.getText().toString()+"~"+pickTime2_edit.getText().toString();
-                boolean check = true;
-                if(valDate.isEmpty()){
-                    pickDate_edit.setError("請輸入日期");
-                    check = false;
+        pickDate_edit.setOnClickListener(v -> {
+            DatePickerDialog date_picker = new DatePickerDialog( Valuation_Detail.this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    pickDate_edit.setText(year +"-"+(month+1)+"-"+dayOfMonth);
                 }
-                if(pickTime_edit.getText().toString().isEmpty()){
-                    pickTime_edit.setError("請輸入時間");
-                    check = false;
+            },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+            date_picker.show();
+        });
+
+        pickTime_edit.setOnClickListener(v -> {
+            TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    String m = String.valueOf(minute);
+                    if(minute == 0) m = "00";
+                    pickTime_edit.setText(hourOfDay+":"+m);
                 }
-                if(pickTime2_edit.getText().toString().isEmpty()){
-                    pickTime2_edit.setError("請輸入時間");
-                    check = false;
+            },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+            time_picker.show();
+        });
+
+        pickTime2_edit.setOnClickListener(v -> {
+            TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    String m = String.valueOf(minute);
+                    if(minute < 10) m = "0"+minute;
+                    pickTime2_edit.setText(hourOfDay+":"+m);
                 }
-                if(!check) return;
+            },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+            time_picker.show();
+        });
 
-                String function_name = "update_selfValuation";
-                RequestBody body = new FormBody.Builder()
-                        .add("function_name", function_name)
-                        .add("order_id", order_id)
-                        .add("company_id", getCompany_id(context))
-                        .add("valuation_date", valDate)
-                        .add("valuation_time", valTime)
-                        .build();
-                Log.d(TAG,"check_price_btn: order_id: " + order_id +
-                        ", company_id: " + getCompany_id(context) +
-                        ", valuation_date: " + valDate +
-                        ", valuation_time: " + valTime);
-
-                Request request = new Request.Builder()
-                        .url(BuildConfig.SERVER_URL+"/functional.php")
-                        .post(body)
-                        .build();
-
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        e.printStackTrace();
-                        runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        final String responseData = response.body().string();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if(responseData.equals("success")) Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
-                                    else Toast.makeText(context, "上傳失敗", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        Log.d(TAG, "check_price_btn, responseData: " + responseData);
-                    }
-                });
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(context, Valuation.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                }, 1000);
+        check_date_btn.setOnClickListener(v -> {
+            String valDate = pickDate_edit.getText().toString();
+            String valTime = pickTime_edit.getText().toString()+"~"+pickTime2_edit.getText().toString();
+            boolean check = true;
+            if(valDate.isEmpty()){
+                pickDate_edit.setError("請輸入日期");
+                check = false;
             }
+            if(pickTime_edit.getText().toString().isEmpty()){
+                pickTime_edit.setError("請輸入時間");
+                check = false;
+            }
+            if(pickTime2_edit.getText().toString().isEmpty()){
+                pickTime2_edit.setError("請輸入時間");
+                check = false;
+            }
+            if(!check) return;
+
+            String function_name1 = "update_selfValuation";
+            RequestBody body1 = new FormBody.Builder()
+                    .add("function_name", function_name1)
+                    .add("order_id", order_id)
+                    .add("company_id", getCompany_id(context))
+                    .add("valuation_date", valDate)
+                    .add("valuation_time", valTime)
+                    .build();
+            Log.d(TAG,"check_price_btn: order_id: " + order_id +
+                    ", company_id: " + getCompany_id(context) +
+                    ", valuation_date: " + valDate +
+                    ", valuation_time: " + valTime);
+
+            Request request1 = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL+"/functional.php")
+                    .post(body1)
+                    .build();
+
+            Call call1 = okHttpClient.newCall(request1);
+            call1.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call1, @NotNull IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call1, @NotNull Response response) throws IOException {
+                    final String responseData = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(responseData.equals("success")) Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
+                                else Toast.makeText(context, "上傳失敗", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    Log.d(TAG, "check_price_btn, responseData: " + responseData);
+                }
+            });
+
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                Intent intent = new Intent(context, Valuation.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }, 1000);
         });
 
 
@@ -294,26 +275,23 @@ public class Valuation_Detail extends AppCompatActivity {
         globalNav();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setPhoneBtn(){
-        phoneCall_btn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
-                Log.i(TAG, "現在是"+now);
-                if(isContactTime(timeToStr(
-                        isWeekend(String.valueOf(now.getDayOfWeek())),
-                        isNight(now.getHour())))){
-                    callIntent();
-                }
-                else{
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                    dialog.setTitle("聯絡時間");
-                    dialog.setMessage("現在並非客戶偏好的聯絡時間，確定要繼續前往撥電話畫面？");
-                    dialog.setPositiveButton("確定", (dialog1, which) -> callIntent());
-                    dialog.setNegativeButton("取消", null);
-                    dialog.create().show();
-                }
+        phoneCall_btn.setOnClickListener(v -> {
+            LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+            Log.i(TAG, "現在是"+now);
+            if(isContactTime(timeToStr(
+                    isWeekend(String.valueOf(now.getDayOfWeek())),
+                    isNight(now.getHour())))){
+                callIntent();
+            }
+            else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setTitle("聯絡時間");
+                dialog.setMessage("現在並非客戶偏好的聯絡時間，確定要繼續前往撥電話畫面？");
+                dialog.setPositiveButton("確定", (dialog1, which) -> callIntent());
+                dialog.setNegativeButton("取消", null);
+                dialog.create().show();
             }
         });
     }
@@ -382,46 +360,34 @@ public class Valuation_Detail extends AppCompatActivity {
     }
 
     private void globalNav() {
+        ImageView back_btn = findViewById(R.id.back_imgBtn);
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Valuation_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        back_btn.setOnClickListener(v -> finish());
+
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Valuation_Detail.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Valuation_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Valuation_Detail.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Valuation_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Valuation_Detail.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Valuation_Detail.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Valuation_Detail.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Valuation_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Valuation_Detail.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 }

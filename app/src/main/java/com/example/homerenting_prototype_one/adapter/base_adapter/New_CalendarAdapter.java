@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.homerenting_prototype_one.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class New_CalendarAdapter extends BaseAdapter {
     private Context context;
@@ -63,10 +64,10 @@ public class New_CalendarAdapter extends BaseAdapter {
         viewHolder.address = view.findViewById(R.id.address_Ca);
         view.setTag(viewHolder);
 
-        Log.d(TAG, "position: "+position);
+        Log.d(TAG, position+". "+ Arrays.toString(data.get(position)));
         viewHolder.counter.setText(String.valueOf(position));
         if(!data.get(position)[3].equals("evaluating"))
-            viewHolder.counter.setBackgroundColor(Color.rgb(25, 176, 237));
+            viewHolder.counter.setBackgroundColor(Color.rgb(25, 176, 237)); //藍色
         viewHolder.time.setText(data.get(position)[1]);
         viewHolder.address.setText(data.get(position)[2]);
 

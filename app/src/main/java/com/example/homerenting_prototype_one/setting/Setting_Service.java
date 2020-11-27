@@ -39,6 +39,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -56,6 +58,7 @@ public class Setting_Service extends AppCompatActivity {
     ImageButton back_btn;
 
     ArrayList<String[]> originItems, enableItems, disableItems, deleteItems;
+    Map<String, ArrayList<String[]>> carItems = new HashMap<>();
 
     boolean lock = true, deleteMode = false;
     Context context = this;
@@ -142,7 +145,7 @@ public class Setting_Service extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -157,25 +160,34 @@ public class Setting_Service extends AppCompatActivity {
                         JSONObject vehicle = responseArr.getJSONObject(i);
                         Log.i(TAG, "vehicle: " + vehicle);
 
+                        String vehicle_id = vehicle.getString("vehicle_id");
                         String vehicle_weight = vehicle.getString("vehicle_weight");
                         String vehicle_type = vehicle.getString("vehicle_type");
+                        String plate_num = vehicle.getString("plate_num");
+                        String verified = vehicle.getString("verified");
+                        String[] row_data = {vehicle_id, vehicle_weight, vehicle_type, plate_num, verified};
 
-
+                        String carTypeStr = vehicle_weight+"噸"+vehicle_type;
                         float wf =  Float.parseFloat(vehicle_weight);
-                        if(wf <= 1.75) vehicle_weight = "1.75噸以下";
-                        else if (wf >= 3.45 && wf <= 3.5) vehicle_weight = "3.49噸";
-                        else if (wf >= 6.5 && wf <= 7.7) vehicle_weight = "6.5~7.7噸";
-                        else if (wf >= 10) vehicle_weight = "10噸以上";
+                        if(wf <= 1.75) carTypeStr = "1.75噸以下"+vehicle_type;
+                        else if (wf >= 3.45 && wf <= 3.5) carTypeStr = "3.49噸"+vehicle_type;
+                        else if (wf >= 6.5 && wf <= 7.7) carTypeStr = "6.5~7.7噸"+vehicle_type;
+                        else if (wf >= 10) carTypeStr = "10噸以上"+vehicle_type;
 
-                        String carTypeStr = vehicle_weight+vehicle_type;
                         Log.d(TAG, "carTypeStr: "+carTypeStr);
                         if(!isCarChipExist(carTypeStr)){
+                            ArrayList<String[]> newCarTypeList = new ArrayList<>();
+                            newCarTypeList.add(row_data);
+                            carItems.put(carTypeStr, newCarTypeList);
                             Chip chip = addChip(carType, carTypeStr, false);
                             if(vehicle.getInt("verified") == 0) {
                                 chip.setCheckable(false);
                                 chip.setTextColor(Color.parseColor("#7B7B7B"));
                                 chip.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.frame_background, null));
                             }
+                        }
+                        else{
+                            carItems.get(carTypeStr).add(row_data);
                         }
                     }
                 } catch (JSONException e) {
@@ -187,6 +199,7 @@ public class Setting_Service extends AppCompatActivity {
                     if((ii++)%1000000 == 0) Log.d(TAG, "wait for lock..."); //等到chip都新增完畢之後再執行下個程式
                 }
                 getCheckedData();
+                setCarChipDetail();
             }
         });
     }
@@ -282,6 +295,21 @@ public class Setting_Service extends AppCompatActivity {
                     Log.d(TAG, "originItem: "+ Arrays.toString(originItems.get(i)));
             }
         });
+    }
+
+    private void setCarChipDetail(){
+        for(int i = 0; i < carType.getChildCount()-1; i++){
+            Chip chip = (Chip) carType.getChildAt(i);
+            chip.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Log.i(TAG, "x:"+chip.getX()+" "+chip.getPivotX()+" "+chip.getRotationX()
+                            +" "+chip.getScaleX()+" "+chip.getScrollX()+" "+chip.getTranslationX()
+                            +" "+chip.getTextScaleX());
+                    return false;
+                }
+            });
+        }
     }
 
     private ChipGroup getChipGroup(String service_name){
