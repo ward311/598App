@@ -70,14 +70,6 @@
                 android:visibility="gone"
                 app:srcCompat="@android:drawable/ic_input_add" />
 
-            <TextView
-                android:id="@+id/add_text"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/self_icon"
-                android:paddingTop="7dp" />
         </LinearLayout>
 
         <TextView
@@ -97,10 +89,18 @@
         android:id="@+id/iconLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginRight="10dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_weight="0.95"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/add_text"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/self_icon"
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/new_icon_img"

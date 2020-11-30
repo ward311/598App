@@ -86,81 +86,54 @@ public class Valuation_Cancel extends AppCompatActivity {
         month_text.setText(getMonthStr());
         getValuationCancel();
 
-        lastWeek_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int wCount = getwCount();
-                setwCount(wCount-1);
-                week_text.setText(getWeek());
-                month_text.setText(getMonthStr());
-                data.clear();
-                getValuationCancel();
-            }
+        lastWeek_btn.setOnClickListener(v -> {
+            int wCount = getwCount();
+            setwCount(wCount-1);
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            data.clear();
+            getValuationCancel();
         });
 
-        nextWeek_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int wCount = getwCount();
-                setwCount(wCount+1);
-                week_text.setText(getWeek());
-                month_text.setText(getMonthStr());
-                data.clear();
-                getValuationCancel();
-            }
+        nextWeek_btn.setOnClickListener(v -> {
+            int wCount = getwCount();
+            setwCount(wCount+1);
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            data.clear();
+            getValuationCancel();
         });
 
         //上方nav
-        self_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent selfValuation_intent = new Intent(Valuation_Cancel.this, Valuation.class);
-                startActivity(selfValuation_intent);
-            }
+        self_btn.setOnClickListener(v -> {
+            Intent selfValuation_intent = new Intent(Valuation_Cancel.this, Valuation.class);
+            startActivity(selfValuation_intent);
         });
-        booking_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent bookingValuation_intent = new Intent(Valuation_Cancel.this, Valuation_Booking.class);
-                startActivity(bookingValuation_intent);
-            }
+        booking_btn.setOnClickListener(v -> {
+            Intent bookingValuation_intent = new Intent(Valuation_Cancel.this, Valuation_Booking.class);
+            startActivity(bookingValuation_intent);
         });
-        matchMaking_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent matchMakingValuation_intent = new Intent(Valuation_Cancel.this, Valuation_MatchMaking.class);
-                startActivity(matchMakingValuation_intent);
-            }
+        matchMaking_btn.setOnClickListener(v -> {
+            Intent matchMakingValuation_intent = new Intent(Valuation_Cancel.this, Valuation_MatchMaking.class);
+            startActivity(matchMakingValuation_intent);
         });
 
         //底下nav
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Valuation_Cancel.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Valuation_Cancel.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Valuation_Cancel.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Valuation_Cancel.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Valuation_Cancel.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Valuation_Cancel.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Valuation_Cancel.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Valuation_Cancel.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 
@@ -190,12 +163,7 @@ public class Valuation_Cancel extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Valuation_Cancel.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(Valuation_Cancel.this, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -225,15 +193,12 @@ public class Valuation_Cancel extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                NoDataAdapter noData = new NoDataAdapter();
-                                valuationCancelList.setAdapter(noData);
-                            }
-                            //else Toast.makeText(Valuation_Cancel.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            NoDataAdapter noData = new NoDataAdapter();
+                            valuationCancelList.setAdapter(noData);
                         }
+                        //else Toast.makeText(Valuation_Cancel.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -242,29 +207,23 @@ public class Valuation_Cancel extends AppCompatActivity {
                     for (int i = 0; i < data.size(); i++)
                         Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
                     listAdapter = new ListAdapter(data);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            valuationCancelList.setAdapter(listAdapter);
-                            valuationCancelList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
-                                    String order_id = row_data[0];
+                    runOnUiThread(() -> {
+                        valuationCancelList.setAdapter(listAdapter);
+                        valuationCancelList.setOnItemClickListener((parent, view, position, id) -> {
+                            String[] row_data = (String[]) parent.getItemAtPosition(position);
+                            Log.d(TAG, "row_data: " + Arrays.toString(row_data));
+                            String order_id = row_data[0];
 
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("order_id", order_id);
 
-                                    removeNew(order_id, Valuation_Cancel.this);
+                            removeNew(order_id, Valuation_Cancel.this);
 
-                                    Intent intent = new Intent();
-                                    intent.setClass(Valuation_Cancel.this, ValuationCancel_Detail.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
+                            Intent intent = new Intent();
+                            intent.setClass(Valuation_Cancel.this, ValuationCancel_Detail.class);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        });
                     });
                 }
             }
