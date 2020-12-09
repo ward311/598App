@@ -75,26 +75,18 @@ public class Add_Order extends AppCompatActivity {
             Log.d(TAG, "furniture_data: "+bundle.getString("furniture_data"));
             setTextData();
         }
-        else{
-            bundle = new Bundle();
-        }
+        else bundle = new Bundle();
 
-        movingDate_text.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog datePicker = new DatePickerDialog( Add_Order.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        String monthStr = String.valueOf(month+1);
-                        if(month+1 < 10) monthStr = "0"+monthStr;
-                        String dayStr = String.valueOf(dayOfMonth);
-                        if(dayOfMonth < 10) dayStr = "0"+dayStr;
-                        movingDate_text.setText(year+"-"+monthStr+"-"+dayStr);
-                    }
-                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
-                datePicker.show();
-            }
-        } );
+        movingDate_text.setOnClickListener(v -> {
+            DatePickerDialog datePicker = new DatePickerDialog( Add_Order.this, (view, year, month, dayOfMonth) -> {
+                String monthStr = String.valueOf(month+1);
+                if(month+1 < 10) monthStr = "0"+monthStr;
+                String dayStr = String.valueOf(dayOfMonth);
+                if(dayOfMonth < 10) dayStr = "0"+dayStr;
+                movingDate_text.setText(year+"-"+monthStr+"-"+dayStr);
+            },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+            datePicker.show();
+        });
 
         movingTime_text.setOnClickListener(v -> {
             TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> movingTime_text.setText(hourOfDay+":"+minute),calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
@@ -122,17 +114,14 @@ public class Add_Order extends AppCompatActivity {
             }
         });
 
-        editFurnitureBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent();
-                bundle.putString("order_id", "-1");
-                getTextData();
-                intent.putExtras(bundle);
-                intent.setClass(context, Edit_Furniture.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-            }
+        editFurnitureBtn.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            bundle.putString("order_id", "-1");
+            getTextData();
+            intent.putExtras(bundle);
+            intent.setClass(context, Edit_Furniture.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
         });
 
         addOrderBtn.setOnClickListener(v -> {
@@ -237,25 +226,17 @@ public class Add_Order extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(responseData.equals("success"))
-                            Toast.makeText(context, "新增訂單成功", Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(context, "新增訂單失敗", Toast.LENGTH_LONG).show();
-                    }
+                runOnUiThread(() -> {
+                    if(responseData.equals("success"))
+                        Toast.makeText(context, "新增訂單成功", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(context, "新增訂單失敗", Toast.LENGTH_LONG).show();
                 });
                 Log.d(TAG, "add_btn, responseData: " + responseData);
             }
@@ -287,40 +268,25 @@ public class Add_Order extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Add_Order.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Add_Order.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Add_Order.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Add_Order.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Add_Order.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Add_Order.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Add_Order.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Add_Order.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Add_Order.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Add_Order.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 }

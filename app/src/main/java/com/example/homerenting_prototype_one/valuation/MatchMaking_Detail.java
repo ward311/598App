@@ -86,19 +86,14 @@ public class MatchMaking_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(MatchMaking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(MatchMaking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG, "responseData" + responseData); //顯示資料
+                Log.d(TAG, "responseData: " + responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -124,42 +119,27 @@ public class MatchMaking_Detail extends AppCompatActivity {
 //                    if(order.getString("vehicle_type").equals("null")) car = "尚未安排車輛";
 //                    else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            nameText.setText(name);
-                            if(gender.equals("女")) nameTitleText.setText("小姐");
-                            else if(gender.equals("男")) nameTitleText.setText("先生");
-                            else nameTitleText.setText("");
-                            phoneText.setText(phone);
-                            valuationTimeText.setText(valuationTime);
-                            fromAddressText.setText(fromAddress);
-                            toAddressText.setText(toAddress);
-                            noticeText.setText(notice);
-                            movingTimeText.setText(movingTime);
-                            carText.setText(car);
-                            worktimeText.setText(worktime);
-                            priceText.setText(price);
-                        }
+                    runOnUiThread(() -> {
+                        nameText.setText(name);
+                        if(gender.equals("女")) nameTitleText.setText("小姐");
+                        else if(gender.equals("男")) nameTitleText.setText("先生");
+                        else nameTitleText.setText("");
+                        phoneText.setText(phone);
+                        valuationTimeText.setText(valuationTime);
+                        fromAddressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        noticeText.setText(notice);
+                        movingTimeText.setText(movingTime);
+                        carText.setText(car);
+                        worktimeText.setText(worktime);
+                        priceText.setText(price);
                     });
 
                     int auto = order.getInt("auto");
-                    if(auto==0){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setConfirmBtn();
-                            }
-                        });
-                    }
+                    if(auto==0) runOnUiThread(() -> setConfirmBtn());
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Toast.makeText(MatchMaking_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    //runOnUiThread(() -> Toast.makeText(MatchMaking_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
             }
         });
@@ -178,26 +158,20 @@ public class MatchMaking_Detail extends AppCompatActivity {
 //        } );
 
         Button call_btn = findViewById(R.id.call_btn);
-        call_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent call_intent = new Intent(Intent.ACTION_DIAL);
-                call_intent.setData( Uri.parse("tel:0933669877"));
-                startActivity(call_intent);
-            }
-        } );
+        call_btn.setOnClickListener(v -> {
+            Intent call_intent = new Intent(Intent.ACTION_DIAL);
+            call_intent.setData( Uri.parse("tel:0933669877"));
+            startActivity(call_intent);
+        });
 
         Button detail_btn = findViewById(R.id.furniture_btn_MMD);
-        detail_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_intent = new Intent();
-                detail_intent.setClass( MatchMaking_Detail.this, Furniture_Detail.class );
-                bundle.putString("key","match");
-                detail_intent.putExtras( bundle );
-                startActivity( detail_intent );
-            }
-        } );
+        detail_btn.setOnClickListener(v -> {
+            Intent detail_intent = new Intent();
+            detail_intent.setClass( MatchMaking_Detail.this, Furniture_Detail.class );
+            bundle.putString("key","match");
+            detail_intent.putExtras( bundle );
+            startActivity( detail_intent );
+        });
 
 //        Button edit_btn = findViewById(R.id.edit_furniture_btn);
 //        edit_btn.setOnClickListener( new View.OnClickListener() {
@@ -213,40 +187,25 @@ public class MatchMaking_Detail extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(MatchMaking_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(MatchMaking_Detail.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(MatchMaking_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(MatchMaking_Detail.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(MatchMaking_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(MatchMaking_Detail.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(MatchMaking_Detail.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(MatchMaking_Detail.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(MatchMaking_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(MatchMaking_Detail.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 
@@ -286,12 +245,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
                         e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
                     }
 
                     @Override
@@ -302,13 +256,10 @@ public class MatchMaking_Detail extends AppCompatActivity {
                 });
 
                 Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(context, Order.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
+                handler.postDelayed(() -> {
+                    Intent intent = new Intent(context, Order.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 }, 1000);
             }
         });

@@ -64,7 +64,6 @@ import okhttp3.Response;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 
-
 public class ValuationBooking_Detail extends AppCompatActivity {
     LinearLayout furnitureLL;
 

@@ -82,26 +82,21 @@ public class Bonus_View extends AppCompatActivity {
         chartBtn = findViewById(R.id.chart_btn_BV);
 
         year = getToday("yyyy");
-        month = "7";//getToday("MM");
+        month = getToday("MM");
         title.setText("員工薪資一覽 "+month+"月");
         getData(year, month);
 
         backBtn.setOnClickListener(v -> finish());
 
 
-        total_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                salary_list.setVisibility(View.GONE);
-//                date_salary_list.setVisibility(View.VISIBLE);
-                Bundle bundle = new Bundle();
-                bundle.putString("year", year);
-                bundle.putString("month", month);
-                Intent intent = new Intent();
-                intent.setClass(context, Bonus_List_Detail.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
+        total_btn.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("year", year);
+            bundle.putString("month", month);
+            Intent intent = new Intent();
+            intent.setClass(context, Bonus_List_Detail.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
 
         globalNav();
@@ -135,13 +130,8 @@ public class Bonus_View extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -172,12 +162,9 @@ public class Bonus_View extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setList(); //清單
-                        setChart(); //圖表
-                    }
+                runOnUiThread(() -> {
+                    setList(); //清單
+                    setChart(); //圖表
                 });
             }
         });
@@ -191,23 +178,13 @@ public class Bonus_View extends AppCompatActivity {
         setBarChart(dialog);
 
         Button dialog_btn = dialog.findViewById(R.id.check_dialog_btn);
-        dialog_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        dialog_btn.setOnClickListener(v -> dialog.dismiss());
 
         dialog.getWindow().setLayout(dip2px(context, 375), dip2px(context, 500)); //1400, 2000
         dialog.setCanceledOnTouchOutside(true); //點其他地方也能取消
         dialog.show();
 
-        chartBtn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.show();
-            }
-        } );
+        chartBtn.setOnClickListener(v -> dialog.show());
     }
 
     private void setBarChart(Dialog dialog){
@@ -290,40 +267,25 @@ public class Bonus_View extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Bonus_View.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Bonus_View.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Bonus_View.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Bonus_View.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Bonus_View.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Bonus_View.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Bonus_View.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Bonus_View.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Bonus_View.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Bonus_View.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 }

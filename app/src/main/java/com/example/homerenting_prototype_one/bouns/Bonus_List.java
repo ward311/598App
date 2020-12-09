@@ -75,46 +75,26 @@ public class Bonus_List extends AppCompatActivity {
 
         getOrder();
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+        back_btn.setOnClickListener(v -> finish());
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Bonus_List.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Bonus_List.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Bonus_List.this, Order.class);
+            startActivity(order_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Bonus_List.this, Order.class);
-                startActivity(order_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Bonus_List.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Bonus_List.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Bonus_List.this, System.class);
+            startActivity(system_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Bonus_List.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Bonus_List.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Bonus_List.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 
@@ -124,6 +104,7 @@ public class Bonus_List extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", company_id)
+                .add("order_status", "paid")
                 .build();
         //連線要求
         Request request = new Request.Builder()
@@ -138,13 +119,8 @@ public class Bonus_List extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -168,8 +144,7 @@ public class Bonus_List extends AppCompatActivity {
                         for(int ii=0; ii<data.size(); ii++){
                             if(data.get(ii).contains(year)){
                                 check = true;
-                                if(!data.get(ii).contains(month))
-                                    data.get(ii).add(month);
+                                if(!data.get(ii).contains(month)) data.get(ii).add(month);
                                 break;
                             }
                         }
@@ -198,12 +173,9 @@ public class Bonus_List extends AppCompatActivity {
 
                     final MonthAdapter adapter = new MonthAdapter(data, Bonus_List_Detail.class);
                     final int finalTotalmonth = totalmonth;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            bonus_list.setAdapter(adapter);
-                            totalbonus.setText("共"+ finalTotalmonth +"個月獎金報表");
-                        }
+                    runOnUiThread(() -> {
+                        bonus_list.setAdapter(adapter);
+                        totalbonus.setText("共"+ finalTotalmonth +"個月獎金報表");
                     });
                 }
             }

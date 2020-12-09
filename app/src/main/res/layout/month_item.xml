@@ -132,9 +132,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:background="@drawable/frame_background"
+            android:background="@drawable/month_btn_drawable"
             android:text="11月"
-            android:textColor="#7AA4B3" />
+            android:textColor="#19B0ED" />
 
         <Button
             android:id="@+id/december_btn"

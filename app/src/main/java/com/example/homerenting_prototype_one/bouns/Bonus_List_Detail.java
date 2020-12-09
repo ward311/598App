@@ -93,32 +93,25 @@ public class Bonus_List_Detail extends AppCompatActivity {
         getData();
         getDate();
 
+        int i = 0;
         while (lock){
-            Log.d(TAG, "wait for getting data lock...");
+            if(i++%1000000 == 0) Log.d(TAG, "wait for getting data lock...");
         }
         setHeaderRow();
         setFixedTable();
         setSalaryTable();
 
 
-        back_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        } );
-        export_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent export_intent = new Intent();
-                export_intent.setAction( Intent.ACTION_SEND );
-                export_intent.putExtra( Intent.EXTRA_TEXT,"分享此報表" );
-                export_intent.setType( "text/plain" );
+        back_btn.setOnClickListener(v -> finish());
+        export_btn.setOnClickListener(v -> {
+            Intent export_intent = new Intent();
+            export_intent.setAction( Intent.ACTION_SEND );
+            export_intent.putExtra( Intent.EXTRA_TEXT,"分享此報表" );
+            export_intent.setType( "text/plain" );
 
-                Intent share_intent = Intent.createChooser( export_intent, null);
-                startActivity( share_intent);
-            }
-        } );
+            Intent share_intent = Intent.createChooser( export_intent, null);
+            startActivity( share_intent);
+        });
 
         globalNav();
     }
@@ -147,13 +140,8 @@ public class Bonus_List_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -232,13 +220,8 @@ public class Bonus_List_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
 
                 lock = false;
             }
@@ -326,7 +309,7 @@ public class Bonus_List_Detail extends AppCompatActivity {
 //            Log.d(TAG, "staff: "+staff.get(0)[0]);
             for(int ii = 0; ii < date.size(); ii++){ //第幾天
 //                Log.d(TAG, "date: "+month+"/"+date.get(ii));
-                String salary = "";
+                String salary = "無資料";
                 for(int iii = 0; iii < staff.size(); iii++){ //第幾筆資料
                     if(Integer.parseInt(staff.get(iii)[1]) == date.get(ii)){ //有沒有第ii天的資料
                         salary = staff.get(iii)[2];
@@ -398,40 +381,25 @@ public class Bonus_List_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Bonus_List_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Bonus_List_Detail.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Bonus_List_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Bonus_List_Detail.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Bonus_List_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Bonus_List_Detail.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Bonus_List_Detail.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Bonus_List_Detail.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Bonus_List_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Bonus_List_Detail.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 }
