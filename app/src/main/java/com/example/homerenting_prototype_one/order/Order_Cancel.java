@@ -44,6 +44,7 @@ import static com.example.homerenting_prototype_one.show.global_function.clearDa
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getWeek;
@@ -55,7 +56,7 @@ import static com.example.homerenting_prototype_one.show.global_function.setwCou
 public class Order_Cancel extends AppCompatActivity {
     ArrayList<String[]> data;
 
-    TextView week_text;
+    TextView week_text, month_text;
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
 
@@ -68,6 +69,7 @@ public class Order_Cancel extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order__cancel);
         week_text = findViewById(R.id.week_OC);
+        month_text = findViewById(R.id.month_OC);
         lastWeek_btn = findViewById(R.id.lastWeek_btn_OC);
         nextWeek_btn = findViewById(R.id.nextWeek_btn_OC);
         orderList = findViewById(R.id.order_listView_OC);
@@ -85,6 +87,7 @@ public class Order_Cancel extends AppCompatActivity {
         data = new ArrayList<>();
 
         week_text.setText(getWeek());
+        month_text.setText(getMonthStr());
         getOrder();
 
         lastWeek_btn.setOnClickListener(new View.OnClickListener() {

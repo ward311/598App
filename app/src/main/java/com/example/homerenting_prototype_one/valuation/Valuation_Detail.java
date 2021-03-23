@@ -133,10 +133,10 @@ public class Valuation_Detail extends AppCompatActivity {
                     if(!order.getString("valuation_date").equals("null")){
                         valTime = getDate(order.getString("valuation_date"));
                         valTime = getDate(order.getString("valuation_date"));
-                        if(order.getString("valuation_time").equals("null"))
+                        if(!order.getString("valuation_time").equals("null"))
                             valTime = valTime+" "+order.getString("valuation_time");
                     }
-                    else valTime = "no time";
+                    else valTime = "無偏好時間";
                     notice = order.getString("additional");
 
                     runOnUiThread(() -> {
@@ -161,41 +161,31 @@ public class Valuation_Detail extends AppCompatActivity {
         furniture_btn.setOnClickListener(v -> {
             Intent detail_intent = new Intent(  );
             detail_intent.setClass( Valuation_Detail.this, Furniture_Detail.class );
-            bundle.putString("key","valuation");
             detail_intent.putExtras(bundle);
             startActivity( detail_intent );
         });
 
         pickDate_edit.setOnClickListener(v -> {
-            DatePickerDialog date_picker = new DatePickerDialog( Valuation_Detail.this, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    pickDate_edit.setText(year +"-"+(month+1)+"-"+dayOfMonth);
-                }
+            DatePickerDialog date_picker = new DatePickerDialog( Valuation_Detail.this, (view, year, month, dayOfMonth) -> {
+                pickDate_edit.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
             },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
             date_picker.show();
         });
 
         pickTime_edit.setOnClickListener(v -> {
-            TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    String m = String.valueOf(minute);
-                    if(minute == 0) m = "00";
-                    pickTime_edit.setText(hourOfDay+":"+m);
-                }
+            TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, (view, hourOfDay, minute) -> {
+                String m = String.valueOf(minute);
+                if(minute == 0) m = "00";
+                pickTime_edit.setText(hourOfDay+":"+m);
             },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
             time_picker.show();
         });
 
         pickTime2_edit.setOnClickListener(v -> {
-            TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    String m = String.valueOf(minute);
-                    if(minute < 10) m = "0"+minute;
-                    pickTime2_edit.setText(hourOfDay+":"+m);
-                }
+            TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, (view, hourOfDay, minute) -> {
+                String m = String.valueOf(minute);
+                if(minute < 10) m = "0"+minute;
+                pickTime2_edit.setText(hourOfDay+":"+m);
             },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
             time_picker.show();
         });
@@ -247,12 +237,9 @@ public class Valuation_Detail extends AppCompatActivity {
                 @Override
                 public void onResponse(@NotNull Call call1, @NotNull Response response) throws IOException {
                     final String responseData = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(responseData.equals("success")) Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
-                                else Toast.makeText(context, "上傳失敗", Toast.LENGTH_LONG).show();
-                            }
+                        runOnUiThread(() -> {
+                            if(responseData.equals("success")) Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
+                            else Toast.makeText(context, "上傳失敗", Toast.LENGTH_LONG).show();
                         });
                     Log.d(TAG, "check_price_btn, responseData: " + responseData);
                 }
@@ -266,11 +253,7 @@ public class Valuation_Detail extends AppCompatActivity {
             }, 1000);
         });
 
-
-
-
         setPhoneBtn();
-
 
         globalNav();
     }

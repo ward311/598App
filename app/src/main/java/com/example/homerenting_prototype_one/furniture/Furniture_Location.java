@@ -66,10 +66,7 @@ public class Furniture_Location extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         Bundle location_bundle = getIntent().getExtras();
-        final String key = location_bundle.getString("key");
         String order_id = location_bundle.getString("order_id");
-        Log.d(TAG, "key: "+key+", order_id: "+order_id);
-
 
         data = new ArrayList<>();
 
@@ -93,7 +90,7 @@ public class Furniture_Location extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(Furniture_Location.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(Furniture_Location.this, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -122,9 +119,11 @@ public class Furniture_Location extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     if(responseData.equals("null")){
-                        Log.d(TAG, "NO DATA");
-                        NoDataAdapter noData = new NoDataAdapter();
-                        location_list.setAdapter(noData);
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "NO DATA");
+                            NoDataAdapter noData = new NoDataAdapter();
+                            location_list.setAdapter(noData);
+                        } );
                     }
                     //else Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                 }
@@ -133,66 +132,34 @@ public class Furniture_Location extends AppCompatActivity {
                 for(int i=0; i < data.size(); i++)
                     Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                 final LocationAdapter LocationAdapter = new LocationAdapter(data);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        location_list.setAdapter(LocationAdapter);
-                    }
-                });
+                runOnUiThread(() -> location_list.setAdapter(LocationAdapter));
 
             }
         });
 
 
-        back_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (key.matches( "order" )){
-                    Intent back_intent = new Intent(Furniture_Location.this, Order_Detail.class);
-                    startActivity( back_intent );
-                }
-                else if (key.matches( "today" )){
-                    Intent back_intent = new Intent(Furniture_Location.this, Today_Detail.class);
-                    startActivity( back_intent );
-                }
-            }
-        } );
+        back_btn.setOnClickListener(v -> finish());
 
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Furniture_Location.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Furniture_Location.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Furniture_Location.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Furniture_Location.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Furniture_Location.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Furniture_Location.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Furniture_Location.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Furniture_Location.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Furniture_Location.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Furniture_Location.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 }

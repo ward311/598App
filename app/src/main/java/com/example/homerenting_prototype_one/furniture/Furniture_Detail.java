@@ -167,25 +167,7 @@ public class Furniture_Detail extends AppCompatActivity {
         //data.add(datas.get(1));
 
 
-        back_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent back_intent = new Intent(Furniture_Detail.this,Valuation_Detail.class);
-//                startActivity( back_intent );
-                if (key.matches( "match" )){
-                    Intent back_intent = new Intent(Furniture_Detail.this, MatchMaking_Detail.class);
-                    startActivity( back_intent );
-                }
-                else if (key.matches( "cancel" )){
-                    Intent back_intent = new Intent(Furniture_Detail.this, ValuationCancel_Detail.class);
-                    startActivity( back_intent );
-                }
-                else {
-                    Intent back_intent = new Intent(Furniture_Detail.this, Valuation_Detail.class);
-                    startActivity( back_intent );
-                }
-            }
-        } );
+        back_btn.setOnClickListener(v -> finish());
 
 
         //底下nav

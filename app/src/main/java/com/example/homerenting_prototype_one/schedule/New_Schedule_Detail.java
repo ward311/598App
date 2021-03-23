@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.order.Order_Detail;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -97,20 +98,17 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
         backBtn.setOnClickListener(v -> finish());
 
-        lastBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String new_order_id = getlastDatalist(order_id);
-                bundle.putString("order_id", new_order_id);
-                if(new_order_id == null)
-                    Toast.makeText(context, "This is the first order.", Toast.LENGTH_LONG).show();
-                else{
-                    submit();
-                    Intent intent = new Intent(context, New_Schedule_Detail.class);
-                    intent.putExtras(bundle);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
+        lastBtn.setOnClickListener(v -> {
+            String new_order_id = getlastDatalist(order_id);
+            bundle.putString("order_id", new_order_id);
+            if(new_order_id == null)
+                Toast.makeText(context, "This is the first order.", Toast.LENGTH_LONG).show();
+            else{
+                submit();
+                Intent intent = new Intent(context, New_Schedule_Detail.class);
+                intent.putExtras(bundle);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
 
@@ -158,7 +156,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -194,8 +192,13 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         //取欄位資料
                         final String vehicle_id = vehicle.getString("vehicle_id");
                         final String plate_num = vehicle.getString("plate_num");
+                        final String vehicle_weight = vehicle.getString("vehicle_weight");
+                        final String vehicle_type = vehicle.getString("vehicle_type");
 
-                        runOnUiThread(() -> carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num)));
+                        runOnUiThread(() -> {
+                            carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num));
+                            Chip carChip = (Chip) carGroup.getChildAt(carGroup.getChildCount()-1);
+                        });
                     }
                     int ii = 0;
                     while((staffGroup.getChildCount()-1+carGroup.getChildCount()-1) != responseArr.length()){
@@ -296,7 +299,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -349,8 +352,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     if(i == 1) demandCar = "無填寫需求車輛";
                     Log.d(TAG, "demandCar: "+demandCar);
 
+                    car = "";
                     if(responseArr.length()-i < 1) car = "尚未安排車輛";
-                    else car = "";
                     for (; i < responseArr.length(); i++) {
                         JSONObject vehicle_assign = responseArr.getJSONObject(i);
                         if(!vehicle_assign.has("vehicle_id")) break;
@@ -395,8 +398,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
                 int ii = 0;
                 while (lock){
-                    ii++;
-                    if(ii%5000000 == 0) Log.d(TAG, "waiting for lock in getOrder...");
+                    if((++ii)%5000000 == 0) Log.d(TAG, "waiting for lock in getOrder...");
                 }
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 getVacation(movingDateWithoutTime);
@@ -435,7 +437,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -466,12 +468,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Toast onResponse failed because JSON in getVacation", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getVacation", Toast.LENGTH_LONG).show());
                     }
                 }
 
@@ -516,7 +513,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -553,9 +550,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
+                        if(!responseData.equals("null") && !responseData.equals("function_name not found."))
                             runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getOverlap", Toast.LENGTH_LONG).show());
-                        }
                     }
                 }
 
@@ -706,23 +702,29 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "submit: "+responseData);
-//                runOnUiThread(() -> Toast.makeText(context, responseData, Toast.LENGTH_LONG).show());
+                if(responseData.equals("success"))
+                    runOnUiThread(() -> Toast.makeText(context, "更新成功", Toast.LENGTH_LONG).show());
+                else
+                    runOnUiThread(() -> Toast.makeText(context, "更新失敗", Toast.LENGTH_LONG).show());
             }
         });
         Handler handler = new Handler();
         handler.postDelayed(() -> {
-//                Intent intent = new Intent(context, Order_Booking.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
-            finish();
-        }, 1000);
+            if(bundle.containsKey("order_detail")){
+                Intent intent = new Intent(context, Order_Detail.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+            else finish();
+        }, 500);
     }
 
     private String arrayToString(ArrayList<int[]> array){

@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+
     <TextView
         android:id="@+id/matchMaking_detail"
         android:layout_width="0dp"
@@ -19,10 +20,9 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <ScrollView
         android:layout_width="0dp"
@@ -473,7 +473,7 @@
         app:layout_constraintTop_toBottomOf="@+id/setting_imgBtn" />
 
     <ImageView
-        android:id="@+id/back_imgBtn"
+        android:id="@+id/back_imgBtn_MMD"
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_marginStart="16dp"

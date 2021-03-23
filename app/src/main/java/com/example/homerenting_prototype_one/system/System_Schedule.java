@@ -95,23 +95,20 @@ public class System_Schedule extends AppCompatActivity {
         getChip();
 
         getVacation(getToday("yyyy-MM-dd"));
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                String monthStr = String.valueOf(month + 1);
-                if (month + 1 < 10) monthStr = "0" + monthStr;
-                String dayOfMonthStr = String.valueOf(dayOfMonth);
-                if (dayOfMonth < 10) dayOfMonthStr = "0" + dayOfMonthStr;
-                String date = year + "-" + monthStr + "-" + dayOfMonthStr;
-                Log.i(TAG, "Date Change: " + date);
+        calendar.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            String monthStr = String.valueOf(month + 1);
+            if (month + 1 < 10) monthStr = "0" + monthStr;
+            String dayOfMonthStr = String.valueOf(dayOfMonth);
+            if (dayOfMonth < 10) dayOfMonthStr = "0" + dayOfMonthStr;
+            String date = year + "-" + monthStr + "-" + dayOfMonthStr;
+            Log.i(TAG, "Date Change: " + date);
 
-                getOrder(date);
-                orderList.setVisibility(View.VISIBLE);
-                calendar_sv.setVisibility(View.GONE);
+            getOrder(date);
+            orderList.setVisibility(View.VISIBLE);
+            calendar_sv.setVisibility(View.GONE);
 
-                initArray();
-                getVacation(date);
-            }
+            initArray();
+            getVacation(date);
         });
 
         globalNav();
@@ -139,13 +136,8 @@ public class System_Schedule extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -169,14 +161,8 @@ public class System_Schedule extends AppCompatActivity {
                         final String staff_id = staff.getString("staff_id");
                         final String staff_name = staff.getString("staff_name");
 
-                        runOnUiThread(new Runnable() {
-                            @RequiresApi(api = Build.VERSION_CODES.M)
-                            @Override
-                            public void run() {
-                                //在staffGroup底下新增chip，加入ID和Tag
-                                staffGroup.addView(setChipDetail(staffGroup, staff_id, staff_name));
-                            }
-                        });
+                        //在staffGroup底下新增chip，加入ID和Tag
+                        runOnUiThread(() -> staffGroup.addView(setChipDetail(staffGroup, staff_id, staff_name)));
                     }
 
                     for (; i < responseArr.length(); i++) {
@@ -188,28 +174,17 @@ public class System_Schedule extends AppCompatActivity {
                         final String vehicle_id = vehicle.getString("vehicle_id");
                         final String plate_num = vehicle.getString("plate_num");
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num));
-                            }
-                        });
+                        runOnUiThread(() -> carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num)));
                     }
                     int ii = 0;
                     while((staffGroup.getChildCount()-1+carGroup.getChildCount()-1) != responseArr.length()){
-                        ii++;
-                        if(ii%1000000 == 0)
+                        if((++ii)%1000000 == 0)
                             Log.d(TAG, "waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
                     lock = false;
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
             }
         });
@@ -239,29 +214,26 @@ public class System_Schedule extends AppCompatActivity {
     }
 
     private void setChipCheckedListener(final Chip chip, final String name, final ArrayList<Integer> items, final ArrayList<String> items_text){
-        chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int tag = (int) buttonView.getTag();
-                String sname = chip.getText().toString();
-                if(isChecked){ //取消選擇
-                    items.add(tag);
-                    if(!items_text.contains(name))
-                        items_text.add(sname);
-                }
-                else{ //加入選擇
-                    items.remove(Integer.valueOf(tag));
-                    items_text.remove(sname);
-                }
-                Log.i(TAG, "click chip: " + sname);
-
-                String item_name;
-                if(items == staffs) item_name = "staffs";
-                else item_name = "cars";
-                Log.i(TAG, item_name+"_text: " + items_text);
-                Log.i(TAG, item_name+": " + items);
-
+        chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int tag = (int) buttonView.getTag();
+            String sname = chip.getText().toString();
+            if(isChecked){ //取消選擇
+                items.add(tag);
+                if(!items_text.contains(name))
+                    items_text.add(sname);
             }
+            else{ //加入選擇
+                items.remove(Integer.valueOf(tag));
+                items_text.remove(sname);
+            }
+            Log.i(TAG, "click chip: " + sname);
+
+            String item_name;
+            if(items == staffs) item_name = "staffs";
+            else item_name = "cars";
+            Log.i(TAG, item_name+"_text: " + items_text);
+            Log.i(TAG, item_name+": " + items);
+
         });
     }
 
@@ -293,13 +265,8 @@ public class System_Schedule extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -340,15 +307,12 @@ public class System_Schedule extends AppCompatActivity {
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                Log.d(TAG, "NO DATA");
-                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
-                                orderList.setLayoutManager(new LinearLayoutManager(context));
-                                orderList.setAdapter(noDataAdapter);
-                            }
+                    runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            Log.d(TAG, "NO DATA");
+                            NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                            orderList.setLayoutManager(new LinearLayoutManager(context));
+                            orderList.setAdapter(noDataAdapter);
                         }
                     });
                 }
@@ -364,12 +328,9 @@ public class System_Schedule extends AppCompatActivity {
 
     private void setList(){
         final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(this, data, New_Schedule_Detail.class);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                orderList.setAdapter(null);
-                orderList.setAdapter(adapter);
-            }
+        runOnUiThread(() -> {
+            orderList.setAdapter(null);
+            orderList.setAdapter(adapter);
         });
     }
 
@@ -400,13 +361,8 @@ public class System_Schedule extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -437,19 +393,13 @@ public class System_Schedule extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     if(!responseData.equals("null")) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                     }
                 }
 
                 int ii = 0;
                 while (lock){
-                    ii++;
-                    if(ii%1000000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
+                    if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
                 }
                 Log.d(TAG, "getVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_text);
@@ -476,50 +426,32 @@ public class System_Schedule extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(calendar_sv.getVisibility() == View.GONE){
-                    calendar_sv.setVisibility(View.VISIBLE);
-                    orderList.setVisibility(View.GONE);
-                }
-                else finish();
+        back_btn.setOnClickListener(v -> {
+            if(calendar_sv.getVisibility() == View.GONE){
+                calendar_sv.setVisibility(View.VISIBLE);
+                orderList.setVisibility(View.GONE);
             }
+            else finish();
         });
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(System_Schedule.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(System_Schedule.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(System_Schedule.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(System_Schedule.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(System_Schedule.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(System_Schedule.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(System_Schedule.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(System_Schedule.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(System_Schedule.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(System_Schedule.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 

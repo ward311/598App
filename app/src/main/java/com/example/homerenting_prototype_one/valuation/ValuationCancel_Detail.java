@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -137,25 +138,19 @@ public class ValuationCancel_Detail extends AppCompatActivity {
 
 
 
-
-
-
         //返回鍵
-        ImageButton back_btn = findViewById( R.id.back_imgBtn );
+        ImageView back_btn = findViewById( R.id.back_imgBtn );
         back_btn.setOnClickListener(v -> finish());
 
         //家具清單
         Button detail_btn = findViewById(R.id.furniture_btn_CD);
-        detail_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detail_intent = new Intent();
-                detail_intent.setClass( ValuationCancel_Detail.this, Furniture_Detail.class );
-                bundle.putString( "key","cancel" );
-                detail_intent.putExtras( bundle );
-                startActivity( detail_intent );
-            }
-        } );
+        detail_btn.setOnClickListener(v -> {
+            Intent detail_intent = new Intent();
+            detail_intent.setClass( ValuationCancel_Detail.this, Furniture_Detail.class );
+            bundle.putString( "key","cancel" );
+            detail_intent.putExtras( bundle );
+            startActivity( detail_intent );
+        });
 
         //底下nav
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);

@@ -89,12 +89,6 @@ public class Today_Detail extends AppCompatActivity {
         setContentView(R.layout.activity_today__detail);
         Button call_btn = findViewById(R.id.call_btn);
 
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-
 //        bundle = new Bundle();
 //        bundle.putString("order_id", "74");
         bundle = getIntent().getExtras();
@@ -262,42 +256,7 @@ public class Today_Detail extends AppCompatActivity {
             startActivity(call_intent);
         });
 
-        //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Today_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
-        });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Today_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Today_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Today_Detail.this, System.class);
-                startActivity(system_intent);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Today_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
-        });
+        globalNav();
     }
 
     private void changePriceMark(){
@@ -431,6 +390,7 @@ public class Today_Detail extends AppCompatActivity {
         String function_name = "change_status";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
                 .add("table", "orders")
                 .add("order_id", order_id)
                 .add("status", "done")
@@ -458,5 +418,36 @@ public class Today_Detail extends AppCompatActivity {
             }
         });
         return result;
+    }
+
+    private void globalNav(){
+        ImageView back_btn = findViewById(R.id.back_imgBtn);
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+        back_btn.setOnClickListener(v -> finish());
+        //底下nav
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Today_Detail.this, Valuation.class);
+            startActivity(valuation_intent);
+        });
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Today_Detail.this, Order.class);
+            startActivity(order_intent);
+        });
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Today_Detail.this, Calendar.class);
+            startActivity(calender_intent);
+        });
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Today_Detail.this, System.class);
+            startActivity(system_intent);
+        });
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Today_Detail.this, Setting.class);
+            startActivity(setting_intent);
+        });
     }
 }

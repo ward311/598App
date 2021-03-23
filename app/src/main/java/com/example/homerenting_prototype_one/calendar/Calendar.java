@@ -1,6 +1,5 @@
 package com.example.homerenting_prototype_one.calendar;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
@@ -18,14 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
-import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 import com.example.homerenting_prototype_one.add_order.Add_Order;
 import com.example.homerenting_prototype_one.add_order.Add_Valuation;
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -89,8 +84,6 @@ public class Calendar extends AppCompatActivity {
     ArrayList<String[]> data, data_v, data_o;
     ArrayList<Integer> checkedMonth = new ArrayList<>();
 
-    int current_month = 0;
-
     Boolean VB, OB;
 
     Context context = Calendar.this;
@@ -150,9 +143,9 @@ public class Calendar extends AppCompatActivity {
                         Log.d(TAG, "order:" + order);
                         String order_id = order.getString("order_id");
                         String time = order.getString("moving_date");
-                        if (time.equals("null"))
-                            time = getStartTime(order.getString("valuation_time"));
+                        if (time.equals("null")) time = getStartTime(order.getString("valuation_time"));
                         else time = getTime(time);
+                        if(time.equals("null")) time = "";
                         String address = order.getString("from_address");
                         String order_status = order.getString("order_status");
                         String valuation_status = order.getString("valuation_status");
@@ -245,23 +238,23 @@ public class Calendar extends AppCompatActivity {
         getOrders(String.valueOf(year), String.valueOf(month));
 
         mCalendar.setOnPreviousPageChangeListener(() -> {
-            int next_month = calendarTime.get(java.util.Calendar.MONTH);
-            calendarTime.set(java.util.Calendar.MONTH, next_month-1);
+            int previous_month = calendarTime.get(java.util.Calendar.MONTH);
+            calendarTime.set(java.util.Calendar.MONTH, previous_month-1);
+            if(previous_month == 0) previous_month = 12;
             int previous_year = calendarTime.get(java.util.Calendar.YEAR);
-            calendarTime.set(java.util.Calendar.YEAR, previous_year);
             Log.i(TAG, "calendarTime: "+calendarTime.getTime().toString());
-            Log.d(TAG, "page change: "+previous_year+"/"+next_month);
-            getOrders(String.valueOf(previous_year), String.valueOf(next_month));
+            Log.d(TAG, "page change: "+previous_year+"/"+previous_month);
+            getOrders(String.valueOf(previous_year), String.valueOf(previous_month));
         });
 
         mCalendar.setOnForwardPageChangeListener(() -> {
             int next_month = calendarTime.get(java.util.Calendar.MONTH)+2;
             calendarTime.set(java.util.Calendar.MONTH, next_month-1);
-            int previous_year = calendarTime.get(java.util.Calendar.YEAR);
-            calendarTime.set(java.util.Calendar.YEAR, previous_year);
+            if(next_month == 13) next_month = 1;
+            int next_year = calendarTime.get(java.util.Calendar.YEAR);
             Log.i(TAG, "calendarTime: "+calendarTime.getTime().toString());
-            Log.d(TAG, "page change: "+previous_year+"/"+next_month);
-            getOrders(String.valueOf(previous_year), String.valueOf(next_month));
+            Log.d(TAG, "page change: "+next_year+"/"+next_month);
+            getOrders(String.valueOf(next_year), String.valueOf(next_month));
         });
 
         mCalendar.setOnDayClickListener(eventDay -> {
@@ -303,20 +296,24 @@ public class Calendar extends AppCompatActivity {
                 setList();
             });
 
+            Bundle bundle = new Bundle();
+            bundle.putString("date", date);
             addV_btn.setOnClickListener(v -> {
                 Intent intent = new Intent(context, Add_Valuation.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
             });
 
             addO_btn.setOnClickListener(v -> {
                 Intent intent = new Intent(context, Add_Order.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
             });
 
             final AlertDialog alertDialog = dialog.create();
             cancel_btn.setOnClickListener(v -> alertDialog.dismiss());
             alertDialog.show();
-            alertDialog.getWindow().setLayout(dip2px(context, 370), dip2px(context, 600));
+//            alertDialog.getWindow().setLayout(dip2px(context, 370), dip2px(context, 600));
         });
     }
 
@@ -364,7 +361,7 @@ public class Calendar extends AppCompatActivity {
                         int isOrder = 1;
                         String order_id = order.getString("order_id");
                         String status = order.getString("order_status");
-                        if(status.equals("cancel")){
+                        if(status.equals("cancel") || status.equals("done") || status.equals("paid")){
 //                            Log.d(TAG, "order_id: "+order_id+", status: order_cancel");
                             continue;
                         }
@@ -378,7 +375,12 @@ public class Calendar extends AppCompatActivity {
                         }
                         String date;
                         if(order.getString("moving_date").equals("null")) {
-                            date = order.getString("valuation_date");
+                            if(order.getString("valuation_date").equals("null") || order.getString("valuation_status").equals("self")){
+                                date = order.getString("last_update");
+                                String[] token = date.split(" ");
+                                date = token[0];
+                            }
+                            else date = order.getString("valuation_date");
                         }
                         else {
                             date = order.getString("moving_date");

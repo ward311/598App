@@ -103,12 +103,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         String[] newString = {"", "", ""};
         cars.add(newString);
 
-//        if(getIntent().getExtras() != null)
-            bundle = getIntent().getExtras();
-//        else {
-//            bundle = new Bundle();
-//            bundle.putString("order_id", "16");
-//        }
+        bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
@@ -124,14 +119,22 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             startActivity(intent);
         });
 
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+        Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
         movingDateText.setOnClickListener(v -> {
+            movingDateText.setError(null);
             DatePickerDialog date_picker = new DatePickerDialog( context, (view, year, month, dayOfMonth) -> {
+                if(year<now.getYear() || (month+1)<monthToInt(String.valueOf(now.getMonth())) || dayOfMonth<now.getDayOfMonth()) {
+                    Toast.makeText(context, "請勿選擇過去的日期", Toast.LENGTH_SHORT);
+                    return;
+                }
                 movingDateText.setText(year+"-"+(month+1)+"-"+dayOfMonth);
             },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
             date_picker.show();
         });
 
         movingTimeText.setOnClickListener(v -> {
+            movingTimeText.setError(null);
             TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> {
                 movingTimeText.setText(hourOfDay+":"+minute);
             },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
@@ -293,6 +296,37 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         startActivity(call_intent);
     }
 
+    private int monthToInt(String month){
+        switch (month){
+            case "JANUARY":
+                return 1;
+            case "FEBRUARY":
+                return 2;
+            case "MARCH":
+                return 3;
+            case "APRIL":
+                return 4;
+            case "MAY":
+                return 5;
+            case "JUNE":
+                return 6;
+            case "JULY":
+                return 7;
+            case "AUGUST":
+                return 8;
+            case "SEPTEMBER":
+                return 9;
+            case "OCTOBER":
+                return 10;
+            case "NOVEMBER":
+                return 11;
+            case "DECEMBER":
+                return 12;
+            default:
+                return 0;
+        }
+    }
+
     private void setCheckBtn(){
         check_btn.setOnClickListener(v -> {
             String movingDate = movingDateText.getText().toString().trim();
@@ -330,31 +364,38 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         boolean check = false;
         if(TextUtils.isEmpty(movingDateText.getText().toString())){
             movingDateText.setError("請輸入日期");
+            Log.d(TAG, "日期為空");
             check = true;
         }
         if(TextUtils.isEmpty(movingTimeText.getText().toString())){
             movingTimeText.setError("請輸入時間");
+            Log.d(TAG, "時間為空");
             check = true;
         }
         if(TextUtils.isEmpty(estimate_worktime)){
             worktimeEdit.setError("請輸入工時");
+            Log.d(TAG, "工時為空");
             check = true;
         }
         if(TextUtils.isEmpty(fee)){
             priceEdit.setError("請輸入搬家價格");
+            Log.d(TAG, "搬家價格為空");
             check = true;
         }
-//        else{
-//            if(Integer.parseInt(fee) < getValPrice(0)){
-//                priceEdit.setError("所輸入之搬家價格不得低於系統估價計價格");
-//                check = true;
-//            }
-//
-//            if(Integer.parseInt(fee) > getValPrice(1)){
-//                priceEdit.setError("所輸入之搬家價格不得高於系統估價計價格");
-//                check = true;
-//            }
-//        }
+        else{
+            Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
+            if(Integer.parseInt(fee) < getValPrice(0)){
+                priceEdit.setError("所輸入之搬家價格不得低於"+getValPrice(0));
+                Log.d(TAG, "搬家價格過低");
+                check = true;
+            }
+
+            if(Integer.parseInt(fee) > getValPrice(1)){
+                priceEdit.setError("所輸入之搬家價格不得高於"+getValPrice(1));
+                Log.d(TAG, "搬家價格過高");
+                check = true;
+            }
+        }
         return check;
     }
 
@@ -362,21 +403,23 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         if (bundle.getBoolean("isEdited")){
             valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             newValPriceText.setVisibility(View.VISIBLE);
+            valPrice = 1;
         }
         else {
             valPriceText.setPaintFlags(valPriceText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             newValPriceText.setVisibility(View.INVISIBLE);
+            valPrice = -1;
         }
     }
 
     private int getValPrice(int i){
-        if(valPrice < 0){
-            TextView valPriceText = findViewById(R.id.valPrice_VBD);
-            String valPriceStr = valPriceText.getText().toString();
-            String[] token = valPriceStr.split("~");
-            valPrice = Integer.parseInt(token[i]);
-        }
-        return valPrice;
+        TextView valText;
+        if(valPrice < 0) valText = valPriceText;
+        else valText = newValPriceText;
+        String valPriceStr = valText.getText().toString();
+        String[] token = valPriceStr.split("~");
+        Log.d(TAG, "valPriceStr: "+valPriceStr+", token:"+token[0]+" & "+token[1]);
+        return Integer.parseInt(token[i]);
     }
 
     private boolean checkCarsViewEmpty(){
@@ -411,8 +454,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 }
 
                 if(position == 0){
-                    if(check_empty == CAR_LENGTH) firstRowEmpty = 1;
-                    else firstRowEmpty = 0;
+                    if(check_empty == CAR_LENGTH){
+                        Log.d(TAG, "cars first row is empty"+check_empty+")");
+                        firstRowEmpty = 1;
+                    }
+                    else{
+                        Log.d(TAG, "cars first row is not empty("+check_empty+")");
+                        firstRowEmpty = 0;
+                    }
                 }
             }
             else {
@@ -438,6 +487,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             }
         }
 
+        Log.d(TAG, "cars("+cars.size()+"):"+carsToString());
         Log.d(TAG, "___________________________________");
         return isEmpty;
     }
@@ -502,6 +552,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 else str = str + car[ii];
             }
             str = str + "]";
+//            Log.d(TAG, "car str:"+str);
         }
         str = str + "]";
         return str;

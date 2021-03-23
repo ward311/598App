@@ -94,91 +94,76 @@ public class Order extends AppCompatActivity {
 
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
-        getOrder();
 
-        lastWeek_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int wCount = getwCount();
-                setwCount(wCount-1);
-                week_text.setText(getWeek());
-                month_text.setText(getMonthStr());
-                data.clear();
-                getOrder();
-            }
+        lastWeek_btn.setOnClickListener(v -> {
+            int wCount = getwCount();
+            setwCount(wCount-1);
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            data.clear();
+            getOrder();
         });
 
-        nextWeek_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int wCount = getwCount();
-                setwCount(wCount+1);
-                week_text.setText(getWeek());
-                month_text.setText(getMonthStr());
-                data.clear();
-                getOrder();
-            }
+        nextWeek_btn.setOnClickListener(v -> {
+            int wCount = getwCount();
+            setwCount(wCount+1);
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            data.clear();
+            getOrder();
         });
 
         //上方nav
-        booking_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
-                bookingOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(bookingOrder_intent);
-            }
+        booking_order.setOnClickListener(v -> {
+            Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
+            bookingOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(bookingOrder_intent);
         });
-        today_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
-                todayOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(todayOrder_intent);
-            }
+        today_order.setOnClickListener(v -> {
+            Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
+            todayOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(todayOrder_intent);
         });
-        cancel_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
-                cancelOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(cancelOrder_intent);
-            }
+        cancel_order.setOnClickListener(v -> {
+            Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
+            cancelOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(cancelOrder_intent);
         });
 
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Order.this, Valuation.class);
-                valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Order.this, Valuation.class);
+            valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(valuation_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Order.this, Calendar.class);
-                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Order.this, Calendar.class);
+            calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Order.this, System.class);
-                system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Order.this, System.class);
+            system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Order.this, Setting.class);
-                setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Order.this, Setting.class);
+            setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(setting_intent);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onRusume");
+        super.onResume();
+        init();
+        getOrder();
+    }
+
+    private void init(){
+        data.clear();
+        orderRList.setAdapter(null);
     }
 
     private void getOrder(){
@@ -213,13 +198,8 @@ public class Order extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             //連線成功
@@ -258,17 +238,14 @@ public class Order extends AppCompatActivity {
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                Log.d(TAG, "NO DATA");
-                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
-                                orderRList.setLayoutManager(new LinearLayoutManager(context));
-                                orderRList.setAdapter(noDataAdapter);
-                            }
-                            //else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            Log.d(TAG, "NO DATA");
+                            NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                            orderRList.setLayoutManager(new LinearLayoutManager(context));
+                            orderRList.setAdapter(noDataAdapter);
                         }
+                        //else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -284,17 +261,14 @@ public class Order extends AppCompatActivity {
 
     private void setRList(){
         final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(context, data, Order_Detail.class);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                orderRList.setLayoutManager(new LinearLayoutManager(context));
-                orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
-                orderRList.setAdapter(adapter);
+        runOnUiThread(() -> {
+            orderRList.setLayoutManager(new LinearLayoutManager(context));
+            orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
+            orderRList.setAdapter(adapter);
 
-                //側滑刪除
+            //側滑刪除
 //                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
 //                helper.attachToRecyclerView(orderRList);
-            }
         });
     }
 }

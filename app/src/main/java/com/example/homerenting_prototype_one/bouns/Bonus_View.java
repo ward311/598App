@@ -15,9 +15,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.re_adpater.MutiSalaryAdapter;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SalaryAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -41,6 +43,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -58,15 +61,18 @@ import static com.example.homerenting_prototype_one.show.global_function.getYear
 public class Bonus_View extends AppCompatActivity {
 
     TextView title;
-    RecyclerView salaryView;
+    ViewPager2 salaryView;
     ImageButton backBtn;
     Button chartBtn;
 
-    ArrayList<String[]> data;
     ArrayList<String> employee_names;
     ArrayList<Integer> salaries;
 
+    MutiSalaryAdapter msAdapter;
+
     String year, month;
+
+    boolean init = true;
 
     private Context context = this;
     String TAG = "Bonus_View";
@@ -84,7 +90,9 @@ public class Bonus_View extends AppCompatActivity {
         year = getToday("yyyy");
         month = getToday("MM");
         title.setText("員工薪資一覽 "+month+"月");
-        getData(year, month);
+        setList();
+
+        chartBtn.setOnClickListener(v -> setChart());
 
         backBtn.setOnClickListener(v -> finish());
 
@@ -102,10 +110,10 @@ public class Bonus_View extends AppCompatActivity {
         globalNav();
     }
 
-    private void getData(String year, String month){
-        employee_names = new ArrayList<>();
-        salaries = new ArrayList<>();
-        data = new ArrayList<>();
+    private ArrayList getData(String year, String month){
+//        employee_names = new ArrayList<>();
+//        salaries = new ArrayList<>();
+        ArrayList<String[]> data = new ArrayList<>();
 
         String function_name = "pay_oneMonth";
         String company_id = getCompany_id(context);
@@ -139,8 +147,8 @@ public class Bonus_View extends AppCompatActivity {
                 String responseData = response.body().string();
                 Log.i(TAG,"responseData: "+responseData); //顯示資料
 
-                employee_names.add("");
-                salaries.add(0);
+//                employee_names.add("");
+//                salaries.add(0);
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -152,8 +160,8 @@ public class Bonus_View extends AppCompatActivity {
 
                         String staff_name = staff.getString("staff_name");
                         String total_payment = staff.getString("total_payment");
-                        employee_names.add(staff_name);
-                        salaries.add(Integer.parseInt(total_payment));
+//                        employee_names.add(staff_name);
+////                        salaries.add(Integer.parseInt(total_payment));
 
                         String[] row_data = {staff_name, total_payment};
                         data.add(row_data);
@@ -162,20 +170,47 @@ public class Bonus_View extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                runOnUiThread(() -> {
-                    setList(); //清單
-                    setChart(); //圖表
-                });
+                if(data.size() < 1){
+                    String[] row_data = {"沒有資料", ""};
+                    data.add(row_data);
+                }
+
+                int i;
+                Log.d(TAG, year+"/"+month+", data:"+data.size());
+                for(i = 0; i < data.size(); i++) {
+                    Log.d(TAG, Arrays.toString(data.get(0)));
+                }
+
+                if(init){
+                    runOnUiThread(() -> {
+                        if(!data.get(0)[1].isEmpty()) setChart(); //圖表
+                        init = false;
+                    });
+                }
+
             }
         });
+
+        return data;
     }
 
     private void setChart(){ //圖表
+        msAdapter.showDatas();
+        int currentItem = salaryView.getCurrentItem();
+        employee_names = msAdapter.getStaffName(currentItem);
+        salaries = msAdapter.getStaffPay(currentItem);
+        Log.d(TAG, "employee_names, salaries: ");
+        int i;
+        for(i = 0; i < employee_names.size() && i < salaries.size(); i++){
+            Log.d(TAG, i+"."+employee_names.get(i)+", "+salaries.get(i));
+        }
+        Log.d(TAG, "now page: "+currentItem);
 
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.bonus_dialog);
 
-        setBarChart(dialog);
+        if(salaries.size() > 0) setBarChart(dialog);
+        else dialog.setTitle("no data");
 
         Button dialog_btn = dialog.findViewById(R.id.check_dialog_btn);
         dialog_btn.setOnClickListener(v -> dialog.dismiss());
@@ -184,7 +219,7 @@ public class Bonus_View extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(true); //點其他地方也能取消
         dialog.show();
 
-        chartBtn.setOnClickListener(v -> dialog.show());
+//        chartBtn.setOnClickListener(v -> dialog.show());
     }
 
     private void setBarChart(Dialog dialog){
@@ -238,7 +273,7 @@ public class Bonus_View extends AppCompatActivity {
 
     private ArrayList getBarData(){
         ArrayList<BarEntry> yValue = new ArrayList<>(); //資料List
-        for(int x = 0; x < employee_names.size(); x++){
+        for(int x = 0; x < employee_names.size() && x < salaries.size(); x++){
             yValue.add(new BarEntry(x, salaries.get(x))); //加入新資料
             Log.d(TAG, "staff_name: "+employee_names.get(x)+", total_payment: "+salaries.get(x));
         }
@@ -255,9 +290,68 @@ public class Bonus_View extends AppCompatActivity {
     }
 
     private void setList(){
-        SalaryAdapter salaryAdapter = new SalaryAdapter(data);
-        salaryView.setLayoutManager(new LinearLayoutManager(context));
-        salaryView.setAdapter(salaryAdapter);
+        msAdapter = new MutiSalaryAdapter(getData(year, month), Integer.parseInt(month));
+        salaryView.setAdapter(msAdapter);
+        salaryView.setCurrentItem(1);
+        msAdapter.showDatas();
+
+        salaryView.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                title.setText("員工薪資一覽 "+msAdapter.getMonth(position)+"月");
+                //新增最後一頁
+                if(position == msAdapter.getItemCount()-1) {
+                    int m = msAdapter.getMonth(position-1, 1);
+                    month = intToString(m);
+                    if(month.equals("01")){
+                        int y = Integer.parseInt(year);
+                        year = String.valueOf(++y);
+                    }
+                    Log.d(TAG, "add next page: "+year+"/"+month+"("+position+")");
+                    ArrayList<String[]> temp = getData(year, month);
+                    salaryView.post(() -> {
+                        int i = 0;
+                        while(temp.size() == 0){
+                            if((++i)%1000000 == 0)
+                                Log.d(TAG, i+". "+year+"/"+month+", temp data:"+temp.size());
+                        }
+                        msAdapter.setmData(temp, m, position);
+                        title.setText("員工薪資一覽 "+msAdapter.getMonth(position)+"月");
+                        msAdapter.addPage(new ArrayList<>());
+                    });
+
+                }
+                //新增前一頁
+                if(position == 0) {
+                    int m = msAdapter.getMonth(1, 2);
+                    month = intToString(m);
+                    if(month.equals("12")){
+                        int y = Integer.parseInt(year);
+                        year = String.valueOf(--y);
+                    }
+                    Log.d(TAG, "add last page: "+year+"/"+month+"("+position+")");
+                    ArrayList<String[]> temp = getData(year, month);
+                    salaryView.post(() -> {
+                        int i = 0, num = 10000000;
+                        while(temp.size() == 0){
+                            if((++i)%num == 0)
+                                Log.d(TAG, (i/num)+". "+year+"/"+month+", temp data:"+temp.size());
+                        }
+                        msAdapter.setmData(temp, m, position);
+                        title.setText("員工薪資一覽 "+msAdapter.getMonth(1)+"月");
+                        msAdapter.addPage(new ArrayList<>(), 0);
+                        salaryView.setCurrentItem(1, false);
+                    });
+                }
+            }
+        });
+    }
+
+    private String intToString(int month) {
+        String monthStr = String.valueOf(month);
+        if(month < 10) monthStr = "0"+monthStr;
+        return monthStr;
     }
 
     private void globalNav(){

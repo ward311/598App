@@ -16,10 +16,11 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.setting.Record_Detail;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class MonthAdapter extends BaseAdapter implements View.OnClickListener {
+public class MonthAdapter extends BaseAdapter {
     private Context context;
-    private Class mTarget;
+    private final Class mTarget;
     ArrayList<ArrayList<String>> data;
 
     String TAG = "MonthAdapter";
@@ -27,24 +28,6 @@ public class MonthAdapter extends BaseAdapter implements View.OnClickListener {
     public  MonthAdapter(ArrayList<ArrayList<String>> data, Class target){
         this.data = data;
         mTarget = target;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.january_btn:
-            case R.id.february_btn:
-            case R.id.march_btn:
-            case R.id.april_btn:
-            case R.id.may_btn:
-            case R.id.june_btn:
-            case R.id.july_btn:
-            case R.id.august_btn:
-            case R.id.september_btn:
-            case R.id.october_btn:
-            case R.id.november_btn:
-            case R.id.december_btn:
-        }
     }
 
     @Override
@@ -89,9 +72,8 @@ public class MonthAdapter extends BaseAdapter implements View.OnClickListener {
         viewHolder.year.setTag( R.id.year_text,position );
         viewHolder.year.setText(data.get(position).get(0));
 
-        for(int i=1; i <= 12; i++){
-            setBtn(getBtn(viewHolder,i), data.get(position).get(0), i, hasOrder(position, i));
-        }
+        for(int i=1; i <= 12; i++)
+            setBtn(Objects.requireNonNull(getBtn(viewHolder, i)), data.get(position).get(0), i, hasOrder(position, i));
 
         return convertView;
     }
@@ -139,27 +121,25 @@ public class MonthAdapter extends BaseAdapter implements View.OnClickListener {
             btn.setBackgroundResource(R.drawable.frame_background);
         }
         else{
-            btn.setOnClickListener( new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mTarget != null) {
-                        Intent month_intent = new Intent();
-                        month_intent.setClass(context, mTarget);
-                        Bundle month_bundle = new Bundle();
-                        month_bundle.putString("year", year);
-                        month_bundle.putString("month", String.valueOf(month));
-                        month_intent.putExtras(month_bundle);
-                        context.startActivity(month_intent);
-                    }
+            btn.setTextColor(Color.parseColor("#19B0ED"));
+            btn.setBackgroundResource(R.drawable.month_btn_drawable);
+            btn.setOnClickListener(v -> {
+                if(mTarget != null) {
+                    Intent month_intent = new Intent();
+                    month_intent.setClass(context, mTarget);
+                    Bundle month_bundle = new Bundle();
+                    month_bundle.putString("year", year);
+                    month_bundle.putString("month", String.valueOf(month));
+                    month_intent.putExtras(month_bundle);
+                    context.startActivity(month_intent);
                 }
-            } );
+            });
         }
     }
 
     private boolean hasOrder(int position, int month){
         String monthStr = String.valueOf(month);
         if(month < 10) monthStr = "0"+monthStr;
-        if(data.get(position).contains(monthStr)) return true;
-        else return false;
+        return data.get(position).contains(monthStr);
     }
 }

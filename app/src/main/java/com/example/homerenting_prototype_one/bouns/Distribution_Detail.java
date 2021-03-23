@@ -85,7 +85,7 @@ public class Distribution_Detail extends AppCompatActivity {
         linking();
 
 //        bundle = new Bundle();
-//        bundle.putString("order_id", "73");
+//        bundle.putString("order_id", "147");
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
 
@@ -123,7 +123,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -227,7 +227,10 @@ public class Distribution_Detail extends AppCompatActivity {
                 });
                 Log.d(TAG, position+". init "+divP+"%("+div+")");
                 salaries.set(position, div);
-                init = false;
+                if(position == salaries.size()-1){
+                    init = false;
+                    Log.d(TAG, "init finish(position "+position+")");
+                }
             }
 
             if(salaries.get(position) != -1)
@@ -425,7 +428,7 @@ public class Distribution_Detail extends AppCompatActivity {
 
             int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
             int salary = -1;
-            if (salaryEdit.getVisibility() == View.VISIBLE) {
+            if (salaryPEdit.getVisibility() == View.VISIBLE) {
                 String salaryStr = salaryEdit.getText().toString();
                 if(salaryStr.isEmpty()) salary = 0;
                 else salary = Integer.parseInt(salaryStr);
@@ -437,17 +440,19 @@ public class Distribution_Detail extends AppCompatActivity {
                     salaryPStr = nf.format(salaryP); //取得百分比(string)
                     Log.d(TAG, (position + 1) + ". salary percent(" + salary + "/" + ds + "): " + salaryPStr);
                 }
-                salaryPText.setText(salaryPStr); //顯示百分比
+                salaryPEdit.setText(salaryPStr); //顯示百分比
             }
             else {
-                float salaryP = Integer.parseInt(salaryPEdit.getText().toString());
+                String salaryPStr = salaryPEdit.getText().toString();
+                float salaryP = 0f;
+                if(!salaryPStr.isEmpty()) salaryP = Float.parseFloat(salaryPStr+"f");
                 String salaryStr = "0";
                 if(salaryP != 0){
                     salary = Math.round(salaryP*ds/100);
                     salaryStr = String.valueOf(salary);
                     Log.d(TAG, (position+1)+". salary: "+salaryP+" * "+ds+" = "+salaryStr);
                 }
-                salaryText.setText(salaryStr);
+                salaryEdit.setText(salaryStr);
             }
             salaries.set(position, salary); //修改arraylist中的員工金額
 //            setFeeText(); //修改金額的算式

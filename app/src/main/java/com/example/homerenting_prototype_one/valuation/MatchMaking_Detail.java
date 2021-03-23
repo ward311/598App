@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +49,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
 
     String order_id;
     String name, gender, phone, valuationTime, fromAddress, toAddress, notice, movingTime;
-    String car, worktime, price;
+    String demandCar, worktime, price;
 
     Button confirmBtn;
 
@@ -98,13 +100,15 @@ public class MatchMaking_Detail extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
-                    Log.d(TAG, "member:" + order);
+                    Log.d(TAG, "order:" + order);
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
-                    valuationTime = getDate(order.getString("valuation_date"));
-                    if(!order.getString("valuation_time").equals("null"))
-                        valuationTime = valuationTime+" "+order.getString("valuation_time");
+                    if(!order.getString("valuation_date").equals("null")){
+                        valuationTime = getDate(order.getString("valuation_date"));
+                        if(!order.getString("valuation_time").equals("null"))
+                            valuationTime = valuationTime+" "+order.getString("valuation_time");
+                    }
                     fromAddress = order.getString("from_address");
                     toAddress = order.getString("to_address");
                     notice = order.getString("additional");
@@ -116,8 +120,19 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     if(order.getString("accurate_fee").equals("null")) price = "0元";
                     else price = order.getString("estimate_fee")+"元";
 
-//                    if(order.getString("vehicle_type").equals("null")) car = "尚未安排車輛";
-//                    else car = order.getString("num")+"輛"+order.getString("vehicle_weight")+"噸"+order.getString("vehicle_type");
+                    int i;
+                    demandCar = "";
+                    for (i = 1; i < responseArr.length(); i++) {
+                        JSONObject vehicle_demand = responseArr.getJSONObject(i);
+                        if(!vehicle_demand.has("num")) break;
+                        Log.i(TAG, "vehicle_demand:" + vehicle_demand);
+                        if(i != 1) demandCar = demandCar + "\n";
+                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
+                                +vehicle_demand.getString("vehicle_type")
+                                +vehicle_demand.getString("num")+"輛";
+                    }
+                    if(i == 1) demandCar = "無填寫需求車輛";
+                    Log.d(TAG, "demandCar: "+demandCar);
 
                     runOnUiThread(() -> {
                         nameText.setText(name);
@@ -130,7 +145,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
                         toAddressText.setText(toAddress);
                         noticeText.setText(notice);
                         movingTimeText.setText(movingTime);
-                        carText.setText(car);
+                        carText.setText(demandCar);
                         worktimeText.setText(worktime);
                         priceText.setText(price);
                     });
@@ -147,20 +162,10 @@ public class MatchMaking_Detail extends AppCompatActivity {
 
 
 
-
-//        ImageButton back_btn = findViewById( R.id.back_imgBtn );
-//        back_btn.setOnClickListener( new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent back_intent = new Intent(MatchMaking_Detail.this, Valuation_MatchMaking.class);
-//                startActivity( back_intent );
-//            }
-//        } );
-
         Button call_btn = findViewById(R.id.call_btn);
         call_btn.setOnClickListener(v -> {
             Intent call_intent = new Intent(Intent.ACTION_DIAL);
-            call_intent.setData( Uri.parse("tel:0933669877"));
+            call_intent.setData( Uri.parse("tel:"+phone));
             startActivity(call_intent);
         });
 
@@ -181,6 +186,10 @@ public class MatchMaking_Detail extends AppCompatActivity {
 //                startActivity( edit_intent );
 //            }
 //        } );
+
+
+        ImageView back_btn = findViewById(R.id.back_imgBtn_MMD);
+        back_btn.setOnClickListener(v -> finish());
 
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
@@ -226,42 +235,40 @@ public class MatchMaking_Detail extends AppCompatActivity {
 
     private void setConfirmBtn(){
         confirmBtn.setVisibility(View.VISIBLE);
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String function_name = "become_order";
-                RequestBody body = new FormBody.Builder()
-                        .add("function_name", function_name)
-                        .add("order_id", order_id)
-                        .build();
+        confirmBtn.setOnClickListener(v -> {
+            String function_name = "become_order";
+            RequestBody body = new FormBody.Builder()
+                    .add("function_name", function_name)
+                    .add("order_id", order_id)
+                    .add("company_id", getCompany_id(context))
+                    .build();
 
-                Request request = new Request.Builder()
-                        .url(BuildConfig.SERVER_URL+"/functional.php")
-                        .post(body)
-                        .build();
+            Request request = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL+"/functional.php")
+                    .post(body)
+                    .build();
 
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        e.printStackTrace();
-                        runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-                    }
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                }
 
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        String responseData = response.body().string();
-                        Log.d(TAG, "confirm, responseData: " + responseData);
-                    }
-                });
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d(TAG, "confirm, responseData: " + responseData);
+                }
+            });
 
-                Handler handler = new Handler();
-                handler.postDelayed(() -> {
-                    Intent intent = new Intent(context, Order.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }, 1000);
-            }
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                Intent intent = new Intent(context, Valuation_MatchMaking.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }, 1500);
         });
     }
 }

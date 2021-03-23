@@ -97,6 +97,13 @@ public class Edit_Furniture extends AppCompatActivity {
 
 //        bundle = new Bundle();
 //        bundle.putString("order_id", "16");
+        if(getIntent().hasExtra("end")){
+            Intent intent = new Intent();
+            intent.setClass(context, Calendar.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
@@ -395,6 +402,8 @@ public class Edit_Furniture extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .build();
+        Log.d(TAG, "all space");
+
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL + "/furniture.php")
                 .post(body)
@@ -549,11 +558,25 @@ public class Edit_Furniture extends AppCompatActivity {
     private void orderFurniture(){
         bundle.putString("furniture_data", Arrays.deepToString(furniture_data));
         Log.d(TAG, "furniture_data of add_order: "+ Arrays.deepToString(furniture_data));
+        showBundleData();
         Intent intent = new Intent();
         intent.putExtras(bundle);
         intent.setClass(context, Add_Order.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
+    }
+
+    private void showBundleData(){
+        if(bundle.containsKey("name")) Log.d(TAG, "name"+bundle.getString("name"));
+        if(bundle.containsKey("cAddress")) Log.d(TAG, "cAddress"+bundle.getString("cAddress"));
+        if(bundle.containsKey("phone")) Log.d(TAG, "phone"+bundle.getString("phone"));
+        if(bundle.containsKey("fromAddress")) Log.d(TAG, "fromAddress"+bundle.getString("fromAddress"));
+        if(bundle.containsKey("toAddress")) Log.d(TAG, "toAddress"+bundle.getString("toAddress"));
+        if(bundle.containsKey("price")) Log.d(TAG, "price"+bundle.getString("price"));
+        if(bundle.containsKey("worktime")) Log.d(TAG, "worktime"+bundle.getString("worktime"));
+        if(bundle.containsKey("notice")) Log.d(TAG, "notice"+bundle.getString("notice"));
+        if(bundle.containsKey("date")) Log.d(TAG, "date"+bundle.getString("date"));
     }
 
     private void modifyFurniture(){

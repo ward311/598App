@@ -60,7 +60,7 @@ public class Setting_Service extends AppCompatActivity {
     ArrayList<String[]> originItems, enableItems, disableItems, deleteItems;
     Map<String, ArrayList<String[]>> carItems = new HashMap<>();
 
-    boolean lock = true, deleteMode = false;
+    boolean lock = true, deleteMode = false, init = true;
     Context context = this;
     String TAG = Setting_Service.class.getSimpleName();
 
@@ -74,7 +74,7 @@ public class Setting_Service extends AppCompatActivity {
         disableItems = new ArrayList<>();
         deleteItems = new ArrayList<>();
 
-        back_btn = findViewById(R.id.back_imgBtn);
+        back_btn = findViewById(R.id.back_imgBtn_SS);
         delete_btn = findViewById(R.id.delete_btn_SS);
         serviceArea = findViewById(R.id.serviceArea_CG_SS);
         serviceItem = findViewById(R.id.serviceItem_CG_SS);
@@ -97,6 +97,7 @@ public class Setting_Service extends AppCompatActivity {
         setAddChip(specialItem);
         setAddChip(boxType);
         setAddChip(wrapItem);
+        init = false;
 
         back_btn.setOnClickListener(v -> {
             removeOriginItem();
@@ -196,7 +197,7 @@ public class Setting_Service extends AppCompatActivity {
 
                 int ii = 0;
                 while(!lock){
-                    if((ii++)%1000000 == 0) Log.d(TAG, "wait for lock..."); //等到chip都新增完畢之後再執行下個程式
+                    if((ii++)%10000000 == 0) Log.d(TAG, (ii/10000000)+". wait for lock..."); //等到chip都新增完畢之後再執行下個程式
                 }
                 getCheckedData();
                 setCarChipDetail();
@@ -272,16 +273,15 @@ public class Setting_Service extends AppCompatActivity {
                                     });
                                     String[] originalItem = {chipGroup.getTag().toString(), item_name};
                                     originItems.add(originalItem);
+                                    Log.d(TAG, "originItems: "+itemsToString(originItems));
                                     break;
                                 }
                             }
                             if(ii == chipGroup.getChildCount() && chipGroup != carType){
-                                if(end_time.equals("null")){
-                                    addChip(chipGroup, item_name, true);
-                                    String[] originalItem = {chipGroup.getTag().toString(), item_name};
-                                    originItems.add(originalItem);
-                                }
-                                else addChip(chipGroup, item_name, false);
+                                addChip(chipGroup, item_name, end_time.equals("null"));
+                                String[] originalItem = {chipGroup.getTag().toString(), item_name};
+                                originItems.add(originalItem);
+                                Log.d(TAG, "originItems: "+itemsToString(originItems));
                             }
                         }
                         else Log.d(TAG, "chipGroup: "+service_name+" is null");
@@ -378,6 +378,12 @@ public class Setting_Service extends AppCompatActivity {
             lock = true;
         });
 
+        if(!init){
+            final String[] item = {chipGroup.getTag().toString(), newItem};
+            enableItems.add(item);
+            removeItem(disableItems, item);
+            Log.d(TAG, "enableItems: "+itemsToString(enableItems));
+        }
         setChipClick(chipGroup, chip);
 
         return chip;
@@ -388,12 +394,18 @@ public class Setting_Service extends AppCompatActivity {
         final String[] item = {chipGroup.getTag().toString(), name};
         chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked){
-                enableItems.add(item);
+                Log.d(TAG, "add enableItems, remove disableItems");
+                removeItem(enableItems, item);
                 removeItem(disableItems, item);
+                enableItems.add(item);
+                Log.d(TAG, "enableItems: "+itemsToString(enableItems));
             }
             else{
+                Log.d(TAG, "add disableItems, remove enableItems");
                 removeItem(enableItems, item);
+                removeItem(disableItems, item);
                 disableItems.add(item);
+                Log.d(TAG, "disableItems: "+itemsToString(disableItems));
             }
         });
 
@@ -405,6 +417,7 @@ public class Setting_Service extends AppCompatActivity {
                 removeItem(disableItems, item);
                 deleteItems.add(item);
                 chip.setVisibility(View.GONE);
+                Log.d(TAG, "deleteItems: "+itemsToString(deleteItems));
             });
             deleteItem_dialog.setNegativeButton("取消", null);
             deleteItem_dialog.create().show();
@@ -427,6 +440,8 @@ public class Setting_Service extends AppCompatActivity {
                 .add("disableItems", itemsToString(disableItems))
                 .add("deleteItems", itemsToString(deleteItems))
                 .build();
+        Log.d(TAG, function_name+": ");
+        showItems();
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -513,17 +528,22 @@ public class Setting_Service extends AppCompatActivity {
     }
 
     private void showItems(){
-        for(int i = 0; i < enableItems.size(); i++)
-            Log.d(TAG, "enable: "+ Arrays.toString(enableItems.get(i)));
-        if(enableItems.size() == 0) Log.d(TAG, "enableItems no item");
+//        for(int i = 0; i < enableItems.size(); i++)
+//            Log.d(TAG, "enable: "+ Arrays.toString(enableItems.get(i)));
+//        if(enableItems.size() == 0) Log.d(TAG, "enableItems no item");
+//
+//        for(int i = 0; i < disableItems.size(); i++)
+//            Log.d(TAG, "disable: "+ Arrays.toString(disableItems.get(i)));
+//        if(disableItems.size() == 0) Log.d(TAG, "disableItems no item");
+//
+//        for(int i = 0; i < deleteItems.size(); i++)
+//            Log.d(TAG, "delete: "+ Arrays.toString(deleteItems.get(i)));
+//        if(deleteItems.size() == 0) Log.d(TAG, "deleteItems no item");
 
-        for(int i = 0; i < disableItems.size(); i++)
-            Log.d(TAG, "disable: "+ Arrays.toString(disableItems.get(i)));
-        if(disableItems.size() == 0) Log.d(TAG, "disableItems no item");
-
-        for(int i = 0; i < deleteItems.size(); i++)
-            Log.d(TAG, "delete: "+ Arrays.toString(deleteItems.get(i)));
-        if(deleteItems.size() == 0) Log.d(TAG, "deleteItems no item");
+        Log.d(TAG, "originItems: "+itemsToString(originItems));
+        Log.d(TAG, "enableItems:"+itemsToString(enableItems));
+        Log.d(TAG, "disableItems:"+itemsToString(disableItems));
+        Log.d(TAG, "deleteItems:"+itemsToString(deleteItems));
     }
 
     @Override

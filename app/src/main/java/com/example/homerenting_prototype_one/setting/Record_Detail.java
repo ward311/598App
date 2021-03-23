@@ -75,63 +75,40 @@ public class Record_Detail extends AppCompatActivity {
         getOrder();
 
         title_text.setText( month+"月工單紀錄" );
-        export_btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent export_intent = new Intent();
-                export_intent.setAction( Intent.ACTION_SEND );
-                //export_intent.putExtra( Intent.EXTRA_TEXT,getResources().getString(  ) );
-                export_intent.putExtra( Intent.EXTRA_TEXT,"分享此報表" );
-                export_intent.setType( "text/plain" );
+        export_btn.setOnClickListener(v -> {
+            Intent export_intent = new Intent();
+            export_intent.setAction( Intent.ACTION_SEND );
+            //export_intent.putExtra( Intent.EXTRA_TEXT,getResources().getString(  ) );
+            export_intent.putExtra( Intent.EXTRA_TEXT,"分享此報表" );
+            export_intent.setType( "text/plain" );
 
-                Intent share_intent = Intent.createChooser( export_intent, null);
-                startActivity( share_intent);
-            }
-        } );
-
-
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+            Intent share_intent = Intent.createChooser( export_intent, null);
+            startActivity( share_intent);
         });
+
+
+        back_btn.setOnClickListener(v -> finish());
 
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Record_Detail.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Record_Detail.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Record_Detail.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Record_Detail.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Record_Detail.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Record_Detail.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Record_Detail.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Record_Detail.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Record_Detail.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Record_Detail.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
 
@@ -157,13 +134,8 @@ public class Record_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -178,12 +150,13 @@ public class Record_Detail extends AppCompatActivity {
                         Log.i(TAG,"order: "+order);
 
                         String order_id = order.getString("order_id");
-                        String date = order.getString("moving_date");
-                        if(date.equals("null")) date = order.getString("valuation_date");
-                        date = getDate(date);
-                        String member = order.getString("member_name");
                         String valuation_status = order.getString("valuation_status");
                         String order_status = order.getString("order_status");
+                        String date = order.getString("moving_date");
+                        if(date.equals("null")) date = order.getString("valuation_date");
+                        if(date.equals("null") || valuation_status.equals("self")) date = order.getString("last_update");
+                        date = getDate(date);
+                        String member = order.getString("member_name");
 
                         String[] row_data = {order_id, date, member, valuation_status, order_status};
                         data.add(row_data);
@@ -195,12 +168,9 @@ public class Record_Detail extends AppCompatActivity {
                 if(!responseData.equals("null")){
                     for(int i=0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            RecordAdapter adapter = new RecordAdapter(data);
-                            list.setAdapter(adapter);
-                        }
+                    runOnUiThread(() -> {
+                        RecordAdapter adapter = new RecordAdapter(data);
+                        list.setAdapter(adapter);
                     });
                 }
             }

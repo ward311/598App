@@ -4,9 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -34,6 +37,8 @@ import com.example.homerenting_prototype_one.valuation.Valuation;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -63,6 +68,7 @@ public class Add_Order extends AppCompatActivity {
     Context context = Add_Order.this;
     String TAG = "Add_Order";
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +83,21 @@ public class Add_Order extends AppCompatActivity {
         }
         else bundle = new Bundle();
 
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+//        String now_year = String.valueOf(now.getYear());
+//        String now_month = String.valueOf(monthToInt(String.valueOf(now.getMonth())));
+//        String now_day = String.valueOf(now.getDayOfMonth());
+//        if(monthToInt(String.valueOf(now.getMonth())) < 10) now_month = "0"+now_month;
+//        if(now.getDayOfMonth() < 10) now_day = "0"+now_day;
+//        Log.d(TAG, "now: "+now_year+"-"+now_month+"-"+now_day);
+//        movingDate_text.setText(now_year+"-"+now_month+"-"+now_day);
+
         movingDate_text.setOnClickListener(v -> {
             DatePickerDialog datePicker = new DatePickerDialog( Add_Order.this, (view, year, month, dayOfMonth) -> {
+                if(year<now.getYear() || (month+1)<monthToInt(String.valueOf(now.getMonth())) || dayOfMonth<now.getDayOfMonth()) {
+                    Toast.makeText(context, "請勿選擇過去的日期", Toast.LENGTH_SHORT);
+                    return;
+                }
                 String monthStr = String.valueOf(month+1);
                 if(month+1 < 10) monthStr = "0"+monthStr;
                 String dayStr = String.valueOf(dayOfMonth);
@@ -88,6 +107,7 @@ public class Add_Order extends AppCompatActivity {
             datePicker.show();
         });
 
+        movingTime_text.setText(now.getHour()+":00");
         movingTime_text.setOnClickListener(v -> {
             TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> movingTime_text.setText(hourOfDay+":"+minute),calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
             time_picker.show();
@@ -102,6 +122,7 @@ public class Add_Order extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                moveOut_edit.setError(null);
                 String address = cAddress_edit.getText().toString();
                 String moveOut_address = moveOut_edit.getText().toString();
                 if(!address.equals("") && !moveOut_address.equals("")){
@@ -125,13 +146,20 @@ public class Add_Order extends AppCompatActivity {
         });
 
         addOrderBtn.setOnClickListener(v -> {
+            if(checkEmpty()) return;
             if(bundle.getString("furniture_data") != null)
                 furniture_data = bundle.getString("furniture_data");
 
             addOrder();
 
             Handler handler = new Handler();
-            handler.postDelayed(() -> finish(), 1000);
+            handler.postDelayed(() -> {
+                Intent intent = new Intent();
+                intent.setClass(context, Calendar.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("end", "true");
+                startActivity(intent);
+            }, 1000);
         });
 
         globalNav();
@@ -150,15 +178,15 @@ public class Add_Order extends AppCompatActivity {
     }
 
     private void setTextData(){
-        name_edit.setText(bundle.getString("name"));
-        cAddress_edit.setText(bundle.getString("cAddress"));
-        phone_edit.setText(bundle.getString("phone"));
-        moveOut_edit.setText(bundle.getString("fromAddress"));
-        moveIn_edit.setText(bundle.getString("toAddress"));
-        price_edit.setText(bundle.getString("price"));
-        worktime_edit.setText(bundle.getString("worktime"));
-        notice_edit.setText(bundle.getString("notice"));
-        movingDate_text.setText(bundle.getString("date"));
+        if(bundle.containsKey("name")) name_edit.setText(bundle.getString("name"));
+        if(bundle.containsKey("cAddress")) cAddress_edit.setText(bundle.getString("cAddress"));
+        if(bundle.containsKey("phone")) phone_edit.setText(bundle.getString("phone"));
+        if(bundle.containsKey("fromAddress")) moveOut_edit.setText(bundle.getString("fromAddress"));
+        if(bundle.containsKey("toAddress")) moveIn_edit.setText(bundle.getString("toAddress"));
+        if(bundle.containsKey("price")) price_edit.setText(bundle.getString("price"));
+        if(bundle.containsKey("worktime")) worktime_edit.setText(bundle.getString("worktime"));
+        if(bundle.containsKey("notice")) notice_edit.setText(bundle.getString("notice"));
+        if(bundle.containsKey("date")) movingDate_text.setText(bundle.getString("date"));
     }
 
     private void addOrder(){
@@ -214,7 +242,7 @@ public class Add_Order extends AppCompatActivity {
                 ", worktime: " + worktime +
                 ", additional: " + notice +
                 ", moving_date: " + date +
-                ", furniture_data" + furniture_data);
+                ", furniture_data: " + furniture_data);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -241,6 +269,83 @@ public class Add_Order extends AppCompatActivity {
                 Log.d(TAG, "add_btn, responseData: " + responseData);
             }
         });
+    }
+
+    private boolean checkEmpty(){
+        boolean check = false;
+        if(TextUtils.isEmpty(name_edit.getText().toString())){
+            name_edit.setError("請輸入姓名");
+            check = true;
+        }
+        if(TextUtils.isEmpty(cAddress_edit.getText().toString())){
+            cAddress_edit.setError("請輸入聯絡地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(phone_edit.getText().toString())){
+            phone_edit.setError("請輸入連絡電話");
+            check = true;
+        }
+        if(phone_edit.getText().length()<10){
+            phone_edit.setError("請輸入正確的電話號碼");
+            check = true;
+        }
+        if(TextUtils.isEmpty(moveOut_edit.getText().toString())){
+            moveOut_edit.setError("請輸入搬出地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(moveIn_edit.getText().toString())){
+            moveIn_edit.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(moveOut_edit.getText().toString().equals(moveIn_edit.getText().toString()) && !moveOut_edit.getText().toString().isEmpty()){
+            Toast.makeText(context, "搬入搬出地址相同", Toast.LENGTH_SHORT);
+            check = true;
+        }
+        if(TextUtils.isEmpty(price_edit.getText().toString())){
+            price_edit.setError("請輸入搬家費用");
+            check = true;
+        }
+        if(TextUtils.isEmpty(worktime_edit.getText().toString())){
+            worktime_edit.setError("請輸入預計工時");
+            check = true;
+        }
+        if(TextUtils.isEmpty(movingDate_text.getText().toString())){
+            movingDate_text.setError("請輸入日期");
+            check = true;
+        }
+
+        return check;
+    }
+
+    private int monthToInt(String month){
+        switch (month){
+            case "JANUARY":
+                return 1;
+            case "FEBRUARY":
+                return 2;
+            case "MARCH":
+                return 3;
+            case "APRIL":
+                return 4;
+            case "MAY":
+                return 5;
+            case "JUNE":
+                return 6;
+            case "JULY":
+                return 7;
+            case "AUGUST":
+                return 8;
+            case "SEPTEMBER":
+                return 9;
+            case "OCTOBER":
+                return 10;
+            case "NOVEMBER":
+                return 11;
+            case "DECEMBER":
+                return 12;
+            default:
+                return 0;
+        }
     }
 
     private void linking(){

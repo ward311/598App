@@ -57,9 +57,9 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         holder.type_sp.setAdapter(typeAdapter);
         holder.type_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == types.length) cars.get(position)[1] = null;
-                else cars.get(position)[1] = types[position];
+            public void onItemSelected(AdapterView<?> parent, View view, int t_position, long id) {
+                if(t_position >= types.length) cars.get(position)[1] = null;
+                else cars.get(position)[1] = types[t_position];
                 holder.type.setText(cars.get(position)[1]);
             }
 

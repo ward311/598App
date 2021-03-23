@@ -83,25 +83,22 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
         }
 
         //click
-        holder.setOnItemClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mTarget != null){
-                    String[] row_data = data.get(holder.getAdapterPosition());
+        holder.setOnItemClick(v -> {
+            if(mTarget != null){
+                String[] row_data = data.get(holder.getAdapterPosition());
 
-                    String order_id = row_data[0];
-                    Bundle bundle = new Bundle();
-                    bundle.putString("order_id", order_id);
+                String order_id = row_data[0];
+                Bundle bundle = new Bundle();
+                bundle.putString("order_id", order_id);
 
-                    String newicon = row_data[row_data.length-1];
-                    if(newicon.equals("1")) removeNew(order_id, context);
+                String newicon = row_data[row_data.length-1];
+                if(newicon.equals("1")) removeNew(order_id, context);
 
-                    Intent intent = new Intent();
-                    intent.setClass(context, mTarget);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                }
+                Intent intent = new Intent();
+                intent.setClass(context, mTarget);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
         });
     }

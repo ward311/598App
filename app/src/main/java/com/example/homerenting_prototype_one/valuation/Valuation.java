@@ -87,28 +87,22 @@ public class Valuation extends AppCompatActivity {
         month_text.setText(getMonthStr());
         getValuation();
 
-        lastWeek_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int wCount = getwCount();
-                setwCount(wCount-1);
-                week_text.setText(getWeek());
-                month_text.setText(getMonthStr());
-                data.clear();
-                getValuation();
-            }
+        lastWeek_btn.setOnClickListener(v -> {
+            int wCount = getwCount();
+            setwCount(wCount-1);
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            data.clear();
+            getValuation();
         });
 
-        nextWeek_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int wCount = getwCount();
-                setwCount(wCount+1);
-                week_text.setText(getWeek());
-                month_text.setText(getMonthStr());
-                data.clear();
-                getValuation();
-            }
+        nextWeek_btn.setOnClickListener(v -> {
+            int wCount = getwCount();
+            setwCount(wCount+1);
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            data.clear();
+            getValuation();
         });
 
         //上方nav

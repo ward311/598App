@@ -299,18 +299,49 @@
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/worktime_OD" />
 
+    <View
+        android:id="@+id/view4"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:layout_marginTop="4dp"
+        android:background="#F2F2F2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/price_OD" />
+
+    <TextView
+        android:id="@+id/psText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="備註"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/PS_OD"
+        app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
+        app:layout_constraintTop_toTopOf="@+id/PS_OD"/>
+
+    <EditText
+        android:id="@+id/PS_OD"
+        android:layout_width="0dp"
+        android:layout_height="110dp"
+        android:layout_marginTop="16dp"
+        android:background="#F2F2F2"
+        android:textColor="#989898"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="@+id/tablel_GL"
+        app:layout_constraintTop_toBottomOf="@+id/view4" />
+
+
     <Button
         android:id="@+id/check_order_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/roundedbutton"
         android:text="人車派遣"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/price_OD" />
+        app:layout_constraintTop_toBottomOf="@+id/PS_OD" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/right_margin_GL"

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -33,6 +35,9 @@ import com.example.homerenting_prototype_one.valuation.Valuation_Booking;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -62,6 +67,7 @@ public class Add_Valuation extends AppCompatActivity {
     Context context = Add_Valuation.this;
     String TAG = "Add_Valuation";
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,45 +81,38 @@ public class Add_Valuation extends AppCompatActivity {
 
         linking();
 
-        dateText.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog datePicker;
-                datePicker = new DatePickerDialog( Add_Valuation.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        dateText.setText(year+"-"+(month+1)+"-"+dayOfMonth);
-                    }
-                },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
-                datePicker.show();
-            }
-        } );
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+        Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
 
-        timeText.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog time_picker = new TimePickerDialog( context, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        timeText.setText(hourOfDay+":"+minute);
-                        time = hourOfDay+":"+minute;
-                        time2 = (hourOfDay+1)+":"+minute;
-                    }
-                },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
-                time_picker.show();
-            }
-        } );
+        dateText.setText(now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
+        dateText.setOnClickListener(v -> {
+            DatePickerDialog datePicker;
+            datePicker = new DatePickerDialog( Add_Valuation.this, (view, year, month, dayOfMonth) -> {
+                if(year<now.getYear() || (month+1)<monthToInt(String.valueOf(now.getMonth())) || dayOfMonth<now.getDayOfMonth()) {
+                    Toast.makeText(context, "請勿選擇過去的日期", Toast.LENGTH_SHORT);
+                    return;
+                }
+                dateText.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
+            },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+            datePicker.show();
+        });
+
+        timeText.setText(now.getHour()+":00");
+        timeText.setOnClickListener(v -> {
+            TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> {
+                timeText.setText(hourOfDay+":"+minute);
+                time = hourOfDay+":"+minute;
+                time2 = (hourOfDay+1)+":"+minute;
+            },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
+            time_picker.show();
+        });
 
         cAddressText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -129,140 +128,142 @@ public class Add_Valuation extends AppCompatActivity {
             }
         });
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = nameText.getText().toString();
-                String cAddress = cAddressText.getText().toString();
-                String phone = phoneText.getText().toString();
-                String fromAddress = fromAddressText.getText().toString();
-                String toAddress = toAddressText.getText().toString();
-                String notice = noticeText.getText().toString();
-                String date = dateText.getText().toString();
-                String valuation_time = time+"~"+time2;
+        addBtn.setOnClickListener(v -> {
+            String name = nameText.getText().toString();
+            String cAddress = cAddressText.getText().toString();
+            String phone = phoneText.getText().toString();
+            String fromAddress = fromAddressText.getText().toString();
+            String toAddress = toAddressText.getText().toString();
+            String notice = noticeText.getText().toString();
+            String date = dateText.getText().toString();
+            String valuation_time = time+"~"+time2;
 
-                switch(genderRG.getCheckedRadioButtonId()){
-                    case R.id.male_rbtn_AV:
-                        gender = "男";
-                        break;
-                    case R.id.female_rbtn_AV:
-                        gender = "女";
-                        break;
-                    case R.id.other_rbtn_AV:
-                        gender = "其他";
-                        break;
-                }
-                Log.i(TAG, "gender = "+gender);
-
-                String function_name = "add_valuation";
-                String company_id = getCompany_id(context);
-                RequestBody body = new FormBody.Builder()
-                        .add("function_name", function_name)
-                        .add("company_id", company_id)
-                        .add("member_name", name)
-                        .add("gender", gender)
-                        .add("contact_address", cAddress)
-                        .add("phone", phone)
-                        .add("from_address", fromAddress)
-                        .add("to_address", toAddress)
-                        .add("additional", notice)
-                        .add("valuation_date", date)
-                        .add("valuation_time", valuation_time)
-                        .build();
-                Log.i(TAG,"function_name: " + function_name +
-                        ", member_name: " + name +
-                        ", gender: " + gender +
-                        ", contact_address: " + cAddress +
-                        ", phone: " + phone +
-                        ", from_address: " + fromAddress+
-                        ", to_address: " + toAddress +
-                        ", additional: " + notice +
-                        ", valuation_date: " + date +
-                        ", valuation_time: " + valuation_time);
-
-                Request request = new Request.Builder()
-                        .url(BuildConfig.SERVER_URL+"/functional.php")
-                        .post(body)
-                        .build();
-
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        final String responseData = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(responseData.equals("success"))
-                                    Toast.makeText(context, "新增估價單成功", Toast.LENGTH_LONG).show();
-                                else
-                                    Toast.makeText(context, "新增估價單失敗", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        Log.d(TAG, "add_btn, responseData: " + responseData);
-                    }
-                });
-
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent finish_valuation_intent = new Intent();
-                        finish_valuation_intent.setClass(context, Valuation_Booking.class);
-                        startActivity(finish_valuation_intent);
-                    }
-                }, 1000);
+            switch(genderRG.getCheckedRadioButtonId()){
+                case R.id.male_rbtn_AV:
+                    gender = "男";
+                    break;
+                case R.id.female_rbtn_AV:
+                    gender = "女";
+                    break;
+                case R.id.other_rbtn_AV:
+                    gender = "其他";
+                    break;
             }
+            Log.i(TAG, "gender = "+gender);
+
+            String function_name = "add_valuation";
+            String company_id = getCompany_id(context);
+            RequestBody body = new FormBody.Builder()
+                    .add("function_name", function_name)
+                    .add("company_id", company_id)
+                    .add("member_name", name)
+                    .add("gender", gender)
+                    .add("contact_address", cAddress)
+                    .add("phone", phone)
+                    .add("from_address", fromAddress)
+                    .add("to_address", toAddress)
+                    .add("additional", notice)
+                    .add("valuation_date", date)
+                    .add("valuation_time", valuation_time)
+                    .build();
+            Log.i(TAG,"function_name: " + function_name +
+                    ", member_name: " + name +
+                    ", gender: " + gender +
+                    ", contact_address: " + cAddress +
+                    ", phone: " + phone +
+                    ", from_address: " + fromAddress+
+                    ", to_address: " + toAddress +
+                    ", additional: " + notice +
+                    ", valuation_date: " + date +
+                    ", valuation_time: " + valuation_time);
+
+            Request request = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL+"/functional.php")
+                    .post(body)
+                    .build();
+
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    final String responseData = response.body().string();
+                    runOnUiThread(() -> {
+                        if(responseData.equals("success"))
+                            Toast.makeText(context, "新增估價單成功", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(context, "新增估價單失敗", Toast.LENGTH_LONG).show();
+                    });
+                    Log.d(TAG, "add_btn, responseData: " + responseData);
+                }
+            });
+
+
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                Intent finish_valuation_intent = new Intent();
+                finish_valuation_intent.setClass(context, Valuation_Booking.class);
+                startActivity(finish_valuation_intent);
+            }, 1000);
         });
 
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Add_Valuation.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Add_Valuation.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Add_Valuation.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Add_Valuation.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Add_Valuation.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Add_Valuation.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Add_Valuation.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Add_Valuation.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Add_Valuation.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Add_Valuation.this, Setting.class);
+            startActivity(setting_intent);
         });
+    }
+
+    private int monthToInt(String month){
+        switch (month){
+            case "JANUARY":
+                return 1;
+            case "FEBRUARY":
+                return 2;
+            case "MARCH":
+                return 3;
+            case "APRIL":
+                return 4;
+            case "MAY":
+                return 5;
+            case "JUNE":
+                return 6;
+            case "JULY":
+                return 7;
+            case "AUGUST":
+                return 8;
+            case "SEPTEMBER":
+                return 9;
+            case "OCTOBER":
+                return 10;
+            case "NOVEMBER":
+                return 11;
+            case "DECEMBER":
+                return 12;
+            default:
+                return 0;
+        }
     }
 
     private void linking(){

@@ -112,13 +112,8 @@ public class Order_Today extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             //連線成功
@@ -159,17 +154,14 @@ public class Order_Today extends AppCompatActivity {
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                Log.d(TAG, "NO DATA");
-                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
-                                orderRList.setLayoutManager(new LinearLayoutManager(context));
-                                orderRList.setAdapter(noDataAdapter);
-                            }
-                            //else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            Log.d(TAG, "NO DATA");
+                            NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                            orderRList.setLayoutManager(new LinearLayoutManager(context));
+                            orderRList.setAdapter(noDataAdapter);
                         }
+                        //else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                     });
                 }
                 //顯示資訊
@@ -183,23 +175,14 @@ public class Order_Today extends AppCompatActivity {
 
 
 
-
-
-
         //上方nav
-        order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Order_Today.this, Order.class);
-                startActivity(order_intent);
-            }
+        order.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Order_Today.this, Order.class);
+            startActivity(order_intent);
         });
-        booking_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent bookingOrder_intent = new Intent(Order_Today.this, Order_Booking.class);
-                startActivity(bookingOrder_intent);
-            }
+        booking_order.setOnClickListener(v -> {
+            Intent bookingOrder_intent = new Intent(Order_Today.this, Order_Booking.class);
+            startActivity(bookingOrder_intent);
         });
 //        today_order.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -208,21 +191,15 @@ public class Order_Today extends AppCompatActivity {
 //                startActivity(todayOrder_intent);
 //            }
 //        });
-        cancel_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cancelOrder_intent = new Intent(Order_Today.this, Order_Cancel.class);
-                startActivity(cancelOrder_intent);
-            }
+        cancel_order.setOnClickListener(v -> {
+            Intent cancelOrder_intent = new Intent(Order_Today.this, Order_Cancel.class);
+            startActivity(cancelOrder_intent);
         });
 
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Order_Today.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Order_Today.this, Valuation.class);
+            startActivity(valuation_intent);
         });
 //        order_btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -231,41 +208,29 @@ public class Order_Today extends AppCompatActivity {
 //                startActivity(order_intent);
 //            }
 //        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Order_Today.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Order_Today.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Order_Today.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Order_Today.this, System.class);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Order_Today.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Order_Today.this, Setting.class);
+            startActivity(setting_intent);
         });
     }
     private void setRList(){
         final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(this, data, Today_Detail.class);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                orderRList.setLayoutManager(new LinearLayoutManager(context));
-                orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
-                orderRList.setAdapter(adapter);
+        runOnUiThread(() -> {
+            orderRList.setLayoutManager(new LinearLayoutManager(context));
+            orderRList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
+            orderRList.setAdapter(adapter);
 
-                //側滑刪除
+            //側滑刪除
 //                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
 //                helper.attachToRecyclerView(orderRList);
-            }
         });
     }
 }
