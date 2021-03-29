@@ -149,24 +149,16 @@ public class Setting_Announcement extends AppCompatActivity {
 
     private void setRList(){
         final AnnounceAdapter adapter = new AnnounceAdapter(context, data);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                announceView.setLayoutManager(new LinearLayoutManager(context));
-                announceView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
-                announceView.setAdapter(adapter);
-            }
+        runOnUiThread(() -> {
+            announceView.setLayoutManager(new LinearLayoutManager(context));
+            announceView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
+            announceView.setAdapter(adapter);
         });
     }
 
     private void setBack_btn(){
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        back_btn.setOnClickListener(v -> finish());
     }
 
     private void globalNav(){

@@ -2,6 +2,9 @@ package com.example.homerenting_prototype_one.system;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,16 +17,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.applandeo.materialcalendarview.EventDay;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
+import com.example.homerenting_prototype_one.add_order.Add_Order;
+import com.example.homerenting_prototype_one.add_order.Add_Valuation;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.order.Order;
@@ -41,8 +49,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -56,12 +67,16 @@ import static com.example.homerenting_prototype_one.show.global_function.addData
 import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getDay;
+import static com.example.homerenting_prototype_one.show.global_function.getMonth;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getToday;
+import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class System_Schedule extends AppCompatActivity {
     ScrollView calendar_sv;
     CalendarView calendar;
+    com.applandeo.materialcalendarview.CalendarView mCalendar;
     RecyclerView orderList;
     ChipGroup staffGroup,  carGroup;
 
@@ -78,8 +93,9 @@ public class System_Schedule extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system__schedule);
-        calendar_sv = findViewById(R.id.calender_sv_SSD);
-        calendar = findViewById(R.id.calendar_SSD);
+//        calendar_sv = findViewById(R.id.calender_sv_SSD);
+//        calendar = findViewById(R.id.calendar_SSD);
+        mCalendar = findViewById(R.id.mCalendar_SSD);
         orderList = findViewById(R.id.orderList_rv_SSD);
         staffGroup = findViewById(R.id.staffCG_SSD);
         carGroup = findViewById(R.id.carCG_SSD);
@@ -95,23 +111,150 @@ public class System_Schedule extends AppCompatActivity {
         getChip();
 
         getVacation(getToday("yyyy-MM-dd"));
-        calendar.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            String monthStr = String.valueOf(month + 1);
-            if (month + 1 < 10) monthStr = "0" + monthStr;
-            String dayOfMonthStr = String.valueOf(dayOfMonth);
-            if (dayOfMonth < 10) dayOfMonthStr = "0" + dayOfMonthStr;
-            String date = year + "-" + monthStr + "-" + dayOfMonthStr;
+//        calendar.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+//            String monthStr = String.valueOf(month + 1);
+//            if (month + 1 < 10) monthStr = "0" + monthStr;
+//            String dayOfMonthStr = String.valueOf(dayOfMonth);
+//            if (dayOfMonth < 10) dayOfMonthStr = "0" + dayOfMonthStr;
+//            String date = year + "-" + monthStr + "-" + dayOfMonthStr;
+//            Log.i(TAG, "Date Change: " + date);
+//
+//            getOrder(date);
+//            orderList.setVisibility(View.VISIBLE);
+//            calendar_sv.setVisibility(View.GONE);
+//
+//            initArray();
+//            getVacation(date);
+//        });
+        setmCalendar();
+
+        globalNav();
+    }
+
+    private void setmCalendar(){
+        java.util.Calendar calendarTime = java.util.Calendar.getInstance();
+        int year = calendarTime.get(java.util.Calendar.YEAR);
+        int month = (calendarTime.get(java.util.Calendar.MONTH)+1);
+        Log.d(TAG, "check "+year+"/"+month);
+
+        getOrders(String.valueOf(year), String.valueOf(month));
+
+        mCalendar.setOnPreviousPageChangeListener(() -> {
+            int previous_month = calendarTime.get(java.util.Calendar.MONTH);
+            calendarTime.set(java.util.Calendar.MONTH, previous_month-1);
+            if(previous_month == 0) previous_month = 12;
+            if(calendarTime.get(java.util.Calendar.MONTH)+1 > previous_month)
+                calendarTime.set(java.util.Calendar.DATE, calendarTime.get(java.util.Calendar.DATE)-1);
+            int previous_year = calendarTime.get(java.util.Calendar.YEAR);
+            Log.i(TAG, "calendarTime: "+calendarTime.getTime().toString());
+            Log.d(TAG, "page change: "+previous_year+"/"+previous_month);
+            getOrders(String.valueOf(previous_year), String.valueOf(previous_month));
+        });
+
+        mCalendar.setOnForwardPageChangeListener(() -> {
+            int next_month = calendarTime.get(java.util.Calendar.MONTH)+2;
+            calendarTime.set(java.util.Calendar.MONTH, next_month-1);
+            if(next_month == 13) next_month = 1;
+            int next_year = calendarTime.get(java.util.Calendar.YEAR);
+            Log.i(TAG, "calendarTime: "+calendarTime.getTime().toString());
+            Log.d(TAG, "page change: "+next_year+"/"+next_month);
+            getOrders(String.valueOf(next_year), String.valueOf(next_month));
+        });
+
+        mCalendar.setOnDayClickListener(eventDay -> {
+            Date datetime = eventDay.getCalendar().getTime();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String date = simpleDateFormat.format(datetime);
             Log.i(TAG, "Date Change: " + date);
 
             getOrder(date);
             orderList.setVisibility(View.VISIBLE);
-            calendar_sv.setVisibility(View.GONE);
+            mCalendar.setVisibility(View.GONE);
 
             initArray();
             getVacation(date);
         });
+    }
 
-        globalNav();
+    private void getOrders(String year, String month){
+        List<EventDay> events = new ArrayList<>();
+
+        String function_name = "order_member_oneMonth";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .add("year", year)
+                .add("month", month)
+                .build();
+        Log.i(TAG, "function_name: "+function_name+", company_id: "+company_id+", year: "+year+", month: "+month);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+//                Log.d(TAG, "responseData of getOrders: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    String last_date = "";
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject order = responseArr.getJSONObject(i);
+//                        Log.d(TAG, "order:" + order);
+
+                        int isOrder = 1;
+                        String order_id = order.getString("order_id");
+                        String status = order.getString("order_status");
+                        if(status.equals("cancel") || status.equals("done") || status.equals("paid")){
+//                            Log.d(TAG, "order_id: "+order_id+", status: order_cancel");
+                            continue;
+                        }
+
+                        if(status.equals("evaluating")) continue;
+
+                        String date;
+                        date = order.getString("moving_date");
+                        String[] token = date.split(" ");
+                        date = token[0];
+                        Log.d(TAG, "order_id: "+order_id+", date: "+date+", isOrder:"+isOrder+", status: "+status);
+
+                        java.util.Calendar calendar = java.util.Calendar.getInstance();
+                        calendar.set(java.util.Calendar.YEAR, Integer.parseInt(getYear(date)));
+                        calendar.set(java.util.Calendar.MONTH, Integer.parseInt(getMonth(date))-1);
+                        calendar.set(java.util.Calendar.DATE, Integer.parseInt(getDay(date)));
+
+                        EventDay eventDay;
+                        if(date.equals(last_date)) continue;
+
+//                        Log.d(TAG, "BLUE");
+                        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.calendar_dot2);
+                        eventDay = new EventDay(calendar, new InsetDrawable(drawable, 55));
+
+                        events.add(eventDay);
+                        last_date = date;
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "getOrders: "+e.getMessage());
+                }
+
+                runOnUiThread(() -> mCalendar.setEvents(events));
+            }
+        });
     }
 
     private void getChip(){
@@ -178,8 +321,8 @@ public class System_Schedule extends AppCompatActivity {
                     }
                     int ii = 0;
                     while((staffGroup.getChildCount()-1+carGroup.getChildCount()-1) != responseArr.length()){
-                        if((++ii)%1000000 == 0)
-                            Log.d(TAG, "waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                        if((++ii)%10000000 == 0)
+                            Log.d(TAG, (i/10000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
                     lock = false;
                 } catch (JSONException e) {
@@ -399,7 +542,7 @@ public class System_Schedule extends AppCompatActivity {
 
                 int ii = 0;
                 while (lock){
-                    if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
+                    if((++ii)%50000000 == 0) Log.d(TAG, (ii/50000000)+". waiting for lock in getVacation...");
                 }
                 Log.d(TAG, "getVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_text);
@@ -427,8 +570,12 @@ public class System_Schedule extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         back_btn.setOnClickListener(v -> {
-            if(calendar_sv.getVisibility() == View.GONE){
-                calendar_sv.setVisibility(View.VISIBLE);
+//            if(calendar_sv.getVisibility() == View.GONE){
+//                calendar_sv.setVisibility(View.VISIBLE);
+//                orderList.setVisibility(View.GONE);
+//            }
+            if(mCalendar.getVisibility() == View.GONE){
+                mCalendar.setVisibility(View.VISIBLE);
                 orderList.setVisibility(View.GONE);
             }
             else finish();
@@ -457,8 +604,12 @@ public class System_Schedule extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(calendar_sv.getVisibility() == View.GONE){
-            calendar_sv.setVisibility(View.VISIBLE);
+//        if(calendar_sv.getVisibility() == View.GONE){
+//            calendar_sv.setVisibility(View.VISIBLE);
+//            orderList.setVisibility(View.GONE);
+//        }
+        if(mCalendar.getVisibility() == View.GONE){
+            mCalendar.setVisibility(View.VISIBLE);
             orderList.setVisibility(View.GONE);
         }
         else super.onBackPressed();

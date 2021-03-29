@@ -88,37 +88,26 @@ public class Evaluation_Detail extends AppCompatActivity {
             }
         } );
 
-        replyBtn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replyText.setGravity(Gravity.CENTER_VERTICAL);
-                replyText.setVisibility(View.VISIBLE);
-                reply_edit.setVisibility(View.VISIBLE);
-                reply_text.setVisibility(View.GONE);
-                replyBtn.setVisibility(View.GONE);
-                finishBtn.setVisibility(View.VISIBLE);
-            }
-        } );
-        finishBtn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replyText.setGravity(Gravity.TOP);
-                if(reply_edit.getText().toString().isEmpty()) replyText.setVisibility(View.GONE);
-                reply_edit.setVisibility(View.GONE);
-                reply_text.setText(reply_edit.getText().toString());
-                reply_text.setVisibility(View.VISIBLE);
-                finishBtn.setVisibility(View.GONE);
-                replyBtn.setVisibility(View.VISIBLE);
-                replyBtn.setText("修改");
-            }
-        } );
-
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+        replyBtn.setOnClickListener(v -> {
+            replyText.setGravity(Gravity.CENTER_VERTICAL);
+            replyText.setVisibility(View.VISIBLE);
+            reply_edit.setVisibility(View.VISIBLE);
+            reply_text.setVisibility(View.GONE);
+            replyBtn.setVisibility(View.GONE);
+            finishBtn.setVisibility(View.VISIBLE);
         });
+        finishBtn.setOnClickListener(v -> {
+            replyText.setGravity(Gravity.TOP);
+            if(reply_edit.getText().toString().isEmpty()) replyText.setVisibility(View.GONE);
+            reply_edit.setVisibility(View.GONE);
+            reply_text.setText(reply_edit.getText().toString());
+            reply_text.setVisibility(View.VISIBLE);
+            finishBtn.setVisibility(View.GONE);
+            replyBtn.setVisibility(View.VISIBLE);
+            replyBtn.setText("修改");
+        });
+
+        back_btn.setOnClickListener(v -> finish());
 
         globalNav();
     }

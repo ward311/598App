@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -89,7 +90,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
 
-    Context context = this;
+    Context context = ValuationBooking_Detail.this;
     Bundle bundle;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -123,9 +124,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
         movingDateText.setOnClickListener(v -> {
             movingDateText.setError(null);
-            DatePickerDialog date_picker = new DatePickerDialog( context, (view, year, month, dayOfMonth) -> {
-                if(year<now.getYear() || (month+1)<monthToInt(String.valueOf(now.getMonth())) || dayOfMonth<now.getDayOfMonth()) {
-                    Toast.makeText(context, "請勿選擇過去的日期", Toast.LENGTH_SHORT);
+            @SuppressLint("ShowToast") DatePickerDialog date_picker = new DatePickerDialog( context, (view, year, month, dayOfMonth) -> {
+                if(year<=now.getYear() && (month+1)<=monthToInt(String.valueOf(now.getMonth())) && dayOfMonth<now.getDayOfMonth()) {
+                    Toast.makeText(context, "請勿選擇過去的日期", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "選擇日期("+year+"/"+(month+1)+"/"+dayOfMonth+")"+
+                            "在現在日期("+now.getYear()+"/"+monthToInt(String.valueOf(now.getMonth()))+"/"+now.getDayOfMonth()+") 之前");
+                    movingDateText.setError("請勿選擇過去的日期");
                     return;
                 }
                 movingDateText.setText(year+"-"+(month+1)+"-"+dayOfMonth);
@@ -325,6 +329,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             default:
                 return 0;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bundle = getIntent().getExtras();
     }
 
     private void setCheckBtn(){

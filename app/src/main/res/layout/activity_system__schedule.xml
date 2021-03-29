@@ -35,18 +35,23 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <CalendarView
             android:id="@+id/calendar_SSD"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"/>
     </ScrollView>
 <!--    <CalendarView-->
 <!--        android:id="@+id/schedule_calendar"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="0dp"-->
 <!--        android:layout_weight="5"/>-->
+    <com.applandeo.materialcalendarview.CalendarView
+        android:id="@+id/mCalendar_SSD"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/orderList_rv_SSD"

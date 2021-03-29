@@ -189,6 +189,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 final String responseData = response.body().string();
                 Log.d(TAG,"responseData of furniture_list: "+responseData);
 
+
                 getListData(responseData);
                 setFurnitureList();
                 setCheck_btn();
@@ -261,7 +262,7 @@ public class Edit_Furniture extends AppCompatActivity {
             space_data.add(3, bedRoom_data);
             space_data.add(4, diningRoom_data);
         } catch (JSONException e) {
-            e.printStackTrace();
+            if(!responseData.equals("null")) e.printStackTrace();
             for(int i = 0; i < 5; i++){
                 space_data.add(new ArrayList<>());
             }
@@ -318,7 +319,7 @@ public class Edit_Furniture extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtras(bundle);
         intent.setClass(context, ValuationBooking_Detail.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
 
