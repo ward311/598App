@@ -41,6 +41,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class Setting_Evaluation extends AppCompatActivity {
@@ -49,7 +50,7 @@ public class Setting_Evaluation extends AppCompatActivity {
     RecyclerView commentList;
 
     ArrayList<String[]> data;
-    ArrayList<Integer> stars;
+    ArrayList<Double> stars;
 
     int commentcount = 0;
     boolean lock = false;
@@ -143,10 +144,11 @@ public class Setting_Evaluation extends AppCompatActivity {
                         if(commentStr.length() > 35) commentSummary = commentStr.substring(0, 30)+"...";
                         else commentSummary = commentStr;
 
-                        int service_star = comment.getInt("service_quality");
-                        int work_star = comment.getInt("work_attitude");
-                        int price_star = comment.getInt("price_grade");
-                        float starf = (float) (service_star+work_star+price_star)/3;
+                        double service_star = comment.getDouble("service_quality");
+                        double work_star = comment.getDouble("work_attitude");
+                        double price_star = comment.getDouble("price_grade");
+                        double starf = (service_star+work_star+price_star)/3;
+                        starf = (double) Math.round(starf*10)/10;
                         Log.d(TAG, "service("+service_star+")+work("+work_star+")+price("+price_star+")/3 = "+starf);
                         stars.add(service_star);
                         stars.add(work_star);
@@ -183,14 +185,16 @@ public class Setting_Evaluation extends AppCompatActivity {
     }
 
     private void setStars(){
+        int i = 0;
         while (lock){ //等待stars收集好資料
-            Log.d(TAG, "wait for lock...");
+            if((++i)%5000000 == 0) Log.d(TAG, (i/5000000)+". wait for lock...");
         }
-        float allstar = 0;
-        for(int i = 0; i < stars.size(); i++) allstar = allstar+stars.get(i);
+        double allstar = 0;
+        for(i = 0; i < stars.size(); i++) allstar = allstar+stars.get(i);
         allstar = allstar/stars.size();
+        allstar = (double) Math.round(allstar*10)/10;
 
-        final float finalAllStar = allstar;
+        final double finalAllStar = allstar;
         allStars.setText("評價 "+finalAllStar);
         commentCount.setText("共"+commentcount+"則評論");
     }
