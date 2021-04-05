@@ -20,6 +20,8 @@ import java.util.ArrayList;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
     Context context;
     ArrayList<String[]> data;
+    int commentCount;
+    double allStar;
 
     public CommentAdapter(Context context, ArrayList<String[]> data){
         this.context = context;
@@ -46,6 +48,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("comment_id", data.get(position)[0]);
+                bundle.putInt("commentCount", commentCount);
+                bundle.putDouble("allStar", allStar);
                 Intent intent = new Intent(context, Evaluation_Detail.class);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
@@ -57,6 +61,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     public int getItemCount() {
         return data.size();
     }
+
+    public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
+    public int getCommentCount() { return commentCount; }
+
+    public void setAllStars(double allStar) { this.allStar = allStar; }
+    public double getAllStars() { return allStar; }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout commentCL;

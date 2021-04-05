@@ -55,6 +55,8 @@ public class Setting_Evaluation extends AppCompatActivity {
     int commentcount = 0;
     boolean lock = false;
 
+    CommentAdapter commentAdapter;
+
     Context context = this;
     String TAG = "Setting_Evaluation";
 
@@ -71,23 +73,14 @@ public class Setting_Evaluation extends AppCompatActivity {
         stars = new ArrayList<>();
 
         getData();
-        setStars();
 
         LinearLayout first_evaluation = findViewById(R.id.first_evaluation_layout);
-        first_evaluation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent evaluation_detail = new Intent(Setting_Evaluation.this, Evaluation_Detail.class);
-                startActivity(evaluation_detail);
-            }
+        first_evaluation.setOnClickListener(v -> {
+            Intent evaluation_detail = new Intent(Setting_Evaluation.this, Evaluation_Detail.class);
+            startActivity(evaluation_detail);
         });
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        back_btn.setOnClickListener(v -> finish());
 
         globalNav();
     }
@@ -173,14 +166,12 @@ public class Setting_Evaluation extends AppCompatActivity {
     }
 
     private void setRList(){
-        final CommentAdapter adapter = new CommentAdapter(context, data);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                commentList.setLayoutManager(new LinearLayoutManager(context));
-                commentList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
-                commentList.setAdapter(adapter);
-            }
+        commentAdapter = new CommentAdapter(context, data);
+        runOnUiThread(() -> {
+            commentList.setLayoutManager(new LinearLayoutManager(context));
+            commentList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
+            commentList.setAdapter(commentAdapter);
+            setStars();
         });
     }
 
@@ -197,6 +188,8 @@ public class Setting_Evaluation extends AppCompatActivity {
         final double finalAllStar = allstar;
         allStars.setText("評價 "+finalAllStar);
         commentCount.setText("共"+commentcount+"則評論");
+        commentAdapter.setAllStars(allstar);
+        commentAdapter.setCommentCount(commentcount);
     }
 
     private void globalNav(){

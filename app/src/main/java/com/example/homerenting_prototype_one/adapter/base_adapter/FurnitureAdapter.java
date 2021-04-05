@@ -62,6 +62,7 @@ public class FurnitureAdapter extends BaseAdapter{
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.furniture_item, null);
             viewHolder = new ViewHolder();
             viewHolder.name = convertView.findViewById(R.id.furniture_text);
+            viewHolder.room = convertView.findViewById(R.id.room_FI);
             viewHolder.number = convertView.findViewById(R.id.furniture_number_text);
             viewHolder.originalNumber = convertView.findViewById(R.id.originalNum_FI);
             viewHolder.to = convertView.findViewById(R.id.to_FI);
@@ -74,6 +75,7 @@ public class FurnitureAdapter extends BaseAdapter{
         viewHolder = (ViewHolder) convertView.getTag();
         viewHolder.name.setTag(R.id.furniture_text,position);
         viewHolder.name.setText(data.get(position)[1]);
+        viewHolder.room.setText(data.get(position)[4]);
 
         //設置數量
         viewHolder.originalNumber.setTag(R.id.furniture_number_text,position);
@@ -107,16 +109,13 @@ public class FurnitureAdapter extends BaseAdapter{
         });
 
         //關閉持續增減(放開手的時候)
-        btn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP
-                        || event.getAction()==MotionEvent.ACTION_CANCEL) {
-                    if(isAdd && mAutoIncrement) mAutoIncrement = false;
-                    else if (!isAdd && mAutoDecrement) mAutoDecrement = false;
-                }
-                return false;
+        btn.setOnTouchListener((v, event) -> {
+            if(event.getAction() == MotionEvent.ACTION_UP
+                    || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                if(isAdd && mAutoIncrement) mAutoIncrement = false;
+                else if (!isAdd && mAutoDecrement) mAutoDecrement = false;
             }
+            return false;
         });
     }
 
@@ -187,7 +186,7 @@ public class FurnitureAdapter extends BaseAdapter{
     }
 
     static class ViewHolder{
-        TextView name, number, originalNumber, to;
+        TextView name, room, number, originalNumber, to;
         Button minus_btn, plus_btn;
         Button add_btn;
         LinearLayout item;

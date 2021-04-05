@@ -95,8 +95,9 @@ public class Bonus_List_Detail extends AppCompatActivity {
 
         int i = 0;
         while (lock){
-            if(i++%1000000 == 0) Log.d(TAG, "wait for getting data lock...");
+            if(i++%5000000 == 0) Log.d(TAG, (i/5000000)+". wait for getting data lock...");
         }
+        Log.d(TAG, "finish getting data.");
         setHeaderRow();
         setFixedTable();
         setSalaryTable();

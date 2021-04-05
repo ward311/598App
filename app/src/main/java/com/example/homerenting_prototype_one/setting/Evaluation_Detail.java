@@ -44,6 +44,7 @@ import okhttp3.Response;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class Evaluation_Detail extends AppCompatActivity {
+    TextView commentCountText, allStarText;
     TextView nameText, nameTitleText, phoneText, fromAdressText, toAddressText, commentText, replyText, reply_text;
     LinearLayout serviceStars, workStars, priceStars;
     EditText reply_edit;
@@ -64,28 +65,27 @@ public class Evaluation_Detail extends AppCompatActivity {
 
         bundle = getIntent().getExtras();
         comment_id = bundle.getString("comment_id");
+        int commentCount = bundle.getInt("commentCount");
+        double allStar = bundle.getDouble("allStar");
 
         linking();
+
+        commentCountText.setText("共"+commentCount+"則評論");
+        allStarText.setText("評價 "+allStar);
 
         getData();
 
         reply_edit.addTextChangedListener( new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()!=0){
-                    reply_text.setText(s);
-                }
+                if (s.length()!=0) reply_text.setText(s);
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         } );
 
         replyBtn.setOnClickListener(v -> {
@@ -113,6 +113,8 @@ public class Evaluation_Detail extends AppCompatActivity {
     }
 
     private void linking(){
+        commentCountText = findViewById(R.id.commentCount_ED);
+        allStarText = findViewById(R.id.allStar_ED);
         nameText = findViewById(R.id.name_ED);
         nameTitleText = findViewById(R.id.nameTitle_ED);
         phoneText = findViewById(R.id.phone_ED);
@@ -148,13 +150,8 @@ public class Evaluation_Detail extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -178,25 +175,22 @@ public class Evaluation_Detail extends AppCompatActivity {
                     final int work_star = comment.getInt("work_attitude");
                     final int price_star = comment.getInt("price_grade");
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            nameText.setText(name);
-                            nameTitleText.setText(nameTitle);
-                            fromAdressText.setText(fromAddress);
-                            toAddressText.setText(toAddress);
-                            commentText.setText(commentStr);
-                            setStars(serviceStars, service_star);
-                            setStars(workStars, work_star);
-                            setStars(priceStars, price_star);
+                    runOnUiThread(() -> {
+                        nameText.setText(name);
+                        nameTitleText.setText(nameTitle);
+                        fromAdressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        commentText.setText(commentStr);
+                        setStars(serviceStars, service_star);
+                        setStars(workStars, work_star);
+                        setStars(priceStars, price_star);
 
-                            if(!replyStr.equals("null")){
-                                replyText.setVisibility(View.VISIBLE);
-                                reply_text.setText(replyStr);
-                                reply_text.setVisibility(View.VISIBLE);
-                                reply_edit.setText(replyStr);
-                                replyBtn.setText("修改");
-                            }
+                        if(!replyStr.equals("null")){
+                            replyText.setVisibility(View.VISIBLE);
+                            reply_text.setText(replyStr);
+                            reply_text.setVisibility(View.VISIBLE);
+                            reply_edit.setText(replyStr);
+                            replyBtn.setText("修改");
                         }
                     });
                 } catch (JSONException e) {

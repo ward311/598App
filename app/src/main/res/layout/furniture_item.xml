@@ -8,12 +8,20 @@
 
     <TextView
         android:id="@+id/furniture_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:text="text"
         android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/room_FI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="1"
+        android:text="room" />
 
     <TextView
         android:id="@+id/originalNum_FI"
