@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -97,56 +98,9 @@ public class Setting_Discount extends AppCompatActivity {
         getPeriodRow(true);
         getData();
 
-        addBtn.setOnClickListener(v -> {
-            //輸入欄
-            final EditText discount_edit = new EditText(context);
-            //設定margin
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.leftMargin = 80;
-            params.rightMargin = params.leftMargin;
-            discount_edit.setLayoutParams(params);
-            //要放到FrameLayout裡，margin才有用
-            FrameLayout container = new FrameLayout(context);
-            container.addView(discount_edit);
+        setAddBtn();
 
-            new AlertDialog.Builder(context)
-                    .setTitle("新增優惠")
-                    .setView(container)
-                    .setPositiveButton("確認", (dialog, which) -> {
-                        String new_discount_name = discount_edit.getText().toString();
-                        if(new_discount_name.isEmpty()){
-                            Toast.makeText(context, "未輸入優惠名稱", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        String thisYear = getToday("yyyy");String[] period_discount = {"-1", new_discount_name, "-1", thisYear+"-01-01", thisYear+"-12-31", "false"};
-                        period_discounts.add(period_discount);
-                        Log.d(TAG, "add period_discount("+(period_discounts.size()-1)+"/"+period_discounts.size()+"): "
-                                +Arrays.toString(period_discounts.get(period_discounts.size()-1)));
-                        runOnUiThread(() -> discountTable.addView(addNewRow("-1", new_discount_name, -1, thisYear+"-01-01", thisYear+"-12-31", false, discountTable.getChildCount())));
-                    })
-                    .setNegativeButton("取消",null)
-                    .create()
-                    .show();
-        });
-
-        deleteBtn.setOnClickListener(v -> {
-            if(!deleteMode){
-                for(int i = 0; i < discountTable.getChildCount(); i++){
-                    TableRow tr = (TableRow) discountTable.getChildAt(i);
-                    Button db = (Button) tr.getChildAt(0);
-                    db.setVisibility(View.VISIBLE);
-                }
-                deleteMode = true;
-            }
-            else{
-                for(int i = 0; i < discountTable.getChildCount(); i++){
-                    TableRow tr = (TableRow) discountTable.getChildAt(i);
-                    Button db = (Button) tr.getChildAt(0);
-                    db.setVisibility(View.GONE);
-                }
-                deleteMode = false;
-            }
-        });
+        setDeleteBtn();
 
         checkBtn.setOnClickListener(v -> {
             Log.d(TAG, "valuate is "+valuate.isChecked());
@@ -206,7 +160,7 @@ public class Setting_Discount extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getPeriodRow(boolean init){
-        for(int i = 3; i < discountTable.getChildCount(); i++){
+        for(int i = 3; i < discountTable.getChildCount()-1; i++){
             final String[] period_discount = getRowData(i);
             if(init){
                 final int finalI = i-3;
@@ -450,8 +404,8 @@ public class Setting_Discount extends AppCompatActivity {
         TableRow.LayoutParams p = new TableRow.LayoutParams(dp15, dp15);
         p.setMargins(0, 0, dp15, 0);
         deleteBtn.setLayoutParams(p);
-        if(!deleteMode) deleteBtn.setVisibility(View.GONE);
-        else deleteBtn.setVisibility(View.VISIBLE);
+//        if(!deleteMode) deleteBtn.setVisibility(View.GONE);
+//        else deleteBtn.setVisibility(View.VISIBLE);
         deleteBtn.setOnClickListener(v -> {
             discountTable.removeView(newDiscount);
             delete_discounts.add(discountId);
@@ -460,8 +414,8 @@ public class Setting_Discount extends AppCompatActivity {
         nameText.setText(discountName);
         nameText.setTextSize(20);
         nameText.setTextColor(Color.parseColor("#000000"));
-        nameText.setPadding(0, 0, 0, dp5);
-        enableSw.setPadding(dp15, 0, 0, 0);
+        nameText.setPadding(0, 0, 0, 0);
+        enableSw.setPadding(0, 0, 0, 0);
         runOnUiThread(() -> enableSw.setChecked(enable));
         setSwitch(enableSw, startView, endView, index, period_discount);
         if(percent >= 0) discountEdit.setText(String.valueOf(percent));
@@ -489,6 +443,64 @@ public class Setting_Discount extends AppCompatActivity {
         return newDiscount;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private View newAddBtn(){
+        LinearLayout linearLayout = new LinearLayout(context);
+        TableRow.LayoutParams params = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.span = 8;
+        linearLayout.setLayoutParams(params);
+        linearLayout.setGravity(Gravity.CENTER);
+
+        Button nAddBtn = new Button(context);
+        int dp30 = dip2px(context, 30);
+        nAddBtn.setBackgroundResource(R.drawable.ic_baseline_add_circle_outline_24);
+        nAddBtn.setLayoutParams(new LinearLayout.LayoutParams(dp30, dp30));
+        addBtn = nAddBtn;
+        setAddBtn();
+
+        linearLayout.addView(nAddBtn);
+        return linearLayout;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void setAddBtn(){
+        addBtn.setOnClickListener(v -> {
+            //輸入欄
+            final EditText discount_edit = new EditText(context);
+            //設定margin
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = 80;
+            params.rightMargin = params.leftMargin;
+            discount_edit.setLayoutParams(params);
+            //要放到FrameLayout裡，margin才有用
+            FrameLayout container = new FrameLayout(context);
+            container.addView(discount_edit);
+
+            new AlertDialog.Builder(context)
+                    .setTitle("新增優惠")
+                    .setView(container)
+                    .setPositiveButton("確認", (dialog, which) -> {
+                        String new_discount_name = discount_edit.getText().toString();
+                        if(new_discount_name.isEmpty()){
+                            Toast.makeText(context, "未輸入優惠名稱", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        String thisYear = getToday("yyyy");String[] period_discount = {"-1", new_discount_name, "-1", thisYear+"-01-01", thisYear+"-12-31", "false"};
+                        period_discounts.add(period_discount);
+                        Log.d(TAG, "add period_discount("+(period_discounts.size()-1)+"/"+period_discounts.size()+"): "
+                                +Arrays.toString(period_discounts.get(period_discounts.size()-1)));
+                        runOnUiThread(() -> {
+                            discountTable.removeViewAt(discountTable.getChildCount()-1);
+                            discountTable.addView(addNewRow("-1", new_discount_name, -1, thisYear+"-01-01", thisYear+"-12-31", false, discountTable.getChildCount()));
+                            discountTable.addView(newAddBtn());
+                        });
+                    })
+                    .setNegativeButton("取消",null)
+                    .create()
+                    .show();
+        });
+    }
+
     private TextView addNewDate(String date, int type, int index){
         int dp60 = dip2px(context, 60);
         int dp3 = dip2px(context, 3);
@@ -501,6 +513,32 @@ public class Setting_Discount extends AppCompatActivity {
         dateView.setPadding(dp3, dp3, dp3, dp3); //要在backgoundResource後設置才有用
         setDateBtn(dateView, type, index);
         return dateView;
+    }
+
+    private void setDeleteBtn(){
+        for(int i = 0; i < discountTable.getChildCount()-1; i++){
+            TableRow tr = (TableRow) discountTable.getChildAt(i);
+            Button db = (Button) tr.getChildAt(0);
+            db.setVisibility(View.VISIBLE);
+        }
+//        deleteBtn.setOnClickListener(v -> {
+//            if(!deleteMode){
+//                for(int i = 0; i < discountTable.getChildCount()-1; i++){
+//                    TableRow tr = (TableRow) discountTable.getChildAt(i);
+//                    Button db = (Button) tr.getChildAt(0);
+//                    db.setVisibility(View.VISIBLE);
+//                }
+//                deleteMode = true;
+//            }
+//            else{
+//                for(int i = 0; i < discountTable.getChildCount()-1; i++){
+//                    TableRow tr = (TableRow) discountTable.getChildAt(i);
+//                    Button db = (Button) tr.getChildAt(0);
+//                    db.setVisibility(View.GONE);
+//                }
+//                deleteMode = false;
+//            }
+//        });
     }
 
     private void pdRemoveBy(String discountName){
