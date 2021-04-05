@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -73,12 +74,6 @@ public class Add_Valuation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add__valuation);
 
-        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-
         linking();
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
@@ -89,7 +84,7 @@ public class Add_Valuation extends AppCompatActivity {
             DatePickerDialog datePicker;
             datePicker = new DatePickerDialog( Add_Valuation.this, (view, year, month, dayOfMonth) -> {
                 if(year<now.getYear() || (month+1)<monthToInt(String.valueOf(now.getMonth())) || dayOfMonth<now.getDayOfMonth()) {
-                    Toast.makeText(context, "請勿選擇過去的日期", Toast.LENGTH_SHORT);
+                    Toast.makeText(context, "請勿選擇過去的日期", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 dateText.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
@@ -98,6 +93,7 @@ public class Add_Valuation extends AppCompatActivity {
         });
 
         timeText.setText(now.getHour()+":00");
+        time = now.getHour()+":00";
         timeText.setOnClickListener(v -> {
             TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> {
                 timeText.setText(hourOfDay+":"+minute);
@@ -116,6 +112,7 @@ public class Add_Valuation extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                fromAddressText.setError(null);
                 String address = cAddressText.getText().toString();
                 String moveOut_address = fromAddressText.getText().toString();
                 if(!address.equals("") && !moveOut_address.equals("")){
@@ -129,80 +126,9 @@ public class Add_Valuation extends AppCompatActivity {
         });
 
         addBtn.setOnClickListener(v -> {
-            String name = nameText.getText().toString();
-            String cAddress = cAddressText.getText().toString();
-            String phone = phoneText.getText().toString();
-            String fromAddress = fromAddressText.getText().toString();
-            String toAddress = toAddressText.getText().toString();
-            String notice = noticeText.getText().toString();
-            String date = dateText.getText().toString();
-            String valuation_time = time+"~"+time2;
+            if(checkEmpty()) return;
 
-            switch(genderRG.getCheckedRadioButtonId()){
-                case R.id.male_rbtn_AV:
-                    gender = "男";
-                    break;
-                case R.id.female_rbtn_AV:
-                    gender = "女";
-                    break;
-                case R.id.other_rbtn_AV:
-                    gender = "其他";
-                    break;
-            }
-            Log.i(TAG, "gender = "+gender);
-
-            String function_name = "add_valuation";
-            String company_id = getCompany_id(context);
-            RequestBody body = new FormBody.Builder()
-                    .add("function_name", function_name)
-                    .add("company_id", company_id)
-                    .add("member_name", name)
-                    .add("gender", gender)
-                    .add("contact_address", cAddress)
-                    .add("phone", phone)
-                    .add("from_address", fromAddress)
-                    .add("to_address", toAddress)
-                    .add("additional", notice)
-                    .add("valuation_date", date)
-                    .add("valuation_time", valuation_time)
-                    .build();
-            Log.i(TAG,"function_name: " + function_name +
-                    ", member_name: " + name +
-                    ", gender: " + gender +
-                    ", contact_address: " + cAddress +
-                    ", phone: " + phone +
-                    ", from_address: " + fromAddress+
-                    ", to_address: " + toAddress +
-                    ", additional: " + notice +
-                    ", valuation_date: " + date +
-                    ", valuation_time: " + valuation_time);
-
-            Request request = new Request.Builder()
-                    .url(BuildConfig.SERVER_URL+"/functional.php")
-                    .post(body)
-                    .build();
-
-            Call call = okHttpClient.newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    final String responseData = response.body().string();
-                    runOnUiThread(() -> {
-                        if(responseData.equals("success"))
-                            Toast.makeText(context, "新增估價單成功", Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(context, "新增估價單失敗", Toast.LENGTH_LONG).show();
-                    });
-                    Log.d(TAG, "add_btn, responseData: " + responseData);
-                }
-            });
-
+            add_valuation();
 
             Handler handler = new Handler();
             handler.postDelayed(() -> {
@@ -211,6 +137,126 @@ public class Add_Valuation extends AppCompatActivity {
                 startActivity(finish_valuation_intent);
             }, 1000);
         });
+
+        globleBtn();
+    }
+
+    private boolean checkEmpty(){
+        boolean check = false;
+        if(TextUtils.isEmpty(nameText.getText().toString())){
+            nameText.setError("請輸入姓名");
+            check = true;
+        }
+        if(TextUtils.isEmpty(cAddressText.getText().toString())){
+            cAddressText.setError("請輸入聯絡地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(phoneText.getText().toString())){
+            phoneText.setError("請輸入電話");
+            check = true;
+        }
+        if(TextUtils.isEmpty(fromAddressText.getText().toString())){
+            fromAddressText.setError("請輸入搬出地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(toAddressText.getText().toString())){
+            toAddressText.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(dateText.getText().toString())){
+            dateText.setError("請選擇日期");
+            check = true;
+        }
+        if(time == null || time.equals("")){
+            timeText.setError("請選擇時間");
+            check = true;
+        }
+
+        return check;
+    }
+
+    private void add_valuation(){
+        String name = nameText.getText().toString();
+        String cAddress = cAddressText.getText().toString();
+        String phone = phoneText.getText().toString();
+        String fromAddress = fromAddressText.getText().toString();
+        String toAddress = toAddressText.getText().toString();
+        String notice = noticeText.getText().toString();
+        String date = dateText.getText().toString();
+        String valuation_time = time+"~"+time2;
+
+        switch(genderRG.getCheckedRadioButtonId()){
+            case R.id.male_rbtn_AV:
+                gender = "男";
+                break;
+            case R.id.female_rbtn_AV:
+                gender = "女";
+                break;
+            case R.id.other_rbtn_AV:
+                gender = "其他";
+                break;
+        }
+        Log.i(TAG, "gender = "+gender);
+
+        String function_name = "add_valuation";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .add("member_name", name)
+                .add("gender", gender)
+                .add("contact_address", cAddress)
+                .add("phone", phone)
+                .add("from_address", fromAddress)
+                .add("to_address", toAddress)
+                .add("additional", notice)
+                .add("valuation_date", date)
+                .add("valuation_time", valuation_time)
+                .build();
+        Log.i(TAG,"function_name: " + function_name +
+                ", member_name: " + name +
+                ", gender: " + gender +
+                ", contact_address: " + cAddress +
+                ", phone: " + phone +
+                ", from_address: " + fromAddress+
+                ", to_address: " + toAddress +
+                ", additional: " + notice +
+                ", valuation_date: " + date +
+                ", valuation_time: " + valuation_time);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                runOnUiThread(() -> {
+                    if(responseData.equals("success"))
+                        Toast.makeText(context, "新增估價單成功", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(context, "新增估價單失敗", Toast.LENGTH_LONG).show();
+                });
+                Log.d(TAG, "add_btn, responseData: " + responseData);
+            }
+        });
+    }
+
+    private void globleBtn(){
+        ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
+        ImageButton order_btn = findViewById(R.id.order_imgBtn);
+        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
+        ImageButton system_btn = findViewById(R.id.system_imgBtn);
+        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         //底下nav
         valuation_btn.setOnClickListener(v -> {
