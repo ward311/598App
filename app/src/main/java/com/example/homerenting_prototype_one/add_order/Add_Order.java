@@ -261,7 +261,7 @@ public class Add_Order extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 runOnUiThread(() -> {
-                    if(responseData.equals("success"))
+                    if(responseData.contains("success"))
                         Toast.makeText(context, "新增訂單成功", Toast.LENGTH_LONG).show();
                     else
                         Toast.makeText(context, "新增訂單失敗", Toast.LENGTH_LONG).show();
