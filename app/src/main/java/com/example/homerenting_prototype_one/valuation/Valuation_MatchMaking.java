@@ -194,12 +194,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Valuation_MatchMaking.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(Valuation_MatchMaking.this, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -247,29 +242,26 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                     final ListView valuationMatchMakingList = findViewById(R.id.valuation_listView_VM);
                     final ListAdapter listAdapter = new ListAdapter(data);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            valuationMatchMakingList.setAdapter(listAdapter);
-                            valuationMatchMakingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[])parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                    String order_id = row_data[0];
+                    runOnUiThread(() -> {
+                        valuationMatchMakingList.setAdapter(listAdapter);
+                        valuationMatchMakingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[])parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                String order_id = row_data[0];
 
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
 
-                                    removeNew(order_id, Valuation_MatchMaking.this);
+                                removeNew(order_id, Valuation_MatchMaking.this);
 
-                                    Intent intent = new Intent();
-                                    intent.setClass(Valuation_MatchMaking.this, MatchMaking_Detail.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
+                                Intent intent = new Intent();
+                                intent.setClass(Valuation_MatchMaking.this, MatchMaking_Detail.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
                     });
                 }
             }

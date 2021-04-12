@@ -2,6 +2,7 @@ package com.example.homerenting_prototype_one.order;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -36,6 +38,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,14 +52,18 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.changeStatus;
 import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getDay;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getMonth;
 import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getYear;
 import static com.example.homerenting_prototype_one.show.global_function.getwCount;
 import static com.example.homerenting_prototype_one.show.global_function.removeNew;
 import static com.example.homerenting_prototype_one.show.global_function.setwCount;
@@ -220,14 +228,10 @@ public class Order_Booking extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Order_Booking.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(Order_Booking.this, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
@@ -252,6 +256,21 @@ public class Order_Booking extends AppCompatActivity {
                         String newicon = member.getString("new");
                         Log.d(TAG,"order_id: "+order_id);
 
+                        //取消過期單
+                        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+                        Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
+                        Log.d(TAG, "order: "+Integer.parseInt(getYear(datetime))+"-"+Integer.parseInt(getMonth(datetime))+"-"+Integer.parseInt(getDay(datetime)));
+                        if(Integer.parseInt(getYear(datetime))<now.getYear() ||
+                                (Integer.parseInt(getYear(datetime))<=now.getYear() &&
+                                        Integer.parseInt(getMonth(datetime))<monthToInt(String.valueOf(now.getMonth()))) ||
+                                (Integer.parseInt(getYear(datetime))<=now.getYear() &&
+                                        Integer.parseInt(getMonth(datetime))<=monthToInt(String.valueOf(now.getMonth())) &&
+                                        Integer.parseInt(getDay(datetime))<now.getDayOfMonth())) {
+                            Log.d(TAG, "moving_date "+datetime+" of order_id "+order_id+" is over time");
+                            changeStatus(order_id, "orders", "cancel", context);
+                            continue;
+                        }
+
                         //將資料放入陣列
                         String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
@@ -259,17 +278,14 @@ public class Order_Booking extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                Log.d(TAG, "NO DATA");
-                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
-                                orderRList.setLayoutManager(new LinearLayoutManager(context));
-                                orderRList.setAdapter(noDataAdapter);
-                            }
-                            //else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            Log.d(TAG, "NO DATA");
+                            NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                            orderRList.setLayoutManager(new LinearLayoutManager(context));
+                            orderRList.setAdapter(noDataAdapter);
                         }
+                        //else Toast.makeText(Order_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -298,4 +314,36 @@ public class Order_Booking extends AppCompatActivity {
             }
         });
     }
+
+    private int monthToInt(String month){
+        switch (month){
+            case "JANUARY":
+                return 1;
+            case "FEBRUARY":
+                return 2;
+            case "MARCH":
+                return 3;
+            case "APRIL":
+                return 4;
+            case "MAY":
+                return 5;
+            case "JUNE":
+                return 6;
+            case "JULY":
+                return 7;
+            case "AUGUST":
+                return 8;
+            case "SEPTEMBER":
+                return 9;
+            case "OCTOBER":
+                return 10;
+            case "NOVEMBER":
+                return 11;
+            case "DECEMBER":
+                return 12;
+            default:
+                return 0;
+        }
+    }
+
 }
