@@ -42,6 +42,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getToday;
 
 public class System_Vacation extends AppCompatActivity {
@@ -75,6 +77,7 @@ public class System_Vacation extends AppCompatActivity {
         current_date = getToday("yyyy-MM-dd");
 //        getVacation("2020-09-27");
         getVacation(current_date);
+//        getAssigned(current_date);
         calendar.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             update_leave(current_date);
 
@@ -87,6 +90,7 @@ public class System_Vacation extends AppCompatActivity {
             current_date = date;
             initArray();
             getVacation(date);
+//            getAssigned(date);
         });
 
         globalNav();
@@ -301,6 +305,87 @@ public class System_Vacation extends AppCompatActivity {
         }
     }
 
+    private void getAssigned(String date){
+        Log.d(TAG, "getAssigned start");
+        String function_name = "";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .add("date", date)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of getAssigned: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    JSONObject order = responseArr.getJSONObject(0);
+
+                    String order_id = order.getString("order_id");
+                    String name = order.getString("member_name");
+                    String movingDatetime = order.getString("moving_date");
+                    Log.d(TAG, "movingDatetime:"+movingDatetime);
+                    String movingTime;
+                    if(!movingDatetime.isEmpty() && !movingDatetime.equals("null"))
+                        movingTime = getDate(movingDatetime)+" "+getTime(movingDatetime);
+                    else movingTime = "";
+
+                    Log.i(TAG,"JSONObject of assigned order: {"+order_id+", "+name+", "+movingDatetime+", "+movingTime+"}");
+
+                    int i;
+                    for (i = 1; i < responseArr.length(); i++) {
+                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
+                        if(!vehicle_assign.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
+                        cars_text.add(vehicle_assign.getString("plate_num"));
+                        cars.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
+                    }
+
+                    for (; i < responseArr.length(); i++) {
+                        JSONObject staff_assign = responseArr.getJSONObject(i);
+                        if(!staff_assign.has("staff_id")) break;
+                        Log.i(TAG, "staff_assign:" + staff_assign);
+                        staffs_text.add(staff_assign.getString("staff_name"));
+                        staffs.add(Integer.parseInt(staff_assign.getString("staff_id")));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    if(!responseData.equals("null")) {
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
+                    }
+                }
+
+                int ii = 0;
+                while (lock){
+                    if((++ii)%5000000 == 0) Log.d(TAG, (ii/5000000)+". waiting for lock in getAssigned...");
+                }
+                Log.d(TAG, "getAssigned: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                setChipCheck(staffGroup, staffs_text);
+                setChipCheck(carGroup, cars_text);
+            }
+        });
+    }
+
     private void update_leave(final String date){
         String function_name = "modify_vehicle_staff_leave";
         RequestBody body = new FormBody.Builder()
@@ -325,7 +410,7 @@ public class System_Vacation extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override

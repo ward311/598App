@@ -44,4 +44,5 @@ dependencies {
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3' //側滑刪除
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0' //圖表
     implementation 'com.applandeo:material-calendar-view:1.7.0' //行事曆
+    implementation "androidx.sqlite:sqlite:2.1.0" //sqlite
 }

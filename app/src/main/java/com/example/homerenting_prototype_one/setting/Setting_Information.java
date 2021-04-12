@@ -1,8 +1,13 @@
 package com.example.homerenting_prototype_one.setting;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -17,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -27,6 +34,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,6 +53,9 @@ public class Setting_Information extends AppCompatActivity {
     EditText address_edit, phone_edit, number_edit, url_edit, email_edit, line_edit,idea_edit;
     Button edit_btn, finish_btn;
     String address, phone, staff_num, url, email, line, idea;
+
+    private static DatabaseHelper dbHelper;
+    private static SQLiteDatabase db;
 
     String TAG = "Setting_Information";
     Context context = this;
@@ -73,59 +86,112 @@ public class Setting_Information extends AppCompatActivity {
 
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+        back_btn.setOnClickListener(v -> finish());
+
+        dbHelper = new DatabaseHelper(this);
+        readData();
+
+        edit_btn.setOnClickListener(v -> {
+            companyIdea_text.setGravity(Gravity.CENTER_VERTICAL);
+
+            address_edit.setHint(address);
+            phone_edit.setHint(phone);
+            number_edit.setHint(staff_num);
+            url_edit.setHint(url);
+            email_edit.setHint(email);
+            line_edit.setHint(line);
+            idea_edit.setHint(idea);
+
+            editMode();
         });
+        finish_btn.setOnClickListener(v -> {
+            if(!address_edit.getText().toString().equals("")) address = address_edit.getText().toString();
+            if(!phone_edit.getText().toString().equals("")) phone = phone_edit.getText().toString();
+            if(!number_edit.getText().toString().equals("")) staff_num = number_edit.getText().toString();
+            if(!url_edit.getText().toString().equals("")) url = url_edit.getText().toString();
+            if(!email_edit.getText().toString().equals("")) email = email_edit.getText().toString();
+            if(!line_edit.getText().toString().equals("")) line = line_edit.getText().toString();
+            if(!idea_edit.getText().toString().equals("")) idea = idea_edit.getText().toString();
 
-        getData();
+            updateCompanyDB();
 
-        edit_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                companyIdea_text.setGravity(Gravity.CENTER_VERTICAL);
+            companyIdea_text.setGravity(Gravity.TOP);
 
-                address_edit.setHint(address);
-                phone_edit.setHint(phone);
-                number_edit.setHint(staff_num);
-                url_edit.setHint(url);
-                email_edit.setHint(email);
-                line_edit.setHint(line);
-                idea_edit.setHint(idea);
+            address_text.setText(address);
+            phone_text.setText(phone);
+            number_text.setText(staff_num+"人");
+            url_text.setText(url);
+            email_text.setText(email);
+            line_text.setText(line);
+            idea_text.setText(idea);
 
-                editMode();
-            }
-        });
-        finish_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!address_edit.getText().toString().equals("")) address = address_edit.getText().toString();
-                if(!phone_edit.getText().toString().equals("")) phone = phone_edit.getText().toString();
-                if(!number_edit.getText().toString().equals("")) staff_num = number_edit.getText().toString();
-                if(!url_edit.getText().toString().equals("")) url = url_edit.getText().toString();
-                if(!email_edit.getText().toString().equals("")) email = email_edit.getText().toString();
-                if(!line_edit.getText().toString().equals("")) line = line_edit.getText().toString();
-                if(!idea_edit.getText().toString().equals("")) idea = idea_edit.getText().toString();
-
-                updateCompany();
-
-                companyIdea_text.setGravity(Gravity.TOP);
-
-                address_text.setText(address);
-                phone_text.setText(phone);
-                number_text.setText(staff_num+"人");
-                url_text.setText(url);
-                email_text.setText(email);
-                line_text.setText(line);
-                idea_text.setText(idea);
-
-                textMode();
-            }
+            textMode();
         });
 
         globalNav();
+    }
+
+    private void readData(){
+        db = dbHelper.getReadableDatabase();
+
+        String[] projection = { //資料表格式
+                TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID,
+                TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME,
+                TableContract.CompanyTable.COLUMN_NAME_IMG,
+                TableContract.CompanyTable.COLUMN_NAME_ADDRESS,
+                TableContract.CompanyTable.COLUMN_NAME_PHONE,
+                TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM,
+                TableContract.CompanyTable.COLUMN_NAME_URL,
+                TableContract.CompanyTable.COLUMN_NAME_EMAIL,
+                TableContract.CompanyTable.COLUMN_NAME_LINE_ID,
+                TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY ,
+                TableContract.CompanyTable.COLUMN_NAME_LAST_DISTRIBUTION
+        };
+
+        String selection = TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID+" = ?";
+        String[] selectionArgs = {"1"};
+
+        Cursor cursor = db.query(
+                TableContract.CompanyTable.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        Log.d(TAG, "cursor count:"+cursor.getCount());
+        if(!cursor.moveToNext()){
+            cursor.close();
+            getData();
+            return;
+        }
+        String[] item = {
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_IMG)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_ADDRESS)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_PHONE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_URL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_LINE_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_EMAIL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_LAST_DISTRIBUTION))
+        };
+        Log.d(TAG, "sqlite company: "+Arrays.toString(item));
+
+        address = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_ADDRESS));
+        phone = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_PHONE));
+        staff_num = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM));
+        url = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_URL));
+        email = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_EMAIL));
+        line = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_LINE_ID));
+        idea = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY));
+
+        cursor.close();
+        setTexts();
     }
 
     private void getData(){
@@ -170,21 +236,80 @@ public class Setting_Information extends AppCompatActivity {
                     line = company.getString("line_id");
                     idea = company.getString("philosophy");
 
-                    runOnUiThread(() -> {
-                        address_text.setText(address);
-                        phone_text.setText(phone);
-                        number_text.setText(staff_num+"人");
-                        url_text.setText(url);
-                        email_text.setText(email);
-                        line_text.setText(line);
-                        idea_text.setText(idea);
-                    });
+                    runOnUiThread(() -> setTexts());
 
+                    Log.d(TAG, "start create database");
+                    db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME, company.getString(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME));
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_IMG, company.getString(TableContract.CompanyTable.COLUMN_NAME_IMG));
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_ADDRESS, address);
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_PHONE, phone);
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM, staff_num);
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_URL, url);
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_EMAIL, email);
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_LINE_ID, line);
+                    values.put(TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY, idea);
+                    try {
+                        long newRowId = db.insertOrThrow(TableContract.CompanyTable.TABLE_NAME, null, values);
+                        if(newRowId != -1) Log.d(TAG, "create successfully");
+                        else Log.d(TAG, "create failed");
+                    } catch (SQLException e){
+                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
+                            Log.d(TAG, "start update database");
+                            String selection = TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID+" = ?";
+                            String[] seletctionArgs = {getCompany_id(context)};
+
+                            int count = db.update(
+                                    TableContract.CompanyTable.TABLE_NAME,
+                                    values,
+                                    selection,
+                                    seletctionArgs
+                            );
+                            if(count != -1) Log.d(TAG, "update successfully");
+                            else Log.d(TAG, "update failed");
+                        }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    private void updateCompanyDB(){
+        db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TableContract.CompanyTable.COLUMN_NAME_ADDRESS, address);
+        values.put(TableContract.CompanyTable.COLUMN_NAME_PHONE, phone);
+        values.put(TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM, staff_num);
+        values.put(TableContract.CompanyTable.COLUMN_NAME_URL, url);
+        values.put(TableContract.CompanyTable.COLUMN_NAME_EMAIL, email);
+        values.put(TableContract.CompanyTable.COLUMN_NAME_LINE_ID, line);
+        values.put(TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY, idea);
+
+        String selection = TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID+" = ?";
+        String[] seletctionArgs = {getCompany_id(context)};
+
+        int count = db.update(
+                TableContract.CompanyTable.TABLE_NAME,
+                values,
+                selection,
+                seletctionArgs
+        );
+        if(count != -1) Log.d(TAG, "update successfully");
+        else Log.d(TAG, "update failed");
+    }
+
+    private void setTexts(){
+        address_text.setText(address);
+        phone_text.setText(phone);
+        number_text.setText(staff_num+"人");
+        url_text.setText(url);
+        email_text.setText(email);
+        line_text.setText(line);
+        idea_text.setText(idea);
     }
 
     private void editMode(){
@@ -279,40 +404,25 @@ public class Setting_Information extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Setting_Information.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Setting_Information.this, Valuation.class);
+            startActivity(valuation_intent);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Setting_Information.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Setting_Information.this, Order.class);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Setting_Information.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Setting_Information.this, Calendar.class);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Setting_Information.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Setting_Information.this, System.class);
+            startActivity(system_intent);
         });
-//        setting_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent setting_intent = new Intent(Setting_Information.this, Setting.class);
-//                startActivity(setting_intent);
-//            }
-//        });
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Setting_Information.this, Setting.class);
+            startActivity(setting_intent);
+        });
     }
 }
