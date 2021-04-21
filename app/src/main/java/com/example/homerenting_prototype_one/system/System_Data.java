@@ -38,6 +38,7 @@ import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.google.android.material.chip.Chip;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -61,12 +62,6 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 
 public class System_Data extends AppCompatActivity {
 
-//    public String[] employees = {"王小明","陳聰明","劉光明","吳輝明","邱朝明","葉大明","劉案全",
-//            "王守興","彭玉唱","徐將義","劉曹可","秦因文","方子優","古蘭花","朱柯基"};
-//    public String[] cars = {"3.5噸平斗車NRT-134","3.5噸平斗車HWE-353","3.5噸平斗車ITE-774","3.5噸平斗車BTU-255","3.5噸箱型車YEU-712",
-//            "3.5噸箱型車NKC-456","3.5噸箱型車ZXE-654","7.7噸箱型車RSF-673","7.7噸箱型車ESF-553","7.7噸箱型車KMS-352"};
-
-    ListView employee_list, car_list;
     RecyclerView employeeRList, carRList;
     TextView employee_text, car_text;
     Button addEmployee_btn, addCar_btn;
@@ -91,8 +86,8 @@ public class System_Data extends AppCompatActivity {
         linking();
         init();
 
-        getData();
-//        setList();
+        getStaffData();
+        getVehicleData();
 
         back_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(System_Data.this, System.class);
@@ -169,40 +164,36 @@ public class System_Data extends AppCompatActivity {
         }
     }
 
-    private void getData(){
-        String function_name = "staff-vehicle_data";
+    private void getStaffData(){
         RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .url(BuildConfig.SERVER_URL+"/get_data/all_staff_data.php")
                 .post(body)
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
+
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseData = response.body().string();
-//                Log.d(TAG,"responseData: "+responseData); //顯示資料
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of get_staff_chip: "+responseData); //顯示資料
 
                 try {
-                    //轉換成json格式，array或object
                     final JSONArray responseArr = new JSONArray(responseData);
-                    //Log.i(TAG,"responseObj: "+ responseArr);
 
-                    //一筆一筆的取JSONArray中的json資料
                     int i;
                     for (i = 0; i < responseArr.length(); i++) {
                         JSONObject staff = responseArr.getJSONObject(i);
@@ -215,8 +206,54 @@ public class System_Data extends AppCompatActivity {
                         String[] row_data = {staff_id, staff_name};
                         employees.add(row_data);
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                    for (; i < responseArr.length(); i++) {
+                if(!responseData.equals("null")){
+                    for(int i=0; i < employees.size(); i++)
+                        Log.i(TAG, "employees: "+ Arrays.toString(employees.get(i)));
+                }
+                runOnUiThread(() -> setEmployeeRList());
+            }
+        });
+    }
+
+    private void getVehicleData(){
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/all_vehicle_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of get_vehicle_chip: "+responseData); //顯示資料
+
+                try {
+                    //轉換成json格式，array或object
+                    final JSONArray responseArr = new JSONArray(responseData);
+                    //Log.i(TAG,"responseObj: "+ responseArr);
+
+                    //一筆一筆的取JSONArray中的json資料
+                    int i;
+                    for (i = 0; i < responseArr.length(); i++) {
                         JSONObject vehicle = responseArr.getJSONObject(i);
                         if (!vehicle.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle: " + vehicle);
@@ -232,24 +269,20 @@ public class System_Data extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
 
                 //顯示資訊
                 if(!responseData.equals("null")){
-                    for(int i=0; i < employees.size(); i++)
-                        Log.i(TAG, "employees: "+ Arrays.toString(employees.get(i)));
+                    for(int i=0; i < vehicles.size(); i++)
+                        Log.i(TAG, "vehicles: "+ Arrays.toString(vehicles.get(i)));
                 }
-                runOnUiThread(() -> {
-                    setCarRList();
-                    setEmployeeRList();
-                });
+                runOnUiThread(() -> setCarRList());
             }
         });
     }
 
     private void setEmployeeRList(){ //顯示員工List
-        employeeRList.setAdapter(null);
+        if(employeeRList.getAdapter() != null) employeeRList.setAdapter(null);
         e_adapter = new TextAdapter(employees);
         employeeRList.setAdapter(e_adapter);
 
@@ -259,7 +292,7 @@ public class System_Data extends AppCompatActivity {
     }
 
     private void setCarRList(){ //顯示車輛List
-        employeeRList.setAdapter(null);
+        if(carRList.getAdapter() != null) carRList.setAdapter(null);
         c_adapter = new TextAdapter(vehicles);
         carRList.setAdapter(c_adapter);
 

@@ -96,6 +96,7 @@ public class Setting_Discount extends AppCompatActivity {
 
         getFreeRow();
         getPeriodRow(true);
+        getFreeData();
         getData();
 
         setAddBtn();
@@ -275,16 +276,65 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
-    private void getData(){
-        String function_name = "discount_data";
+    private void getFreeData(){
         RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .build();
 
         //連線要求
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .url(BuildConfig.SERVER_URL + "/get_data/free_discount_data.php")
+                .post(body)
+                .build();
+
+        //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData of getFreeData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    JSONObject freeItems = responseArr.getJSONObject(0);
+                    Log.i(TAG, "freeItems: "+freeItems);
+                    boolean valuateBl = freeItems.getString("valuate").equals("1");
+                    boolean depositBl = freeItems.getString("deposit").equals("1");
+                    boolean cancelBl = freeItems.getString("cancel").equals("1");
+
+
+                    runOnUiThread(() -> {
+                        valuate.setChecked(valuateBl);
+                        deposit.setChecked(depositBl);
+                        cancel.setChecked(cancelBl);
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void getData(){
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/get_data/period_discount_data.php")
                 .post(body)
                 .build();
 
@@ -309,21 +359,8 @@ public class Setting_Discount extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
 
-                    JSONObject freeItems = responseArr.getJSONObject(0);
-                    Log.i(TAG, "freeItems: "+freeItems);
-                    boolean valuateBl = freeItems.getString("valuate").equals("1");
-                    boolean depositBl = freeItems.getString("deposit").equals("1");
-                    boolean cancelBl = freeItems.getString("cancel").equals("1");
-
-
-                    runOnUiThread(() -> {
-                        valuate.setChecked(valuateBl);
-                        deposit.setChecked(depositBl);
-                        cancel.setChecked(cancelBl);
-                    });
-
                     int i;
-                    for(i = 1; i < responseArr.length(); i++){
+                    for(i = 0; i < responseArr.length(); i++){
                         JSONObject discountItem = responseArr.getJSONObject(i);
                         Log.i(TAG, "discountItem: "+discountItem);
                         final String discountId = discountItem.getString("discount_id");
@@ -371,7 +408,7 @@ public class Setting_Discount extends AppCompatActivity {
                             }
                         });
                     }
-                    if(i <= 1) Log.i(TAG, "no period discount");
+                    if(i <= 0) Log.i(TAG, "no period discount");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -141,7 +141,7 @@
         android:text="搬家費用"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/hour" />
+        app:layout_constraintTop_toTopOf="@+id/price_CD" />
 
     <TextView
         android:id="@+id/hour"
@@ -150,7 +150,7 @@
         android:text="預計工時"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/car" />
+        app:layout_constraintTop_toTopOf="@+id/worktime_CD" />
 
     <TextView
         android:id="@+id/car"
@@ -159,7 +159,7 @@
         android:text="安排車輛"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/car2" />
+        app:layout_constraintTop_toTopOf="@+id/car_CD" />
 
     <TextView
         android:id="@+id/notice"

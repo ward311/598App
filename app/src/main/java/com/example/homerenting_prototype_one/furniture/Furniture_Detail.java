@@ -69,10 +69,10 @@ public class Furniture_Detail extends AppCompatActivity {
         linking();
 
         Bundle detail_bundle = getIntent().getExtras();
-//        final String key = detail_bundle.getString("key");
+        final String key = detail_bundle.getString("key");
         String order_id = detail_bundle.getString("order_id");
-        final String key = "valuation";
-//        String order_id = "6";
+//        final String key = "valuation";
+//        String order_id = "242";
         Log.d(TAG, "key: " + key + ", order_id: " + order_id);
 
         detail_list = findViewById( id.furniture_detail_listView );

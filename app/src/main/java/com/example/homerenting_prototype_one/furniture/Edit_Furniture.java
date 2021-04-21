@@ -106,6 +106,7 @@ public class Edit_Furniture extends AppCompatActivity {
 
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
+//        order_id = "242";
         Log.i(TAG, "order_id: "+order_id);
 
         fspace = "all";
@@ -465,6 +466,8 @@ public class Edit_Furniture extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("space_type", space_type)
                 .build();
+        Log.d(TAG, "space_type: "+space_type);
+
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL + "/furniture.php")
                 .post(body)

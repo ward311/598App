@@ -42,17 +42,14 @@ public class AnnounceAdapter extends RecyclerView.Adapter<AnnounceAdapter.ViewHo
         holder.summary.setText(data.get(position)[3]);
         if(data.get(position)[5].equals("0")) holder.newIcon.setVisibility(View.INVISIBLE);
 
-        holder.announce.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(context)
-                        .setTitle(data.get(position)[1])
-                        .setMessage(data.get(position)[4])
-                        .setPositiveButton("確認", null)
-                        .show();
+        holder.announce.setOnClickListener(v -> {
+            new AlertDialog.Builder(context)
+                    .setTitle(data.get(position)[1])
+                    .setMessage(data.get(position)[4])
+                    .setPositiveButton("確認", null)
+                    .show();
 
-                removeAnnounceNew(data.get(position)[0], context);
-            }
+            removeAnnounceNew(data.get(position)[0], context);
         });
     }
 

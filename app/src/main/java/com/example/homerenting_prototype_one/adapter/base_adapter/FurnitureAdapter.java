@@ -178,8 +178,8 @@ public class FurnitureAdapter extends BaseAdapter{
     }
 
     private void setOriginalNum(ViewHolder viewHolder, int position) {
-        viewHolder.originalNumber.setVisibility(View.GONE);
-        viewHolder.to.setVisibility(View.GONE);
+        viewHolder.originalNumber.setVisibility(View.INVISIBLE);
+        viewHolder.to.setVisibility(View.INVISIBLE);
         viewHolder.item.setBackgroundColor(Color.parseColor("#FFFFFF"));
         viewHolder.number.setText(data.get(position)[2]);
 //        Log.d(TAG, position+". ("+space+")original data: "+ Arrays.toString(data.get(position)));

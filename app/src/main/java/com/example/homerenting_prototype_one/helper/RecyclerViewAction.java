@@ -66,33 +66,27 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
         final int position = viewHolder.getAdapterPosition();
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("確定要刪除?");
-        builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (current) {
-                    case 1:
-                        deleteOrderData(position);
-                        s_adapter.deleteItem(position);
-                        break;
-                    case 2:
-                        deleteTextData(position);
-                        t_adapter.deleteItem(position);
-                        break;
-                }
-
+        builder.setPositiveButton("確定", (dialog, which) -> {
+            switch (current) {
+                case 1:
+                    deleteOrderData(position);
+                    s_adapter.deleteItem(position);
+                    break;
+                case 2:
+                    deleteTextData(position);
+                    t_adapter.deleteItem(position);
+                    break;
             }
+
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (current) {
-                    case 1:
-                        s_adapter.notifyItemChanged(position);
-                        break;
-                    case 2:
-                        t_adapter.notifyItemChanged(position);
-                        break;
-                }
+        builder.setNegativeButton("取消", (dialog, which) -> {
+            switch (current) {
+                case 1:
+                    s_adapter.notifyItemChanged(position);
+                    break;
+                case 2:
+                    t_adapter.notifyItemChanged(position);
+                    break;
             }
         });
 

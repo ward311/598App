@@ -21,6 +21,7 @@ import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.schedule.New_Schedule_Detail;
+import com.example.homerenting_prototype_one.valuation.MatchMaking_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -83,7 +84,6 @@ public class Order_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(context))
-                .add("assign", "true")
                 .build();
         Log.d(TAG, "order_id:"+order_id);
 
@@ -133,44 +133,6 @@ public class Order_Detail extends AppCompatActivity {
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
 
-                    int i;
-                    String demandCar = "";
-                    for (i = 1; i < responseArr.length(); i++) {
-                        JSONObject vehicle_demand = responseArr.getJSONObject(i);
-                        if(!vehicle_demand.has("num")) break;
-                        Log.i(TAG, "vehicle_demand:" + vehicle_demand);
-                        if(i != 1) demandCar = demandCar + "\n";
-                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
-                                +vehicle_demand.getString("vehicle_type")
-                                +vehicle_demand.getString("num")+"輛";
-                    }
-                    if(i == 1) demandCar = "無填寫需求車輛";
-                    Log.d(TAG, "demandCar: "+demandCar);
-
-                    car = "";
-                    if(responseArr.length()-i < 1) car = demandCar;
-                    for (; i < responseArr.length(); i++) {
-                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
-                        if(!vehicle_assign.has("vehicle_id")) break;
-                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
-                        car = car+vehicle_assign.getString("plate_num")+" ";
-                    }
-                    Log.d(TAG, "car: "+car);
-
-                    if(responseArr.length()-i < 1) staff = "尚未安排人員";
-                    else staff = "";
-                    for (; i < responseArr.length(); i++) {
-                        JSONObject staff_assign = responseArr.getJSONObject(i);
-                        if(!staff_assign.has("staff_id")) break;
-                        Log.i(TAG, "staff:" + staff_assign);
-                        staff = staff+staff_assign.getString("staff_name");
-
-                        String pay = staff_assign.getString("pay");
-                        if(!pay.equals("-1")) staff = staff + "("+pay+")";
-
-                        staff = staff + " ";
-                    }
-
                     //顯示資料
                     runOnUiThread(() -> {
                         nameText.setText(name);
@@ -182,8 +144,6 @@ public class Order_Detail extends AppCompatActivity {
                         fromAddressText.setText(fromAddress);
                         toAddressText.setText(toAddress);
                         remainderText.setText(remainder);
-                        carText.setText(car);
-                        staffText.setText(staff);
                         worktimeText.setText(worktime);
                         feeText.setText(fee);
                         memoText.setText(memo);
@@ -197,6 +157,9 @@ public class Order_Detail extends AppCompatActivity {
                 }
             }
         });
+
+        getVehicleData();
+        getStaffData();
 
         check_btn.setOnClickListener(v -> {
             Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
@@ -215,6 +178,162 @@ public class Order_Detail extends AppCompatActivity {
         });
 
         globalNav();
+    }
+
+    private void getVehicleData(){
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/vehicle_each_detail.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of vehicle_each_detail: " + responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    car = "";
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
+                        if(!vehicle_assign.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
+                        car = car+vehicle_assign.getString("plate_num")+" ";
+                    }
+                    Log.d(TAG, "car: "+car);
+
+                    runOnUiThread(() -> carText.setText(car));
+                } catch (JSONException e) {
+                    if(!responseData.equals("null")) e.printStackTrace();
+                    getVehicleDemandData();
+                }
+            }
+        });
+    }
+
+    private void getVehicleDemandData(){
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .add("company_id",company_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/vehicle_demand_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of vehicle_demand_data: " + responseData); //顯示資料
+
+                car = "無填寫需求車輛";
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    String demandCar = "";
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_demand = responseArr.getJSONObject(i);
+                        if(!vehicle_demand.has("num")) break;
+                        Log.i(TAG, "vehicle_demand:" + vehicle_demand);
+                        if(i != 0) demandCar = demandCar + "\n";
+                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
+                                +vehicle_demand.getString("vehicle_type")
+                                +vehicle_demand.getString("num")+"輛";
+                    }
+                    Log.d(TAG, "demandCar: "+demandCar);
+                    car = demandCar;
+
+                } catch (JSONException e) {
+                    if(!responseData.equals("null")) e.printStackTrace();
+                }
+
+                runOnUiThread(() -> carText.setText(car));
+            }
+        });
+    }
+
+    private void getStaffData(){
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/staff_detail.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of staff_detail: " + responseData); //顯示資料
+                staff = "尚未安排人員";
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    staff = "";
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject staff_assign = responseArr.getJSONObject(i);
+                        if(!staff_assign.has("staff_id")) break;
+                        Log.i(TAG, "staff:" + staff_assign);
+                        staff = staff+staff_assign.getString("staff_name");
+
+                        String pay = staff_assign.getString("pay");
+                        if(!pay.equals("-1")) staff = staff + "("+pay+")";
+
+                        staff = staff + " ";
+                    }
+
+                } catch (JSONException e) {
+                    if(!responseData.equals("null")) e.printStackTrace();
+                }
+
+                runOnUiThread(() -> staffText.setText(staff));
+            }
+        });
     }
 
     private void linking(){

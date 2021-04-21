@@ -150,29 +150,6 @@ public class Today_Detail extends AppCompatActivity {
                     if(memo.equals("null")) memo = "";
                     status = order.getString("order_status");
 
-                    int i;
-                    car = "";
-                    for (i = 1; i < responseArr.length(); i++) {
-                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
-                        if(!vehicle_assign.has("vehicle_type")) break;
-                        Log.i(TAG, "vehicle:" + vehicle_assign);
-                        if(i != 1) car = car + "\n";
-                        car = car+
-                                vehicle_assign.getString("num")+"輛"
-                                +vehicle_assign.getString("vehicle_weight")+"噸"
-                                +vehicle_assign.getString("vehicle_type");
-                    }
-                    if(i == 1) car = "尚未安排車輛";
-
-                    if(responseArr.length()-i < 1) staff = "尚未安排人員";
-                    else staff = "";
-                    for (; i < responseArr.length(); i++) {
-                        JSONObject staff_assign = responseArr.getJSONObject(i);
-                        if(!staff_assign.has("staff_id")) break;
-                        Log.i(TAG, "staff:" + staff_assign);
-                        staff = staff+staff_assign.getString("staff_name")+" ";
-                    }
-
                     //顯示資料
                     runOnUiThread(() -> {
                         nameText.setText(name);
@@ -184,8 +161,6 @@ public class Today_Detail extends AppCompatActivity {
                         fromAddressText.setText(fromAddress);
                         toAddressText.setText(toAddress);
                         remainderText.setText(remainder);
-                        carText.setText(car);
-                        staffText.setText(staff);
                         worktimeText.setText(worktime);
                         feeText.setText(fee);
                         finalPriceText.setText(fee);
@@ -199,6 +174,9 @@ public class Today_Detail extends AppCompatActivity {
                 }
             }
         });
+
+        getVehicleData();
+        getStaffData();
 
         check_btn.setOnClickListener(v -> {
             fee = finalPriceText.getText().toString();
@@ -227,17 +205,7 @@ public class Today_Detail extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if(check){
-                        if(!status.equals("done") && change_order_status()){
-                            Toast.makeText(context, "網路錯誤", Toast.LENGTH_LONG).show();
-                        }
-                        else{
-                            Handler handler = new Handler();
-                            handler.postDelayed(() -> {
-                                Intent intent = new Intent(context, Order_Today.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }, 500);
-                        }
+                        change_order_status();
                     }
                     else {
                         Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
@@ -257,6 +225,107 @@ public class Today_Detail extends AppCompatActivity {
         });
 
         globalNav();
+    }
+
+    private void getVehicleData(){
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/vehicle_each_detail.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of vehicle_each_detail: " + responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    car = "";
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
+                        if(!vehicle_assign.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
+                        car = car+vehicle_assign.getString("plate_num")+" ";
+                    }
+                    Log.d(TAG, "car: "+car);
+
+                    runOnUiThread(() -> carText.setText(car));
+                } catch (JSONException e) {
+                    if(!responseData.equals("null")) e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+    private void getStaffData(){
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/staff_detail.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of staff_detail: " + responseData); //顯示資料
+                staff = "尚未安排人員";
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    staff = "";
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject staff_assign = responseArr.getJSONObject(i);
+                        if(!staff_assign.has("staff_id")) break;
+                        Log.i(TAG, "staff:" + staff_assign);
+                        staff = staff+staff_assign.getString("staff_name");
+
+                        String pay = staff_assign.getString("pay");
+                        if(!pay.equals("-1")) staff = staff + "("+pay+")";
+
+                        staff = staff + " ";
+                    }
+
+                } catch (JSONException e) {
+                    if(!responseData.equals("null")) e.printStackTrace();
+                }
+
+                runOnUiThread(() -> staffText.setText(staff));
+            }
+        });
     }
 
     private void changePriceMark(){
@@ -373,7 +442,7 @@ public class Today_Detail extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
                 check = false;
             }
 
@@ -386,7 +455,7 @@ public class Today_Detail extends AppCompatActivity {
         });
     }
 
-    private boolean change_order_status(){
+    private void change_order_status(){
         String function_name = "change_status";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -414,10 +483,16 @@ public class Today_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of change_status: " + responseData);
-                if(responseData.equals("success")) result = true;
+                if(responseData.equals("success")) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(() -> {
+                        Intent intent = new Intent(context, Order_Today.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }, 500);
+                };
             }
         });
-        return result;
     }
 
     private void globalNav(){

@@ -50,6 +50,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -64,6 +66,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.changeStatus;
 import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
@@ -108,24 +111,11 @@ public class System_Schedule extends AppCompatActivity {
         orderList.setLayoutManager(new LinearLayoutManager(context));
         orderList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
 
-        getChip();
+        getStaffChip();
+        getVehicleChip();
 
-        getVacation(getToday("yyyy-MM-dd"));
-//        calendar.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-//            String monthStr = String.valueOf(month + 1);
-//            if (month + 1 < 10) monthStr = "0" + monthStr;
-//            String dayOfMonthStr = String.valueOf(dayOfMonth);
-//            if (dayOfMonth < 10) dayOfMonthStr = "0" + dayOfMonthStr;
-//            String date = year + "-" + monthStr + "-" + dayOfMonthStr;
-//            Log.i(TAG, "Date Change: " + date);
-//
-//            getOrder(date);
-//            orderList.setVisibility(View.VISIBLE);
-//            calendar_sv.setVisibility(View.GONE);
-//
-//            initArray();
-//            getVacation(date);
-//        });
+        getStaffVacation(getToday("yyyy-MM-dd"));
+        getVehicleVacation(getToday("yyyy-MM-dd"));
         setmCalendar();
 
         globalNav();
@@ -172,7 +162,8 @@ public class System_Schedule extends AppCompatActivity {
             mCalendar.setVisibility(View.GONE);
 
             initArray();
-            getVacation(date);
+            getStaffVacation(date);
+            getVehicleVacation(date);
         });
     }
 
@@ -203,6 +194,7 @@ public class System_Schedule extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
@@ -217,19 +209,39 @@ public class System_Schedule extends AppCompatActivity {
 
                         int isOrder = 1;
                         String order_id = order.getString("order_id");
+                        String valuation_status = order.getString("valuation_status");
                         String status = order.getString("order_status");
-                        if(status.equals("cancel") || status.equals("done") || status.equals("paid")){
-//                            Log.d(TAG, "order_id: "+order_id+", status: order_cancel");
+                        if(!valuation_status.equals("chosen") || status.equals("evaluating") || status.equals("cancel") || status.equals("done") || status.equals("paid")){
                             continue;
                         }
 
-                        if(status.equals("evaluating")) continue;
-
                         String date;
                         date = order.getString("moving_date");
+                        if(date == null || date.isEmpty()){
+                            Log.d(TAG, "order_id: "+order_id+", 【date: "+date+"】, status: "+status);
+                            continue;
+                        }
+
+                        //取消過期單
+                        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+                        Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
+                        Log.d(TAG, "order: "+Integer.parseInt(getYear(date))+"-"+Integer.parseInt(getMonth(date))+"-"+Integer.parseInt(getDay(date)));
+                        if(Integer.parseInt(getYear(date))<now.getYear() ||
+                                (Integer.parseInt(getYear(date))<=now.getYear() &&
+                                        Integer.parseInt(getMonth(date))<monthToInt(String.valueOf(now.getMonth()))) ||
+                                (Integer.parseInt(getYear(date))<=now.getYear() &&
+                                        Integer.parseInt(getMonth(date))<=monthToInt(String.valueOf(now.getMonth())) &&
+                                        Integer.parseInt(getDay(date))<now.getDayOfMonth())) {
+                            Log.d(TAG, "moving_date "+date+" of order_id "+order_id+" is over time");
+                            changeStatus(order_id, "orders", "cancel", context);
+                            continue;
+                        }
+
+
+
                         String[] token = date.split(" ");
                         date = token[0];
-                        Log.d(TAG, "order_id: "+order_id+", date: "+date+", isOrder:"+isOrder+", status: "+status);
+                        Log.d(TAG, "order_id: "+order_id+", date: "+date+", status: "+status);
 
                         java.util.Calendar calendar = java.util.Calendar.getInstance();
                         calendar.set(java.util.Calendar.YEAR, Integer.parseInt(getYear(date)));
@@ -257,17 +269,16 @@ public class System_Schedule extends AppCompatActivity {
         });
     }
 
-    private void getChip(){
+    private void getStaffChip(){
+        Log.d(TAG, "start getStaffChip()");
         lock = true;
 
-        String function_name = "staff-vehicle_data";
         RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .url(BuildConfig.SERVER_URL+"/get_data/all_staff_data.php")
                 .post(body)
                 .build();
 
@@ -277,16 +288,17 @@ public class System_Schedule extends AppCompatActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                lock = false;
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of get_staff_chip: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -308,7 +320,60 @@ public class System_Schedule extends AppCompatActivity {
                         runOnUiThread(() -> staffGroup.addView(setChipDetail(staffGroup, staff_id, staff_name)));
                     }
 
-                    for (; i < responseArr.length(); i++) {
+                    int ii = 0;
+                    while((staffGroup.getChildCount()-1) != responseArr.length()){
+                        if((++ii)%5000000 == 0)
+                            Log.d(TAG, (ii/5000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                    }
+                    Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                    getVehicleChip();
+                } catch (JSONException e) {
+                    lock = false;
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void getVehicleChip(){
+        Log.d(TAG, "start getVehicleChip()");
+        lock = true;
+
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/all_vehicle_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                lock = false;
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of get_vehicle_chip: "+responseData); //顯示資料
+
+                try {
+                    //轉換成json格式，array或object
+                    final JSONArray responseArr = new JSONArray(responseData);
+                    //Log.i(TAG,"responseObj: "+ responseArr);
+
+                    //一筆一筆的取JSONArray中的json資料
+                    int i;
+                    for (i = 0; i < responseArr.length(); i++) {
                         JSONObject vehicle = responseArr.getJSONObject(i);
                         if(!vehicle.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle: " + vehicle);
@@ -316,18 +381,27 @@ public class System_Schedule extends AppCompatActivity {
                         //取欄位資料
                         final String vehicle_id = vehicle.getString("vehicle_id");
                         final String plate_num = vehicle.getString("plate_num");
+                        final String vehicle_weight = vehicle.getString("vehicle_weight");
+                        final String vehicle_type = vehicle.getString("vehicle_type");
 
-                        runOnUiThread(() -> carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num)));
+                        runOnUiThread(() -> {
+                            carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num));
+                            Chip carChip = (Chip) carGroup.getChildAt(carGroup.getChildCount()-1);
+                        });
                     }
+
                     int ii = 0;
-                    while((staffGroup.getChildCount()-1+carGroup.getChildCount()-1) != responseArr.length()){
-                        if((++ii)%10000000 == 0)
-                            Log.d(TAG, (i/10000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                    while((carGroup.getChildCount()-1) != responseArr.length()){
+                        if((++ii)%5000000 == 0)
+                            Log.d(TAG, (ii/5000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
+                    Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     lock = false;
                 } catch (JSONException e) {
+                    lock = false;
                     e.printStackTrace();
-                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found."))
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getChip", Toast.LENGTH_LONG).show());
                 }
             }
         });
@@ -482,18 +556,25 @@ public class System_Schedule extends AppCompatActivity {
         staffs_text.clear();
         cars.clear();
         cars_text.clear();
+        setChipCheck(staffGroup, staffs_text);
+        setChipCheck(carGroup, cars_text);
     }
 
-    private void getVacation(String date){
-        String function_name = "all_vehicle_staff_leave";
+    private void getStaffVacation(String date){
+        if(date == null){
+            Log.d(TAG, "date is null in getStaffVacation");
+            return;
+        }
+
+        Log.d(TAG, "start getStaffVacation()");
+
         RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .add("date", date)
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .url(BuildConfig.SERVER_URL+"/get_data/staff_leave.php")
                 .post(body)
                 .build();
 
@@ -505,51 +586,108 @@ public class System_Schedule extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData of getVocation: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of getStaffVocation: "+responseData); //顯示資料
+                if(responseData.equals("null")) return;
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
 
                     int i;
                     for (i = 0; i < responseArr.length(); i++) {
-                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
-                        if(!vehicle_assign.has("vehicle_id")) break;
-                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
-                        cars_text.add(vehicle_assign.getString("plate_num"));
-                        cars.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
-                    }
-
-                    for (; i < responseArr.length(); i++) {
-                        JSONObject staff_assign = responseArr.getJSONObject(i);
-                        if(!staff_assign.has("staff_id")) break;
-                        Log.i(TAG, "staff_assign:" + staff_assign);
-                        staffs_text.add(staff_assign.getString("staff_name"));
-                        staffs.add(Integer.parseInt(staff_assign.getString("staff_id")));
+                        JSONObject staff_vacation = responseArr.getJSONObject(i);
+                        if(!staff_vacation.has("staff_id")) break;
+                        Log.i(TAG, "staff_vacation:" + staff_vacation);
+                        staffs_text.add(staff_vacation.getString("staff_name"));
+                        staffs.add(Integer.parseInt(staff_vacation.getString("staff_id")));
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    if(!responseData.equals("null")) {
-                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getStaffVacation", Toast.LENGTH_LONG).show());
                     }
                 }
 
                 int ii = 0;
                 while (lock){
-                    if((++ii)%50000000 == 0) Log.d(TAG, (ii/50000000)+". waiting for lock in getVacation...");
+                    if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getStaffVacation...");
                 }
-                Log.d(TAG, "getVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                Log.d(TAG, "getStaffVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_text);
+            }
+        });
+    }
+
+    private void getVehicleVacation(String date){
+        if(date == null){
+            Log.d(TAG, "date is null in getVehicleVacation");
+            return;
+        }
+
+        Log.d(TAG, "start getVehicleVacation()");
+
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .add("date", date)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/vehicle_maintain.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of getVehicleVocation: "+responseData); //顯示資料
+                if(responseData.equals("null")) return;
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_vacation = responseArr.getJSONObject(i);
+                        if(!vehicle_vacation.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle_vacation:" + vehicle_vacation);
+                        cars_text.add(vehicle_vacation.getString("plate_num"));
+                        cars.add(Integer.parseInt(vehicle_vacation.getString("vehicle_id")));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getVehicleVacation", Toast.LENGTH_LONG).show());
+                    }
+                }
+
+                int ii = 0;
+                while (lock){
+                    if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVehicleVacation...");
+                }
+                Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(carGroup, cars_text);
             }
         });
     }
+
 
     private void setChipCheck(ChipGroup chipGroup, ArrayList<String> items_text){
         for(int i = 1; i < chipGroup.getChildCount(); i++){
@@ -570,10 +708,6 @@ public class System_Schedule extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         back_btn.setOnClickListener(v -> {
-//            if(calendar_sv.getVisibility() == View.GONE){
-//                calendar_sv.setVisibility(View.VISIBLE);
-//                orderList.setVisibility(View.GONE);
-//            }
             if(mCalendar.getVisibility() == View.GONE){
                 mCalendar.setVisibility(View.VISIBLE);
                 orderList.setVisibility(View.GONE);
@@ -604,14 +738,44 @@ public class System_Schedule extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        if(calendar_sv.getVisibility() == View.GONE){
-//            calendar_sv.setVisibility(View.VISIBLE);
-//            orderList.setVisibility(View.GONE);
-//        }
         if(mCalendar.getVisibility() == View.GONE){
             mCalendar.setVisibility(View.VISIBLE);
             orderList.setVisibility(View.GONE);
+            initArray();
+            getStaffVacation(getToday("yyyy-MM-dd"));
+            getVehicleVacation(getToday("yyyy-MM-dd"));
         }
         else super.onBackPressed();
+    }
+
+    private int monthToInt(String month){
+        switch (month){
+            case "JANUARY":
+                return 1;
+            case "FEBRUARY":
+                return 2;
+            case "MARCH":
+                return 3;
+            case "APRIL":
+                return 4;
+            case "MAY":
+                return 5;
+            case "JUNE":
+                return 6;
+            case "JULY":
+                return 7;
+            case "AUGUST":
+                return 8;
+            case "SEPTEMBER":
+                return 9;
+            case "OCTOBER":
+                return 10;
+            case "NOVEMBER":
+                return 11;
+            case "DECEMBER":
+                return 12;
+            default:
+                return 0;
+        }
     }
 }

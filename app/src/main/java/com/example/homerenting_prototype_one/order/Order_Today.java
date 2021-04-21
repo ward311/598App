@@ -102,7 +102,6 @@ public class Order_Today extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", company_id)
-                .add("date", "today")
                 .build();
 
         //連線要求

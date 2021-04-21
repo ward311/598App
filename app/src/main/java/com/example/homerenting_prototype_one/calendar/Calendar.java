@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -44,6 +46,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +63,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.changeStatus;
 import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.dip2px;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
@@ -85,6 +90,7 @@ public class Calendar extends AppCompatActivity {
     ArrayList<Integer> checkedMonth = new ArrayList<>();
 
     Boolean VB, OB;
+    Boolean isOvertime = true;
 
     Context context = Calendar.this;
     String TAG = "Calendar";
@@ -345,6 +351,7 @@ public class Calendar extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
@@ -360,19 +367,17 @@ public class Calendar extends AppCompatActivity {
 
                         int isOrder = 1;
                         String order_id = order.getString("order_id");
+                        String valuation_status = order.getString("valuation_status");
                         String status = order.getString("order_status");
-                        if(status.equals("cancel") || status.equals("done") || status.equals("paid")){
-//                            Log.d(TAG, "order_id: "+order_id+", status: order_cancel");
-                            continue;
-                        }
+                        Log.d(TAG, "order_id: "+order_id+", valuation_status: "+valuation_status+", order_status: "+status);
+                        if(status.equals("cancel") || status.equals("done") || status.equals("paid")) continue;
                         if(status.equals("evaluating")) {
                             isOrder = 0;
-                            status = order.getString("valuation_status");
-                            if(status.equals("cancel")){
-//                                Log.d(TAG, "order_id: "+order_id+", status: valuation_cancel");
-                                continue;
-                            }
+                            if(valuation_status.equals("cancel")) continue;
                         }
+                        else if(!valuation_status.equals("chosen")) continue;
+
+
                         String date;
                         if(order.getString("moving_date").equals("null")) {
                             if(order.getString("valuation_date").equals("null") || order.getString("valuation_status").equals("self")){
@@ -386,8 +391,29 @@ public class Calendar extends AppCompatActivity {
                             date = order.getString("moving_date");
                             String[] token = date.split(" ");
                             date = token[0];
+
+                            if(isOvertime){
+                                //取消過期單
+                                LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+                                Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
+                                Log.d(TAG, "order("+order_id+"): "+Integer.parseInt(getYear(date))+"-"+Integer.parseInt(getMonth(date))+"-"+Integer.parseInt(getDay(date)));
+                                if(Integer.parseInt(getYear(date))<now.getYear() ||
+                                        (Integer.parseInt(getYear(date))<=now.getYear() &&
+                                                Integer.parseInt(getMonth(date))<monthToInt(String.valueOf(now.getMonth()))) ||
+                                        (Integer.parseInt(getYear(date))<=now.getYear() &&
+                                                Integer.parseInt(getMonth(date))<=monthToInt(String.valueOf(now.getMonth())) &&
+                                                Integer.parseInt(getDay(date))<now.getDayOfMonth())) {
+                                    Log.d(TAG, "moving_date "+date+" of order_id "+order_id+" is over time");
+                                    changeStatus(order_id, "orders", "cancel", context);
+                                    continue;
+                                }
+                                else isOvertime = false;
+                            }
                         }
                         Log.d(TAG, "order_id: "+order_id+", date: "+date+", isOrder:"+isOrder+", status: "+status);
+
+
+
 
                         java.util.Calendar calendar = java.util.Calendar.getInstance();
                         calendar.set(java.util.Calendar.YEAR, Integer.parseInt(getYear(date)));
@@ -496,5 +522,36 @@ public class Calendar extends AppCompatActivity {
             Intent setting_intent = new Intent(context, Setting.class);
             startActivity(setting_intent);
         });
+    }
+
+    private int monthToInt(String month){
+        switch (month){
+            case "JANUARY":
+                return 1;
+            case "FEBRUARY":
+                return 2;
+            case "MARCH":
+                return 3;
+            case "APRIL":
+                return 4;
+            case "MAY":
+                return 5;
+            case "JUNE":
+                return 6;
+            case "JULY":
+                return 7;
+            case "AUGUST":
+                return 8;
+            case "SEPTEMBER":
+                return 9;
+            case "OCTOBER":
+                return 10;
+            case "NOVEMBER":
+                return 11;
+            case "DECEMBER":
+                return 12;
+            default:
+                return 0;
+        }
     }
 }

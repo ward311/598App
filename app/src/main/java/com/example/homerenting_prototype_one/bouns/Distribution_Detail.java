@@ -88,6 +88,7 @@ public class Distribution_Detail extends AppCompatActivity {
 //        bundle.putString("order_id", "147");
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
+        fee = "0";
 
         staffs = new ArrayList<>();
         staffIds = new ArrayList<>();
@@ -95,6 +96,7 @@ public class Distribution_Detail extends AppCompatActivity {
 
         //傳值
         getData();
+        getStaffData();
 
         backBtn.setOnClickListener(v -> finish());
 
@@ -144,26 +146,6 @@ public class Distribution_Detail extends AppCompatActivity {
                     toAddress = order.getString("to_address");
                     fee = order.getString("accurate_fee");
 
-                    int i;
-                    //跳過車輛
-                    for (i = 1; i < responseArr.length(); i++) {
-                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
-                        if(!vehicle_assign.has("vehicle_type")) break;
-                    }
-
-                    //取得員工資訊
-                    for (; i < responseArr.length(); i++) {
-                        JSONObject staff_assign = responseArr.getJSONObject(i);
-                        if(!staff_assign.has("staff_id")) break;
-                        Log.i(TAG, "staff:" + staff_assign);
-                        staffs.add(staff_assign.getString("staff_name"));
-                        staffIds.add(staff_assign.getString("staff_id"));
-
-                        String pay = staff_assign.getString("pay");
-                        salaries.add(Integer.parseInt(pay));
-                    }
-                    salaries.add(-1); //公司分潤
-
                     //顯示基本資訊
                     runOnUiThread(() -> {
                         nameText.setText(name);
@@ -178,6 +160,57 @@ public class Distribution_Detail extends AppCompatActivity {
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }
+
+                setCheckBtn(); //設置確認送出按鈕
+            }
+        });
+    }
+
+    private void getStaffData(){
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/staff_detail.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of staff_detail: " + responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject staff_assign = responseArr.getJSONObject(i);
+                        if(!staff_assign.has("staff_id")) break;
+                        Log.i(TAG, "staff:" + staff_assign);
+                        staffs.add(staff_assign.getString("staff_name"));
+                        staffIds.add(staff_assign.getString("staff_id"));
+
+                        String pay = staff_assign.getString("pay");
+                        salaries.add(Integer.parseInt(pay));
+                    }
+                    salaries.add(-1); //公司分潤
+
+                } catch (JSONException e) {
+                    if(!responseData.equals("null")) e.printStackTrace();
                 }
 
                 //顯示安排人力
@@ -199,7 +232,6 @@ public class Distribution_Detail extends AppCompatActivity {
                 }
                 for(int i = 0; i < distributionAdapter.getItemCount(); i++)
                     getItem(i); //取得分配薪水的edittext
-                setCheckBtn(); //設置確認送出按鈕
             }
         });
     }

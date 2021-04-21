@@ -68,96 +68,10 @@ public class MatchMaking_Detail extends AppCompatActivity {
         Log.d(TAG, "order_id: " + order_id);
 
         linking();
+        getData();
+        getVehicleDemandData();
 
-        String function_name = "valuation_detail";
-        String company_id = getCompany_id(this);
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("order_id", order_id)
-                .add("company_id",company_id)
-                .build();
 
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
-                .post(body)
-                .build();
-
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
-                //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(MatchMaking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String responseData = response.body().string();
-                Log.d(TAG, "responseData: " + responseData); //顯示資料
-
-                try {
-                    JSONArray responseArr = new JSONArray(responseData);
-                    JSONObject order = responseArr.getJSONObject(0);
-                    Log.d(TAG, "order:" + order);
-                    name = order.getString("member_name");
-                    gender = order.getString("gender");
-                    phone = order.getString("phone");
-                    if(!order.getString("valuation_date").equals("null")){
-                        valuationTime = getDate(order.getString("valuation_date"));
-                        if(!order.getString("valuation_time").equals("null"))
-                            valuationTime = valuationTime+" "+order.getString("valuation_time");
-                    }
-                    fromAddress = order.getString("from_address");
-                    toAddress = order.getString("to_address");
-                    notice = order.getString("additional");
-                    String moving_date = order.getString("moving_date");
-                    if(moving_date.equals("null")) movingTime = "未安排搬家時間";
-                    else movingTime = getDate(moving_date)+" "+getTime(moving_date);
-                    worktime = order.getString("estimate_worktime");
-                    if(worktime.equals("null")) worktime = "未預計搬家時長";
-                    if(order.getString("accurate_fee").equals("null")) price = "0元";
-                    else price = order.getString("estimate_fee")+"元";
-
-                    int i;
-                    demandCar = "";
-                    for (i = 1; i < responseArr.length(); i++) {
-                        JSONObject vehicle_demand = responseArr.getJSONObject(i);
-                        if(!vehicle_demand.has("num")) break;
-                        Log.i(TAG, "vehicle_demand:" + vehicle_demand);
-                        if(i != 1) demandCar = demandCar + "\n";
-                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
-                                +vehicle_demand.getString("vehicle_type")
-                                +vehicle_demand.getString("num")+"輛";
-                    }
-                    if(i == 1) demandCar = "無填寫需求車輛";
-                    Log.d(TAG, "demandCar: "+demandCar);
-
-                    runOnUiThread(() -> {
-                        nameText.setText(name);
-                        if(gender.equals("女")) nameTitleText.setText("小姐");
-                        else if(gender.equals("男")) nameTitleText.setText("先生");
-                        else nameTitleText.setText("");
-                        phoneText.setText(phone);
-                        valuationTimeText.setText(valuationTime);
-                        fromAddressText.setText(fromAddress);
-                        toAddressText.setText(toAddress);
-                        noticeText.setText(notice);
-                        movingTimeText.setText(movingTime);
-                        carText.setText(demandCar);
-                        worktimeText.setText(worktime);
-                        priceText.setText(price);
-                    });
-
-                    int auto = order.getInt("auto");
-                    if(auto==0) runOnUiThread(() -> setConfirmBtn());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    //runOnUiThread(() -> Toast.makeText(MatchMaking_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
-                }
-            }
-        });
 
 
 
@@ -218,19 +132,135 @@ public class MatchMaking_Detail extends AppCompatActivity {
         });
     }
 
-    public void linking(){
-        nameText = findViewById(R.id.name_MMD);
-        nameTitleText = findViewById(R.id.nameTitle_MMD);
-        phoneText = findViewById(R.id.phone_MMD);
-        valuationTimeText =findViewById(R.id.valuationTime_MMD);
-        fromAddressText = findViewById(R.id.FromAddress_MMD);
-        toAddressText = findViewById(R.id.ToAddress_MMD);
-        noticeText = findViewById(R.id.notice_MMD);
-        movingTimeText = findViewById(R.id.movingTime_MMD);
-        carText = findViewById(R.id.car_MMD);
-        worktimeText = findViewById(R.id.worktime_MMD);
-        priceText = findViewById(R.id.price_MMD);
-        confirmBtn = findViewById(R.id.confirm_MMD);
+    private void getData(){
+        String function_name = "valuation_detail";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id",company_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(MatchMaking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData: " + responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    JSONObject order = responseArr.getJSONObject(0);
+                    Log.d(TAG, "order:" + order);
+                    name = order.getString("member_name");
+                    gender = order.getString("gender");
+                    phone = order.getString("phone");
+                    if(!order.getString("valuation_date").equals("null")){
+                        valuationTime = getDate(order.getString("valuation_date"));
+                        if(!order.getString("valuation_time").equals("null"))
+                            valuationTime = valuationTime+" "+order.getString("valuation_time");
+                    }
+                    fromAddress = order.getString("from_address");
+                    toAddress = order.getString("to_address");
+                    notice = order.getString("additional");
+                    String moving_date = order.getString("moving_date");
+                    if(moving_date.equals("null")) movingTime = "未安排搬家時間";
+                    else movingTime = getDate(moving_date)+" "+getTime(moving_date);
+                    worktime = order.getString("estimate_worktime");
+                    if(worktime.equals("null")) worktime = "未預計搬家時長";
+                    if(order.getString("accurate_fee").equals("null")) price = "0元";
+                    else price = order.getString("estimate_fee")+"元";
+
+                    runOnUiThread(() -> {
+                        nameText.setText(name);
+                        if(gender.equals("女")) nameTitleText.setText("小姐");
+                        else if(gender.equals("男")) nameTitleText.setText("先生");
+                        else nameTitleText.setText("");
+                        phoneText.setText(phone);
+                        valuationTimeText.setText(valuationTime);
+                        fromAddressText.setText(fromAddress);
+                        toAddressText.setText(toAddress);
+                        noticeText.setText(notice);
+                        movingTimeText.setText(movingTime);
+                        worktimeText.setText(worktime);
+                        priceText.setText(price);
+                    });
+
+                    int auto = order.getInt("auto");
+                    if(auto==0) runOnUiThread(() -> setConfirmBtn());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    //runOnUiThread(() -> Toast.makeText(MatchMaking_Detail.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
+                }
+            }
+        });
+    }
+
+    private void getVehicleDemandData(){
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .add("company_id",company_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/vehicle_demand_data.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(MatchMaking_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of vehicle_demand_data: " + responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    demandCar = "";
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_demand = responseArr.getJSONObject(i);
+                        if(!vehicle_demand.has("num")) break;
+                        Log.i(TAG, "vehicle_demand:" + vehicle_demand);
+                        if(i != 0) demandCar = demandCar + "\n";
+                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
+                                +vehicle_demand.getString("vehicle_type")
+                                +vehicle_demand.getString("num")+"輛";
+                    }
+                    if(i == 0) demandCar = "無填寫需求車輛";
+                    Log.d(TAG, "demandCar: "+demandCar);
+
+                    runOnUiThread(() -> {
+                        carText.setText(demandCar);
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void setConfirmBtn(){
@@ -270,5 +300,21 @@ public class MatchMaking_Detail extends AppCompatActivity {
                 startActivity(intent);
             }, 1500);
         });
+    }
+
+
+    public void linking(){
+        nameText = findViewById(R.id.name_MMD);
+        nameTitleText = findViewById(R.id.nameTitle_MMD);
+        phoneText = findViewById(R.id.phone_MMD);
+        valuationTimeText =findViewById(R.id.valuationTime_MMD);
+        fromAddressText = findViewById(R.id.FromAddress_MMD);
+        toAddressText = findViewById(R.id.ToAddress_MMD);
+        noticeText = findViewById(R.id.notice_MMD);
+        movingTimeText = findViewById(R.id.movingTime_MMD);
+        carText = findViewById(R.id.car_MMD);
+        worktimeText = findViewById(R.id.worktime_MMD);
+        priceText = findViewById(R.id.price_MMD);
+        confirmBtn = findViewById(R.id.confirm_MMD);
     }
 }

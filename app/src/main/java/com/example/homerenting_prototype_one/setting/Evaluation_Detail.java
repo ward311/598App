@@ -137,6 +137,7 @@ public class Evaluation_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("comment_id", comment_id)
                 .build();
+        Log.d(TAG, "commen_id: "+comment_id);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL + "/user_data.php")

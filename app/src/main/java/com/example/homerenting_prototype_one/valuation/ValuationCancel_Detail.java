@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,9 +48,12 @@ public class ValuationCancel_Detail extends AppCompatActivity {
     TextView remainderText, movedateText, carText, worktimeText, feeText;
 
     String name, gender, phone, valuationtime, movingTime, fromAddress, toAddress;
-    String remainder, movedate, car, worktime, fee;
+    String remainder, movedate, demandCar, worktime, fee;
+
+    String order_id;
 
     String TAG = "Valuation_Cancel_Detail";
+    Context context = this;
     private final String PHP = "/user_data.php";
 
     @Override
@@ -58,7 +62,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
         setContentView( R.layout.activity_valuation_cancel__detail );
 
         bundle = getIntent().getExtras();
-        String order_id = bundle.getString("order_id");
+        order_id = bundle.getString("order_id");
         Log.d(TAG, "order_id: " + order_id);
 
         linking();
@@ -124,7 +128,6 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                         remainderText.setText(remainder);
                         worktimeText.setText(worktime);
                         feeText.setText(fee);
-//                        carText.setText(car);
                         valuationtimeText.setText(valuationtime);
                     });
                 } catch (JSONException e) {
@@ -134,7 +137,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
             }
         });
 
-
+        getVehicleDemandData();
 
 
 
@@ -177,6 +180,60 @@ public class ValuationCancel_Detail extends AppCompatActivity {
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(ValuationCancel_Detail.this, Setting.class);
             startActivity(setting_intent);
+        });
+    }
+
+    private void getVehicleDemandData(){
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .add("company_id",company_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/vehicle_demand_data.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of vehicle_demand_data: " + responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    demandCar = "";
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_demand = responseArr.getJSONObject(i);
+                        if(!vehicle_demand.has("num")) break;
+                        Log.i(TAG, "vehicle_demand:" + vehicle_demand);
+                        if(i != 0) demandCar = demandCar + "\n";
+                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
+                                +vehicle_demand.getString("vehicle_type")
+                                +vehicle_demand.getString("num")+"輛";
+                    }
+                    if(i == 0) demandCar = "無填寫需求車輛";
+                    Log.d(TAG, "demandCar: "+demandCar);
+
+                    runOnUiThread(() -> {
+                        carText.setText(demandCar);
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         });
     }
 

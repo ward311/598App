@@ -72,12 +72,15 @@ public class System_Vacation extends AppCompatActivity {
         cars_text = new ArrayList<>();
         cars = new ArrayList<>();
 
-        getChip();
+        getStaffChip();
+        getVehicleChip();
 
         current_date = getToday("yyyy-MM-dd");
-//        getVacation("2020-09-27");
-        getVacation(current_date);
+        getStaffVacation(current_date);
+        getVehicleVacation(current_date);
 //        getAssigned(current_date);
+
+
         calendar.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             update_leave(current_date);
 
@@ -89,25 +92,26 @@ public class System_Vacation extends AppCompatActivity {
             Log.i(TAG, "Date Change: " + date);
             current_date = date;
             initArray();
-            getVacation(date);
+            getStaffVacation(date);
+            getVehicleVacation(date);
 //            getAssigned(date);
         });
 
         globalNav();
     }
 
-    private void getChip(){
+    private void getStaffChip(){
+        Log.d(TAG, "start getStaffChip()");
+        lock = true;
         lock = true;
         final Chip chip1 = findViewById(R.id.chip1_SV); //控制形狀用的chip
 
-        String function_name = "staff-vehicle_data";
         RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .url(BuildConfig.SERVER_URL+"/get_data/all_staff_data.php")
                 .post(body)
                 .build();
 
@@ -117,16 +121,17 @@ public class System_Vacation extends AppCompatActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                lock = false;
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                //Log.d(TAG,"responseData: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of get_staff_chip: "+responseData); //顯示資料
 
                 try {
                     //轉換成json格式，array或object
@@ -147,8 +152,60 @@ public class System_Vacation extends AppCompatActivity {
                         //在staffGroup底下新增chip，加入ID和Tag
                         runOnUiThread(() -> staffGroup.addView(setChipDetail(staffGroup, staff_id, staff_name, chip1)));
                     }
+                    int ii = 0;
+                    while((staffGroup.getChildCount()-1) != responseArr.length()){
+                        if((++ii)%5000000 == 0)
+                            Log.d(TAG, (ii/5000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                    }
+                    Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                    getVehicleChip();
+                } catch (JSONException e) {
+                    lock = false;
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-                    for (; i < responseArr.length(); i++) {
+    private void getVehicleChip(){
+        Log.d(TAG, "start getVehicleChip()");
+        final Chip chip1 = findViewById(R.id.chip1_SV); //控制形狀用的chip
+
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/all_vehicle_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                lock = false;
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of get_vehicle_chip: "+responseData); //顯示資料
+
+                try {
+                    //轉換成json格式，array或object
+                    final JSONArray responseArr = new JSONArray(responseData);
+                    //Log.i(TAG,"responseObj: "+ responseArr);
+
+                    //一筆一筆的取JSONArray中的json資料
+                    int i;
+                    for (i = 0; i < responseArr.length(); i++) {
                         JSONObject vehicle = responseArr.getJSONObject(i);
                         if(!vehicle.has("vehicle_id")) break;
                         Log.i(TAG, "vehicle: " + vehicle);
@@ -156,18 +213,22 @@ public class System_Vacation extends AppCompatActivity {
                         //取欄位資料
                         final String vehicle_id = vehicle.getString("vehicle_id");
                         final String plate_num = vehicle.getString("plate_num");
-
                         runOnUiThread(() -> carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num, chip1)));
+
                     }
+
                     int ii = 0;
-                    while((staffGroup.getChildCount()-1+carGroup.getChildCount()-1) != responseArr.length()){
-                        if((++ii)%1000000 == 0)
-                            Log.d(TAG, "waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                    while((carGroup.getChildCount()-1) != responseArr.length()){
+                        if((++ii)%5000000 == 0)
+                            Log.d(TAG, (ii/5000000)+". waiting in getVehicleChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
+                    Log.d(TAG, "waiting in getVehicleChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     lock = false;
                 } catch (JSONException e) {
+                    lock = false;
                     e.printStackTrace();
-                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found."))
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getChip", Toast.LENGTH_LONG).show());
                 }
             }
         });
@@ -231,16 +292,21 @@ public class System_Vacation extends AppCompatActivity {
         cars_text.clear();
     }
 
-    private void getVacation(String date){
-        String function_name = "all_vehicle_staff_leave";
+    private void getStaffVacation(String date){
+        if(date == null){
+            Log.d(TAG, "date is null in getStaffVacation");
+            return;
+        }
+
+        Log.d(TAG, "start getStaffVacation()");
+
         RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .add("date", date)
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .url(BuildConfig.SERVER_URL+"/get_data/staff_leave.php")
                 .post(body)
                 .build();
 
@@ -252,51 +318,106 @@ public class System_Vacation extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData of getVocation: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of getStaffVocation: "+responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
 
                     int i;
                     for (i = 0; i < responseArr.length(); i++) {
-                        JSONObject vehicle_assign = responseArr.getJSONObject(i);
-                        if(!vehicle_assign.has("vehicle_id")) break;
-                        Log.i(TAG, "vehicle_assign:" + vehicle_assign);
-                        cars_text.add(vehicle_assign.getString("plate_num"));
-                        cars.add(Integer.parseInt(vehicle_assign.getString("vehicle_id")));
-                    }
-
-                    for (; i < responseArr.length(); i++) {
-                        JSONObject staff_assign = responseArr.getJSONObject(i);
-                        if(!staff_assign.has("staff_id")) break;
-                        Log.i(TAG, "staff_assign:" + staff_assign);
-                        staffs_text.add(staff_assign.getString("staff_name"));
-                        staffs.add(Integer.parseInt(staff_assign.getString("staff_id")));
+                        JSONObject staff_vacation = responseArr.getJSONObject(i);
+                        if(!staff_vacation.has("staff_id")) break;
+                        Log.i(TAG, "staff_vacation:" + staff_vacation);
+                        staffs_text.add(staff_vacation.getString("staff_name"));
+                        staffs.add(Integer.parseInt(staff_vacation.getString("staff_id")));
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    if(!responseData.equals("null")) {
-                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getStaffVacation", Toast.LENGTH_LONG).show());
                     }
                 }
 
                 int ii = 0;
                 while (lock){
-                    if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVacation...");
+                    if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getStaffVacation...");
                 }
-                Log.d(TAG, "getVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                Log.d(TAG, "getStaffVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_text);
+            }
+        });
+    }
+
+    private void getVehicleVacation(String date){
+        if(date == null){
+            Log.d(TAG, "date is null in getVehicleVacation");
+            return;
+        }
+
+        Log.d(TAG, "start getVehicleVacation()");
+
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .add("date", date)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/vehicle_maintain.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of getVehicleVocation: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_vacation = responseArr.getJSONObject(i);
+                        if(!vehicle_vacation.has("vehicle_id")) break;
+                        Log.i(TAG, "vehicle_vacation:" + vehicle_vacation);
+                        cars_text.add(vehicle_vacation.getString("plate_num"));
+                        cars.add(Integer.parseInt(vehicle_vacation.getString("vehicle_id")));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
+                        runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getVehicleVacation", Toast.LENGTH_LONG).show());
+                    }
+                }
+
+                int ii = 0;
+                while (lock){
+                    if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVehicleVacation...");
+                }
+                Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(carGroup, cars_text);
             }
         });
     }
+
 
     private void setChipCheck(ChipGroup chipGroup, ArrayList<String> items_text){
         for(int i = 1; i < chipGroup.getChildCount(); i++){
