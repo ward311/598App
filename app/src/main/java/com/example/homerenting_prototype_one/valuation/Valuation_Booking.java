@@ -105,28 +105,22 @@ public class Valuation_Booking extends AppCompatActivity {
         month_text.setText(getMonthStr());
         getValuationBooking();
 
-        lastWeek_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int wCount = getwCount();
-                setwCount(wCount-1);
-                week_text.setText(getWeek());
-                month_text.setText(getMonthStr());
-                data.clear();
-                getValuationBooking();
-            }
+        lastWeek_btn.setOnClickListener(v -> {
+            int wCount = getwCount();
+            setwCount(wCount-1);
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            data.clear();
+            getValuationBooking();
         });
 
-        nextWeek_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int wCount = getwCount();
-                setwCount(wCount+1);
-                week_text.setText(getWeek());
-                month_text.setText(getMonthStr());
-                data.clear();
-                getValuationBooking();
-            }
+        nextWeek_btn.setOnClickListener(v -> {
+            int wCount = getwCount();
+            setwCount(wCount+1);
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            data.clear();
+            getValuationBooking();
         });
 
         //上方nav

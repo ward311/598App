@@ -94,13 +94,14 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="#989898"/>
+
         <Button
             android:id="@+id/cancelEvaluation_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="已取消"
-            android:background="#FFFFFFFF"/>
+            android:background="#FFFFFFFF"
+            android:text="未成交" />
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"

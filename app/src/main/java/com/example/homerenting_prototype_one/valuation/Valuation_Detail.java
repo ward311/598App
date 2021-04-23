@@ -88,14 +88,14 @@ public class Valuation_Detail extends AppCompatActivity {
         String function_name = "valuation_detail";
         String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
+//                .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id",company_id)
                 .build();
 
         //連線要求
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .url(BuildConfig.SERVER_URL+"/get_data/valuation_detail.php")
                 .post(body)
                 .build();
 
@@ -127,11 +127,16 @@ public class Valuation_Detail extends AppCompatActivity {
                     else nameTitle = "";
                     phone = order.getString("phone");
                     selfValTime = order.getString("last_update");
-                    fromAddress = order.getString("from_address");
-                    toAddress = order.getString("to_address");
+                    if(!order.has("from_address") || order.getString("from_address").equals("null")){
+                        fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
+                    }
+                    else if(order.has("from_address"))  fromAddress = order.getString("from_address");
+                    if(!order.has("to_address") || order.getString("to_address").equals("null")){
+                        toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
+                    }
+                    else if(order.has("to_address")) toAddress = order.getString("to_address");
                     contactTime = order.getString("contact_time");
                     if(!order.getString("valuation_date").equals("null")){
-                        valTime = getDate(order.getString("valuation_date"));
                         valTime = getDate(order.getString("valuation_date"));
                         if(!order.getString("valuation_time").equals("null"))
                             valTime = valTime+" "+order.getString("valuation_time");
@@ -174,9 +179,11 @@ public class Valuation_Detail extends AppCompatActivity {
 
         pickTime_edit.setOnClickListener(v -> {
             TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, (view, hourOfDay, minute) -> {
-                String m = String.valueOf(minute);
-                if(minute == 0) m = "00";
-                pickTime_edit.setText(hourOfDay+":"+m);
+                String mm = String.valueOf(minute);
+                if(minute < 10) mm = "0"+mm;
+                String hh = String.valueOf(hourOfDay);
+                if(hourOfDay < 10) hh = "0"+hh;
+                pickTime_edit.setText(hh+":"+mm);
             },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
             time_picker.show();
         });

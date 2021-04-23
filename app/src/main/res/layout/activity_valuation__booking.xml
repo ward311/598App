@@ -116,7 +116,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
-            android:text="已取消" />
+            android:text="未成交" />
 
         <View
             android:layout_width="1dp"

@@ -391,7 +391,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1.5"
-                    android:hint="9:00"
+                    android:hint="09:00"
                     app:layout_constraintBottom_toBottomOf="@+id/pickDate_editText"
                     app:layout_constraintStart_toEndOf="@+id/pickDate_editText"
                     app:layout_constraintTop_toTopOf="@+id/pickDate_editText"

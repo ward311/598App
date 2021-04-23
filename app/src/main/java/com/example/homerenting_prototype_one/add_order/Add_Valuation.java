@@ -79,15 +79,24 @@ public class Add_Valuation extends AppCompatActivity {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
         Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
 
-        dateText.setText(now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
+        String now_month = String.valueOf(monthToInt(String.valueOf(now.getMonth())));
+        if(monthToInt(String.valueOf(now.getMonth())) < 10) now_month = "0"+now_month;
+        dateText.setText(now.getYear()+"-"+now_month+"-"+now.getDayOfMonth());
         dateText.setOnClickListener(v -> {
             DatePickerDialog datePicker;
             datePicker = new DatePickerDialog( Add_Valuation.this, (view, year, month, dayOfMonth) -> {
-                if(year<now.getYear() || (month+1)<monthToInt(String.valueOf(now.getMonth())) || dayOfMonth<now.getDayOfMonth()) {
+                if(year<now.getYear() ||
+                        (year >= now.getYear() && (month+1)<monthToInt(String.valueOf(now.getMonth()))) ||
+                        (year >= now.getYear() && (month+1)>=monthToInt(String.valueOf(now.getMonth())) && dayOfMonth<now.getDayOfMonth())
+                    ) {
                     Toast.makeText(context, "請勿選擇過去的日期", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                dateText.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
+                String monthStr = String.valueOf(month+1);
+                if(month+1 < 10) monthStr = "0"+monthStr;
+                String dayStr = String.valueOf(dayOfMonth);
+                if(dayOfMonth < 10) dayStr = "0"+dayStr;
+                dateText.setText(year + "-" + monthStr + "-" + dayStr);
             },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
             datePicker.show();
         });
@@ -96,7 +105,11 @@ public class Add_Valuation extends AppCompatActivity {
         time = now.getHour()+":00";
         timeText.setOnClickListener(v -> {
             TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> {
-                timeText.setText(hourOfDay+":"+minute);
+                String mm = String.valueOf(minute);
+                if(minute < 10) mm = "0"+mm;
+                String hh = String.valueOf(hourOfDay);
+                if(hourOfDay < 10) hh = "0"+hh;
+                timeText.setText(hh+":"+mm);
                 time = hourOfDay+":"+minute;
                 time2 = (hourOfDay+1)+":"+minute;
             },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);

@@ -60,6 +60,7 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
         holder.gender_text.setText(data.get(position)[i++]);
         holder.phone_text.setText(data.get(position)[i++]);
         holder.address_text.setText(data.get(position)[i++]);
+
         if(data.get(position)[i++].equals("0")) {
             holder.add_text.setVisibility(View.VISIBLE);
         }

@@ -140,7 +140,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         movingTimeText.setOnClickListener(v -> {
             movingTimeText.setError(null);
             TimePickerDialog time_picker = new TimePickerDialog( context, (view, hourOfDay, minute) -> {
-                movingTimeText.setText(hourOfDay+":"+minute);
+                String mm = String.valueOf(minute);
+                if(minute < 10) mm = "0"+mm;
+                String hh = String.valueOf(hourOfDay);
+                if(hourOfDay < 10) hh = "0"+hh;
+                movingTimeText.setText(hh+":"+mm);
             },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
             time_picker.show();
         });
