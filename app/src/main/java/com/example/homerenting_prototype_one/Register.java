@@ -39,6 +39,9 @@ public class Register extends AppCompatActivity {
         }
         if (TextUtils.isEmpty( pwd_check_edit.getText().toString() )){
             pwd_check_edit.setError( "請再次輸入密碼" );
+            if(!pwd_check_edit.getText().equals(pwd_edit.getText())){
+                pwd_check_edit.setError("與輸入密碼不符");
+            }
         }
         if (TextUtils.isEmpty( name_edit.getText().toString() )){
             name_edit.setError( "請輸入姓名" );

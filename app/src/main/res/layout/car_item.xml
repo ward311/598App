@@ -14,14 +14,8 @@
         android:ems="10"
         android:gravity="center"
         android:hint="3"
-        android:inputType="numberDecimal" />
-
-    <TextView
-        android:id="@+id/ton_CI"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="0dp"
-        android:text="噸" />
+        android:inputType="numberDecimal"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/type_CI"
@@ -33,6 +27,12 @@
         android:hint="箱型車"
         android:inputType="text"
         android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/weight_sp_CI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.68" />
 
     <Spinner
         android:id="@+id/type_sp_CI"
@@ -72,4 +72,5 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:background="@android:drawable/presence_busy" />
+
 </LinearLayout>

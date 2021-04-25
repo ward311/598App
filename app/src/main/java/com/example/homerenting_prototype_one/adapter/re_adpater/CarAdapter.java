@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,6 +53,27 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 //        setCarStr(holder.type, position, 1);
         setCarStr(holder.num, position, 2);
 
+        final String[] weights = {"3.5噸", "3.5噸", "5噸", "6-8噸", "10噸"};
+
+        ArrayAdapter<CharSequence> weightAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, weights);
+        holder.weight_sp.setAdapter(weightAdapter);
+       holder.weight_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+           @Override
+           public void onItemSelected(AdapterView<?> parent, View view, int w_position, long id) {
+               holder.weight.setText(weights[position]);
+
+               if(w_position >= weights.length) cars.get(position)[0] = null;
+               else cars.get(position)[0] = weights[w_position];
+               holder.weight.setText(cars.get(position)[0]);
+               Toast.makeText(context, "您選擇的噸數是: " + holder.weight_sp.getSelectedItem(), Toast.LENGTH_LONG).show();
+           }
+
+           @Override
+           public void onNothingSelected(AdapterView<?> parent) {
+
+           }
+       });
+
         final String[] types = {"箱型車", "平斗車"}; //其他
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, types);
         holder.type_sp.setAdapter(typeAdapter);
@@ -61,6 +83,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                 if(t_position >= types.length) cars.get(position)[1] = null;
                 else cars.get(position)[1] = types[t_position];
                 holder.type.setText(cars.get(position)[1]);
+                Toast.makeText(context, "您選擇的車型是: " + holder.type_sp.getSelectedItem(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -129,16 +152,19 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         EditText weight, type, num;
         TextView ton;
-        Spinner type_sp;
+        Spinner type_sp, weight_sp;
         Button add, delete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             weight = itemView.findViewById(R.id.weight_CI);
+            weight.setFocusable(false);
+            weight.setFocusableInTouchMode(false);
             type = itemView.findViewById(R.id.type_CI);
             num = itemView.findViewById(R.id.num_CI);
-            ton = itemView.findViewById(R.id.ton_CI);
+            //ton = itemView.findViewById(R.id.ton_CI);
             type_sp = itemView.findViewById(R.id.type_sp_CI);
+            weight_sp = itemView.findViewById(R.id.weight_sp_CI);
             add = itemView.findViewById(R.id.add_btn_CI);
             delete = itemView.findViewById(R.id.delete_btn_CI);
         }

@@ -98,6 +98,7 @@ public class Add_Valuation extends AppCompatActivity {
                 if(dayOfMonth < 10) dayStr = "0"+dayStr;
                 dateText.setText(year + "-" + monthStr + "-" + dayStr);
             },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+            datePicker.getDatePicker().setMinDate(new Date().getTime());
             datePicker.show();
         });
 

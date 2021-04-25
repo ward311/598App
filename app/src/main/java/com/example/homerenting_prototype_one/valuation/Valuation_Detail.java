@@ -9,8 +9,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -39,6 +42,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -74,6 +78,7 @@ public class Valuation_Detail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         setContentView(R.layout.activity_valuation__detail);
         phoneCall_btn = findViewById(R.id.call_btn);
         final GregorianCalendar calendar = new GregorianCalendar();
@@ -83,6 +88,7 @@ public class Valuation_Detail extends AppCompatActivity {
         Log.d(TAG, "order_id: " + order_id);
 
         linking();
+
 
         //將傳至網頁的值
         String function_name = "valuation_detail";
@@ -171,13 +177,16 @@ public class Valuation_Detail extends AppCompatActivity {
         });
 
         pickDate_edit.setOnClickListener(v -> {
+            im.hideSoftInputFromWindow(pickDate_edit.getWindowToken(),0);
             DatePickerDialog date_picker = new DatePickerDialog( Valuation_Detail.this, (view, year, month, dayOfMonth) -> {
                 pickDate_edit.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
             },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
+            date_picker.getDatePicker().setMinDate(new Date().getTime());
             date_picker.show();
         });
 
         pickTime_edit.setOnClickListener(v -> {
+            im.hideSoftInputFromWindow(pickTime_edit.getWindowToken(),0);
             TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, (view, hourOfDay, minute) -> {
                 String mm = String.valueOf(minute);
                 if(minute < 10) mm = "0"+mm;
@@ -189,6 +198,7 @@ public class Valuation_Detail extends AppCompatActivity {
         });
 
         pickTime2_edit.setOnClickListener(v -> {
+            im.hideSoftInputFromWindow(pickTime2_edit.getWindowToken(),0);
             TimePickerDialog time_picker = new TimePickerDialog( Valuation_Detail.this, (view, hourOfDay, minute) -> {
                 String m = String.valueOf(minute);
                 if(minute < 10) m = "0"+minute;
@@ -331,6 +341,7 @@ public class Valuation_Detail extends AppCompatActivity {
     }
 
     public void linking(){
+
         nameText = findViewById(R.id.name_VD);
         nameTitleText = findViewById(R.id.nameTitle_VD);
         phoneText = findViewById(R.id.phone_VD);

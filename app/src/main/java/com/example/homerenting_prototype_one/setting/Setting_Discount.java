@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import okhttp3.Call;
@@ -272,6 +273,7 @@ public class Setting_Discount extends AppCompatActivity {
                 period_discounts.get(index-3)[type+3] = year+"-"+monthStr+"-"+dayStr;
                 Log.d(TAG, "date change("+(index-3)+"/"+period_discounts.size()+"): "+ Arrays.toString(period_discounts.get(index-3)));
             },calendar.get(GregorianCalendar.YEAR),calendar.get(GregorianCalendar.MONTH),calendar.get(GregorianCalendar.DAY_OF_MONTH));
+            date_picker.getDatePicker().setMinDate(new Date().getTime());
             date_picker.show();
         });
     }
