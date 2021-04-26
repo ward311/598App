@@ -49,7 +49,7 @@ public class TableContract {
         public static final String COLUMN_NAME_ESTIMATE_FEE = "estimate_fee";
         public static final String COLUMN_NAME_ACCURATE_FEE = "accurate_fee";
         public static final String COLUMN_NAME_CONFIRM = "confirm";
-        public static final String COLUMN_NAME_VALUATION_STATUS = "valuaiton_status";
+        public static final String COLUMN_NAME_VALUATION_STATUS = "valuation_status";
 
         public static final String SQL_CREATE_CHOOSE = "" +
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
