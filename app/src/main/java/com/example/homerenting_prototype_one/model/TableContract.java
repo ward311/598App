@@ -47,7 +47,7 @@ public class TableContract {
         public static final String COLUMN_NAME_VALUATION_TIME = "valuation_time";
         public static final String COLUMN_NAME_MOVING_DATE = "moving_date";
         public static final String COLUMN_NAME_ESTIMATE_FEE = "estimate_fee";
-        public static final String COLUMN_NAME_ACCURATTE_FEE = "accurate_fee";
+        public static final String COLUMN_NAME_ACCURATE_FEE = "accurate_fee";
         public static final String COLUMN_NAME_CONFIRM = "confirm";
         public static final String COLUMN_NAME_VALUATION_STATUS = "valuaiton_status";
 
@@ -59,7 +59,7 @@ public class TableContract {
                 COLUMN_NAME_VALUATION_TIME+" varchar(99), "+
                 COLUMN_NAME_MOVING_DATE+" datetime, "+
                 COLUMN_NAME_ESTIMATE_FEE+" int(10), "+
-                COLUMN_NAME_ACCURATTE_FEE+" int(10), "+
+                COLUMN_NAME_ACCURATE_FEE+" int(10), "+
                 COLUMN_NAME_CONFIRM+" boolean DEFAULT FALSE, "+
                 COLUMN_NAME_VALUATION_STATUS+" enum('self', 'booking', 'match', 'cancel', 'chosen') DEFAULT 'self', "+
                 "PRIMARY KEY(order_id, company_id), "+
