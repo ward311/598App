@@ -85,7 +85,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
-            android:text="員工薪資一覽"
+            android:text="本月員工薪資"
             android:textColor="#19B0ED"
             android:textSize="20sp" />
         <View
@@ -113,7 +113,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
-            android:text="當月獎金報表"
+            android:text="歷史獎金報表"
             android:textColor="#19B0ED"
             android:textSize="20sp" />
         <View

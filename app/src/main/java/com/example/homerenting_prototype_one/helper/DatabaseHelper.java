@@ -30,8 +30,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) throws SQLiteCantOpenDatabaseException {
-        /*db.execSQL(SQL_CREATE_COMPANY);
-        db.execSQL(SQL_CREATE_CHOOSE);
+        db.execSQL(SQL_CREATE_COMPANY);
+        /*db.execSQL(SQL_CREATE_CHOOSE);
         db.execSQL(SQL_CREATE_COMMENTS);
         db.execSQL(SQL_CREATE_STAFF);
         db.execSQL(SQL_CREATE_VEHICLE);*/

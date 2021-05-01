@@ -335,7 +335,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 if(position == 0) fspace = "all";
                 else fspace = space[position];
                 nowSpace = position;
-                Toast.makeText(context, "選擇"+fspace, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "選擇"+fspace, Toast.LENGTH_SHORT).show();
                 setList();
             }
 
