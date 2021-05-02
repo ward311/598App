@@ -53,7 +53,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 //        setCarStr(holder.type, position, 1);
         setCarStr(holder.num, position, 2);
 
-        final String[] weights = {"3.5噸", "3.5噸", "5噸", "6-8噸", "10噸"};
+        final String[] weights = {"1.75噸以下", "3.5噸", "5噸", "6.5-7.7噸", "10.5噸以上"};
 
         ArrayAdapter<CharSequence> weightAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, weights);
         holder.weight_sp.setAdapter(weightAdapter);
@@ -65,7 +65,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                if(w_position >= weights.length) cars.get(position)[0] = null;
                else cars.get(position)[0] = weights[w_position];
                holder.weight.setText(cars.get(position)[0]);
-               Toast.makeText(context, "您選擇的噸數是: " + holder.weight_sp.getSelectedItem(), Toast.LENGTH_LONG).show();
+//               Toast.makeText(context, "您選擇的噸數是: " + holder.weight_sp.getSelectedItem(), Toast.LENGTH_LONG).show();
            }
 
            @Override
@@ -83,7 +83,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                 if(t_position >= types.length) cars.get(position)[1] = null;
                 else cars.get(position)[1] = types[t_position];
                 holder.type.setText(cars.get(position)[1]);
-                Toast.makeText(context, "您選擇的車型是: " + holder.type_sp.getSelectedItem(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "您選擇的車型是: " + holder.type_sp.getSelectedItem(), Toast.LENGTH_LONG).show();
             }
 
             @Override

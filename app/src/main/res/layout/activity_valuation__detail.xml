@@ -133,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="估價時間"
+                    android:text="自助估價時間"
                     app:layout_constraintBottom_toBottomOf="@+id/selfValTimeText"
                     app:layout_constraintStart_toStartOf="@+id/guideline_V2"
                     app:layout_constraintTop_toTopOf="@+id/selfValTimeText" />

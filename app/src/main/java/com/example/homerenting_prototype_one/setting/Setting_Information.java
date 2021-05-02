@@ -131,7 +131,7 @@ public class Setting_Information extends AppCompatActivity {
         globalNav();
     }
 
-    private void readData(){
+    private void readData(){ //從SQLite讀資料
         db = dbHelper.getReadableDatabase();
 
         String[] projection = { //資料表格式
@@ -168,17 +168,17 @@ public class Setting_Information extends AppCompatActivity {
             return;
         }
         String[] item = {
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_IMG)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_ADDRESS)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_PHONE)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_URL)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_LINE_ID)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_EMAIL)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_LAST_DISTRIBUTION))
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_IMG)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_ADDRESS)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_PHONE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_URL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_LINE_ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_EMAIL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CompanyTable.COLUMN_NAME_LAST_DISTRIBUTION))
         };
         Log.d(TAG, "sqlite company: "+Arrays.toString(item));
 

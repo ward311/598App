@@ -20,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.MutiSalaryAdapter;
+import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SalaryAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -62,6 +63,7 @@ public class Bonus_View extends AppCompatActivity {
 
     TextView title;
     ViewPager2 salaryView;
+    RecyclerView salaryRList;
     ImageButton backBtn;
     Button chartBtn;
 
@@ -69,6 +71,7 @@ public class Bonus_View extends AppCompatActivity {
     ArrayList<Integer> salaries;
 
     MutiSalaryAdapter msAdapter;
+    SalaryAdapter sAdapter;
 
     String year, month;
 
@@ -84,6 +87,7 @@ public class Bonus_View extends AppCompatActivity {
 
         title = findViewById(R.id.title_BV);
         salaryView = findViewById(R.id.salaryList_BV);
+        salaryRList = findViewById(R.id.salaryRList_BV);
         backBtn = findViewById(R.id.back_imgBtn);
         chartBtn = findViewById(R.id.chart_btn_BV);
 
@@ -91,6 +95,7 @@ public class Bonus_View extends AppCompatActivity {
         month = getToday("MM");
         title.setText("員工薪資一覽 "+month+"月");
         setList();
+//        setMsList();
 
         chartBtn.setOnClickListener(v -> setChart());
 
@@ -195,16 +200,21 @@ public class Bonus_View extends AppCompatActivity {
     }
 
     private void setChart(){ //圖表
-        msAdapter.showDatas();
-        int currentItem = salaryView.getCurrentItem();
-        employee_names = msAdapter.getStaffName(currentItem);
-        salaries = msAdapter.getStaffPay(currentItem);
+//        msAdapter.showDatas();
+        sAdapter.showDatas();
+
+//        int currentItem = salaryView.getCurrentItem();
+//        employee_names = msAdapter.getStaffName(currentItem);
+//        salaries = msAdapter.getStaffPay(currentItem);
+        employee_names = sAdapter.getStaffName();
+        salaries = sAdapter.getStaffPay();
+
         Log.d(TAG, "employee_names, salaries: ");
         int i;
         for(i = 0; i < employee_names.size() && i < salaries.size(); i++){
             Log.d(TAG, i+"."+employee_names.get(i)+", "+salaries.get(i));
         }
-        Log.d(TAG, "now page: "+currentItem);
+//        Log.d(TAG, "now page: "+currentItem);
 
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.bonus_dialog);
@@ -290,6 +300,20 @@ public class Bonus_View extends AppCompatActivity {
     }
 
     private void setList(){
+        sAdapter = new SalaryAdapter(getData(year, month));
+        sAdapter.showDatas();
+        if(sAdapter.getItemCount() == 0) {
+            NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+            salaryRList.setLayoutManager(new LinearLayoutManager(context));
+            salaryRList.setAdapter(noDataAdapter);
+        }
+        else salaryRList.setAdapter(sAdapter);
+
+        title.setText("員工薪資一覽 "+month+"月");
+    }
+
+    //可左右滑動切換月份的List
+    private void setMsList(){
         msAdapter = new MutiSalaryAdapter(getData(year, month), Integer.parseInt(month));
         salaryView.setAdapter(msAdapter);
         salaryView.setCurrentItem(1);
