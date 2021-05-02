@@ -29,7 +29,7 @@ public class global_function {
     private static int month;
     private static Date startDate;
     private static Date endDate;
-    private static String company_id;
+    private static String company_id, comment_id;
     private static SessionManager session;
     private static User user;
     private static ArrayList<String> datalist = new ArrayList<>();

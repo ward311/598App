@@ -78,6 +78,7 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
     <ScrollView
         android:layout_width="fill_parent"
@@ -464,6 +465,13 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/addorder_btn_drawable"
                 android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/timePressed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

@@ -114,7 +114,7 @@ public class Setting_Information extends AppCompatActivity {
             if(!idea_edit.getText().toString().equals("")) idea = idea_edit.getText().toString();
 
             updateCompanyDB();
-
+            updateCompany();
             companyIdea_text.setGravity(Gravity.TOP);
 
             address_text.setText(address);
@@ -298,6 +298,7 @@ public class Setting_Information extends AppCompatActivity {
                 selection,
                 seletctionArgs
         );
+        Log.d(TAG,""+count);
         if(count != -1) Log.d(TAG, "update successfully");
         else Log.d(TAG, "update failed");
     }

@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -59,6 +60,7 @@
                     android:text="共1500則評論"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,10 +78,13 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:src="@drawable/star"/>
+
                 </LinearLayout>
 
             </LinearLayout>
+
         </LinearLayout>
+
     </LinearLayout>
 
 

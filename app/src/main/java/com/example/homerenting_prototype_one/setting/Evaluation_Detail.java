@@ -1,7 +1,9 @@
 package com.example.homerenting_prototype_one.setting;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,12 +17,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.database.Cursor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.re_adpater.CommentAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.order.Order_Detail;
 import com.example.homerenting_prototype_one.system.System;
@@ -32,6 +38,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -46,14 +57,15 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 public class Evaluation_Detail extends AppCompatActivity {
     TextView commentCountText, allStarText;
     TextView nameText, nameTitleText, phoneText, fromAdressText, toAddressText, commentText, replyText, reply_text;
+    TextView time_press;
     LinearLayout serviceStars, workStars, priceStars;
     EditText reply_edit;
     Button replyBtn, finishBtn;
     ImageButton back_btn;
-
     Bundle bundle;
-    String comment_id, replyStr;
-
+    String comment_id, replyStr, comment_date;
+    public static SQLiteDatabase db;
+    public static DatabaseHelper dbHelper;
     Context context = this;
     String TAG = "Evaluation_Detail";
 
@@ -62,17 +74,16 @@ public class Evaluation_Detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evaluation__detail);
         back_btn = findViewById(R.id.back_imgBtn);
-
+        time_press = findViewById(R.id.timePressed);
         bundle = getIntent().getExtras();
         comment_id = bundle.getString("comment_id");
         int commentCount = bundle.getInt("commentCount");
         double allStar = bundle.getDouble("allStar");
 
         linking();
-
         commentCountText.setText("共"+commentCount+"則評論");
         allStarText.setText("評價 "+allStar);
-
+        dbHelper = new DatabaseHelper(this);
         getData();
 
         reply_edit.addTextChangedListener( new TextWatcher() {
@@ -85,7 +96,8 @@ public class Evaluation_Detail extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         } );
 
         replyBtn.setOnClickListener(v -> {
@@ -104,11 +116,20 @@ public class Evaluation_Detail extends AppCompatActivity {
             reply_text.setVisibility(View.VISIBLE);
             finishBtn.setVisibility(View.GONE);
             replyBtn.setVisibility(View.VISIBLE);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+            time_press.setText(sdf.format(new Date()));
+            updateReply();
             replyBtn.setText("修改");
+
+
+
         });
 
-        back_btn.setOnClickListener(v -> finish());
-
+        back_btn.setOnClickListener(v -> {
+            Intent myIntent = new Intent(this, Setting_Evaluation.class);
+            this.startActivity(myIntent);
+        });
         globalNav();
     }
 
@@ -131,13 +152,14 @@ public class Evaluation_Detail extends AppCompatActivity {
         finishBtn = findViewById(R.id.finish_btn_ED);
     }
 
-    private void getData(){
+
+    public void getData(){
         String function_name = "comment_detail";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("comment_id", comment_id)
                 .build();
-        Log.d(TAG, "commen_id: "+comment_id);
+        Log.d(TAG, "comment_id: "+comment_id);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL + "/user_data.php")
@@ -161,6 +183,8 @@ public class Evaluation_Detail extends AppCompatActivity {
                 Log.i(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
+
+
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject comment = responseArr.getJSONObject(0);
 
@@ -192,6 +216,7 @@ public class Evaluation_Detail extends AppCompatActivity {
                             reply_text.setVisibility(View.VISIBLE);
                             reply_edit.setText(replyStr);
                             replyBtn.setText("修改");
+                            Log.d(TAG, ""+replyStr);
                         }
                     });
                 } catch (JSONException e) {
@@ -209,9 +234,30 @@ public class Evaluation_Detail extends AppCompatActivity {
         }
     }
 
+    private void updateReplyDB(){
+
+    }
+
     private void updateReply(){
         String function_name = "update_reply";
         String reply = reply_text.getText().toString();
+            db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(TableContract.CommentsTable.COLUMN_NAME_REPLY,reply);
+            values.put(TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE, time_press.getText().toString());
+            Log.d(TAG, "update "+reply+time_press.getText().toString());
+            String selection = TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID+" = ? ";
+            String[] selectionArgs = {comment_id};
+
+            int count = db.update(
+                    TableContract.CommentsTable.TABLE_NAME,
+                    values,
+                    selection,
+                    selectionArgs
+            );
+            Log.d(TAG,""+count);
+            if(count != -1) Log.d(TAG, "update successfully");
+            else Log.d(TAG, "update failed");
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("comment_id", comment_id)
@@ -244,6 +290,7 @@ public class Evaluation_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d(TAG,"responseData of update_reply: "+responseData); //顯示資料
+
             }
         });
     }
@@ -296,7 +343,11 @@ public class Evaluation_Detail extends AppCompatActivity {
     public void onBackPressed() {
         String reply = reply_text.getText().toString();
         if(reply.isEmpty() || reply.equals(replyStr)) Log.d(TAG, "no edit");
-        else updateReply();
+        else {
+            updateReply();
+            Intent myIntent = new Intent(this, Setting_Evaluation.class);
+            this.startActivity(myIntent);
+        }
         super.onBackPressed();
     }
 }

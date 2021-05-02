@@ -1,7 +1,11 @@
 package com.example.homerenting_prototype_one.setting;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +23,13 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.CommentAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.google.android.material.tabs.TabLayout;
+
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -32,6 +40,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -51,6 +60,7 @@ public class Setting_Evaluation extends AppCompatActivity {
 
     ArrayList<String[]> data;
     ArrayList<Double> stars;
+    ArrayList<String[]> comments;
 
     int commentcount = 0;
     boolean lock = false;
@@ -59,7 +69,8 @@ public class Setting_Evaluation extends AppCompatActivity {
 
     Context context = this;
     String TAG = "Setting_Evaluation";
-
+    private static DatabaseHelper dbHelper;
+    private static SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,11 +79,11 @@ public class Setting_Evaluation extends AppCompatActivity {
         commentCount = findViewById(R.id.commentCount_ED);
         allStars = findViewById(R.id.allStar_ED);
         commentList = findViewById(R.id.comment_list_SE);
-
         data = new ArrayList<>();
         stars = new ArrayList<>();
+        comments = new ArrayList<>();
 
-        getData();
+        //getData();
 
         LinearLayout first_evaluation = findViewById(R.id.first_evaluation_layout);
         first_evaluation.setOnClickListener(v -> {
@@ -81,9 +92,63 @@ public class Setting_Evaluation extends AppCompatActivity {
         });
 
         back_btn.setOnClickListener(v -> finish());
+        dbHelper = new DatabaseHelper(this);
 
+        readData();
         globalNav();
     }
+
+    private void readData(){
+        db = dbHelper.getReadableDatabase();
+        String[] projection = {
+                TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID,
+                TableContract.CommentsTable.COLUMN_NAME_ORDER_ID,
+                TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID,
+                TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID,
+                TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE,
+                TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY,
+                TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE,
+                TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE,
+                TableContract.CommentsTable.COLUMN_NAME_COMMENT,
+                TableContract.CommentsTable.COLUMN_NAME_REPLY
+        };
+        String selection = TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID+" = ?";
+        String[] selectionArgs = {"1"};
+
+        Cursor cursor = db.query(
+                TableContract.CommentsTable.TABLE_NAME,// FROM TABLE_NAME
+                projection,//SELECT *
+                selection,//WHERE COMPANY_ID
+                selectionArgs,//=1
+                null,
+                null,
+                null
+        );
+
+        Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+        if(cursor.moveToFirst()){
+            while(cursor.moveToNext()){
+                String[] item = {
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_ORDER_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_REPLY)),
+                };
+                comments.add(item);
+                Log.d(TAG,"sqlite comment: "+Arrays.toString(item));
+            }
+        }
+            cursor.close();
+            getData();
+            return;
+    }
+
 
     private void getData(){
         lock = true;
@@ -118,14 +183,13 @@ public class Setting_Evaluation extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.i(TAG,"responseData: "+responseData); //顯示資料
-
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     commentcount = responseArr.length();
+                    db = dbHelper.getWritableDatabase();
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject comment = responseArr.getJSONObject(i);
                         Log.i(TAG, "comment: "+comment);
-
                         String comment_id = comment.getString("comment_id");
                         String name = comment.getString("member_name");
                         String nameTitle;
@@ -134,6 +198,7 @@ public class Setting_Evaluation extends AppCompatActivity {
                         String date = comment.getString("comment_date");
                         String commentStr = comment.getString("comment");
                         String commentSummary;
+                        String reply = comment.getString("reply");
                         if(commentStr.length() > 35) commentSummary = commentStr.substring(0, 30)+"...";
                         else commentSummary = commentStr;
 
@@ -148,13 +213,35 @@ public class Setting_Evaluation extends AppCompatActivity {
                         stars.add(price_star);
 
                         String[] row_data = {comment_id, String.valueOf(starf), name, nameTitle, date, commentSummary};
+                        String[] comment_data = {comment_id, String.valueOf(starf), name, nameTitle, date, commentSummary, reply};
                         Log.d(TAG, "row_data: "+Arrays.toString(row_data));
+                        Log.d(TAG, "comment_data"+Arrays.toString(comment_data));
+                        comments.add(comment_data);
                         data.add(row_data);
+                        db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID), comment_id);
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_ORDER_ID), comment.getString(TableContract.CommentsTable.COLUMN_NAME_ORDER_ID));
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID), comment.getString(TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID));
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID), getCompany_id(context));
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE), date);
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY), service_star);
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE), work_star);
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE), price_star);
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT),commentStr);
+                        values.put((TableContract.CommentsTable.COLUMN_NAME_REPLY), reply);
+                        try{
+                            long newRowId = db.insertOrThrow(TableContract.CommentsTable.TABLE_NAME, null, values);
+                            if(newRowId != -1) {
+                                Log.d(TAG,"create successfully");}
+                            else Log.d(TAG, "create failed");
+                        }catch (SQLException e){
+
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
                 lock = false;
                 if(!responseData.equals("null")){
                     for(int i=0; i < data.size(); i++)
@@ -173,7 +260,9 @@ public class Setting_Evaluation extends AppCompatActivity {
             commentList.setAdapter(commentAdapter);
             setStars();
         });
+
     }
+
 
     private void setStars(){
         int i = 0;
@@ -235,5 +324,4 @@ public class Setting_Evaluation extends AppCompatActivity {
             }
         });
     }
-
 }

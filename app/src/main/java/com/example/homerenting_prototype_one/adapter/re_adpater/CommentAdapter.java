@@ -2,6 +2,8 @@ package com.example.homerenting_prototype_one.adapter.re_adpater;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
 import com.example.homerenting_prototype_one.setting.Evaluation_Detail;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.setting.Setting_Evaluation;
 
 import java.util.ArrayList;
 
@@ -22,6 +26,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     ArrayList<String[]> data;
     int commentCount;
     double allStar;
+    Setting_Evaluation se;
+
 
     public CommentAdapter(Context context, ArrayList<String[]> data){
         this.context = context;
@@ -67,6 +73,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     public void setAllStars(double allStar) { this.allStar = allStar; }
     public double getAllStars() { return allStar; }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout commentCL;

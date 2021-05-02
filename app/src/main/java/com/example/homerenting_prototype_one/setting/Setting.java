@@ -2,8 +2,11 @@ package com.example.homerenting_prototype_one.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -25,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -41,7 +48,6 @@ public class Setting extends AppCompatActivity {
 
     Context context = this;
     String TAG = "Setting";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +62,7 @@ public class Setting extends AppCompatActivity {
         company_email = findViewById(R.id.company_email_S);
 
         getCompanyDetail();
+
 
         company_information.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,6 +162,74 @@ public class Setting extends AppCompatActivity {
             }
         });
     }
+
+    private void getCommentData(){
+        String function_name = "comment_data";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject comment = responseArr.getJSONObject(i);
+                        Log.i(TAG, "comment: "+comment);
+                        String comment_id = comment.getString("comment_id");
+                        String name = comment.getString("member_name");
+                        String nameTitle;
+                        if(comment.getString("gender").equals("女")) nameTitle = "小姐";
+                        else nameTitle = "先生";
+                        String date = comment.getString("comment_date");
+                        String commentStr = comment.getString("comment");
+                        String commentSummary;
+                        if(commentStr.length() > 35) commentSummary = commentStr.substring(0, 30)+"...";
+                        else commentSummary = commentStr;
+
+                        double service_star = comment.getDouble("service_quality");
+                        double work_star = comment.getDouble("work_attitude");
+                        double price_star = comment.getDouble("price_grade");
+                        double starf = (service_star+work_star+price_star)/3;
+                        starf = (double) Math.round(starf*10)/10;
+                        Log.d(TAG, "service("+service_star+")+work("+work_star+")+price("+price_star+")/3 = "+starf);
+
+                        String[] row_data = {comment_id, String.valueOf(starf), name, nameTitle, date, commentSummary};
+                        Log.d(TAG, "row_data: "+Arrays.toString(row_data));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 
     private void globalNav(){
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
