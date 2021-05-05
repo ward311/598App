@@ -55,11 +55,10 @@ public class New_Login extends AppCompatActivity {
         session = SessionManager.getInstance(this);
 
         RequestBody body = new FormBody.Builder()
-                .add("function_name", "all_company_data")
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .url(BuildConfig.SERVER_URL+"/get_data/all_company_data.php")
                 .post(body)
                 .build();
 
@@ -77,7 +76,7 @@ public class New_Login extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-//                Log.i(TAG, "responeseData: "+responseData);
+                Log.i(TAG, "responeseData: "+responseData);
 
                 try {
                     final JSONArray responseArr = new JSONArray(responseData);

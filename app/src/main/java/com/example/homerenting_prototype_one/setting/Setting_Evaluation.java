@@ -100,66 +100,90 @@ public class Setting_Evaluation extends AppCompatActivity {
 
     private void readData(){
         db = dbHelper.getReadableDatabase();
-        String[] projection = {
-                TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID,
-                TableContract.CommentsTable.COLUMN_NAME_ORDER_ID,
-                TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID,
-                TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID,
-                TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE,
-                TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY,
-                TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE,
-                TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE,
-                TableContract.CommentsTable.COLUMN_NAME_COMMENT,
-                TableContract.CommentsTable.COLUMN_NAME_REPLY
-        };
-        String selection = TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID+" = ?";
-        String[] selectionArgs = {"1"};
-
-        Cursor cursor = db.query(
-                TableContract.CommentsTable.TABLE_NAME,// FROM TABLE_NAME
-                projection,//SELECT *
-                selection,//WHERE COMPANY_ID
-                selectionArgs,//=1
-                null,
-                null,
-                null
-        );
+//        String[] projection = {
+//                TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID,
+//                TableContract.CommentsTable.COLUMN_NAME_ORDER_ID,
+//                TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID,
+//                TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID,
+//                TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE,
+//                TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY,
+//                TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE,
+//                TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE,
+//                TableContract.CommentsTable.COLUMN_NAME_COMMENT,
+//                TableContract.CommentsTable.COLUMN_NAME_REPLY
+//        };
+//
+//        String selection = TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID+" = ?";
+//        String[] selectionArgs = {"1"};
+//
+//        Cursor cursor = db.query(
+//                TableContract.CommentsTable.TABLE_NAME,// FROM TABLE_NAME
+//                projection,//SELECT *
+//                selection,//WHERE COMPANY_ID
+//                selectionArgs,//=1
+//                null,
+//                null,
+//                null
+//        );
+        String sql_query =
+                "SELECT * FROM "+TableContract.CommentsTable.TABLE_NAME+" NATURAL JOIN "+TableContract.OrdersTable.TABLE_NAME+" " +
+                "NATURAL JOIN "+TableContract.MemberTable.TABLE_NAME+" " +
+                "WHERE company_id = "+getCompany_id(context)+" " +
+                "ORDER BY comment_date DESC;";
+        Cursor cursor = db.rawQuery(sql_query, null);
 
         Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
-        if(cursor.moveToFirst()){
-            while(cursor.moveToNext()){
-                String[] item = {
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_ORDER_ID)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_REPLY)),
-                };
-                comments.add(item);
-                Log.d(TAG,"sqlite comment: "+Arrays.toString(item));
-            }
-        }
+        if(!cursor.moveToNext()){
             cursor.close();
             getData();
             return;
+        }
+        while(!cursor.isAfterLast()){
+            String comment_id = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME));
+            String nameTitle;
+            if(cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_GENDER)).equals("女")) nameTitle = "小姐";
+            else nameTitle = "先生";
+            String date = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE));
+            String commentStr = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT));
+            String commentSummary;
+            if(commentStr.length() > 35) commentSummary = commentStr.substring(0, 30)+"...";
+            else commentSummary = commentStr;
+
+            double service_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY));
+            double work_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE));
+            double price_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE));
+            double starf = (service_star+work_star+price_star)/3;
+            starf = (double) Math.round(starf*10)/10;
+//            Log.d(TAG, "service("+service_star+")+work("+work_star+")+price("+price_star+")/3 = "+starf);
+            stars.add(service_star);
+            stars.add(work_star);
+            stars.add(price_star);
+
+            String[] row_data = {comment_id, String.valueOf(starf), name, nameTitle, date, commentSummary};
+            Log.d(TAG,"("+(cursor.getPosition()+1)+"/"+cursor.getCount()+"). sqlite comment: "+Arrays.toString(row_data));
+            data.add(row_data);
+
+            cursor.moveToNext();
+        }
+        lock = false;
+
+        for(int i=0; i < data.size(); i++)
+            Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+        setRList();
+
+        cursor.close();
     }
 
 
     private void getData(){
         lock = true;
-        String function_name = "comment_data";
         RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .url(BuildConfig.SERVER_URL + "/get_data/comment_data.php")
                 .post(body)
                 .build();
 
@@ -170,13 +194,8 @@ public class Setting_Evaluation extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -236,7 +255,7 @@ public class Setting_Evaluation extends AppCompatActivity {
                                 Log.d(TAG,"create successfully");}
                             else Log.d(TAG, "create failed");
                         }catch (SQLException e){
-
+                            e.printStackTrace();
                         }
                     }
                 } catch (JSONException e) {

@@ -34,14 +34,14 @@ public class TableContract {
         public static final String COLUMN_NAME_CONTACT_TIME = "contact_time";
 
         public static final String SQL_CREATE_MEMBER = ""+
-                "CREATE TABLE IF NOT EXISTS "+" ( "+
+                "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
                 COLUMN_NAME_MEMBER_ID+" INTEGER(10) NOT NULL, "+
-                COLUMN_NAME_MEMBER_NAME+" VARCHAR(50), "+
-                COLUMN_NAME_GENDER+" VARCHAR(10), "+
-                COLUMN_NAME_PHONE+" VARCHAR(10), "+
-                COLUMN_NAME_CONTACT_ADDRESS+" VARCHAR(100), "+
-                COLUMN_NAME_CONTACT_WAY+" VARCHAR(100), "+
-                COLUMN_NAME_CONTACT_TIME+" VARCHAR(100), "+
+                COLUMN_NAME_MEMBER_NAME+" NVARCHAR(50) NOT NULL, "+
+                COLUMN_NAME_GENDER+" NVARCHAR(10), "+
+                COLUMN_NAME_PHONE+" VARCHAR(13), "+
+                COLUMN_NAME_CONTACT_ADDRESS+" NVARCHAR(100), "+
+                COLUMN_NAME_CONTACT_WAY+" NVARCHAR(100), "+
+                COLUMN_NAME_CONTACT_TIME+" NVARCHAR(100), "+
                 "PRIMARY KEY (`member_id`) "+
                 ");";
         public static final String SQL_DELETE_MEMBER =
@@ -65,15 +65,15 @@ public class TableContract {
         public static final String SQL_CREATE_COMPANY =
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
                         COLUMN_NAME_COMPANY_ID+" INTEGER(10) NOT NULL, "+
-                        COLUMN_NAME_COMPANY_NAME+" VARCHAR(100), "+
+                        COLUMN_NAME_COMPANY_NAME+" NVARCHAR(100), "+
                         COLUMN_NAME_IMG+" VARCHAR(99), "+
-                        COLUMN_NAME_ADDRESS+" VARCHAR(50), "+
-                        COLUMN_NAME_PHONE+" VARCHAR(99), "+
+                        COLUMN_NAME_ADDRESS+" NVARCHAR(50), "+
+                        COLUMN_NAME_PHONE+" VARCHAR(13), "+
                         COLUMN_NAME_STAFF_NUM+" INTEGER(4) NOT NULL, "+
                         COLUMN_NAME_URL+" VARCHAR(100), "+
                         COLUMN_NAME_EMAIL+" VARCHAR(100), "+
                         COLUMN_NAME_LINE_ID+" VARCHAR(100), "+
-                        COLUMN_NAME_PHILOSOPHY+" VARCHAR(500), "+
+                        COLUMN_NAME_PHILOSOPHY+" NVARCHAR(500), "+
                         COLUMN_NAME_LAST_DISTRIBUTION+" FLOAT DEFAULT 0, "+
                         "PRIMARY KEY(`company_id`)"+
                 ");";
@@ -96,7 +96,7 @@ public class TableContract {
         public static final String COLUMN_NAME_CARTON_NUM = "carton_num";
         public static final String COLUMN_NAME_PROGRAM = "program";
         public static final String COLUMN_NAME_ORDER_STATUS = "order_status";
-        public static final String COLUMN_NAME_NEW = "new";
+//        public static final String COLUMN_NAME_NEW = "new";
         public static final String COLUMN_NAME_AUTO = "auto";
         public static final String COLUMN_NAME_LAST_UPDATE = "last_update";
         public static final String COLUMN_NAME_SIGNATURE = "signature";
@@ -104,21 +104,21 @@ public class TableContract {
         public static final String SQL_CREATE_ORDERS = ""+
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+ " ( "+
                 COLUMN_NAME_ORDER_ID+" INTEGER(10) NOT NULL, "+
-                COLUMN_NAME_MEMBER_ID+" INTEGER(10), "+
-                COLUMN_NAME_ADDITIONAL+" VARCHAR(300), "+
-                COLUMN_NAME_MEMO+" VARCHAR(300), "+
-                COLUMN_NAME_FROM_ADDRESS+" VARCHAR(100), "+
-                COLUMN_NAME_TO_ADDRESS+" VARCHAR(100), "+
+                COLUMN_NAME_MEMBER_ID+" INTEGER(10) NOT NULL, "+
+                COLUMN_NAME_ADDITIONAL+" NVARCHAR(300), "+
+                COLUMN_NAME_MEMO+" NVARCHAR(300), "+
+                COLUMN_NAME_FROM_ADDRESS+" NVARCHAR(100), "+
+                COLUMN_NAME_TO_ADDRESS+" NVARCHAR(100), "+
                 COLUMN_NAME_FROM_ELEVATOR+" BOOLEAN, "+
                 COLUMN_NAME_TO_ELEVATOR+" BOOLEAN, "+
                 COLUMN_NAME_STORAGE_SPACE+" VARCHAR(10), "+
                 COLUMN_NAME_CARTON_NUM+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_PROGRAM+" VARCHAR(4), "+
-                COLUMN_NAME_ORDER_STATUS+" enum('evaluating', 'scheduled', 'assigned','done', 'cancel', 'paid), "+
-                COLUMN_NAME_NEW+" BOOLEAN DEFAULT TRUE, "+
+                COLUMN_NAME_ORDER_STATUS+" VARCHAR(11) NOT NULL, "+
+//                COLUMN_NAME_NEW+" BOOLEAN DEFAULT TRUE, "+
                 COLUMN_NAME_AUTO+" BOOLEAN DEFAULT TRUE, "+
                 COLUMN_NAME_LAST_UPDATE+" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "+
-                COLUMN_NAME_SIGNATURE+" TEXT NOT NULL, "+
+                COLUMN_NAME_SIGNATURE+" CLOB, "+
                 "PRIMARY KEY (`order_id`), "+
                 "FOREIGN KEY (`member_id`) "+
                 "REFERENCES member (`member_id`) ON DELETE SET NULL "+
@@ -131,8 +131,10 @@ public class TableContract {
                 " = CURRENT_TIMESTAMP WHERE "+COLUMN_NAME_ORDER_ID+" = "+
                 "OLD."+COLUMN_NAME_ORDER_ID+";"+
                 "\n END";
+
         public static final String SQL_DELETE_ORDERS =
                 "DROP TABLE IF EXISTS "+TABLE_NAME;
+
     }
 
 
@@ -147,7 +149,7 @@ public class TableContract {
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
                 COLUMN_NAME_SPECIAL_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_ORDER_ID+" INTEGER(10), "+
-                COLUMN_NAME_NAME+" VARCHAR(100), "+
+                COLUMN_NAME_NAME+" NVARCHAR(100), "+
                 COLUMN_NAME_NUM+" INTEGER(10), "+
                 "PRIMARY KEY (`special_id`), "+
                 "FOREIGN KEY (`order_id`) "+
@@ -518,8 +520,8 @@ public class TableContract {
                 COLUMN_NAME_SERVICE_QUALITY+" FLOAT(10) NOT NULL CHECK (`service_quality` >= 0 AND `service_quality` <= 5), "+
                 COLUMN_NAME_WORK_ATTITUDE+" FLOAT(10) NOT NULL CHECK (`work_attitude` >= 0 AND `work_attitude` <=5), "+
                 COLUMN_NAME_PRICE_GRADE+" FLOAT(10) NOT NULL CHECK (`price_grade` >= 0 AND `price_grade` <=5), "+
-                COLUMN_NAME_COMMENT+" VARCHAR(300) DEFAULT NULL, "+
-                COLUMN_NAME_REPLY+" VARCHAR(300) DEFAULT NULL, "+
+                COLUMN_NAME_COMMENT+" NVARCHAR(300) DEFAULT NULL, "+
+                COLUMN_NAME_REPLY+" NVARCHAR(300) DEFAULT NULL, "+
                 "PRIMARY KEY (`comment_id`), "+
                 "FOREIGN KEY (`order_id`) "+
                 "REFERENCES orders(`order_id`) ON DELETE CASCADE, "+

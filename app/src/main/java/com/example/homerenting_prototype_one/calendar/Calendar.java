@@ -1,7 +1,10 @@
 package com.example.homerenting_prototype_one.calendar;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
@@ -27,6 +30,8 @@ import com.example.homerenting_prototype_one.add_order.Add_Order;
 import com.example.homerenting_prototype_one.add_order.Add_Valuation;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.base_adapter.New_CalendarAdapter;
@@ -53,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -89,6 +95,10 @@ public class Calendar extends AppCompatActivity {
     ArrayList<String[]> data, data_v, data_o;
     ArrayList<Integer> checkedMonth = new ArrayList<>();
 
+
+    private static DatabaseHelper dbHelper;
+    private static SQLiteDatabase db;
+
     Boolean VB, OB;
     Boolean isOvertime = true;
 
@@ -101,6 +111,13 @@ public class Calendar extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
         init();
         setmCalendar();
+
+        dbHelper = new DatabaseHelper(this);
+        runOnUiThread(() -> {
+            getAllOrdersData();
+            getAllMemberData();
+        });
+
 
         globalNav();
     }
@@ -137,6 +154,13 @@ public class Calendar extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of getOrder: "+responseData); //顯示資料
+                if (responseData.equals("null") || responseData.equals("no result")) {
+                    runOnUiThread(() -> {
+                        NoDataAdapter noData = new NoDataAdapter();
+                        orderList.setAdapter(noData);
+                    });
+                    return;
+                }
 
                 try {
                     //轉換成json格式，array或object
@@ -167,13 +191,7 @@ public class Calendar extends AppCompatActivity {
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
-                    runOnUiThread(() -> {
-                        if (responseData.equals("null")) {
-                            NoDataAdapter noData = new NoDataAdapter();
-                            orderList.setAdapter(noData);
-                        } else
-                            Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
-                    });
+                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
                 }
 
                 //顯示資訊
@@ -348,7 +366,7 @@ public class Calendar extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -356,6 +374,7 @@ public class Calendar extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d(TAG, "responseData of getOrders: "+responseData); //顯示資料
+                if(responseData.equals("no result") || responseData.equals("null")) return;
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -455,6 +474,196 @@ public class Calendar extends AppCompatActivity {
                 }
 
                 runOnUiThread(() -> mCalendar.setEvents(events));
+            }
+        });
+    }
+
+    private void getAllOrdersData(){
+        Log.d(TAG, "start getAllOrdersData and write in sqlite db");
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/get_data/all_orders_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData of getAllOrdersData: "+responseData); //顯示資料
+
+                JSONArray responseArr;
+                try {
+                    responseArr= new JSONArray(responseData);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    Log.d(TAG, "getAllOrdersData: "+e.getMessage());
+                    return;
+                }
+
+                int success_counter = 0, fail_counter = 0;
+                for (int i = 0; i < responseArr.length(); i++) {
+                    JSONObject order;
+                    try {
+                        order = responseArr.getJSONObject(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+//                    Log.d(TAG, (i+1)+". order: "+order);
+
+                    db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    try {
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID, order.getString(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_MEMBER_ID, order.getString(TableContract.OrdersTable.COLUMN_NAME_MEMBER_ID));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_ADDITIONAL, order.getString(TableContract.OrdersTable.COLUMN_NAME_ADDITIONAL));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_MEMO, order.getString(TableContract.OrdersTable.COLUMN_NAME_MEMO));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_FROM_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_FROM_ADDRESS));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_TO_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_TO_ADDRESS));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE, order.getString(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM, order.getString(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_PROGRAM, order.getString(TableContract.OrdersTable.COLUMN_NAME_PROGRAM));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS, order.getString(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_AUTO, order.getString(TableContract.OrdersTable.COLUMN_NAME_AUTO));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_LAST_UPDATE, order.getString(TableContract.OrdersTable.COLUMN_NAME_LAST_UPDATE));
+//                        Log.d(TAG, (i+1)+". "+values.toString())
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+
+                    try{
+                        long newRowId = db.insertOrThrow(TableContract.OrdersTable.TABLE_NAME, null, values);
+                        if(newRowId != -1){
+                            success_counter = success_counter + 1;
+                            Log.d(TAG, "create orders successfully");
+                        }
+                        else{
+                            fail_counter = fail_counter + 1;
+                            Log.d(TAG, "create orders failed");
+                        }
+                    } catch (SQLException e){
+                        if(e.getMessage().contains("no such table")) break;
+                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
+                            String selection = TableContract.OrdersTable.COLUMN_NAME_ORDER_ID+" = ?";
+                            String[] seletctionArgs = {values.getAsString(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID)};
+
+                            int count = db.update(
+                                    TableContract.OrdersTable.TABLE_NAME,
+                                    values,
+                                    selection,
+                                    seletctionArgs
+                            );
+                            if(count != -1) success_counter = success_counter + 1;
+                            else fail_counter = fail_counter + 1;
+                        }
+                        else{
+                            e.printStackTrace();
+                            Log.d(TAG, "insert order data: "+e.getMessage());
+                        }
+                    }
+                }
+                Log.d(TAG, "orders data:\n success data: "+success_counter+", fail data: "+fail_counter);
+            }
+        });
+    }
+
+    private void getAllMemberData(){
+        Log.d(TAG, "start getAllMemberData and write in sqlite db");
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/get_data/all_company_member.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData of getAllMemberData: "+responseData); //顯示資料
+
+                JSONArray responseArr;
+                try {
+                    responseArr= new JSONArray(responseData);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    Log.d(TAG, "getAllMemberData: "+e.getMessage());
+                    return;
+                }
+
+                int success_counter = 0, fail_counter = 0;
+                for (int i = 0; i < responseArr.length(); i++) {
+                    JSONObject member;
+                    try {
+                        member = responseArr.getJSONObject(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+//                    Log.d(TAG, (i+1)+". member: "+member);
+
+                    db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    try {
+                        values.put(TableContract.MemberTable.COLUMN_NAME_MEMBER_ID, member.getString(TableContract.MemberTable.COLUMN_NAME_MEMBER_ID));
+                        values.put(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME, member.getString(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME));
+                        values.put(TableContract.MemberTable.COLUMN_NAME_GENDER, member.getString(TableContract.MemberTable.COLUMN_NAME_GENDER));
+                        values.put(TableContract.MemberTable.COLUMN_NAME_PHONE, member.getString(TableContract.MemberTable.COLUMN_NAME_PHONE));
+                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_ADDRESS, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_ADDRESS));
+                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_WAY, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_WAY));
+                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_TIME, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_TIME));
+//                        Log.d(TAG, (i+1)+". "+values.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+
+                    try{
+                        long newRowId = db.insertOrThrow(TableContract.MemberTable.TABLE_NAME, null, values);
+                        if(newRowId != -1){
+                            success_counter = success_counter + 1;
+                            Log.d(TAG, "create member successfully");
+                        }
+                        else{
+                            fail_counter = fail_counter + 1;
+                            Log.d(TAG, "create member failed");
+                        }
+                    } catch (SQLException e){
+                        if(e.getMessage().contains("no such table")) break;
+                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                            success_counter = success_counter + 1;
+                        else{
+                            e.printStackTrace();
+                            Log.d(TAG, "insert member data: "+e.getMessage());
+                        }
+                    }
+                }
+                Log.d(TAG, "member data:\n success data: "+success_counter+", fail data: "+fail_counter);
             }
         });
     }
