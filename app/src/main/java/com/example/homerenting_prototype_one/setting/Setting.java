@@ -2,14 +2,12 @@ package com.example.homerenting_prototype_one.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,8 +15,7 @@ import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.helper.DatabaseHelper;
-import com.example.homerenting_prototype_one.model.TableContract;
+import com.example.homerenting_prototype_one.main.Login;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -31,7 +28,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -45,8 +41,8 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 
 public class Setting extends AppCompatActivity {
     TextView company_email;
-
     Context context = this;
+    Button sign_out;
     String TAG = "Setting";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +53,10 @@ public class Setting extends AppCompatActivity {
         LinearLayout discount = findViewById(R.id.discount_LL_S);
         LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_LL_S);
         LinearLayout system_announcement = findViewById(R.id.announce_LL_S);
-        LinearLayout history_record = findViewById(R.id.history_LL_S);
+        LinearLayout history_record = findViewById(R.id.btn_logout);
 
         company_email = findViewById(R.id.company_email_S);
+        sign_out = findViewById(R.id.signout_btn);
 
         getCompanyDetail();
 
@@ -104,6 +101,14 @@ public class Setting extends AppCompatActivity {
             public void onClick(View v) {
                 Intent record_intent = new Intent(Setting.this, Setting_Record.class);
                 startActivity(record_intent);
+            }
+        });
+        sign_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent loginPage_intent = new Intent(Setting.this, Login.class);
+                startActivity(loginPage_intent);
+                Toast.makeText(context, "已登出", Toast.LENGTH_LONG).show();
             }
         });
 

@@ -144,7 +144,7 @@ public class Setting_Information extends AppCompatActivity {
                 TableContract.CompanyTable.COLUMN_NAME_URL,
                 TableContract.CompanyTable.COLUMN_NAME_EMAIL,
                 TableContract.CompanyTable.COLUMN_NAME_LINE_ID,
-                TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY ,
+                TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY,
                 TableContract.CompanyTable.COLUMN_NAME_LAST_DISTRIBUTION
         };
 

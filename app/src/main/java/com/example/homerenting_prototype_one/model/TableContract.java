@@ -59,7 +59,7 @@ public class TableContract {
         public static final String COLUMN_NAME_URL = "url";
         public static final String COLUMN_NAME_EMAIL = "email";
         public static final String COLUMN_NAME_LINE_ID = "line_id";
-        public static final String COLUMN_NAME_PHILOSOPHY = "philosophy";
+        public static final String COLUMN_NAME_PHILOSOPHY = "pilosophy";
         public static final String COLUMN_NAME_LAST_DISTRIBUTION = "last_distribution";
 
         public static final String SQL_CREATE_COMPANY =
@@ -557,6 +557,41 @@ public class TableContract {
                 "REFERENCES staff(`staff_id`) ON DELETE CASCADE "+");";
         public static final String SQL_DELETE_SQL_STAFF_LEAVE =
                 "DROP TABLE IF EXISTS "+TABLE_NAME;
+    }
+
+    public static class VehicleMaintainTable implements BaseColumns{
+        public static final String TABLE_NAME = "vehicle_maintain";
+        public static final String COLUMN_NAME_VEHICLE_ID = "vehicle_id";
+        public static final String COLUMN_NAME_MAINTAIN_DATE = "maintain_date";
+        public static final String SQL_CREATE_VEHICLE_MAINTAIN = ""+
+                "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
+                COLUMN_NAME_VEHICLE_ID+" INTEGER(10) NOT NULL, "+
+                COLUMN_NAME_MAINTAIN_DATE+" DATE NOT NULL, "+
+                "PRIMARY KEY (`vehicle_id`, `maintain_date`), "+
+                "FOREIGN KEY (`vehicle_id`) "+
+                "REFERENCES vehicle(`vehicle_id`) ON DELETE CASCADE "+
+                ");";
+        public static final String SQL_DELETE_MAINTAIN_DATE =
+                "DELETE TABLE IF EXISTS "+TABLE_NAME;
+    }
+
+    public static class AnnouncementCompanyTable implements BaseColumns{
+        public static final String TABLE_NAME = "announcement_company";
+        public static final String COLUMN_NAME_ANNOUNCEMENT_ID = "announcement_id";
+        public static final String COLUMN_NAME_COMPANY_ID = "company_id";
+        public static final String COLUMN_NAME_NEW = "new";
+        public static final String SQL_CREATE_ANNOUNCEMENT_COMPANY = ""+
+        "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
+        COLUMN_NAME_ANNOUNCEMENT_ID+" INTEGER(10) NOT NULL, "+
+        COLUMN_NAME_COMPANY_ID+" INTEGER(1) NOT NULL, "+
+        COLUMN_NAME_NEW+" BOOLEAN DEFAULT TRUE, "+
+        "PRIMARY KEY (`announcement_id`, `company_id`), "+
+        "FOREIGN KEY (`announcement_id`) "+
+        "REFERENCES announcement(`announcement_id`) ON DELETE CASCADE, "+
+        "FOREIGN KEY (`company_id`) "+
+        "REFERENCES company(`company_id`) ON DELETE CASCADE"+");";
+        public static final String SQL_DELETE_ANNOUNCEMENT_COMPANY =
+                "DELETE TABLE IF EXISTS "+TABLE_NAME;
     }
 
 
