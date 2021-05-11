@@ -2,6 +2,7 @@ package com.example.homerenting_prototype_one.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -20,9 +22,14 @@ import com.example.homerenting_prototype_one.ForgetPassword;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Register;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.SessionManager;
+import com.example.homerenting_prototype_one.model.User;
 import com.example.homerenting_prototype_one.order.Order;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -47,6 +54,7 @@ public class Login extends AppCompatActivity {
     String TAG = "Login";
     Context context = Login.this;;
 
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,17 @@ public class Login extends AppCompatActivity {
         login_btn = findViewById(R.id.login_btn_L);
         edit_btn = findViewById(R.id.edit_pwd_btn);
         forget_pwd = findViewById(R.id.forgetText);
+
+        session = SessionManager.getInstance(this);
+
+        if(session.isLogin()){ //關掉app後不會保存登入狀態的樣子
+            User user = session.getUserDetail();
+            Log.d(TAG, "user: "+user.getId()+", "+user.getCompany_id()+", "+user.getName()+", "+user.getEmail()+", "+user.getToken());
+        }
+        else Log.d(TAG, "no login");
+
+
+
         password_edit.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         account_edit.addTextChangedListener(new TextWatcher() {
@@ -99,31 +118,22 @@ public class Login extends AppCompatActivity {
         });
 
 
-        login_btn.setOnClickListener(new View.OnClickListener() {
+        login_btn.setOnClickListener(view -> {
+            account = account_edit.getText().toString();
+            password = password_edit.getText().toString();
+            loginTo();
 
-            @Override
-            public void onClick(View view) {
-                account = account_edit.getText().toString();
-                password = password_edit.getText().toString();
-                loginTo();
-
-            }
         });
 
-        forget_pwd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent forgetPwd = new Intent(context, ForgetPassword.class);
-                startActivity(forgetPwd);
-            }
+        forget_pwd.setOnClickListener(view -> {
+            Intent forgetPwd = new Intent(context, ForgetPassword.class);
+            startActivity(forgetPwd);
         });
 
     }
 
 
-    public void login(View view) {
-        return;
-    }
+    public void login(View view) { }
 
     public void loginTo(){
         String company_id = getCompany_id(context);
@@ -131,7 +141,6 @@ public class Login extends AppCompatActivity {
                 .add("user_email",account)
                 .add("password", password)
                 .build();
-        Log.d(TAG, "login: company_id: "+company_id);
         Log.d(TAG, "account: "+account);
         Log.d(TAG,"password: "+password);
 
@@ -145,31 +154,43 @@ public class Login extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                Log.d(TAG, "login responseData: " + responseData);
+
+                try {
+                    JSONObject loginData = new JSONObject(responseData);
+                    if(loginData.getString("status").equals("success")){
+                        JSONObject user = loginData.getJSONObject("user");
+                        Log.d(TAG, "user: "+user.toString());
+                        String user_id = user.getString("user_id");
+                        session.createLoginSession(user_id, String.valueOf(user));
+                        runOnUiThread(() -> {
+                            Toast.makeText(context, "登入成功, 歡迎回來", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(context, Calendar.class));
+                        });
+                    }
+                    else if(loginData.getString("status").equals("failed")){
+                        Log.d(TAG, "login failed: "+loginData.getString("message"));
+                        runOnUiThread(() -> Toast.makeText(context, "登入失敗，請確認帳號密碼", Toast.LENGTH_LONG).show());
+                    }
+                    else Log.d(TAG, "create login session failed: "+loginData.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> {
                         if(responseData.equals("success")){
                             Toast.makeText(context, "登入成功, 歡迎回來", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(context, Calendar.class));
                         }
                         else Toast.makeText(context, "登入失敗，請確認帳號密碼", Toast.LENGTH_LONG).show();
-                    }
-                });
-                Log.d(TAG, "submit responseData: " + responseData);
+                    });
+                }
             }
         });
-            //startActivity(new Intent(context, Order.class));
 
     }
 

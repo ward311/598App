@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.helper.SessionManager;
 import com.example.homerenting_prototype_one.main.Login;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -61,55 +62,36 @@ public class Setting extends AppCompatActivity {
         getCompanyDetail();
 
 
-        company_information.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent information_intent = new Intent(Setting.this, Setting_Information.class);
-                startActivity(information_intent);
-            }
+        company_information.setOnClickListener(v -> {
+            Intent information_intent = new Intent(Setting.this, Setting_Information.class);
+            startActivity(information_intent);
         });
-        service_item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent service_intent = new Intent(Setting.this, Setting_Service.class);
-                startActivity(service_intent);
-            }
+        service_item.setOnClickListener(v -> {
+            Intent service_intent = new Intent(Setting.this, Setting_Service.class);
+            startActivity(service_intent);
         });
-        discount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent discount_intent = new Intent(Setting.this, Setting_Discount.class);
-                startActivity(discount_intent);
-            }
+        discount.setOnClickListener(v -> {
+            Intent discount_intent = new Intent(Setting.this, Setting_Discount.class);
+            startActivity(discount_intent);
         });
-        customer_evaluation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent evaluation_intent = new Intent(Setting.this, Setting_Evaluation.class);
-                startActivity(evaluation_intent);
-            }
+        customer_evaluation.setOnClickListener(v -> {
+            Intent evaluation_intent = new Intent(Setting.this, Setting_Evaluation.class);
+            startActivity(evaluation_intent);
         });
-        system_announcement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent announcement_intent = new Intent(Setting.this, Setting_Announcement.class);
-                startActivity(announcement_intent);
-            }
+        system_announcement.setOnClickListener(v -> {
+            Intent announcement_intent = new Intent(Setting.this, Setting_Announcement.class);
+            startActivity(announcement_intent);
         });
-        history_record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent record_intent = new Intent(Setting.this, Setting_Record.class);
-                startActivity(record_intent);
-            }
+        history_record.setOnClickListener(v -> {
+            Intent record_intent = new Intent(Setting.this, Setting_Record.class);
+            startActivity(record_intent);
         });
-        sign_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent loginPage_intent = new Intent(Setting.this, Login.class);
-                startActivity(loginPage_intent);
-                Toast.makeText(context, "已登出", Toast.LENGTH_LONG).show();
-            }
+        sign_out.setOnClickListener(view -> {
+            SessionManager session = SessionManager.getInstance(context);
+            session.logout();
+            Intent loginPage_intent = new Intent(Setting.this, Login.class);
+            startActivity(loginPage_intent);
+            Toast.makeText(context, "已登出", Toast.LENGTH_LONG).show();
         });
 
         globalNav();

@@ -293,7 +293,7 @@ public class global_function {
     public static String getCompany_id(Context context){ //紀錄公司ID
         session = SessionManager.getInstance(context);
         user = session.getUserDetail();
-        company_id = user.getId();
+        company_id = user.getCompany_id();
         return company_id;
     }
 

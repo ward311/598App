@@ -25,7 +25,7 @@ public class SessionManager {
     @SuppressLint("StaticFieldLeak")
     private static SessionManager INSTANCE = null;
 
-    User user;
+    private static User user = null;
 
     @SuppressLint("CommitPrefEdits")
     private SessionManager(Context context){
@@ -43,24 +43,36 @@ public class SessionManager {
 
     public void createLoginSession(String id, String userJsonObjStr){
         editor.putBoolean("IsLoggedIn" , true);
-        editor.putString("company_id", id);
-        editor.putString("company", userJsonObjStr);
+        editor.putString("user_id", id);
+        editor.putString("user", userJsonObjStr);
         editor.commit();
     }
 
     public User getUserDetail(){
         if(user == null) user = new User();
-        String userJsonObjStr = pref.getString("company", null);
+        String userJsonObjStr = pref.getString("user", null);
         if(userJsonObjStr != null){
             try {
                 JSONObject obj = new JSONObject(userJsonObjStr);
-                user.setId(obj.getString("company_id"));
-                user.setName(obj.getString("company_name"));
+                user.setId(obj.getString("user_id"));
+                user.setCompany_id(obj.getString("company_id"));
+                user.setName(obj.getString("user_name"));
+                user.setEmail(obj.getString("user_email"));
+                user.setPhone(obj.getString("user_phone"));
+                user.setToken(obj.getString("token"));
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.d(TAG, "company detail data no json");
+                Log.d(TAG, "user data is not json type");
             }
         }
         return user;
+    }
+
+    public void logout(){
+        user = null;
+    }
+
+    public boolean isLogin(){
+        return user != null;
     }
 }
