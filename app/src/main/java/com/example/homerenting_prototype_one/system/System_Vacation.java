@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -32,6 +36,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,6 +60,9 @@ public class System_Vacation extends AppCompatActivity {
 
     String current_date;
     boolean lock = false;
+
+    private static DatabaseHelper dbHelper;
+    private static SQLiteDatabase db;
 
     Context context = this;
     String TAG = "System_Vacation";
@@ -291,6 +299,7 @@ public class System_Vacation extends AppCompatActivity {
         cars.clear();
         cars_text.clear();
     }
+
 
     private void getStaffVacation(String date){
         if(date == null){

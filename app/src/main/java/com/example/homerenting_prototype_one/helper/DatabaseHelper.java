@@ -17,12 +17,18 @@ import static com.example.homerenting_prototype_one.model.TableContract.ChooseTa
 import static com.example.homerenting_prototype_one.model.TableContract.ChooseTable.SQL_DELETE_CHOOSE;
 import static com.example.homerenting_prototype_one.model.TableContract.CommentsTable.SQL_CREATE_COMMENTS;
 import static com.example.homerenting_prototype_one.model.TableContract.CommentsTable.SQL_DELETE_COMMENTS;
+import static com.example.homerenting_prototype_one.model.TableContract.DiscountTable.SQL_CREATE_DISCOUNT;
+import static com.example.homerenting_prototype_one.model.TableContract.DiscountTable.SQL_DELETE_DISCOUNT;
 import static com.example.homerenting_prototype_one.model.TableContract.MemberTable.SQL_CREATE_MEMBER;
 import static com.example.homerenting_prototype_one.model.TableContract.MemberTable.SQL_DELETE_MEMBER;
 import static com.example.homerenting_prototype_one.model.TableContract.OrdersTable.SQL_CREATE_ORDERS;
 import static com.example.homerenting_prototype_one.model.TableContract.OrdersTable.SQL_DELETE_ORDERS;
+import static com.example.homerenting_prototype_one.model.TableContract.PeriodDiscountTable.SQL_CREATE_PERIOD_DISCOUNT;
+import static com.example.homerenting_prototype_one.model.TableContract.PeriodDiscountTable.SQL_DELETE_PERIOD_DISCOUNT;
 import static com.example.homerenting_prototype_one.model.TableContract.StaffTable.SQL_CREATE_STAFF;
 import static com.example.homerenting_prototype_one.model.TableContract.StaffTable.SQL_DELETE_STAFF;
+import static com.example.homerenting_prototype_one.model.TableContract.VehicleMaintainTable.SQL_CREATE_VEHICLE_MAINTAIN;
+import static com.example.homerenting_prototype_one.model.TableContract.VehicleMaintainTable.SQL_DELETE_VEHICLE_MAINTAIN;
 import static com.example.homerenting_prototype_one.model.TableContract.VehicleTable.SQL_CREATE_VEHICLE;
 import static com.example.homerenting_prototype_one.model.TableContract.VehicleTable.SQL_DELETE_VEHICLE;
 
@@ -43,10 +49,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_COMPANY);
         db.execSQL(SQL_CREATE_ORDERS);
         db.execSQL(SQL_CREATE_COMMENTS);
-
-        /*db.execSQL(SQL_CREATE_CHOOSE);
         db.execSQL(SQL_CREATE_STAFF);
-        db.execSQL(SQL_CREATE_VEHICLE);*/
+        db.execSQL(SQL_CREATE_VEHICLE);
+        db.execSQL(SQL_CREATE_DISCOUNT);
+        db.execSQL(SQL_CREATE_PERIOD_DISCOUNT);
+
     }
 
     @Override /*此方法會將舊TABLE全部刪除再新增新的TABLE，資料庫版本要更新*/
@@ -58,6 +65,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_COMPANY);
         db.execSQL(SQL_DELETE_ORDERS);
         db.execSQL(SQL_DELETE_COMMENTS);
+        db.execSQL(SQL_DELETE_STAFF);
+        db.execSQL(SQL_DELETE_VEHICLE);
+        db.execSQL(SQL_DELETE_DISCOUNT);
+        db.execSQL(SQL_DELETE_PERIOD_DISCOUNT);
         onCreate(db);
     }
 

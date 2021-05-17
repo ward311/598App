@@ -1,9 +1,12 @@
 package com.example.homerenting_prototype_one.setting;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -25,6 +28,8 @@ import androidx.core.content.res.ResourcesCompat;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -41,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -63,6 +69,8 @@ public class Setting_Service extends AppCompatActivity {
     boolean lock = true, deleteMode = false, init = true;
     Context context = this;
     String TAG = Setting_Service.class.getSimpleName();
+    private static DatabaseHelper dbHelper;
+    private static SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +90,7 @@ public class Setting_Service extends AppCompatActivity {
         carType = findViewById(R.id.carType_CG_SS);
         boxType = findViewById(R.id.boxType_CG_SS);
         wrapItem = findViewById(R.id.wrapItem_CG_SS);
+        dbHelper = new DatabaseHelper(this);
 
         setChipGroupTag();
 

@@ -1,9 +1,12 @@
 package com.example.homerenting_prototype_one.setting;
 
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +35,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -47,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -71,6 +77,8 @@ public class Setting_Discount extends AppCompatActivity {
 
     ArrayList<String[]> period_discounts;
     ArrayList<String> delete_discounts;
+    private static DatabaseHelper dbHelper;
+    private static SQLiteDatabase db;
 
     boolean deleteMode = false, disable = false;
 
@@ -94,7 +102,7 @@ public class Setting_Discount extends AppCompatActivity {
 
         period_discounts = new ArrayList<>();
         delete_discounts = new ArrayList<>();
-
+        dbHelper = new DatabaseHelper(this);
         getFreeRow();
         getPeriodRow(true);
         getFreeData();
@@ -309,7 +317,7 @@ public class Setting_Discount extends AppCompatActivity {
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
-
+                    int success_counter = 0, fail_counter = 0;
                     JSONObject freeItems = responseArr.getJSONObject(0);
                     Log.i(TAG, "freeItems: "+freeItems);
                     boolean valuateBl = freeItems.getString("valuate").equals("1");
@@ -322,6 +330,39 @@ public class Setting_Discount extends AppCompatActivity {
                         deposit.setChecked(depositBl);
                         cancel.setChecked(cancelBl);
                     });
+
+                    db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    try {
+                        values.put(TableContract.DiscountTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
+                        values.put(TableContract.DiscountTable.COLUMN_NAME_VALUATE, valuateBl);
+                        values.put(TableContract.DiscountTable.COLUMN_NAME_DEPOSIT, depositBl);
+                        values.put(TableContract.DiscountTable.COLUMN_NAME_CANCEL, cancelBl);
+                        values.put(TableContract.DiscountTable.COLUMN_NAME_UPDATE_TIME, freeItems.getString(TableContract.DiscountTable.COLUMN_NAME_UPDATE_TIME));
+
+//                        Log.d(TAG, (i+1)+". "+values.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    try{
+                        long newRowId = db.insertOrThrow(TableContract.DiscountTable.TABLE_NAME, null, values);
+                        if(newRowId != -1){
+                            success_counter = success_counter + 1;
+                            Log.d(TAG, "create freeDiscount successfully");
+                        }
+                        else{
+                            fail_counter = fail_counter + 1;
+                            Log.d(TAG, "create freeDiscountDiscount failed");
+                        }
+                    } catch (SQLException e){
+                        if(e.getMessage().contains("no such table"))
+                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                            success_counter = success_counter + 1;
+                        else{
+                            e.printStackTrace();
+                            Log.d(TAG, "insert freeDiscountDiscount data: "+e.getMessage());
+                        }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -362,6 +403,7 @@ public class Setting_Discount extends AppCompatActivity {
                     JSONArray responseArr = new JSONArray(responseData);
 
                     int i;
+                    int success_counter = 0, fail_counter = 0;
                     for(i = 0; i < responseArr.length(); i++){
                         JSONObject discountItem = responseArr.getJSONObject(i);
                         Log.i(TAG, "discountItem: "+discountItem);
@@ -409,6 +451,43 @@ public class Setting_Discount extends AppCompatActivity {
                                 discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, finalEnable, discountTable.getChildCount()));
                             }
                         });
+                        db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        try {
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_ID, discountId);
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_NAME, discountName);
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT, percent);
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_START_DATE, startTime);
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_END_DATE, endTime);
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE, enable );
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_IS_DELETE, discountItem.getString(TableContract.PeriodDiscountTable.COLUMN_NAME_IS_DELETE));
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE_TIME, discountItem.getString(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE_TIME));
+                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISABLE_TIME, disableTime);
+//                        Log.d(TAG, (i+1)+". "+values.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            continue;
+                        }
+                        try{
+                            long newRowId = db.insertOrThrow(TableContract.PeriodDiscountTable.TABLE_NAME, null, values);
+                            if(newRowId != -1){
+                                success_counter = success_counter + 1;
+                                Log.d(TAG, "create periodDiscount successfully");
+                            }
+                            else{
+                                fail_counter = fail_counter + 1;
+                                Log.d(TAG, "create periodDiscount failed");
+                            }
+                        } catch (SQLException e){
+                            if(e.getMessage().contains("no such table")) break;
+                            if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                                success_counter = success_counter + 1;
+                            else{
+                                e.printStackTrace();
+                                Log.d(TAG, "insert periodDiscount data: "+e.getMessage());
+                            }
+                        }
                     }
                     if(i <= 0) Log.i(TAG, "no period discount");
                 } catch (JSONException e) {

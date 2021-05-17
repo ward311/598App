@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
+import com.example.homerenting_prototype_one.ChangePassword;
 import com.example.homerenting_prototype_one.ForgetPassword;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.Register;
@@ -130,6 +131,11 @@ public class Login extends AppCompatActivity {
             startActivity(forgetPwd);
         });
 
+        edit_btn.setOnClickListener(view -> {
+            Intent changePwd = new Intent(context, ChangePassword.class);
+            startActivity(changePwd);
+        });
+
     }
 
 
@@ -167,7 +173,11 @@ public class Login extends AppCompatActivity {
                     if(loginData.getString("status").equals("success")){
                         JSONObject user = loginData.getJSONObject("user");
                         Log.d(TAG, "user: "+user.toString());
+                        String company_id = user.getString("company_id");
                         String user_id = user.getString("user_id");
+                        String user_email = user.getString("user_email");
+                        String user_name = user.getString("user_name");
+                        String token = user.getString("token");
                         session.createLoginSession(user_id, String.valueOf(user));
                         runOnUiThread(() -> {
                             Toast.makeText(context, "登入成功, 歡迎回來", Toast.LENGTH_LONG).show();

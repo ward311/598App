@@ -4,63 +4,65 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.main.Login;
-import com.example.homerenting_prototype_one.setting.Setting_Evaluation;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
-import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class ForgetPassword extends AppCompatActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
     Context context = this;
-    EditText pwd, conPwd;
+    EditText phoneEdit,veriCode, pwd, conPwd;
+    TextView verificationTime, verifyStatus;
     String password, confirmPassword;
-    Button changePwd, back_btn;
+    Button setPwd, back_btn, verifySMS, verifyCheck;
     String TAG = "ForgetPassword";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_password);
+        phoneEdit = findViewById(R.id.phoneInput);
+        veriCode = findViewById(R.id.verifyCode);
+        verifyStatus = findViewById(R.id.verifyStat);
         pwd = findViewById(R.id.newPwd);
         conPwd = findViewById(R.id.confirmPwd);
-        changePwd = findViewById(R.id.changePwd_btn);
+        setPwd = findViewById(R.id.setPwd_btn);
         back_btn = findViewById(R.id.goback_btn);
+        verifySMS = findViewById(R.id.verify_btn);
+        verifyCheck = findViewById(R.id.verifying_btn);
+        verificationTime = findViewById(R.id.verifyTimer);
         Intent LoginIntent = new Intent(context, Login.class);
+        pwd.setEnabled(false);
+        conPwd.setEnabled(false);
 
 
-
-        changePwd.setOnClickListener(new View.OnClickListener() {
+        setPwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                password = pwd.getText().toString();
-                confirmPassword = conPwd.getText().toString();
-                if(!password.equals(confirmPassword)){
-                    conPwd.setError("確認新密碼與密碼不符");
-                }else{
-                    startActivity(LoginIntent);
-                    //changePassword();
+                if(phoneEdit.getText().length()!=0&&veriCode.getText().length()!=0&&pwd.getText().length()!=0
+                    &&conPwd.getText().length()!=0){
+                    if(pwd.getText().toString().equals(conPwd.getText().toString())){
+                        startActivity(LoginIntent);
+                        Toast.makeText(context,"新密碼已設定完成", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        pwd.setError("新密碼與確認設置新密碼不符");
+                        conPwd.setError("新密碼與確認設置新密碼不符");
+                    }
+                }
+                else{
+                 Toast.makeText(context,"輸入資料不得有空，請再檢查一次", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -68,6 +70,25 @@ public class ForgetPassword extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(LoginIntent);
+            }
+        });
+        veriCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(veriCode.getText().length()==0){
+                    verifyStatus.setText("請輸入驗證碼");
+                    verifyStatus.setTextColor(Color.rgb(255,0,0));
+                }else veriCode.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -107,6 +128,48 @@ public class ForgetPassword extends AppCompatActivity {
 
             }
         });
+        verifySMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(phoneEdit.getText().length()==0){
+                    Toast.makeText(context, "請輸入手機號碼", Toast.LENGTH_LONG).show();
+                }else{
+                    String phone = phoneEdit.getText().toString();
+                    Toast.makeText(context, "簡訊驗證碼已發送至 : "+phone, Toast.LENGTH_LONG).show();
+                    verifySMS.setEnabled(false);
+                    new CountDownTimer(60000, 1000) {
+
+                        public void onTick(long millisUntilFinished) {
+                            verificationTime.setText(millisUntilFinished / 1000+" 秒後可再次發送認證簡訊");
+                            verificationTime.setTextColor(Color.rgb(0,0,255));
+                        }
+
+                        public void onFinish() {
+                           verifySMS.setEnabled(true);
+                           verificationTime.setText("");
+                        }
+                    }.start();
+                }
+
+            }
+        });
+        verifyCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(veriCode.getText().toString().equals("1234")){
+                    verifyStatus.setText("驗證成功，可設置新密碼");
+                    verifyStatus.setTextColor(Color.parseColor("#0f422f"));
+                    veriCode.setEnabled(false);
+                    pwd.setEnabled(true);
+                    conPwd.setEnabled(true);
+                }else{
+                    verifyStatus.setText("驗證失敗，請重新驗證");
+                    verifyStatus.setTextColor(Color.rgb(255,0,0));
+                    veriCode.setEnabled(true);
+                }
+            }
+        });
+
     }
 
     /*public void changePassword(){

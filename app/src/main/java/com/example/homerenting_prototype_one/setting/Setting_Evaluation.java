@@ -139,10 +139,10 @@ public class Setting_Evaluation extends AppCompatActivity {
             return;
         }
         while(!cursor.isAfterLast()){
-            String comment_id = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID));
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME));
-            String nameTitle;
-            if(cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_GENDER)).equals("女")) nameTitle = "小姐";
+                String comment_id = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME));
+                String nameTitle;
+                if(cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_GENDER)).equals("女")) nameTitle = "小姐";
             else nameTitle = "先生";
             String date = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE));
             String commentStr = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT));

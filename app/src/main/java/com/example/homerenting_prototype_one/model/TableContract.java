@@ -241,7 +241,7 @@ public class TableContract {
     public static class VehicleTable implements BaseColumns{
         public static final String TABLE_NAME = "vehicle";
         public static final String COLUMN_NAME_VEHICLE_ID = "vehicle_id";
-        public static final String COLUMN_NAME_PLAT_NUM = "plat_num";
+        public static final String COLUMN_NAME_PLATE_NUM = "plate_num";
         public static final String COLUMN_NAME_VEHICLE_WEIGHT = "vehicle_weight";
         public static final String COLUMN_NAME_VEHICLE_TYPE = "vehicle_type";
         public static final String COLUMN_NAME_COMPANY_ID = "company_id";
@@ -251,9 +251,9 @@ public class TableContract {
         public static final String SQL_CREATE_VEHICLE = "" +
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
                 COLUMN_NAME_VEHICLE_ID+" INTEGER(10) NOT NULL, "+
-                COLUMN_NAME_PLAT_NUM+" VARCHAR(99) NOT NULL, "+
+                COLUMN_NAME_PLATE_NUM+" VARCHAR(99) NOT NULL, "+
                 COLUMN_NAME_VEHICLE_WEIGHT+" VARCHAR(10), "+
-                COLUMN_NAME_VEHICLE_TYPE+" VARCHAR(99) CHARACTER SET utf8, "+
+                COLUMN_NAME_VEHICLE_TYPE+" VARCHAR(99), "+
                 COLUMN_NAME_COMPANY_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_START_TIME+" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "+
                 COLUMN_NAME_END_TIME+" DATETIME DEFAULT NULL, "+
@@ -392,6 +392,7 @@ public class TableContract {
                 COLUMN_NAME_COMPANY_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_VALUATE+" BOOLEAN DEFAULT FALSE, "+
                 COLUMN_NAME_DEPOSIT+" BOOLEAN DEFAULT FALSE, "+
+                COLUMN_NAME_CANCEL+" BOOLEAN DEFAULT FALSE, "+
                 COLUMN_NAME_UPDATE_TIME+" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "+
                 "PRIMARY KEY (`company_id`, `update_time`), "+
                 "FOREIGN KEY (`company_id`) "+
@@ -410,14 +411,14 @@ public class TableContract {
 
     public static class PeriodDiscountTable implements BaseColumns{
         public static String TABLE_NAME = "period_discount";
-        public static final String COLUMN_NAME_DISCOUNT_ID = "discount+id";
+        public static final String COLUMN_NAME_DISCOUNT_ID = "discount_id";
         public static final String COLUMN_NAME_COMPANY_ID = "company_id";
         public static final String COLUMN_NAME_DISCOUNT_NAME = "discount_name";
         public static final String COLUMN_NAME_DISCOUNT = "discount";
         public static final String COLUMN_NAME_START_DATE = "start_date";
         public static final String COLUMN_NAME_END_DATE = "end_date";
         public static final String COLUMN_NAME_ENABLE = "enable";
-        public static final String COLUMN_NAME_IS_DELETE = "is_delete";
+        public static final String COLUMN_NAME_IS_DELETE = "isDelete";
         public static final String COLUMN_NAME_ENABLE_TIME = "enable_time";
         public static final String COLUMN_NAME_DISABLE_TIME = "disable_time";
         public static final String SQL_CREATE_PERIOD_DISCOUNT = ""+
@@ -425,7 +426,7 @@ public class TableContract {
                 COLUMN_NAME_DISCOUNT_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_COMPANY_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_DISCOUNT_NAME+" VARCHAR(20), "+
-                COLUMN_NAME_DISCOUNT+" FLOAT(10) NOT NULL CHECK (`discount` >=0 AND `discount` <= 5), "+
+                COLUMN_NAME_DISCOUNT+" FLOAT(10) NOT NULL CHECK (`discount` >=0.0 AND `discount` <= 100.0), "+
                 COLUMN_NAME_START_DATE+" DATE NOT NULL, "+
                 COLUMN_NAME_END_DATE+" DATE DEFAULT NULL, "+
                 COLUMN_NAME_ENABLE+" BOOLEAN DEFAULT FALSE, "+
@@ -458,7 +459,7 @@ public class TableContract {
         public static final String COLUMN_NAME_COMPANY_ID = "company_id";
         public static final String COLUMN_NAME_ITEM_NAME = "item_name";
         public static final String COLUMN_NAME_START_TIME = "start_time";
-        public static final String COLUMN_NAME_END_TIME = "cend_time";
+        public static final String COLUMN_NAME_END_TIME = "end_time";
         public static final String COLUMN_NAME_SERVICE_ID = "service_id";
         public static final String COLUMN_NAME_IS_DELETE = "is_delete";
         public static final String SQL_CREATE_SERVICE_ITEM = ""+
@@ -571,7 +572,7 @@ public class TableContract {
                 "FOREIGN KEY (`vehicle_id`) "+
                 "REFERENCES vehicle(`vehicle_id`) ON DELETE CASCADE "+
                 ");";
-        public static final String SQL_DELETE_MAINTAIN_DATE =
+        public static final String SQL_DELETE_VEHICLE_MAINTAIN =
                 "DELETE TABLE IF EXISTS "+TABLE_NAME;
     }
 
