@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,17 +18,25 @@ import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.main.Login;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class ForgetPassword extends AppCompatActivity {
 
-    OkHttpClient okHttpClient = new OkHttpClient();
     Context context = this;
     EditText phoneEdit,veriCode, pwd, conPwd;
     TextView verificationTime, verifyStatus;
     String password, confirmPassword;
     Button setPwd, back_btn, verifySMS, verifyCheck;
     String TAG = "ForgetPassword";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +52,8 @@ public class ForgetPassword extends AppCompatActivity {
         verifyCheck = findViewById(R.id.verifying_btn);
         verificationTime = findViewById(R.id.verifyTimer);
         Intent LoginIntent = new Intent(context, Login.class);
-        pwd.setEnabled(false);
-        conPwd.setEnabled(false);
+        setPwd.setEnabled(false);
+        String random = Integer.toString((int)(Math.random()*8998)+1000+1);
 
 
         setPwd.setOnClickListener(new View.OnClickListener() {
@@ -135,37 +144,38 @@ public class ForgetPassword extends AppCompatActivity {
                     Toast.makeText(context, "請輸入手機號碼", Toast.LENGTH_LONG).show();
                 }else{
                     String phone = phoneEdit.getText().toString();
+                    Log.d(TAG,"phone : "+phone+" random verify : "+random);
                     Toast.makeText(context, "簡訊驗證碼已發送至 : "+phone, Toast.LENGTH_LONG).show();
                     verifySMS.setEnabled(false);
-                    new CountDownTimer(60000, 1000) {
-
+                    new CountDownTimer(5000, 1000) {
                         public void onTick(long millisUntilFinished) {
                             verificationTime.setText(millisUntilFinished / 1000+" 秒後可再次發送認證簡訊");
                             verificationTime.setTextColor(Color.rgb(0,0,255));
                         }
 
                         public void onFinish() {
-                           verifySMS.setEnabled(true);
-                           verificationTime.setText("");
+                            verifySMS.setEnabled(true);
+                            verificationTime.setText("");
+                            veriCode.setEnabled(true);
                         }
                     }.start();
-                }
 
+                }
             }
         });
         verifyCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(veriCode.getText().toString().equals("1234")){
+                if(veriCode.getText().toString().equals(random)){
                     verifyStatus.setText("驗證成功，可設置新密碼");
                     verifyStatus.setTextColor(Color.parseColor("#0f422f"));
+                    setPwd.setEnabled(true);
                     veriCode.setEnabled(false);
-                    pwd.setEnabled(true);
-                    conPwd.setEnabled(true);
                 }else{
                     verifyStatus.setText("驗證失敗，請重新驗證");
                     verifyStatus.setTextColor(Color.rgb(255,0,0));
                     veriCode.setEnabled(true);
+                    setPwd.setEnabled(false);
                 }
             }
         });

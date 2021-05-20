@@ -2,6 +2,7 @@ package com.example.homerenting_prototype_one.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -46,6 +47,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 
 public class Login extends AppCompatActivity {
     String account, password;
+    SharedPreferences sp;
     //public String rAccount = "admin";
     //public String rPassword = "123";
     EditText account_edit, password_edit;
@@ -59,82 +61,86 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        account_edit = findViewById(R.id.actEdit_L);
-        password_edit = findViewById(R.id.pwdEdit_L);
-        login_btn = findViewById(R.id.login_btn_L);
-        edit_btn = findViewById(R.id.edit_pwd_btn);
-        forget_pwd = findViewById(R.id.forgetText);
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_login);
+            account_edit = findViewById(R.id.actEdit_L);
+            password_edit = findViewById(R.id.pwdEdit_L);
+            login_btn = findViewById(R.id.login_btn_L);
+            //edit_btn = findViewById(R.id.edit_pwd_btn);
+            forget_pwd = findViewById(R.id.forgetText);
+            sp = getSharedPreferences("login", Context.MODE_PRIVATE);
+            session = SessionManager.getInstance(this);
 
-        session = SessionManager.getInstance(this);
-
-        if(session.isLogin()){ //關掉app後不會保存登入狀態的樣子
-            User user = session.getUserDetail();
-            Log.d(TAG, "user: "+user.getId()+", "+user.getCompany_id()+", "+user.getName()+", "+user.getEmail()+", "+user.getToken());
-        }
-        else Log.d(TAG, "no login");
-
-
-
-        password_edit.setTransformationMethod(PasswordTransformationMethod.getInstance());
-
-        account_edit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+            if(sp.getBoolean("logged", false)){
+                loginTo();
             }
+            if (session.isLogin()) { //關掉app後不會保存登入狀態的樣子
+                User user = session.getUserDetail();
+                Log.d(TAG, "user: " + user.getId() + ", " + user.getCompany_id() + ", " + user.getName() + ", " + user.getEmail() + ", " + user.getToken());
+            } else Log.d(TAG, "no login");
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(account_edit.getText().length()==0)
-                    account_edit.setError("請輸入帳號");
-                else
-                    account_edit.setError(null);
-            }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+            password_edit.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
-            }
-        });
-        password_edit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            account_edit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(password_edit.getText().length()==0){
-                    password_edit.setError("請輸入密碼");
                 }
-                else password_edit.setError(null);
-            }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (account_edit.getText().length() == 0)
+                        account_edit.setError("請輸入帳號");
+                    else
+                        account_edit.setError(null);
+                }
 
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+            password_edit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (password_edit.getText().length() == 0) {
+                        password_edit.setError("請輸入密碼");
+                    } else password_edit.setError(null);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
 
 
-        login_btn.setOnClickListener(view -> {
-            account = account_edit.getText().toString();
-            password = password_edit.getText().toString();
-            loginTo();
+            login_btn.setOnClickListener(view -> {
+                account = account_edit.getText().toString();
+                password = password_edit.getText().toString();
+                sp.edit().putBoolean("logged", true).apply();
+                sp.edit().putString("account", account).apply();
+                sp.edit().putString("password", password).apply();
 
-        });
+                loginTo();
 
-        forget_pwd.setOnClickListener(view -> {
-            Intent forgetPwd = new Intent(context, ForgetPassword.class);
-            startActivity(forgetPwd);
-        });
+            });
 
-        edit_btn.setOnClickListener(view -> {
-            Intent changePwd = new Intent(context, ChangePassword.class);
-            startActivity(changePwd);
-        });
+            forget_pwd.setOnClickListener(view -> {
+                Intent forgetPwd = new Intent(context, ForgetPassword.class);
+                startActivity(forgetPwd);
+            });
+
+            /*edit_btn.setOnClickListener(view -> {
+                Intent changePwd = new Intent(context, ChangePassword.class);
+                startActivity(changePwd);
+            });*/
 
     }
 
@@ -144,8 +150,8 @@ public class Login extends AppCompatActivity {
     public void loginTo(){
         String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()
-                .add("user_email",account)
-                .add("password", password)
+                .add("user_email",sp.getString("account", ""))
+                .add("password", sp.getString("password", ""))
                 .build();
         Log.d(TAG, "account: "+account);
         Log.d(TAG,"password: "+password);

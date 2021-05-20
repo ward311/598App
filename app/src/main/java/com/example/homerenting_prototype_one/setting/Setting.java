@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +46,7 @@ public class Setting extends AppCompatActivity {
     Context context = this;
     Button sign_out;
     String TAG = "Setting";
+    SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +92,10 @@ public class Setting extends AppCompatActivity {
             SessionManager session = SessionManager.getInstance(context);
             session.logout();
             Intent loginPage_intent = new Intent(Setting.this, Login.class);
+            sp = getSharedPreferences("login", Context.MODE_PRIVATE);
+            sp.edit().putBoolean("logged", false).apply();
+            sp.edit().clear();
+            sp.edit().commit();
             startActivity(loginPage_intent);
             Toast.makeText(context, "已登出", Toast.LENGTH_LONG).show();
         });

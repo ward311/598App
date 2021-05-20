@@ -113,6 +113,7 @@ public class Calendar extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
         init();
         setmCalendar();
+        onBackPressed();
 
         dbHelper = new DatabaseHelper(this);
         runOnUiThread(() -> {
@@ -121,6 +122,9 @@ public class Calendar extends AppCompatActivity {
         });
 
         globalNav();
+    }
+    public void onBackPressed(){
+    //限制Login成功後進Calendar頁面返回上一頁的時候再進入Login頁面
     }
 
     private void getOrder(String date) {
