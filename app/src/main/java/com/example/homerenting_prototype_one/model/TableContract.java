@@ -1,10 +1,39 @@
 package com.example.homerenting_prototype_one.model;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.tv.TvContract;
 import android.provider.BaseColumns;
 import android.sax.EndElementListener;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.homerenting_prototype_one.BuildConfig;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class TableContract {
+    private final static String TAG = TableContract.class.getSimpleName();
+
     private TableContract() {}
 
     public static class AreaTable implements BaseColumns{
@@ -217,6 +246,102 @@ public class TableContract {
                 "\n END";
         public static final String SQL_DELETE_STAFF =
                 "DROP TABLE IF NOT EXISTS "+TABLE_NAME;
+
+        public static void getAllStaffData(DatabaseHelper dbHelper, Context context){
+            String function_name = "getAllStaffData";
+            String table_name = StaffTable.TABLE_NAME;
+            Log.d(TAG, "start "+function_name+" and write in sqlite db");
+            RequestBody body = new FormBody.Builder()
+                    .add("company_id", getCompany_id(context))
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL + "/get_data/all_staff_data.php")
+                    .post(body)
+                    .build();
+
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d(TAG, "responseData of "+function_name+": "+responseData); //顯示資料
+
+                    JSONArray responseArr;
+                    try {
+                        responseArr= new JSONArray(responseData);
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                        Log.d(TAG, function_name+": "+e.getMessage());
+                        return;
+                    }
+
+                    int success_counter = 0, fail_counter = 0;
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject staff;
+                        try {
+                            staff = responseArr.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+//                    Log.d(TAG, (i+1)+". staff: "+staff);
+
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        try {
+                            values.put(StaffTable.COLUMN_NAME_STAFF_ID, staff.getString(StaffTable.COLUMN_NAME_STAFF_ID));
+                            values.put(StaffTable.COLUMN_NAME_STAFF_NAME, staff.getString(StaffTable.COLUMN_NAME_STAFF_NAME));
+                            values.put(StaffTable.COLUMN_NAME_COMPANY_ID, staff.getString(StaffTable.COLUMN_NAME_COMPANY_ID));
+                            values.put(StaffTable.COLUMN_NAME_START_TIME, staff.getString(StaffTable.COLUMN_NAME_START_TIME));
+                            values.put(StaffTable.COLUMN_NAME_END_TIME, staff.getString(StaffTable.COLUMN_NAME_END_TIME));
+//                        Log.d(TAG, (i+1)+". "+values.toString())
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            continue;
+                        }
+
+                        try{
+                            long newRowId = db.insertOrThrow(table_name, null, values);
+                            if(newRowId != -1){
+                                success_counter = success_counter + 1;
+                                Log.d(TAG, "create "+table_name+" successfully");
+                            }
+                            else{
+                                fail_counter = fail_counter + 1;
+                                Log.d(TAG, "create "+table_name+" failed");
+                            }
+                        } catch (SQLException e){
+                            if(e.getMessage().contains("no such table")) break;
+                            if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
+                                String selection = StaffTable.COLUMN_NAME_STAFF_ID+" = ?";
+                                String[] seletctionArgs = {values.getAsString(StaffTable.COLUMN_NAME_STAFF_ID)};
+
+                                int count = db.update(
+                                        table_name,
+                                        values,
+                                        selection,
+                                        seletctionArgs
+                                );
+                                if(count != -1) success_counter = success_counter + 1;
+                                else fail_counter = fail_counter + 1;
+                            }
+                            else{
+                                e.printStackTrace();
+                                Log.d(TAG, "insert "+table_name+" data: "+e.getMessage());
+                            }
+                        }
+                    }
+                    Log.d(TAG, table_name+" data:\n success data: "+success_counter+", fail data: "+fail_counter);
+                }
+            });
+        }
     }
 
     public static class StaffAssignmentTable implements BaseColumns{
@@ -247,6 +372,8 @@ public class TableContract {
         public static final String COLUMN_NAME_COMPANY_ID = "company_id";
         public static final String COLUMN_NAME_START_TIME = "start_time";
         public static final String COLUMN_NAME_END_TIME = "end_time";
+        public static final String COLUMN_NAME_VERIFY = "verify";
+
 
         public static final String SQL_CREATE_VEHICLE = "" +
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
@@ -257,6 +384,7 @@ public class TableContract {
                 COLUMN_NAME_COMPANY_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_START_TIME+" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "+
                 COLUMN_NAME_END_TIME+" DATETIME DEFAULT NULL, "+
+                COLUMN_NAME_VERIFY+" BOOLEAN DEFAULT false NOT NULL, "+
                 "PRIMARY KEY (`vehicle_id`), "+
                 "FOREIGN KEY (`company_id`) "+
                 "REFERENCES company(company_id) ON DELETE CASCADE "+
@@ -264,6 +392,104 @@ public class TableContract {
 
         public static final String SQL_DELETE_VEHICLE =
                 "DROP TABLE IF EXISTS "+ TABLE_NAME;
+
+        public static void getAllVehicleData(DatabaseHelper dbHelper, Context context){
+            String function_name = "getAllVehicleData";
+            String table_name = VehicleTable.TABLE_NAME;
+            Log.d(TAG, "start "+function_name+" and write in sqlite db");
+            RequestBody body = new FormBody.Builder()
+                    .add("company_id", getCompany_id(context))
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL + "/get_data/all_vehicle_data.php")
+                    .post(body)
+                    .build();
+
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d(TAG, "responseData of "+function_name+": "+responseData); //顯示資料
+
+                    JSONArray responseArr;
+                    try {
+                        responseArr= new JSONArray(responseData);
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                        Log.d(TAG, function_name+": "+e.getMessage());
+                        return;
+                    }
+
+                    int success_counter = 0, fail_counter = 0;
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle;
+                        try {
+                            vehicle = responseArr.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+//                    Log.d(TAG, (i+1)+". staff: "+staff);
+
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        try {
+                            values.put(VehicleTable.COLUMN_NAME_VEHICLE_ID, vehicle.getString(VehicleTable.COLUMN_NAME_VEHICLE_ID));
+                            values.put(VehicleTable.COLUMN_NAME_PLATE_NUM, vehicle.getString(VehicleTable.COLUMN_NAME_PLATE_NUM));
+                            values.put(VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT, vehicle.getString(VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT));
+                            values.put(VehicleTable.COLUMN_NAME_VEHICLE_TYPE, vehicle.getString(VehicleTable.COLUMN_NAME_VEHICLE_TYPE));
+                            values.put(VehicleTable.COLUMN_NAME_COMPANY_ID, vehicle.getString(VehicleTable.COLUMN_NAME_COMPANY_ID));
+                            values.put(VehicleTable.COLUMN_NAME_START_TIME, vehicle.getString(VehicleTable.COLUMN_NAME_START_TIME));
+                            values.put(VehicleTable.COLUMN_NAME_END_TIME, vehicle.getString(VehicleTable.COLUMN_NAME_END_TIME));
+//                        Log.d(TAG, (i+1)+". "+values.toString())
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            continue;
+                        }
+
+                        try{
+                            long newRowId = db.insertOrThrow(table_name, null, values);
+                            if(newRowId != -1){
+                                success_counter = success_counter + 1;
+                                Log.d(TAG, "create "+table_name+" successfully");
+                            }
+                            else{
+                                fail_counter = fail_counter + 1;
+                                Log.d(TAG, "create "+table_name+" failed");
+                            }
+                        } catch (SQLException e){
+                            if(e.getMessage().contains("no such table")) break;
+                            if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
+                                String selection = VehicleTable.COLUMN_NAME_VEHICLE_ID+" = ?";
+                                String[] seletctionArgs = {values.getAsString(VehicleTable.COLUMN_NAME_VEHICLE_ID)};
+
+                                int count = db.update(
+                                        table_name,
+                                        values,
+                                        selection,
+                                        seletctionArgs
+                                );
+                                if(count != -1) success_counter = success_counter + 1;
+                                else fail_counter = fail_counter + 1;
+                            }
+                            else{
+                                e.printStackTrace();
+                                Log.d(TAG, "insert "+table_name+" data: "+e.getMessage());
+                            }
+                        }
+                    }
+                    Log.d(TAG, table_name+" data:\n success data: "+success_counter+", fail data: "+fail_counter);
+                }
+            });
+        }
     }
 
     public static class VehicleAssignmentTable implements BaseColumns{

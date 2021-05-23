@@ -40,6 +40,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -84,7 +85,8 @@ public class Evaluation_Detail extends AppCompatActivity {
         commentCountText.setText("共"+commentCount+"則評論");
         allStarText.setText("評價 "+allStar);
         dbHelper = new DatabaseHelper(this);
-        getData();
+        readData();
+//        getData();
 
         reply_edit.addTextChangedListener( new TextWatcher() {
             @Override
@@ -152,14 +154,62 @@ public class Evaluation_Detail extends AppCompatActivity {
         finishBtn = findViewById(R.id.finish_btn_ED);
     }
 
+    private void readData() {
+        db = dbHelper.getReadableDatabase();
 
-    public void getData(){
+        String sql_query ="SELECT * FROM comments NATURAL JOIN orders NATURAL JOIN member "+
+                "WHERE comment_id = "+comment_id+";";
+        Cursor cursor = db.rawQuery(sql_query, null);
+
+        Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+        if(!cursor.moveToNext()){
+            cursor.close();
+            getData();
+            return;
+        }
+
+        String name = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME));
+        String nameTitle;
+        if(cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_GENDER)).equals("女")) nameTitle = "小姐";
+        else nameTitle = "先生";
+        final String fromAddress = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_FROM_ADDRESS));
+        final String toAddress = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_TO_ADDRESS));
+        String commentStr = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT));
+        replyStr = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_REPLY));
+        double service_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY));
+        double work_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE));
+        double price_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE));
+
+        runOnUiThread(() -> {
+            nameText.setText(name);
+            nameTitleText.setText(nameTitle);
+            fromAdressText.setText(fromAddress);
+            toAddressText.setText(toAddress);
+            commentText.setText(commentStr);
+            setStars(serviceStars, Math.round(Math.round(service_star)));
+            setStars(workStars, Math.round(Math.round(work_star)));
+            setStars(priceStars, Math.round(Math.round(price_star)));
+
+            if(!replyStr.equals("null")){
+                replyText.setVisibility(View.VISIBLE);
+                reply_text.setText(replyStr);
+                reply_text.setVisibility(View.VISIBLE);
+                reply_edit.setText(replyStr);
+                replyBtn.setText("修改");
+                Log.d(TAG, ""+replyStr);
+            }
+        });
+
+        cursor.close();
+    }
+
+    private void getData(){
         String function_name = "comment_detail";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("comment_id", comment_id)
                 .build();
-        Log.d(TAG, "comment_id: "+comment_id);
+        Log.d(TAG, "getData(): comment_id: "+comment_id);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL + "/user_data.php")

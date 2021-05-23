@@ -51,8 +51,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_COMMENTS);
         db.execSQL(SQL_CREATE_STAFF);
         db.execSQL(SQL_CREATE_VEHICLE);
-        db.execSQL(SQL_CREATE_DISCOUNT);
-        db.execSQL(SQL_CREATE_PERIOD_DISCOUNT);
+//        db.execSQL(SQL_CREATE_DISCOUNT);
+//        db.execSQL(SQL_CREATE_PERIOD_DISCOUNT);
+//        db.execSQL(SQL_CREATE_CHOOSE);
 
     }
 
@@ -67,8 +68,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_COMMENTS);
         db.execSQL(SQL_DELETE_STAFF);
         db.execSQL(SQL_DELETE_VEHICLE);
-        db.execSQL(SQL_DELETE_DISCOUNT);
-        db.execSQL(SQL_DELETE_PERIOD_DISCOUNT);
+//        db.execSQL(SQL_DELETE_DISCOUNT);
+//        db.execSQL(SQL_DELETE_PERIOD_DISCOUNT);
+
+        db.execSQL(SQL_CREATE_MEMBER);
+        db.execSQL(SQL_CREATE_COMPANY);
+        db.execSQL(SQL_CREATE_ORDERS);
+        db.execSQL(SQL_CREATE_COMMENTS);
+        db.execSQL(SQL_CREATE_STAFF);
+        db.execSQL(SQL_CREATE_VEHICLE);
+//        db.execSQL(SQL_CREATE_DISCOUNT);
+//        db.execSQL(SQL_CREATE_PERIOD_DISCOUNT);
+//        db.execSQL(SQL_CREATE_CHOOSE);
         onCreate(db);
     }
 

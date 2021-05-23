@@ -3,6 +3,8 @@ package com.example.homerenting_prototype_one.system;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,9 +34,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
 import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.adapter.re_adpater.TextAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -58,6 +62,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.model.TableContract.StaffTable.getAllStaffData;
+import static com.example.homerenting_prototype_one.model.TableContract.VehicleTable.getAllVehicleData;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class System_Data extends AppCompatActivity {
@@ -76,6 +82,10 @@ public class System_Data extends AppCompatActivity {
     int currentList;
     String new_carType;
 
+
+    private static DatabaseHelper dbHelper;
+    private static SQLiteDatabase db;
+
     Context context = this;
     String TAG = "System_Data";
     @Override
@@ -86,8 +96,13 @@ public class System_Data extends AppCompatActivity {
         linking();
         init();
 
-        getStaffData();
-        getVehicleData();
+        dbHelper = new DatabaseHelper(this);
+        getAllStaffData(dbHelper, context);
+        getAllVehicleData(dbHelper, context);
+        readStaffData();
+//        getStaffData();
+        readVehicleData();
+//        getVehicleData();
 
         back_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(System_Data.this, System.class);
@@ -164,6 +179,35 @@ public class System_Data extends AppCompatActivity {
         }
     }
 
+    private void readStaffData() {
+        db = dbHelper.getReadableDatabase();
+        String sql_query = "SELECT * FROM "+ TableContract.StaffTable.TABLE_NAME+";";
+        Cursor cursor = db.rawQuery(sql_query, null);
+
+        Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+        if(!cursor.moveToNext()){
+            Log.d(TAG, "【online database】");
+            cursor.close();
+            getStaffData();
+            return;
+        }
+        Log.d(TAG, "【sqlite database】");
+        while(!cursor.isAfterLast()){
+            String staff_id = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.StaffTable.COLUMN_NAME_STAFF_ID));
+            String staff_name = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.StaffTable.COLUMN_NAME_STAFF_NAME));
+            String[] row_data = {staff_id, staff_name};
+            employees.add(row_data);
+
+            cursor.moveToNext();
+        }
+
+        for(int i=0; i < employees.size(); i++)
+            Log.i(TAG, "employees: "+ Arrays.toString(employees.get(i)));
+        runOnUiThread(this::setEmployeeRList);
+
+        cursor.close();
+    }
+
     private void getStaffData(){
         RequestBody body = new FormBody.Builder()
                 .add("company_id", getCompany_id(context))
@@ -217,6 +261,38 @@ public class System_Data extends AppCompatActivity {
                 runOnUiThread(() -> setEmployeeRList());
             }
         });
+    }
+
+    private void readVehicleData() {
+        db = dbHelper.getReadableDatabase();
+        String sql_query = "SELECT * FROM "+ TableContract.VehicleTable.TABLE_NAME+";";
+        Cursor cursor = db.rawQuery(sql_query, null);
+
+        Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+        if(!cursor.moveToNext()){
+            Log.d(TAG, "【online database】");
+            cursor.close();
+            getVehicleData();
+            return;
+        }
+        Log.d(TAG, "【sqlite database】");
+        while(!cursor.isAfterLast()){
+            String vehicle_id = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_ID));
+            String weight = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT));
+            String type = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_TYPE));
+            String plate_num = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.VehicleTable.COLUMN_NAME_PLATE_NUM));
+            String verified = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.VehicleTable.COLUMN_NAME_VERIFY));
+            String[] row_data = {vehicle_id, weight, type, plate_num, verified};
+            vehicles.add(row_data);
+
+            cursor.moveToNext();
+        }
+
+        for(int i=0; i < vehicles.size(); i++)
+            Log.i(TAG, "vehicles: "+ Arrays.toString(vehicles.get(i)));
+        runOnUiThread(this::setCarRList);
+
+        cursor.close();
     }
 
     private void getVehicleData(){

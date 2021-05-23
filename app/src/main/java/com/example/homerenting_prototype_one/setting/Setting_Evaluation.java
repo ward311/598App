@@ -100,31 +100,6 @@ public class Setting_Evaluation extends AppCompatActivity {
 
     private void readData(){
         db = dbHelper.getReadableDatabase();
-//        String[] projection = {
-//                TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID,
-//                TableContract.CommentsTable.COLUMN_NAME_ORDER_ID,
-//                TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID,
-//                TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID,
-//                TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE,
-//                TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY,
-//                TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE,
-//                TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE,
-//                TableContract.CommentsTable.COLUMN_NAME_COMMENT,
-//                TableContract.CommentsTable.COLUMN_NAME_REPLY
-//        };
-//
-//        String selection = TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID+" = ?";
-//        String[] selectionArgs = {"1"};
-//
-//        Cursor cursor = db.query(
-//                TableContract.CommentsTable.TABLE_NAME,// FROM TABLE_NAME
-//                projection,//SELECT *
-//                selection,//WHERE COMPANY_ID
-//                selectionArgs,//=1
-//                null,
-//                null,
-//                null
-//        );
         String sql_query =
                 "SELECT * FROM "+TableContract.CommentsTable.TABLE_NAME+" NATURAL JOIN "+TableContract.OrdersTable.TABLE_NAME+" " +
                 "NATURAL JOIN "+TableContract.MemberTable.TABLE_NAME+" " +
