@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -286,6 +287,46 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
+    private void readFreeData(){ //從SQLite讀資料
+        db = dbHelper.getReadableDatabase();
+
+        String sql_query = "SELECT * FROM `"+TableContract.DiscountTable.TABLE_NAME+"` "+
+                "WHERE company_id = "+getCompany_id(context)+" "+
+                "AND update_time = "+
+                    "(SELECT MAX(update_time) FROM `"+TableContract.DiscountTable.TABLE_NAME+"` "+
+                    "WHERE company_id = "+getCompany_id(context)+");";
+        Cursor cursor = db.rawQuery(sql_query, null);
+
+        Log.d(TAG, "cursor count:"+cursor.getCount());
+        if(!cursor.moveToNext()){
+            cursor.close();
+            getFreeData();
+//            TableContract.DiscountTable.getAllDiscountData();
+            return;
+        }
+        String[] item = {
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.DiscountTable.COLUMN_NAME_COMPANY_ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.DiscountTable.COLUMN_NAME_VALUATE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.DiscountTable.COLUMN_NAME_DEPOSIT)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.DiscountTable.COLUMN_NAME_CANCEL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TableContract.DiscountTable.COLUMN_NAME_UPDATE_TIME))
+        };
+        Log.d(TAG, "sqlite company: "+Arrays.toString(item));
+
+        boolean valuateBl = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.DiscountTable.COLUMN_NAME_VALUATE)).equals("1");
+        boolean depositBl = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.DiscountTable.COLUMN_NAME_DEPOSIT)).equals("1");
+        boolean cancelBl = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.DiscountTable.COLUMN_NAME_CANCEL)).equals("1");
+
+
+        runOnUiThread(() -> {
+            valuate.setChecked(valuateBl);
+            deposit.setChecked(depositBl);
+            cancel.setChecked(cancelBl);
+        });
+
+        cursor.close();
+    }
+
     private void getFreeData(){
         RequestBody body = new FormBody.Builder()
                 .add("company_id", getCompany_id(context))
@@ -370,6 +411,74 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void readData() {
+        db = dbHelper.getReadableDatabase();
+        String sql_query = "SELECT * FROM `"+TableContract.PeriodDiscountTable.TABLE_NAME+"` "+
+                "WHERE company_id = "+getCompany_id(context)+";";
+        Cursor cursor = db.rawQuery(sql_query, null);
+
+        Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+        if(!cursor.moveToNext()){
+            Log.d(TAG, "【online database】");
+            cursor.close();
+            getData();
+//            TableContract.AnnouncementTable.getAllPeriodDiscountData();
+            return;
+        }
+        Log.d(TAG, "【sqlite database】");
+        while(!cursor.isAfterLast()){
+            final String discountId = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_ID));
+            final String discountName = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_NAME));
+            final int percent = cursor.getInt(cursor.getColumnIndexOrThrow(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_ID));
+            final String startTime = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.PeriodDiscountTable.COLUMN_NAME_START_DATE));
+            final String endTime = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.PeriodDiscountTable.COLUMN_NAME_END_DATE));
+            String disableTime = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.PeriodDiscountTable.COLUMN_NAME_DISABLE_TIME));
+            boolean enable = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE)).equals("1");
+//                        if(!disableTime.isEmpty()) enable = true;
+
+            String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
+
+            final boolean finalEnable = enable;
+            runOnUiThread(() -> {
+                int row_index = 0;
+                if (discountName.equals("短期優惠")) row_index = 3;
+                else if (discountName.equals("長期優惠")) row_index = 4;
+
+                if(row_index != 0){
+                    TableRow discountItem1 = (TableRow) discountTable.getChildAt(row_index);
+                    //0 : X
+                    Switch enableSw = (Switch) discountItem1.getChildAt(SWITCH_INDEX);
+                    EditText discountEdit = (EditText) discountItem1.getChildAt(DISCOUNT_INDEX);
+                    //4 : %
+                    TextView startView = (TextView) discountItem1.getChildAt(START_INDEX);
+                    //6 : ─
+                    TextView endView = (TextView) discountItem1.getChildAt(END_INDEX);
+                    TextView discountIdText = (TextView) discountItem1.getChildAt(ID_INDEX);
+
+                    enableSw.setChecked(finalEnable);
+                    discountEdit.setText(String.valueOf(percent));
+                    startView.setText(startTime);
+                    endView.setText(endTime);
+                    discountIdText.setText(discountId);
+
+                    period_discounts.set(row_index-3, period_discount);
+                }
+                else {
+                    period_discounts.add(period_discount);
+                    Log.d(TAG, "add period_discount("+(period_discounts.size()-1)+"/"+period_discounts.size()+"): "
+                            +Arrays.toString(period_discounts.get(period_discounts.size()-1)));
+
+                    discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, finalEnable, discountTable.getChildCount()));
+                }
+            });
+
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+    }
+
     private void getData(){
         RequestBody body = new FormBody.Builder()
                 .add("company_id", getCompany_id(context))
@@ -390,7 +499,7 @@ public class Setting_Discount extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)

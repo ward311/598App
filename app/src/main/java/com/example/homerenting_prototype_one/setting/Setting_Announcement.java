@@ -9,6 +9,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +23,8 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.AnnounceAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -48,6 +52,9 @@ public class Setting_Announcement extends AppCompatActivity {
     RecyclerView announceView;
 
     ArrayList<String[]> data;
+
+    private static DatabaseHelper dbHelper;
+    private static SQLiteDatabase db;
 
     Context context = this;
     String TAG = "Setting_Announcement";
@@ -79,10 +86,51 @@ public class Setting_Announcement extends AppCompatActivity {
 
         data = new ArrayList<>();
 
-        getData();
+        dbHelper = new DatabaseHelper(this);
+        readData();
+//        getData();
 
         setBack_btn();
         globalNav();
+    }
+
+    private void readData() {
+        db = dbHelper.getReadableDatabase();
+        String sql_query = "SELECT * FROM `"+TableContract.AnnouncementTable.TABLE_NAME+"` "+
+                "NATURAL JOIN `"+TableContract.AnnouncementCompanyTable.TABLE_NAME+"` "+
+                "WHERE company_id = "+getCompany_id(context)+" "+
+                "ORDER BY announcement_date DESC;";
+        Cursor cursor = db.rawQuery(sql_query, null);
+
+        Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+        if(!cursor.moveToNext()){
+            Log.d(TAG, "【online database】");
+            cursor.close();
+            getData();
+//            TableContract.AnnouncementTable.getAllAnnounceData();
+//            TableContract.AnnouncementCompanyTable.getAllAnnounceCompanyData();
+            return;
+        }
+        Log.d(TAG, "【sqlite database】");
+        while(!cursor.isAfterLast()){
+            String annouceId = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.AnnouncementTable.COLUMN_NAME_ANNOUNCEMENT_ID));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.AnnouncementTable.COLUMN_NAME_TITLE));
+            String date = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.AnnouncementTable.COLUMN_NAME_DATE));
+            String summary = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.AnnouncementTable.COLUMN_NAME_OUTLINE));
+            String announceContent = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.AnnouncementTable.COLUMN_NAME_CONTENT));
+            String isNew = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.AnnouncementCompanyTable.COLUMN_NAME_NEW));
+
+            String[] row_data = {annouceId, title, date, summary, announceContent, isNew};
+            data.add(row_data);
+
+            cursor.moveToNext();
+        }
+
+        for(int i=0; i < data.size(); i++)
+            Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+        runOnUiThread(this::setRList);
+
+        cursor.close();
     }
 
     private void getData(){
@@ -104,13 +152,8 @@ public class Setting_Announcement extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
