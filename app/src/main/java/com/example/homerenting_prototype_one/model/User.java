@@ -7,6 +7,7 @@ public class User {
     private String email;
     private String phone;
     private String token;
+    private String verifyCode;
 
 //    public User(String id, String company_id, String name, String phone){
 //        setName(name);
@@ -32,4 +33,7 @@ public class User {
 
     public String getToken(){ return token;}
     public void setToken(String token){ this.token = token;}
+
+    public String getVerifyCode(){return verifyCode; }
+    public void setVerifyCode(String code){this.verifyCode = code;}
 }

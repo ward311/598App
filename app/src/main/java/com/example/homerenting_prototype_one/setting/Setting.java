@@ -96,8 +96,11 @@ public class Setting extends AppCompatActivity {
             sp.edit().putBoolean("logged", false).apply();
             sp.edit().clear();
             sp.edit().commit();
+            loginPage_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(loginPage_intent);
             Toast.makeText(context, "已登出", Toast.LENGTH_LONG).show();
+            finish();
+
         });
 
         globalNav();

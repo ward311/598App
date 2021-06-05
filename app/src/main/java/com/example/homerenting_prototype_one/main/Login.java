@@ -148,7 +148,6 @@ public class Login extends AppCompatActivity {
     public void login(View view) { }
 
     public void loginTo(){
-        String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()
                 .add("user_email",sp.getString("account", ""))
                 .add("password", sp.getString("password", ""))
@@ -186,7 +185,7 @@ public class Login extends AppCompatActivity {
                         String token = user.getString("token");
                         session.createLoginSession(user_id, String.valueOf(user));
                         runOnUiThread(() -> {
-                            Toast.makeText(context, "登入成功, 歡迎回來", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "登入成功", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(context, Calendar.class));
                         });
                     }
