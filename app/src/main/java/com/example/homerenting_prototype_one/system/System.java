@@ -102,6 +102,7 @@ public class System extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent valuation_intent = new Intent(System.this, Valuation.class);
+                valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(valuation_intent);
             }
         });
@@ -109,6 +110,7 @@ public class System extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent order_intent = new Intent(System.this, Order.class);
+                order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(order_intent);
             }
         });
@@ -116,6 +118,7 @@ public class System extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent calender_intent = new Intent(System.this, Calendar.class);
+                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(calender_intent);
             }
         });
@@ -130,11 +133,16 @@ public class System extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent setting_intent = new Intent(System.this, Setting.class);
+                setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(setting_intent);
             }
         });
 
-
+    }
+    public void onBackPressed(){
+        Intent toCalendar = new Intent(System.this, Calendar.class);
+        toCalendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(toCalendar);
     }
 
 //    private void getAllStaffData(){

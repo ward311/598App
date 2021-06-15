@@ -267,4 +267,9 @@ public class Valuation_MatchMaking extends AppCompatActivity {
             }
         });
     }
+    public void onBackPressed(){
+        Intent toValuation = new Intent(Valuation_MatchMaking.this, Valuation.class);
+        toValuation.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(toValuation);
+    }
 }

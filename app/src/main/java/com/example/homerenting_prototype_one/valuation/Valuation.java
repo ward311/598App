@@ -110,6 +110,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent bookingValuation_intent = new Intent(Valuation.this, Valuation_Booking.class);
+                bookingValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(bookingValuation_intent);
             }
         });
@@ -117,6 +118,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent matchMakingValuation_intent = new Intent(Valuation.this, Valuation_MatchMaking.class);
+                matchMakingValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(matchMakingValuation_intent);
             }
         });
@@ -124,6 +126,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent cancelValuation_intent = new Intent(Valuation.this, Valuation_Cancel.class);
+                cancelValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(cancelValuation_intent);
             }
         });
@@ -133,6 +136,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent order_intent = new Intent(Valuation.this, Order.class);
+                order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(order_intent);
             }
         });
@@ -140,6 +144,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent calender_intent = new Intent(Valuation.this, Calendar.class);
+                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(calender_intent);
             }
         });
@@ -147,6 +152,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent system_intent = new Intent(Valuation.this, System.class);
+                system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(system_intent);
             }
         });
@@ -154,6 +160,7 @@ public class Valuation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Valuation.this, Setting.class);
+                setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(setting_intent);
             }
         });
@@ -266,5 +273,10 @@ public class Valuation extends AppCompatActivity {
 
             }
         });
+    }
+    public void onBackPressed(){
+        Intent toCalendar = new Intent(Valuation.this, Calendar.class);
+        toCalendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(toCalendar);
     }
 }

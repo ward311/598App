@@ -137,15 +137,8 @@ public class Login extends AppCompatActivity {
                 startActivity(forgetPwd);
             });
 
-            /*edit_btn.setOnClickListener(view -> {
-                Intent changePwd = new Intent(context, ChangePassword.class);
-                startActivity(changePwd);
-            });*/
 
     }
-
-
-    public void login(View view) { }
 
     public void loginTo(){
         RequestBody body = new FormBody.Builder()

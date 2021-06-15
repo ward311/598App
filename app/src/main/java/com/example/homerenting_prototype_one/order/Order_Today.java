@@ -286,4 +286,10 @@ public class Order_Today extends AppCompatActivity {
                 return 0;
         }
     }
+    public void onBackPressed(){
+        Intent toOrder = new Intent(Order_Today.this, Order.class);
+        toOrder.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(toOrder);
+    }
+
 }

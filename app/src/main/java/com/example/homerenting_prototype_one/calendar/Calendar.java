@@ -120,12 +120,9 @@ public class Calendar extends AppCompatActivity {
             getAllOrdersData();
             getAllMemberData();
         });
-
         globalNav();
     }
-    public void onBackPressed(){
-    //限制Login成功後進Calendar頁面返回上一頁的時候再進入Login頁面
-    }
+
 
     private void getOrder(String date) {
         initData();
@@ -722,10 +719,13 @@ public class Calendar extends AppCompatActivity {
         //底下nav
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(context, Valuation.class);
+            valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(valuation_intent);
+
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(context, Order.class);
+            order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(order_intent);
         });
 //        calendar_btn.setOnClickListener(v -> {
@@ -734,10 +734,12 @@ public class Calendar extends AppCompatActivity {
 //        });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(context, System.class);
+            system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(system_intent);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(context, Setting.class);
+            setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(setting_intent);
         });
     }
@@ -771,5 +773,8 @@ public class Calendar extends AppCompatActivity {
             default:
                 return 0;
         }
+    }
+    public void onBackPressed(){
+
     }
 }

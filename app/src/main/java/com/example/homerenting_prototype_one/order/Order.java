@@ -24,6 +24,7 @@ import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
 import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
@@ -325,5 +326,10 @@ public class Order extends AppCompatActivity {
             default:
                 return 0;
         }
+    }
+    public void onBackPressed(){
+        Intent toCalendar = new Intent(Order.this, Calendar.class);
+        toCalendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(toCalendar);
     }
 }

@@ -47,6 +47,7 @@ public class Setting extends AppCompatActivity {
     Button sign_out;
     String TAG = "Setting";
     SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,12 +93,13 @@ public class Setting extends AppCompatActivity {
             SessionManager session = SessionManager.getInstance(context);
             session.logout();
             Intent loginPage_intent = new Intent(Setting.this, Login.class);
+
+            loginPage_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(loginPage_intent);
             sp = getSharedPreferences("login", Context.MODE_PRIVATE);
             sp.edit().putBoolean("logged", false).apply();
             sp.edit().clear();
             sp.edit().commit();
-            loginPage_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(loginPage_intent);
             Toast.makeText(context, "已登出", Toast.LENGTH_LONG).show();
             finish();
 
@@ -106,7 +108,7 @@ public class Setting extends AppCompatActivity {
         globalNav();
     }
 
-    private void getCompanyDetail(){
+    private void getCompanyDetail() {
         String function_name = "company_detail";
         String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()
@@ -139,7 +141,7 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.i(TAG,"responseData: "+responseData); //顯示資料
+                Log.i(TAG, "responseData: " + responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -159,7 +161,7 @@ public class Setting extends AppCompatActivity {
         });
     }
 
-    private void getCommentData(){
+    private void getCommentData() {
         String function_name = "comment_data";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
@@ -190,33 +192,34 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.i(TAG,"responseData: "+responseData); //顯示資料
+                Log.i(TAG, "responseData: " + responseData); //顯示資料
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject comment = responseArr.getJSONObject(i);
-                        Log.i(TAG, "comment: "+comment);
+                        Log.i(TAG, "comment: " + comment);
                         String comment_id = comment.getString("comment_id");
                         String name = comment.getString("member_name");
                         String nameTitle;
-                        if(comment.getString("gender").equals("女")) nameTitle = "小姐";
+                        if (comment.getString("gender").equals("女")) nameTitle = "小姐";
                         else nameTitle = "先生";
                         String date = comment.getString("comment_date");
                         String commentStr = comment.getString("comment");
                         String commentSummary;
-                        if(commentStr.length() > 35) commentSummary = commentStr.substring(0, 30)+"...";
+                        if (commentStr.length() > 35)
+                            commentSummary = commentStr.substring(0, 30) + "...";
                         else commentSummary = commentStr;
 
                         double service_star = comment.getDouble("service_quality");
                         double work_star = comment.getDouble("work_attitude");
                         double price_star = comment.getDouble("price_grade");
-                        double starf = (service_star+work_star+price_star)/3;
-                        starf = (double) Math.round(starf*10)/10;
-                        Log.d(TAG, "service("+service_star+")+work("+work_star+")+price("+price_star+")/3 = "+starf);
+                        double starf = (service_star + work_star + price_star) / 3;
+                        starf = (double) Math.round(starf * 10) / 10;
+                        Log.d(TAG, "service(" + service_star + ")+work(" + work_star + ")+price(" + price_star + ")/3 = " + starf);
 
                         String[] row_data = {comment_id, String.valueOf(starf), name, nameTitle, date, commentSummary};
-                        Log.d(TAG, "row_data: "+Arrays.toString(row_data));
+                        Log.d(TAG, "row_data: " + Arrays.toString(row_data));
 
                     }
                 } catch (JSONException e) {
@@ -227,7 +230,7 @@ public class Setting extends AppCompatActivity {
     }
 
 
-    private void globalNav(){
+    private void globalNav() {
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
@@ -239,6 +242,7 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent valuation_intent = new Intent(Setting.this, Valuation.class);
+                valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(valuation_intent);
             }
         });
@@ -246,6 +250,7 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent order_intent = new Intent(Setting.this, Order.class);
+                order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(order_intent);
             }
         });
@@ -253,6 +258,7 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent calender_intent = new Intent(Setting.this, Calendar.class);
+                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(calender_intent);
             }
         });
@@ -260,15 +266,22 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent system_intent = new Intent(Setting.this, System.class);
+                system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(system_intent);
             }
         });
-//        setting_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent setting_intent = new Intent(Setting.this, Setting.class);
-//                startActivity(setting_intent);
-//            }
-//        });
+        /*setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setting_intent = new Intent(Setting.this, Setting.class);
+                setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(setting_intent);
+            }
+        });*/
+    }
+    public void onBackPressed(){
+        Intent toCalendar = new Intent(Setting.this, Calendar.class);
+        toCalendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(toCalendar);
     }
 }

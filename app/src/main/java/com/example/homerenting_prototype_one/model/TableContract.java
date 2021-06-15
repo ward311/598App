@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.tv.TvContract;
+
 import android.provider.BaseColumns;
 import android.sax.EndElementListener;
 import android.util.Log;
@@ -38,10 +38,12 @@ import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
-public class TableContract {
-    private final static String TAG = TableContract.class.getSimpleName();
 
-    private TableContract() {}
+
+public class TableContract {
+    private static String TAG = TableContract.class.getSimpleName();
+    public static DatabaseHelper dbHelper;
+    public TableContract() {}
 
     public static class AreaTable implements BaseColumns{
         public static final String TABLE_NAME = "area";
@@ -533,6 +535,103 @@ public class TableContract {
         public static final String SQL_DELETE_VEHICLE_DEMAND =
                 "DROP TABLE IF EXISTS "+TABLE_NAME;
 
+        public static void getVehicleDemandData(DatabaseHelper dbHelper, Context context, String order_id){
+            String function_name = "vehicle_demand_data";
+            String table_name = VehicleDemandTable.TABLE_NAME;
+            Log.d(TAG, "start "+function_name+" and write in sqlite db");
+            RequestBody body = new FormBody.Builder()
+                    .add("function_name", function_name)
+                    .add("order_id", order_id)
+                    .add("company_id", getCompany_id(context))
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL + "/user_data.php")
+                    .post(body)
+                    .build();
+
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d(TAG, "responseData of "+function_name+": "+responseData); //顯示資料
+
+                    JSONArray responseArr;
+                    try {
+                        responseArr= new JSONArray(responseData);
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                        Log.d(TAG, function_name+": "+e.getMessage());
+                        return;
+                    }
+
+                    int success_counter = 0, fail_counter = 0;
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_demand;
+                        try {
+                            vehicle_demand = responseArr.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+//                    Log.d(TAG, (i+1)+". staff: "+staff);
+
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        try {
+                            values.put(VehicleDemandTable.COLUMN_NAME_ORDER_ID, vehicle_demand.getString(VehicleDemandTable.COLUMN_NAME_ORDER_ID));
+                            values.put(VehicleDemandTable.COLUMN_NAME_NUM, vehicle_demand.getString(VehicleDemandTable.COLUMN_NAME_NUM));
+                            values.put(VehicleDemandTable.COLUMN_NAME_VEHICLE_WEIGHT, vehicle_demand.getString(VehicleDemandTable.COLUMN_NAME_VEHICLE_WEIGHT));
+                            values.put(VehicleDemandTable.COLUMN_NAME_VEHICLE_TYPE, vehicle_demand.getString(VehicleDemandTable.COLUMN_NAME_VEHICLE_TYPE));
+//                        Log.d(TAG, (i+1)+". "+values.toString())
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            continue;
+                        }
+
+                        try{
+                            long newRowId = db.insertOrThrow(table_name, null, values);
+                            if(newRowId != -1){
+                                success_counter = success_counter + 1;
+                                Log.d(TAG, "create "+table_name+" successfully");
+                            }
+                            else{
+                                fail_counter = fail_counter + 1;
+                                Log.d(TAG, "create "+table_name+" failed");
+                            }
+                        } catch (SQLException e){
+                            if(e.getMessage().contains("no such table")) break;
+                            if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
+                                String selection = VehicleDemandTable.COLUMN_NAME_ORDER_ID+" = ?";
+                                String[] selectionArgs = {values.getAsString(VehicleDemandTable.COLUMN_NAME_ORDER_ID)};
+
+                                int count = db.update(
+                                        table_name,
+                                        values,
+                                        selection,
+                                        selectionArgs
+                                );
+                                if(count != -1) success_counter = success_counter + 1;
+                                else fail_counter = fail_counter + 1;
+                            }
+                            else{
+                                e.printStackTrace();
+                                Log.d(TAG, "insert "+table_name+" data: "+e.getMessage());
+                            }
+                        }
+                    }
+                    Log.d(TAG, table_name+" data:\n success data: "+success_counter+", fail data: "+fail_counter);
+                }
+            });
+        }
+
     }
     public static class FurnitureTable implements BaseColumns{
         public static final String TABLE_NAME = "furniture";
@@ -685,6 +784,102 @@ public class TableContract {
                 "UNIQUE (`service_name`) "+");";
         public static final String SQL_DELETE_SERVICE_CLASS =
                 "DROP TABLE IF EXISTS "+TABLE_NAME;
+
+        public static void getServiceClass(DatabaseHelper dbHelper) {
+            String function_name = "service_class_data";
+            String table_name = ServiceClassTable.TABLE_NAME;
+            Log.d(TAG, "start "+function_name+" and write in sqlite db");
+            RequestBody body = new FormBody.Builder()
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL + "/get_data/service_class_data.php")
+                    .post(body)
+                    .build();
+
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d(TAG, "responseData of "+function_name+": "+responseData); //顯示資料
+
+                    JSONArray responseArr;
+                    try {
+                        responseArr= new JSONArray(responseData);
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                        Log.d(TAG, function_name+": "+e.getMessage());
+                        return;
+                    }
+
+                    int success_counter = 0, fail_counter = 0;
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject serviceClass;
+                        try {
+                            serviceClass = responseArr.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+//                    Log.d(TAG, (i+1)+". staff: "+staff);
+
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        try {
+                            values.put(ServiceClassTable.COLUMN_NAME_SERVICE_ID, serviceClass.getString(ServiceClassTable.COLUMN_NAME_SERVICE_ID));
+                            values.put(ServiceClassTable.COLUMN_NAME_SERVICE_NAME, serviceClass.getString(ServiceClassTable.COLUMN_NAME_SERVICE_NAME));
+
+
+
+//                        Log.d(TAG, (i+1)+". "+values.toString())
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            continue;
+                        }
+
+                        try{
+                            long newRowId = db.insertOrThrow(table_name, null, values);
+                            if(newRowId != -1){
+                                success_counter = success_counter + 1;
+                                Log.d(TAG, "create "+table_name+" successfully");
+                            }
+                            else{
+                                fail_counter = fail_counter + 1;
+                                Log.d(TAG, "create "+table_name+" failed");
+                            }
+                        } catch (SQLException e){
+                            if(e.getMessage().contains("no such table")) break;
+                            if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
+                                String selection = ServiceClassTable.COLUMN_NAME_SERVICE_ID+" = ?";
+                                String[] selectionArgs = {values.getAsString(ServiceClassTable.COLUMN_NAME_SERVICE_ID)};
+
+                                int count = db.update(
+                                        table_name,
+                                        values,
+                                        selection,
+                                        selectionArgs
+                                );
+                                if(count != -1) success_counter = success_counter + 1;
+                                else fail_counter = fail_counter + 1;
+                            }
+                            else{
+                                e.printStackTrace();
+                                Log.d(TAG, "insert "+table_name+" data: "+e.getMessage());
+                            }
+                        }
+                    }
+                    Log.d(TAG, table_name+" data:\n success data: "+success_counter+", fail data: "+fail_counter);
+                }
+            });
+        }
+
     }
 
     public static class ServiceItemTable implements BaseColumns{
@@ -694,7 +889,7 @@ public class TableContract {
         public static final String COLUMN_NAME_START_TIME = "start_time";
         public static final String COLUMN_NAME_END_TIME = "end_time";
         public static final String COLUMN_NAME_SERVICE_ID = "service_id";
-        public static final String COLUMN_NAME_IS_DELETE = "is_delete";
+        public static final String COLUMN_NAME_IS_DELETE = "isDelete";
         public static final String SQL_CREATE_SERVICE_ITEM = ""+
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
                 COLUMN_NAME_COMPANY_ID+" INTEGER(10) NOT NULL, "+
@@ -708,12 +903,12 @@ public class TableContract {
                 "REFERENCES company(`company_id`) ON DELETE CASCADE, "+
                 "FOREIGN KEY (`service_id`) "+
                 "REFERENCES service_class(`service_id`) ON DELETE CASCADE "+");";
-        public static final String DELETE_SERVICE_ITEM =
+        public static final String SQL_DELETE_SERVICE_ITEM =
                 "DROP TABLE IF EXISTS "+TABLE_NAME;
 
         public static void getServiceItem(DatabaseHelper dbHelper, Context context) {
             String function_name = "serviceItem_data";
-            String table_name = AnnouncementCompanyTable.TABLE_NAME;
+            String table_name = ServiceItemTable.TABLE_NAME;
             Log.d(TAG, "start "+function_name+" and write in sqlite db");
             RequestBody body = new FormBody.Builder()
                     .add("company_id", getCompany_id(context))
@@ -779,6 +974,7 @@ public class TableContract {
                             if(newRowId != -1){
                                 success_counter = success_counter + 1;
                                 Log.d(TAG, "create "+table_name+" successfully");
+
                             }
                             else{
                                 fail_counter = fail_counter + 1;
@@ -787,8 +983,8 @@ public class TableContract {
                         } catch (SQLException e){
                             if(e.getMessage().contains("no such table")) break;
                             if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
-                                String selection = ServiceItemTable.COLUMN_NAME_SERVICE_ID+" = ?";
-                                String[] selectionArgs = {values.getAsString(ServiceItemTable.COLUMN_NAME_SERVICE_ID)};
+                                String selection = ServiceItemTable.COLUMN_NAME_COMPANY_ID+" = ?";
+                                String[] selectionArgs = {values.getAsString(ServiceItemTable.COLUMN_NAME_COMPANY_ID)};
 
                                 int count = db.update(
                                         table_name,
@@ -805,11 +1001,71 @@ public class TableContract {
                             }
                         }
                     }
+                    ArrayList<String[]> serviceItem = new ArrayList<>();;
+                    SQLiteDatabase db;
+
+                    String company_id = "";
+                    String item_name = "";
+                    String start_time = "";
+                    String end_time = "";
+                    String service_id = "";
+                    String service_name = "";
+                    String isDelete = "";
+                    db = dbHelper.getReadableDatabase();
+                    String sql_query =
+                            "SELECT * FROM "+ ServiceItemTable.TABLE_NAME+" NATURAL JOIN "+TableContract.ServiceClassTable.TABLE_NAME+" " +
+                                    "WHERE company_id = "+getCompany_id(context)+" " +
+                                    "AND ((isDelete = FALSE AND end_time IS NOT NULL))"+" " +
+                                    "OR (end_time IS NULL)" ;
+                    Cursor cursor = db.rawQuery(sql_query, null);
+
+                    Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+                    if(!cursor.moveToNext()){
+                        cursor.close();
+                        return;
+                    }
+                    while(!cursor.isAfterLast()){
+                        service_id = cursor.getString(cursor.getColumnIndexOrThrow(ServiceClassTable.COLUMN_NAME_SERVICE_ID));
+                        company_id = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_COMPANY_ID));
+                        item_name = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_ITEM_NAME));
+                        start_time = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_START_TIME));
+                        end_time = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_END_TIME));
+                        isDelete = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_END_TIME));
+                        service_name = cursor.getString(cursor.getColumnIndexOrThrow(ServiceClassTable.COLUMN_NAME_SERVICE_NAME));
+                        String[] serviceItem_data = {service_id, company_id, item_name, start_time, end_time, isDelete, service_name};
+                        Log.d(TAG,"("+(cursor.getPosition()+1)+"/"+cursor.getCount()+"). sqlite comment: "+ Arrays.toString(serviceItem_data));
+                        serviceItem.add(serviceItem_data);
+
+                        cursor.moveToNext();
+                    }
+                    ContentValues values = new ContentValues();
+                    for(int i=0; i < serviceItem.size(); i++){
+                        db = dbHelper.getWritableDatabase();
+                        values.put((ServiceItemTable.COLUMN_NAME_SERVICE_ID),service_id);
+                        values.put((ServiceItemTable.COLUMN_NAME_COMPANY_ID), company_id);
+                        values.put((ServiceItemTable.COLUMN_NAME_ITEM_NAME), item_name);
+                        values.put((ServiceItemTable.COLUMN_NAME_START_TIME),start_time);
+                        values.put((ServiceItemTable.COLUMN_NAME_END_TIME), end_time);
+                        values.put((ServiceItemTable.COLUMN_NAME_IS_DELETE), isDelete);
+                        //values.put((ServiceClassTable.COLUMN_NAME_SERVICE_NAME), service_name);
+
+
+                        Log.i(TAG, "data: "+ Arrays.toString(serviceItem.get(i)));
+                    }
+                    cursor.close();
+
+                    try{
+                        long newRowId = db.insertOrThrow(TableContract.ServiceItemTable.TABLE_NAME, null, values);
+                        if(newRowId != -1) {
+                            Log.d(TAG,"create successfully");}
+                        else Log.d(TAG, "create failed");
+                    }catch (SQLException e){
+                        e.printStackTrace();
+                    }
                     Log.d(TAG, table_name+" data:\n success data: "+success_counter+", fail data: "+fail_counter);
                 }
             });
-    }
-
+        }
 
     }
 
@@ -825,7 +1081,7 @@ public class TableContract {
                 COLUMN_NAME_ANNOUNCEMENT_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_TITLE+" VARCHAR(20), "+
                 COLUMN_NAME_OUTLINE+" VARCHAR(30), "+
-                COLUMN_NAME_CONTENT+"VARCHAR(300), "+
+                COLUMN_NAME_CONTENT+" VARCHAR(300), "+
                 COLUMN_NAME_DATE+" TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "+
                 "PRIMARY KEY (`announcement_id`) "+");";
         public static final String SQL_DELETE_ANNOUNCEMENT =
@@ -1078,7 +1334,7 @@ public class TableContract {
             String date = simpleDateFormat.format(datetime);
             String vehicle_id = "";
             String maintain_date = "";
-            String plate_name = "";
+            String plate_num = "";
             String vehicle_weight = "";
             String vehicle_type = "";
             String company_id = "";
@@ -1099,13 +1355,13 @@ public class TableContract {
             while(!cursor.isAfterLast()){
                 vehicle_id = cursor.getString(cursor.getColumnIndexOrThrow(VehicleMaintainTable.COLUMN_NAME_VEHICLE_ID));
                 maintain_date = cursor.getString(cursor.getColumnIndexOrThrow(VehicleMaintainTable.COLUMN_NAME_MAINTAIN_DATE));
-                plate_name = cursor.getString(cursor.getColumnIndexOrThrow(VehicleTable.COLUMN_NAME_PLATE_NUM));
+                plate_num = cursor.getString(cursor.getColumnIndexOrThrow(VehicleTable.COLUMN_NAME_PLATE_NUM));
                 vehicle_weight = cursor.getString(cursor.getColumnIndexOrThrow(VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT));
                 vehicle_type = cursor.getString(cursor.getColumnIndexOrThrow(VehicleTable.COLUMN_NAME_VEHICLE_TYPE));
                 company_id = cursor.getString(cursor.getColumnIndexOrThrow(VehicleTable.COLUMN_NAME_COMPANY_ID));
                 start_time = cursor.getString(cursor.getColumnIndexOrThrow(VehicleTable.COLUMN_NAME_START_TIME));
                 end_time = cursor.getString(cursor.getColumnIndexOrThrow(VehicleTable.COLUMN_NAME_END_TIME));
-                String[] leave_data = {vehicle_id, maintain_date, plate_name, vehicle_weight, vehicle_type, company_id, start_time, end_time};
+                String[] leave_data = {vehicle_id, maintain_date, plate_num, vehicle_weight, vehicle_type, company_id, start_time, end_time};
                 Log.d(TAG,"("+(cursor.getPosition()+1)+"/"+cursor.getCount()+"). sqlite comment: "+ Arrays.toString(leave_data));
                 maintain.add(leave_data);
 
@@ -1116,7 +1372,7 @@ public class TableContract {
                 db = dbHelper.getWritableDatabase();
                 values.put((TableContract.VehicleMaintainTable.COLUMN_NAME_VEHICLE_ID),vehicle_id);
                 values.put((TableContract.VehicleMaintainTable.COLUMN_NAME_MAINTAIN_DATE), maintain_date);
-                //values.put((TableContract.VehicleTable.COLUMN_NAME_PLATE_NUM), company_id);
+                //values.put((TableContract.VehicleTable.COLUMN_NAME_PLATE_NUM), plate_num);
                 //values.put((TableContract.VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT),vehicle_weight);
                 //values.put((TableContract.VehicleTable.COLUMN_NAME_VEHICLE_TYPE), vehicle_type);
                 //values.put((TableContract.VehicleTable.COLUMN_NAME_COMPANY_ID), company_id);

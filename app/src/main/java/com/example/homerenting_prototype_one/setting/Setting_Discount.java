@@ -108,9 +108,7 @@ public class Setting_Discount extends AppCompatActivity {
         getPeriodRow(true);
         getFreeData();
         getData();
-
         setAddBtn();
-
         setDeleteBtn();
 
         checkBtn.setOnClickListener(v -> {
@@ -269,7 +267,7 @@ public class Setting_Discount extends AppCompatActivity {
         });
     }
 
-    private void setDateBtn(final TextView dateBtn, int type, int index){
+    private void setDateBtn(final TextView dateBtn, int type, int index){//元件, 起始時間或結束時間, discount_item指標
         Log.d(TAG, "setDateBtn: "+index);
         dateBtn.setOnClickListener(v -> {
             GregorianCalendar calendar = new GregorianCalendar();
@@ -563,6 +561,7 @@ public class Setting_Discount extends AppCompatActivity {
                         db = dbHelper.getWritableDatabase();
                         ContentValues values = new ContentValues();
                         try {
+
                             values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_ID, discountId);
                             values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
                             values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_NAME, discountName);
@@ -573,6 +572,7 @@ public class Setting_Discount extends AppCompatActivity {
                             values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_IS_DELETE, discountItem.getString(TableContract.PeriodDiscountTable.COLUMN_NAME_IS_DELETE));
                             values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE_TIME, discountItem.getString(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE_TIME));
                             values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISABLE_TIME, disableTime);
+
 //                        Log.d(TAG, (i+1)+". "+values.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -583,6 +583,18 @@ public class Setting_Discount extends AppCompatActivity {
                             if(newRowId != -1){
                                 success_counter = success_counter + 1;
                                 Log.d(TAG, "create periodDiscount successfully");
+                                String selection = TableContract.PeriodDiscountTable.COLUMN_NAME_COMPANY_ID+" = ?";
+                                String[] selectionArgs = {getCompany_id(context)};
+
+                                int count = db.update(
+                                        TableContract.PeriodDiscountTable.TABLE_NAME,
+                                        values,
+                                        selection,
+                                        selectionArgs
+                                );
+                                Log.d(TAG,""+count);
+                                if(count != -1) Log.d(TAG, "update successfully");
+                                else Log.d(TAG, "update failed");
                             }
                             else{
                                 fail_counter = fail_counter + 1;
@@ -718,7 +730,7 @@ public class Setting_Discount extends AppCompatActivity {
                                 +Arrays.toString(period_discounts.get(period_discounts.size()-1)));
                         runOnUiThread(() -> {
                             discountTable.removeViewAt(discountTable.getChildCount()-1);
-                            discountTable.addView(addNewRow("-1", new_discount_name, -1, thisYear+"-01-01", thisYear+"-12-31", false, discountTable.getChildCount()));
+                            discountTable.addView(addNewRow("-1", new_discount_name, -1, thisYear+"-01-01", thisYear+"-12-31", false, discountTable.getChildCount()-3));
                             discountTable.addView(newAddBtn());
                         });
                     })

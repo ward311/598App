@@ -31,6 +31,7 @@ import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.base_adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.valuation.Valuation;
+import com.example.homerenting_prototype_one.valuation.Valuation_Booking;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -344,6 +345,11 @@ public class Order_Booking extends AppCompatActivity {
             default:
                 return 0;
         }
+    }
+    public void onBackPressed(){
+        Intent toOrder = new Intent(Order_Booking.this, Order.class);
+        toOrder.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(toOrder);
     }
 
 }

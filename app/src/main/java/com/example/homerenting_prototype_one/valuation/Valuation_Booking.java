@@ -340,4 +340,9 @@ public class Valuation_Booking extends AppCompatActivity {
                 return 0;
         }
     }
+    public void onBackPressed(){
+        Intent toValuation = new Intent(Valuation_Booking.this, Valuation.class);
+        toValuation.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(toValuation);
+    }
 }

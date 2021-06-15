@@ -229,4 +229,9 @@ public class Valuation_Cancel extends AppCompatActivity {
             }
         });
     }
+    public void onBackPressed(){
+        Intent toValuation = new Intent(Valuation_Cancel.this, Valuation.class);
+        toValuation.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(toValuation);
+    }
 }
