@@ -3,33 +3,26 @@ package com.example.homerenting_prototype_one.main;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
-import com.example.homerenting_prototype_one.ChangePassword;
 import com.example.homerenting_prototype_one.ForgetPassword;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.Register;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.helper.SessionManager;
 import com.example.homerenting_prototype_one.model.User;
-import com.example.homerenting_prototype_one.order.Order;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,8 +36,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
-
 public class Login extends AppCompatActivity {
     String account, password;
     SharedPreferences sp;
@@ -52,7 +43,7 @@ public class Login extends AppCompatActivity {
     //public String rPassword = "123";
     EditText account_edit, password_edit;
     TextView forget_pwd;
-    Button login_btn, edit_btn;
+    Button admin_login_btn, edit_btn, staff_login_btn;
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Login";
     Context context = Login.this;;
@@ -65,14 +56,15 @@ public class Login extends AppCompatActivity {
             setContentView(R.layout.activity_login);
             account_edit = findViewById(R.id.actEdit_L);
             password_edit = findViewById(R.id.pwdEdit_L);
-            login_btn = findViewById(R.id.login_btn_L);
+            admin_login_btn = findViewById(R.id.admin_login_btn);
+            staff_login_btn = findViewById(R.id.staff_login_btn);
             //edit_btn = findViewById(R.id.edit_pwd_btn);
             forget_pwd = findViewById(R.id.forgetText);
             sp = getSharedPreferences("login", Context.MODE_PRIVATE);
             session = SessionManager.getInstance(this);
 
             if(sp.getBoolean("logged", false)){
-                loginTo();
+                loginTo(sp.getString("title",null));
             }
             if (session.isLogin()) { //關掉app後不會保存登入狀態的樣子
                 User user = session.getUserDetail();
@@ -121,15 +113,23 @@ public class Login extends AppCompatActivity {
             });
 
 
-            login_btn.setOnClickListener(view -> {
+            admin_login_btn.setOnClickListener(view -> {
                 account = account_edit.getText().toString();
                 password = password_edit.getText().toString();
                 sp.edit().putBoolean("logged", true).apply();
                 sp.edit().putString("account", account).apply();
                 sp.edit().putString("password", password).apply();
 
-                loginTo();
+                loginTo("admin");
 
+            });
+            staff_login_btn.setOnClickListener(v -> {
+                account = account_edit.getText().toString();
+                password = password_edit.getText().toString();
+                sp.edit().putBoolean("logged", true).apply();
+                sp.edit().putString("account", account).apply();
+                sp.edit().putString("password", password).apply();
+                loginTo("staff");
             });
 
             forget_pwd.setOnClickListener(view -> {
@@ -140,7 +140,7 @@ public class Login extends AppCompatActivity {
 
     }
 
-    public void loginTo(){
+    public void loginTo(String realTitle){
         RequestBody body = new FormBody.Builder()
                 .add("user_email",sp.getString("account", ""))
                 .add("password", sp.getString("password", ""))
@@ -176,10 +176,17 @@ public class Login extends AppCompatActivity {
                         String user_email = user.getString("user_email");
                         String user_name = user.getString("user_name");
                         String token = user.getString("token");
+                        String title = user.getString("title");
                         session.createLoginSession(user_id, String.valueOf(user));
                         runOnUiThread(() -> {
-                            Toast.makeText(context, "登入成功", Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(context, Calendar.class));
+                            if(title.equals(realTitle)){
+                                Toast.makeText(context, "登入成功", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(context, Calendar.class));
+                                sp.edit().putString("title", title).apply();
+                            }else{
+                                Toast.makeText(context, "權限不足或是帳號未註冊", Toast.LENGTH_LONG).show();
+                            }
+
                         });
                     }
                     else if(loginData.getString("status").equals("failed")){
@@ -193,6 +200,7 @@ public class Login extends AppCompatActivity {
                         if(responseData.equals("success")){
                             Toast.makeText(context, "登入成功, 歡迎回來", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(context, Calendar.class));
+
                         }
                         else Toast.makeText(context, "登入失敗，請確認帳號密碼", Toast.LENGTH_LONG).show();
                     });

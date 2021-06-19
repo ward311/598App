@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -50,9 +53,11 @@ public class System extends AppCompatActivity {
     Context context;
     private static DatabaseHelper dbHelper;
     private static SQLiteDatabase db;
+    private SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences("login", Context.MODE_PRIVATE);
         setContentView(R.layout.activity_system);
         ImageButton data_btn = findViewById(R.id.data_imgBtn);
         ImageButton schedule_btn = findViewById(R.id.schedule_imgBtn);
@@ -63,10 +68,27 @@ public class System extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
+
+
         dbHelper = new DatabaseHelper(this);
 //        getAllStaffData();
 //        getAllVehicleData();
+        if(sp.getString("title", "null").contains("staff")){
+            data_btn.setEnabled(false);
+            data_btn.setBackgroundColor(Color.parseColor("#f1f1f1"));
+            data_btn.setAlpha(.3F);
+            schedule_btn.setEnabled(false);
+            schedule_btn.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            schedule_btn.setAlpha(.3F);
+            vacation_btn.setEnabled(false);
+            vacation_btn.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            vacation_btn.setAlpha(.3F);
 
+        }else{
+            data_btn.setEnabled(true);
+            schedule_btn.setEnabled(true);
+            vacation_btn.setEnabled(true);
+        }
 
         data_btn.setOnClickListener(new View.OnClickListener() {
             @Override

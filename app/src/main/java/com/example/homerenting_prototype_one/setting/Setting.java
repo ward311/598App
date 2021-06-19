@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,15 +43,17 @@ import okhttp3.Response;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class Setting extends AppCompatActivity {
-    TextView company_email;
+    TextView company_email, user_auth;
+
     Context context = this;
     Button sign_out;
     String TAG = "Setting";
-    SharedPreferences sp;
+    private SharedPreferences sp ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences("login", Context.MODE_PRIVATE);
         setContentView(R.layout.activity_setting);
         LinearLayout company_information = findViewById(R.id.companyInfo_LL_S);
         LinearLayout service_item = findViewById(R.id.serviceItem_LL_S);
@@ -59,7 +62,44 @@ public class Setting extends AppCompatActivity {
         LinearLayout system_announcement = findViewById(R.id.announce_LL_S);
         LinearLayout history_record = findViewById(R.id.btn_logout);
 
+        if(sp.getString("title", null).contains("staff")){
+            company_information.setEnabled(false);
+            company_information.setBackgroundColor(Color.parseColor("#f1f1f1"));
+            company_information.setAlpha(.3F);
+
+            service_item.setEnabled(false);
+            service_item.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            service_item.setAlpha(.3F);
+            discount.setEnabled(false);
+            discount.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            discount.setAlpha(.3F);
+            customer_evaluation.setEnabled(false);
+            customer_evaluation.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            customer_evaluation.setAlpha(.3F);
+            system_announcement.setEnabled(false);
+            system_announcement.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            system_announcement.setAlpha(.3F);
+            history_record.setEnabled(false);
+            history_record.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            history_record.setAlpha(.3F);
+
+        }else{
+            company_information.setEnabled(true);
+            service_item.setEnabled(true);
+            discount.setEnabled(true);
+            customer_evaluation.setEnabled(true);
+            system_announcement.setEnabled(true);
+            history_record.setEnabled(true);
+        }
         company_email = findViewById(R.id.company_email_S);
+        user_auth = findViewById(R.id.authorization);
+
+        if(sp.getString("title",null).equals("admin")){
+            user_auth.setText("當前權限：管理者");
+        }else{
+            user_auth.setText("當前權限：員工");
+        }
+
         sign_out = findViewById(R.id.signout_btn);
 
         getCompanyDetail();
