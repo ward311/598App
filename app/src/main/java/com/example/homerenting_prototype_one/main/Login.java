@@ -57,14 +57,14 @@ public class Login extends AppCompatActivity {
             account_edit = findViewById(R.id.actEdit_L);
             password_edit = findViewById(R.id.pwdEdit_L);
             admin_login_btn = findViewById(R.id.admin_login_btn);
-            staff_login_btn = findViewById(R.id.staff_login_btn);
+
             //edit_btn = findViewById(R.id.edit_pwd_btn);
             forget_pwd = findViewById(R.id.forgetText);
             sp = getSharedPreferences("login", Context.MODE_PRIVATE);
             session = SessionManager.getInstance(this);
 
             if(sp.getBoolean("logged", false)){
-                loginTo(sp.getString("title",null));
+                loginTo();
             }
             if (session.isLogin()) { //關掉app後不會保存登入狀態的樣子
                 User user = session.getUserDetail();
@@ -119,18 +119,10 @@ public class Login extends AppCompatActivity {
                 sp.edit().putBoolean("logged", true).apply();
                 sp.edit().putString("account", account).apply();
                 sp.edit().putString("password", password).apply();
-
-                loginTo("admin");
+                loginTo();
 
             });
-            staff_login_btn.setOnClickListener(v -> {
-                account = account_edit.getText().toString();
-                password = password_edit.getText().toString();
-                sp.edit().putBoolean("logged", true).apply();
-                sp.edit().putString("account", account).apply();
-                sp.edit().putString("password", password).apply();
-                loginTo("staff");
-            });
+
 
             forget_pwd.setOnClickListener(view -> {
                 Intent forgetPwd = new Intent(context, ForgetPassword.class);
@@ -140,7 +132,7 @@ public class Login extends AppCompatActivity {
 
     }
 
-    public void loginTo(String realTitle){
+    public void loginTo(){
         RequestBody body = new FormBody.Builder()
                 .add("user_email",sp.getString("account", ""))
                 .add("password", sp.getString("password", ""))
@@ -179,14 +171,10 @@ public class Login extends AppCompatActivity {
                         String title = user.getString("title");
                         session.createLoginSession(user_id, String.valueOf(user));
                         runOnUiThread(() -> {
-                            if(title.equals(realTitle)){
+
                                 Toast.makeText(context, "登入成功", Toast.LENGTH_LONG).show();
                                 startActivity(new Intent(context, Calendar.class));
                                 sp.edit().putString("title", title).apply();
-                            }else{
-                                Toast.makeText(context, "權限不足或是帳號未註冊", Toast.LENGTH_LONG).show();
-                            }
-
                         });
                     }
                     else if(loginData.getString("status").equals("failed")){
