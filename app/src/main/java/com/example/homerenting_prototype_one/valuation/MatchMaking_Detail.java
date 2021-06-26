@@ -173,8 +173,14 @@ public class MatchMaking_Detail extends AppCompatActivity {
                         if(!order.getString("valuation_time").equals("null"))
                             valuationTime = valuationTime+" "+order.getString("valuation_time");
                     }
-                    fromAddress = order.getString("from_address");
-                    toAddress = order.getString("to_address");
+                    if(!order.has("from_address") || order.getString("from_address").equals("null")){
+                        fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
+                    }
+                    else if(order.has("from_address"))  fromAddress = order.getString("from_address");
+                    if(!order.has("to_address") || order.getString("to_address").equals("null")){
+                        toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
+                    }
+                    else if(order.has("to_address")) toAddress = order.getString("to_address");
                     notice = order.getString("additional");
                     String moving_date = order.getString("moving_date");
                     if(moving_date.equals("null")) movingTime = "未安排搬家時間";

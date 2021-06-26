@@ -142,8 +142,15 @@ public class Distribution_Detail extends AppCompatActivity {
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
-                    fromAddress = order.getString("from_address");
-                    toAddress = order.getString("to_address");
+                    if(!order.has("from_address") || order.getString("from_address").equals("null")){
+                        fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
+                    }
+                    else if(order.has("from_address"))  fromAddress = order.getString("from_address");
+                    if(!order.has("to_address") || order.getString("to_address").equals("null")){
+                        toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
+                    }
+                    else if(order.has("to_address")) toAddress = order.getString("to_address");
+
                     fee = order.getString("accurate_fee");
 
                     //顯示基本資訊

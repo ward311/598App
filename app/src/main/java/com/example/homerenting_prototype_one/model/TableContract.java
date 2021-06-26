@@ -126,8 +126,12 @@ public class TableContract {
         public static final String COLUMN_NAME_MEMBER_ID = "member_id";
         public static final String COLUMN_NAME_ADDITIONAL = "additional";
         public static final String COLUMN_NAME_MEMO = "memo";
-        public static final String COLUMN_NAME_FROM_ADDRESS = "from_address";
-        public static final String COLUMN_NAME_TO_ADDRESS = "to_address";
+        public static final String COLUMN_NAME_OUT_CITY = "outcity";
+        public static final String COLUMN_NAME_OUT_DISTRICT = "outdistrict";
+        public static final String COLUMN_NAME_OUT_ADDRESS = "address1";
+        public static final String COLUMN_NAME_IN_CITY = "incity";
+        public static final String COLUMN_NAME_IN_DISTRICT = "indistrict";
+        public static final String COLUMN_NAME_IN_ADDRESS = "address2";
         public static final String COLUMN_NAME_FROM_ELEVATOR = "from_elevator";
         public static final String COLUMN_NAME_TO_ELEVATOR = "to_elevator";
         public static final String COLUMN_NAME_STORAGE_SPACE = "storage_space";
@@ -145,8 +149,12 @@ public class TableContract {
                 COLUMN_NAME_MEMBER_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_ADDITIONAL+" NVARCHAR(300), "+
                 COLUMN_NAME_MEMO+" NVARCHAR(300), "+
-                COLUMN_NAME_FROM_ADDRESS+" NVARCHAR(100), "+
-                COLUMN_NAME_TO_ADDRESS+" NVARCHAR(100), "+
+                COLUMN_NAME_OUT_CITY+" VARCHAR(100), "+
+                COLUMN_NAME_OUT_DISTRICT+" VARCHAR(100), "+
+                COLUMN_NAME_OUT_ADDRESS+" VARCHAR(100), "+
+                COLUMN_NAME_IN_CITY+" VARCHAR(100), "+
+                COLUMN_NAME_IN_DISTRICT+" VARCHAR(100), "+
+                COLUMN_NAME_IN_ADDRESS+" VARCHAR(100), "+
                 COLUMN_NAME_FROM_ELEVATOR+" BOOLEAN, "+
                 COLUMN_NAME_TO_ELEVATOR+" BOOLEAN, "+
                 COLUMN_NAME_STORAGE_SPACE+" VARCHAR(10), "+

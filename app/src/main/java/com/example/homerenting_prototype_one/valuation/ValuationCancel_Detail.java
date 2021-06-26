@@ -109,8 +109,16 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                     if(!order.getString("moving_date").equals("null"))
                         movingTime = getDate(order.getString("moving_date")) + " " + getTime(order.getString("moving_date"));
                     else movingTime = "";
-                    fromAddress = order.getString("from_address");
-                    toAddress = order.getString("to_address");
+
+                    if(!order.has("from_address") || order.getString("from_address").equals("null")){
+                        fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
+                    }
+                    else if(order.has("from_address"))  fromAddress = order.getString("from_address");
+                    if(!order.has("to_address") || order.getString("to_address").equals("null")){
+                        toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
+                    }
+                    else if(order.has("to_address")) toAddress = order.getString("to_address");
+
                     remainder = order.getString("additional");
                     movedate = order.getString("moving_date");
                     worktime = order.getString("estimate_worktime");

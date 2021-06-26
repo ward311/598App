@@ -73,7 +73,7 @@ public class System extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 //        getAllStaffData();
 //        getAllVehicleData();
-        if(sp.getString("title", "null").contains("staff")){
+        if(sp.getString("title", null).contains("staff")){
             data_btn.setEnabled(false);
             data_btn.setBackgroundColor(Color.parseColor("#f1f1f1"));
             data_btn.setAlpha(.3F);

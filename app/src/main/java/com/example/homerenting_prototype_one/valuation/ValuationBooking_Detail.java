@@ -205,8 +205,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     valuationTime = getDate(order.getString("valuation_date"));
                     if(!order.getString("valuation_time").equals("null"))
                         valuationTime = valuationTime+" "+order.getString("valuation_time");
-                    fromAddress = order.getString("from_address");
-                    toAddress = order.getString("to_address");
+                    if(!order.has("from_address") || order.getString("from_address").equals("null")){
+                        fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
+                    }
+                    else if(order.has("from_address"))  fromAddress = order.getString("from_address");
+                    if(!order.has("to_address") || order.getString("to_address").equals("null")){
+                        toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
+                    }
+                    else if(order.has("to_address")) toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";

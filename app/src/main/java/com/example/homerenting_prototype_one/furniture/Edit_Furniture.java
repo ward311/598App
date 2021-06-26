@@ -447,6 +447,8 @@ public class Edit_Furniture extends AppCompatActivity {
         });
     }
 
+
+
     private void setSpace(int choose){
         final ArrayAdapter<String> spaceList = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, space);
         if(choose==1){
@@ -572,15 +574,27 @@ public class Edit_Furniture extends AppCompatActivity {
     }
 
     private void showBundleData(){
-        if(bundle.containsKey("name")) Log.d(TAG, "name"+bundle.getString("name"));
-        if(bundle.containsKey("cAddress")) Log.d(TAG, "cAddress"+bundle.getString("cAddress"));
-        if(bundle.containsKey("phone")) Log.d(TAG, "phone"+bundle.getString("phone"));
-        if(bundle.containsKey("fromAddress")) Log.d(TAG, "fromAddress"+bundle.getString("fromAddress"));
-        if(bundle.containsKey("toAddress")) Log.d(TAG, "toAddress"+bundle.getString("toAddress"));
-        if(bundle.containsKey("price")) Log.d(TAG, "price"+bundle.getString("price"));
-        if(bundle.containsKey("worktime")) Log.d(TAG, "worktime"+bundle.getString("worktime"));
-        if(bundle.containsKey("notice")) Log.d(TAG, "notice"+bundle.getString("notice"));
-        if(bundle.containsKey("date")) Log.d(TAG, "date"+bundle.getString("date"));
+
+        if(bundle.containsKey("name")) Log.d(TAG, "name: "+bundle.getString("name"));
+        if(bundle.containsKey("gender")) Log.d(TAG, "gender: "+bundle.getInt("gender"));
+        if(bundle.containsKey("cCity")) Log.d(TAG, "cCity: "+bundle.getString("cCity"));
+        if(bundle.containsKey("cDistrict")) Log.d(TAG, "cDistrict: "+bundle.getString("cDistrict"));
+        if(bundle.containsKey("cAddress")) Log.d(TAG, "cAddress: "+bundle.getString("cAddress"));
+        if(bundle.containsKey("phone")) Log.d(TAG, "phone: "+bundle.getString("phone"));
+        if(bundle.containsKey("outCity")) Log.d(TAG, "outCity: "+bundle.getString("outCity"));
+        if(bundle.containsKey("outDistrict")) Log.d(TAG, "outDistrict: "+bundle.getString("outDistrict"));
+        if(bundle.containsKey("outAddress")) Log.d(TAG, "outAddress: "+bundle.getString("outAddress"));
+        if(bundle.containsKey("inCity")) Log.d(TAG, "inCity: "+bundle.getString("inCity"));
+        if(bundle.containsKey("inDistrict")) Log.d(TAG, "inDistrict: "+bundle.getString("inDistrict"));
+        if(bundle.containsKey("inAddress")) Log.d(TAG, "inAddress: "+bundle.getString("inAddress"));
+        if(bundle.containsKey("pickDate")) Log.d(TAG, "pickDate: "+bundle.getString("pickDate"));
+        if(bundle.containsKey("pickTime")) Log.d(TAG, "pickTime: "+bundle.getString("pickTime"));
+        if(bundle.containsKey("price")) Log.d(TAG, "price: "+bundle.getString("price"));
+        if(bundle.containsKey("worktime")) Log.d(TAG, "worktime: "+bundle.getString("worktime"));
+        if(bundle.containsKey("notice")) Log.d(TAG, "notice: "+bundle.getString("notice"));
+
+
+
     }
 
     private void modifyFurniture(){

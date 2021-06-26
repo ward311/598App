@@ -11,15 +11,12 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -53,7 +50,10 @@ import okhttp3.Response;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 public class Add_Order extends AppCompatActivity {
-    EditText name_edit, cAddress_edit, phone_edit, moveOut_edit, moveIn_edit, price_edit, worktime_edit, notice_edit;
+    EditText name_edit, phone_edit, price_edit, worktime_edit, notice_edit;
+    EditText outCity, outDistrict, outAddress;
+    EditText cCity, cDistrict, cAddress;
+    EditText inCity, inDistrict, inAddress;
     TextView movingDate_text, movingTime_text;
     ListView furniture_list;
     RadioGroup genderRG;
@@ -115,7 +115,7 @@ public class Add_Order extends AppCompatActivity {
             time_picker.show();
         });
 
-        cAddress_edit.addTextChangedListener(new TextWatcher() {
+        cCity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
@@ -124,28 +124,85 @@ public class Add_Order extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                moveOut_edit.setError(null);
-                String address = cAddress_edit.getText().toString();
-                String moveOut_address = moveOut_edit.getText().toString();
-                if(!address.equals("") && !moveOut_address.equals("")){
-                    if(address.substring(0, 1).equals(moveOut_address.substring(0, 1)))
-                        moveOut_edit.setText(address);
+                outCity.setError(null);
+
+                String c_City = cCity.getText().toString();
+                String moveOut_City = outCity.getText().toString();
+
+
+
+                if(!c_City.equals("") && !moveOut_City.equals("")){
+                    if(c_City.substring(0, 1).equals(moveOut_City.substring(0, 1)))
+                        outCity.setText(c_City);
                 }
-                else if(!address.equals("") || moveOut_address.length()<=1){
-                    moveOut_edit.setText(address);
+                else if(!c_City.equals("") || moveOut_City.length() <= 1){
+                       outCity.setText(c_City);
                 }
             }
         });
 
+        cDistrict.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                outDistrict.setError(null);
+
+                String c_District = cDistrict.getText().toString();
+                String moveOut_District = outDistrict.getText().toString();
+
+                if(!c_District.equals("") && !moveOut_District.equals("")){
+                    if(c_District.substring(0,1).equals(moveOut_District.substring(0,1)))
+                        outDistrict.setText(c_District);
+                }
+                else if(!c_District.equals("") || moveOut_District.length() <= 1){
+                    outDistrict.setText(c_District);
+                }
+            }
+        });
+
+        cAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                outAddress.setError(null);
+
+                String c_Address = cAddress.getText().toString();
+                String moveOut_Address = outAddress.getText().toString();
+
+                if(!c_Address.equals("") && !moveOut_Address.equals("")){
+                    if(c_Address.substring(0, 1).equals(moveOut_Address.substring(0, 1)))
+                        outAddress.setText(c_Address);
+                }
+                else if(!c_Address.equals("") || moveOut_Address.length() <= 1){
+                    outAddress.setText(c_Address);
+                }
+            }
+        });
+
+
         editFurnitureBtn.setOnClickListener(v -> {
             Intent intent = new Intent();
+
             bundle.putString("order_id", "-1");
             getTextData();
             intent.putExtras(bundle);
             intent.setClass(context, Edit_Furniture.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
+
         });
+
 
         addOrderBtn.setOnClickListener(v -> {
             if(checkEmpty()) return;
@@ -161,42 +218,75 @@ public class Add_Order extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("end", "true");
                 startActivity(intent);
+
             }, 1000);
         });
 
         globalNav();
+
     }
 
-    private void getTextData(){
+    public void getTextData(){
         bundle.putString("name", name_edit.getText().toString());
-        bundle.putString("cAddress", cAddress_edit.getText().toString());
+        bundle.putInt("gender", genderRG.getCheckedRadioButtonId());
+        bundle.putString("cCity", cCity.getText().toString());
+        bundle.putString("cDistrict", cDistrict.getText().toString());
+        bundle.putString("cAddress", cAddress.getText().toString());
         bundle.putString("phone", phone_edit.getText().toString());
-        bundle.putString("fromAddress", moveOut_edit.getText().toString());
-        bundle.putString("toAddress", moveIn_edit.getText().toString());
+        bundle.putString("outCity", outCity.getText().toString());
+        bundle.putString("outDistrict", outDistrict.getText().toString());
+        bundle.putString("outAddress", outAddress.getText().toString());
+        bundle.putString("inCity", inCity.getText().toString());
+        bundle.putString("inDistrict", inDistrict.getText().toString());
+        bundle.putString("inAddress", inAddress.getText().toString());
+        bundle.putString("pickDate", movingDate_text.getText().toString());
+        bundle.putString("pickTime", movingTime_text.getText().toString());
         bundle.putString("price", price_edit.getText().toString());
         bundle.putString("worktime", worktime_edit.getText().toString());
         bundle.putString("notice", notice_edit.getText().toString());
-        bundle.putString("date", movingDate_text.getText().toString());
     }
 
-    private void setTextData(){
+     public void setTextData(){
         if(bundle.containsKey("name")) name_edit.setText(bundle.getString("name"));
-        if(bundle.containsKey("cAddress")) cAddress_edit.setText(bundle.getString("cAddress"));
+        if(bundle.containsKey("gender")) genderRG.check(bundle.getInt("gender"));
+        if(bundle.containsKey("cCity")) cCity.setText(bundle.getString("cCity"));
+        if(bundle.containsKey("cDistrict")) cDistrict.setText(bundle.getString("cDistrict"));
+        if(bundle.containsKey("cAddress")) cAddress.setText(bundle.getString("cAddress"));
         if(bundle.containsKey("phone")) phone_edit.setText(bundle.getString("phone"));
-        if(bundle.containsKey("fromAddress")) moveOut_edit.setText(bundle.getString("fromAddress"));
-        if(bundle.containsKey("toAddress")) moveIn_edit.setText(bundle.getString("toAddress"));
+        if(bundle.containsKey("outCity")) outCity.setText(bundle.getString("outCity"));
+        if(bundle.containsKey("outDistrict")) outDistrict.setText(bundle.getString("outDistrict"));
+        if(bundle.containsKey("outAddress")) outAddress.setText(bundle.getString("outAddress"));
+        if(bundle.containsKey("inCity")) inCity.setText(bundle.getString("inCity"));
+        if(bundle.containsKey("inDistrict")) inDistrict.setText(bundle.getString("inDistrict"));
+        if(bundle.containsKey("inAddress")) inAddress.setText(bundle.getString("inAddress"));
+        if(bundle.containsKey("pickDate")) movingDate_text.setText(bundle.getString("pickDate"));
+        if(bundle.containsKey("pickTime")) movingTime_text.setText(bundle.getString("pickTime"));
         if(bundle.containsKey("price")) price_edit.setText(bundle.getString("price"));
         if(bundle.containsKey("worktime")) worktime_edit.setText(bundle.getString("worktime"));
         if(bundle.containsKey("notice")) notice_edit.setText(bundle.getString("notice"));
-        if(bundle.containsKey("date")) movingDate_text.setText(bundle.getString("date"));
+
     }
 
     private void addOrder(){
         String name = name_edit.getText().toString();
-        String cAddress = cAddress_edit.getText().toString();
+
+        String c_City = cCity.getText().toString();
+        String c_District = cDistrict.getText().toString();
+        String c_Address = cAddress.getText().toString();
+        String con_cAddress = c_City + c_District + c_Address;
+
         String phone = phone_edit.getText().toString();
-        String fromAddress = moveOut_edit.getText().toString();
-        String toAddress = moveIn_edit.getText().toString();
+
+        String out_city = outCity.getText().toString();
+        String out_district = outCity.getText().toString();
+        String out_address = outCity.getText().toString();
+        String move_out = out_city + out_district + out_address;
+
+        String in_city = inCity.getText().toString();
+        String in_district = inDistrict.getText().toString();
+        String in_address = inAddress.getText().toString();
+        String move_in = in_city + in_district + in_address;
+
         String price = price_edit.getText().toString();
         String worktime = worktime_edit.getText().toString();
         String notice = notice_edit.getText().toString();
@@ -223,23 +313,31 @@ public class Add_Order extends AppCompatActivity {
                 .add("company_id", company_id)
                 .add("member_name", name)
                 .add("gender", gender)
-                .add("contact_address", cAddress)
+                .add("contact_address", con_cAddress)
                 .add("phone", phone)
-                .add("from_address", fromAddress)
-                .add("to_address", toAddress)
+                .add("additional", notice)
+                .add("outcity", out_city)
+                .add("outdistrict", out_district)
+                .add("address1", out_address)
+                .add("incity", in_city)
+                .add("indistrict", in_district)
+                .add("address2", in_address)
+                .add("moving_date", date)
                 .add("estimate_fee", price)
                 .add("worktime", worktime)
-                .add("additional", notice)
-                .add("moving_date", date)
                 .add("furniture_data", furniture_data)
                 .build();
         Log.i(TAG,"function_name: " + function_name +
                 ", member_name: " + name +
                 ", gender: " + gender +
-                ", contact_address: " + cAddress +
+                ", contact_address: " + con_cAddress +
                 ", phone: " + phone +
-                ", from_address: " + fromAddress+
-                ", to_address: " + toAddress +
+                ", outcity: " + out_city+
+                ", outdistrict: " + out_district+
+                ", address1: " + out_address+
+                ", incity: " + in_city +
+                ", indistrict: " + in_district +
+                ", address2: " + in_address +
                 ", estimate_fee: " + price +
                 ", worktime: " + worktime +
                 ", additional: " + notice +
@@ -275,12 +373,31 @@ public class Add_Order extends AppCompatActivity {
 
     private boolean checkEmpty(){
         boolean check = false;
+
+        String out_city = outCity.getText().toString();
+        String out_district = outCity.getText().toString();
+        String out_address = outCity.getText().toString();
+        String move_out = out_city + out_district + out_address;
+
+        String in_city = inCity.getText().toString();
+        String in_district = inDistrict.getText().toString();
+        String in_address = inAddress.getText().toString();
+        String move_in = in_city + in_district + in_address;
+
         if(TextUtils.isEmpty(name_edit.getText().toString())){
             name_edit.setError("請輸入姓名");
             check = true;
         }
-        if(TextUtils.isEmpty(cAddress_edit.getText().toString())){
-            cAddress_edit.setError("請輸入聯絡地址");
+        if(TextUtils.isEmpty(cCity.getText().toString())){
+            cCity.setError("請輸入聯絡地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(cDistrict.getText().toString())){
+            cDistrict.setError("請輸入聯絡地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(cAddress.getText().toString())){
+            cAddress.setError("請輸入聯絡地址");
             check = true;
         }
         if(TextUtils.isEmpty(phone_edit.getText().toString())){
@@ -291,15 +408,34 @@ public class Add_Order extends AppCompatActivity {
             phone_edit.setError("請輸入正確的電話號碼");
             check = true;
         }
-        if(TextUtils.isEmpty(moveOut_edit.getText().toString())){
-            moveOut_edit.setError("請輸入搬出地址");
+        if(TextUtils.isEmpty(outCity.getText().toString())){
+            outCity.setError("請輸入搬出地址");
             check = true;
         }
-        if(TextUtils.isEmpty(moveIn_edit.getText().toString())){
-            moveIn_edit.setError("請輸入搬入地址");
+        if(TextUtils.isEmpty(outDistrict.getText().toString())){
+            outDistrict.setError("請輸入搬出地址");
             check = true;
         }
-        if(moveOut_edit.getText().toString().equals(moveIn_edit.getText().toString()) && !moveOut_edit.getText().toString().isEmpty()){
+        if(TextUtils.isEmpty(outAddress.getText().toString())){
+            outAddress.setError("請輸入搬出地址");
+            check = true;
+        }
+
+        if(TextUtils.isEmpty(inCity.getText().toString())){
+            inCity.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(inDistrict.getText().toString())){
+            inDistrict.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(inAddress.getText().toString())){
+            inAddress.setError("請輸入搬入地址");
+            check = true;
+        }
+
+
+        if(move_out.equals(move_in) && !move_out.isEmpty()){
             Toast.makeText(context, "搬入搬出地址相同", Toast.LENGTH_SHORT);
             check = true;
         }
@@ -352,10 +488,20 @@ public class Add_Order extends AppCompatActivity {
 
     private void linking(){
         name_edit = findViewById(R.id.name_AO);
-        cAddress_edit = findViewById(R.id.contactAddress_AO);
+        cCity = findViewById(R.id.cCity);
+        cDistrict = findViewById(R.id.cDistrict);
+        cAddress = findViewById(R.id.cAddress);
+
         phone_edit = findViewById(R.id.phone_AO);
-        moveOut_edit = findViewById(R.id.fromAddress_AO);
-        moveIn_edit = findViewById(R.id.toAddress_AO);
+
+        outCity = findViewById(R.id.out_city);
+        outDistrict = findViewById(R.id.out_district);
+        outAddress = findViewById(R.id.out_address);
+
+        inCity = findViewById(R.id.in_city);
+        inDistrict = findViewById(R.id.in_district);;
+        inAddress = findViewById(R.id.in_address);
+
         editFurnitureBtn = findViewById(R.id.edit_furniture_btn_AO);
         furniture_list = findViewById(R.id.furniture_list_AO);
         price_edit = findViewById(R.id.price_AO);

@@ -178,7 +178,12 @@ public class Calendar extends AppCompatActivity {
                         if (time.equals("null")) time = getStartTime(order.getString("valuation_time"));
                         else time = getTime(time);
                         if(time.equals("null")) time = "";
-                        String address = order.getString("from_address");
+                        String address = "";
+                        if(!order.has("from_address") || order.getString("from_address").equals("null")){
+                            address = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
+                        }
+                        else if(order.has("from_address"))  address = order.getString("from_address");
+
                         String order_status = order.getString("order_status");
                         String valuation_status = order.getString("valuation_status");
                         String newicon = order.getString("new");
@@ -256,6 +261,7 @@ public class Calendar extends AppCompatActivity {
     }
 
     private void setmCalendar(){
+
         java.util.Calendar calendarTime = java.util.Calendar.getInstance();
         int year = calendarTime.get(java.util.Calendar.YEAR);
         int month = (calendarTime.get(java.util.Calendar.MONTH)+1);
@@ -337,8 +343,19 @@ public class Calendar extends AppCompatActivity {
             });
 
             final AlertDialog alertDialog = dialog.create();
+
+            if(alertDialog != null && !alertDialog.isShowing()) {
+               alertDialog.show();
+            }
+
             cancel_btn.setOnClickListener(v -> alertDialog.dismiss());
-            alertDialog.show();
+
+
+
+
+
+
+
 //            alertDialog.getWindow().setLayout(dip2px(context, 370), dip2px(context, 600));
         });
     }
@@ -532,8 +549,12 @@ public class Calendar extends AppCompatActivity {
                         values.put(TableContract.OrdersTable.COLUMN_NAME_MEMBER_ID, order.getString(TableContract.OrdersTable.COLUMN_NAME_MEMBER_ID));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_ADDITIONAL, order.getString(TableContract.OrdersTable.COLUMN_NAME_ADDITIONAL));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_MEMO, order.getString(TableContract.OrdersTable.COLUMN_NAME_MEMO));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_FROM_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_FROM_ADDRESS));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_TO_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_TO_ADDRESS));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_CITY, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_CITY));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_DISTRICT, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_DISTRICT));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_ADDRESS));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_CITY, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_CITY));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_DISTRICT, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_DISTRICT));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE, order.getString(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE));

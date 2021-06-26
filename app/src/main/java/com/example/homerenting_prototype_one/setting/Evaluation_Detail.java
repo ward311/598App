@@ -172,8 +172,12 @@ public class Evaluation_Detail extends AppCompatActivity {
         String nameTitle;
         if(cursor.getString(cursor.getColumnIndexOrThrow(TableContract.MemberTable.COLUMN_NAME_GENDER)).equals("女")) nameTitle = "小姐";
         else nameTitle = "先生";
-        final String fromAddress = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_FROM_ADDRESS));
-        final String toAddress = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_TO_ADDRESS));
+        final String fromAddress = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_OUT_CITY))
+                +cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_OUT_DISTRICT))
+                +cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_OUT_ADDRESS));
+        final String toAddress = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_IN_CITY))
+                +cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_IN_DISTRICT))
+                +cursor.getString(cursor.getColumnIndexOrThrow(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS));
         String commentStr = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_COMMENT));
         replyStr = cursor.getString(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_REPLY));
         double service_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY));
