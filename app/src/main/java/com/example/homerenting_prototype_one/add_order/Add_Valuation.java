@@ -11,14 +11,11 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -53,7 +50,10 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 
 public class Add_Valuation extends AppCompatActivity {
 
-    EditText nameText, cAddressText, phoneText, fromAddressText, toAddressText, noticeText;
+    EditText nameText,  phoneText, noticeText;
+    EditText cCityText, cDistrictText, cAddressText;
+    EditText outCityText, outDistrictText, outAddressText;
+    EditText inCityText, inDistrictText, inAddressText;
     TextView dateText, timeText;
     RadioGroup genderRG;
     Button addBtn;
@@ -116,7 +116,40 @@ public class Add_Valuation extends AppCompatActivity {
             },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
             time_picker.show();
         });
+        cCityText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String cCity = cCityText.getText().toString();
+                outCityText.setText(cCity);
+            }
+        });
+        cDistrictText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String cDistrict = cDistrictText.getText().toString();
+                outDistrictText.setText(cDistrict);
+            }
+        });
         cAddressText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -126,16 +159,10 @@ public class Add_Valuation extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                fromAddressText.setError(null);
-                String address = cAddressText.getText().toString();
-                String moveOut_address = fromAddressText.getText().toString();
-                if(!address.equals("") && !moveOut_address.equals("")){
-                    if(address.substring(0, 1).equals(moveOut_address.substring(0, 1)))
-                        fromAddressText.setText(address);
-                }
-                else if(!address.equals("") || moveOut_address.length()<=1){
-                    fromAddressText.setText(address);
-                }
+
+                String cAddress = cAddressText.getText().toString();
+                outAddressText.setText(cAddress);
+
             }
         });
 
@@ -161,22 +188,47 @@ public class Add_Valuation extends AppCompatActivity {
             nameText.setError("請輸入姓名");
             check = true;
         }
-        if(TextUtils.isEmpty(cAddressText.getText().toString())){
-            cAddressText.setError("請輸入聯絡地址");
-            check = true;
-        }
         if(TextUtils.isEmpty(phoneText.getText().toString())){
             phoneText.setError("請輸入電話");
             check = true;
         }
-        if(TextUtils.isEmpty(fromAddressText.getText().toString())){
-            fromAddressText.setError("請輸入搬出地址");
+        if(TextUtils.isEmpty(cCityText.getText().toString())){
+            cCityText.setError("請輸入搬出地址");
             check = true;
         }
-        if(TextUtils.isEmpty(toAddressText.getText().toString())){
-            toAddressText.setError("請輸入搬入地址");
+        if(TextUtils.isEmpty(cDistrictText.getText().toString())){
+            cDistrictText.setError("請輸入搬入地址");
             check = true;
         }
+        if(TextUtils.isEmpty(cAddressText.getText().toString())){
+            cAddressText.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(outCityText.getText().toString())){
+            outCityText.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(outDistrictText.getText().toString())){
+            outDistrictText.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(outAddressText.getText().toString())){
+            outAddressText.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(inCityText.getText().toString())){
+            inCityText.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(inDistrictText.getText().toString())){
+            inDistrictText.setError("請輸入搬入地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(inAddressText.getText().toString())){
+            inAddressText.setError("請輸入搬入地址");
+            check = true;
+        }
+
         if(TextUtils.isEmpty(dateText.getText().toString())){
             dateText.setError("請選擇日期");
             check = true;
@@ -191,10 +243,20 @@ public class Add_Valuation extends AppCompatActivity {
 
     private void add_valuation(){
         String name = nameText.getText().toString();
+        String cCity = cCityText.getText().toString();
+        String cDistrict = cDistrictText.getText().toString();
         String cAddress = cAddressText.getText().toString();
+        String commSite = cCity + cDistrict + cAddress;
         String phone = phoneText.getText().toString();
-        String fromAddress = fromAddressText.getText().toString();
-        String toAddress = toAddressText.getText().toString();
+        String outCity = outCityText.getText().toString();
+        String outDistrict = outDistrictText.getText().toString();
+        String outAddress = outAddressText.getText().toString();
+        String outSite = outCity + outDistrict + outAddress;
+        String inCity = inCityText.getText().toString();
+        String inDistrict = inDistrictText.getText().toString();
+        String inAddress = inAddressText.getText().toString();
+        String inCitySite = inCity + inDistrict + inAddress;
+
         String notice = noticeText.getText().toString();
         String date = dateText.getText().toString();
         String valuation_time = time+"~"+time2;
@@ -219,10 +281,14 @@ public class Add_Valuation extends AppCompatActivity {
                 .add("company_id", company_id)
                 .add("member_name", name)
                 .add("gender", gender)
-                .add("contact_address", cAddress)
+                .add("contact_address", commSite)
                 .add("phone", phone)
-                .add("from_address", fromAddress)
-                .add("to_address", toAddress)
+                .add("outcity", outCity)
+                .add("outdistrict", outDistrict)
+                .add("address1", outAddress)
+                .add("incity", inCity)
+                .add("indistrict", inDistrict)
+                .add("address2", inCity)
                 .add("additional", notice)
                 .add("valuation_date", date)
                 .add("valuation_time", valuation_time)
@@ -230,10 +296,14 @@ public class Add_Valuation extends AppCompatActivity {
         Log.i(TAG,"function_name: " + function_name +
                 ", member_name: " + name +
                 ", gender: " + gender +
-                ", contact_address: " + cAddress +
+                ", contact_address: " + commSite +
                 ", phone: " + phone +
-                ", from_address: " + fromAddress+
-                ", to_address: " + toAddress +
+                ", cCity: " + cCity+
+                ", cDistrict: " + cDistrict +
+                ", cAddress: " + cAddress +
+                ", inCity: " + inCity +
+                ", inDistrict: " + inDistrict +
+                ", inAddress: " + inAddress +
                 ", additional: " + notice +
                 ", valuation_date: " + date +
                 ", valuation_time: " + valuation_time);
@@ -328,10 +398,17 @@ public class Add_Valuation extends AppCompatActivity {
 
     private void linking(){
         nameText = findViewById(R.id.name_AV);
-        cAddressText = findViewById(R.id.contactAddress_AV);
+        cAddressText = findViewById(R.id.c_city_edit);
         phoneText = findViewById(R.id.phone_AV);
-        fromAddressText = findViewById(R.id.fromAddress_AV);
-        toAddressText = findViewById(R.id.toAddress_AV);
+        cCityText = findViewById(R.id.c_city_edit);
+        cDistrictText = findViewById(R.id.c_district_edit);
+        cAddressText = findViewById(R.id.c_address_edit);
+        outCityText = findViewById(R.id.out_city_edit);
+        outDistrictText = findViewById(R.id.out_district_edit);
+        outAddressText = findViewById(R.id.out_address_edit);
+        inCityText = findViewById(R.id.in_city_edit);
+        inDistrictText = findViewById(R.id.in_district_edit);
+        inAddressText = findViewById(R.id.in_address_edit);
         noticeText = findViewById(R.id.notice_editText_AV);
         dateText = findViewById(R.id.pickDate_AV);
         timeText = findViewById(R.id.pictTime_AV);

@@ -141,6 +141,9 @@ public class Setting_Discount extends AppCompatActivity {
 
             Log.d(TAG, "size of delete discount: "+delete_discounts.size());
             Log.d(TAG, "delete discount: "+delete_discounts);
+            Intent intent = new Intent();
+            intent.setClass(this, Setting.class);
+            finish();
         });
 
         globalNav();

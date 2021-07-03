@@ -27,13 +27,14 @@
         android:orientation="vertical"
         android:layout_gravity="top"
         android:background="#FFFFFF">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:orientation="vertical"
-            android:layout_weight="9">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="9"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,12 +49,13 @@
                     android:gravity="center_vertical"
                     android:text="姓名"
                     android:textColor="#000000" />
+
                 <EditText
                     android:id="@+id/name_AV"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:inputType="text"/>
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
@@ -117,11 +119,30 @@
                     android:textColor="#000000" />
 
                 <EditText
-                    android:id="@+id/contactAddress_AV"
+                    android:id="@+id/c_city_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_weight="0.8"
                     android:ems="10"
+                    android:hint="高雄市"
+                    android:inputType="text" />
+
+                <EditText
+                    android:id="@+id/c_district_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:ems="10"
+                    android:hint="鼓山區"
+                    android:inputType="text" />
+
+                <EditText
+                    android:id="@+id/c_address_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.4"
+                    android:ems="10"
+                    android:hint="蓮海路70號"
                     android:inputType="text" />
             </LinearLayout>
 
@@ -138,14 +159,16 @@
                     android:gravity="center_vertical"
                     android:text="連絡電話"
                     android:textColor="#000000" />
+
                 <EditText
                     android:id="@+id/phone_AV"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:inputType="phone"/>
+                    android:inputType="phone" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -159,13 +182,34 @@
                     android:gravity="center_vertical"
                     android:text="搬出地址"
                     android:textColor="#000000" />
+
                 <EditText
-                    android:id="@+id/fromAddress_AV"
+                    android:id="@+id/out_city_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:inputType="text"/>
+                    android:layout_weight="0.7"
+                    android:hint="高雄市"
+                    android:inputType="text" />
+
+                <EditText
+                    android:id="@+id/out_district_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7"
+                    android:ems="10"
+                    android:hint="鼓山區"
+                    android:inputType="text" />
+
+                <EditText
+                    android:id="@+id/out_address_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.6"
+                    android:ems="10"
+                    android:hint="蓮海路70號"
+                    android:inputType="text" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -181,10 +225,29 @@
                     android:textColor="#000000" />
 
                 <EditText
-                    android:id="@+id/toAddress_AV"
+                    android:id="@+id/in_city_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_weight="0.7"
+                    android:hint="新北市"
+                    android:inputType="text" />
+
+                <EditText
+                    android:id="@+id/in_district_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7"
+                    android:ems="10"
+                    android:hint="新莊區"
+                    android:inputType="text" />
+
+                <EditText
+                    android:id="@+id/in_address_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.6"
+                    android:ems="10"
+                    android:hint="中華路258號"
                     android:inputType="text" />
             </LinearLayout>
 
@@ -249,10 +312,11 @@
                         android:layout_height="wrap_content" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
+                android:background="#989898" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -303,26 +367,26 @@
                     android:gravity="center"
                     android:hint="點擊選擇時間" />
             </LinearLayout>
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_weight="2"-->
-<!--                android:orientation="horizontal">-->
-<!--                <TextView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:text="搬家費用"-->
-<!--                    android:gravity="center_vertical"-->
-<!--                    android:textColor="#000000"/>-->
-<!--                <EditText-->
-<!--                    android:id="@+id/price_editText"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_weight="3"-->
-<!--                    android:inputType="number"-->
-<!--                    android:hint="3600"/>-->
-<!--            </LinearLayout>-->
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="0dp"-->
+            <!--                android:layout_weight="2"-->
+            <!--                android:orientation="horizontal">-->
+            <!--                <TextView-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="match_parent"-->
+            <!--                    android:layout_weight="1"-->
+            <!--                    android:text="搬家費用"-->
+            <!--                    android:gravity="center_vertical"-->
+            <!--                    android:textColor="#000000"/>-->
+            <!--                <EditText-->
+            <!--                    android:id="@+id/price_editText"-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="match_parent"-->
+            <!--                    android:layout_weight="3"-->
+            <!--                    android:inputType="number"-->
+            <!--                    android:hint="3600"/>-->
+            <!--            </LinearLayout>-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -344,18 +408,20 @@
                     android:layout_weight="3"
                     android:inputType="text" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center">
+
                 <Button
                     android:id="@+id/add_valuation_btn_AV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/roundedbutton"
                     android:text="完成新增到府估價單"
-                    android:textColor="#FFFFFF"
-                    android:background="@drawable/roundedbutton"/>
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout

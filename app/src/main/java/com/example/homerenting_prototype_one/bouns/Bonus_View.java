@@ -184,14 +184,18 @@ public class Bonus_View extends AppCompatActivity {
                 Log.d(TAG, year+"/"+month+", data:"+data.size());
                 for(i = 0; i < data.size(); i++) {
                     Log.d(TAG, Arrays.toString(data.get(0)));
+                    runOnUiThread(() ->{
+                        salaryRList.setAdapter(sAdapter);
+                    });
+
                 }
 
-                if(init){
+                /*if(init){
                     runOnUiThread(() -> {
                         if(!data.get(0)[1].isEmpty()) setChart(); //圖表
                         init = false;
                     });
-                }
+                }*/
 
             }
         });
@@ -262,8 +266,9 @@ public class Bonus_View extends AppCompatActivity {
         yAxis.setSpaceTop(0f); //最高bar上方留空多少%
         yAxis.setDrawAxisLine(false); //軸線顯示
         yAxis.setDrawGridLines(false); //取消水平網格線
-//        yAxis.setDrawLabels(false); //Y軸標籤顯示
-        yAxis.setGranularity(getAverage());
+        //yAxis.setDrawLabels(false); //Y軸標籤顯示
+        yAxis.setGranularity(1f);
+
 
         LimitLine ll = new LimitLine(getAverage()); //平均線
         ll.setLineColor(Color.parseColor("#19B0ED")); //線的顏色
@@ -295,7 +300,9 @@ public class Bonus_View extends AppCompatActivity {
         for(int i = 0; i < salaries.size(); i++) {
             max = max + salaries.get(i);
         }
-        float average = max / (salaries.size()-1);
+        Log.d(TAG, "total_salaries : "+max);
+        float average = max / (salaries.size());
+        Log.d(TAG, "average_salaries : "+average);
         return average;
     }
 

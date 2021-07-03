@@ -139,8 +139,14 @@ public class Today_Detail extends AppCompatActivity {
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
                     movingTime = getDate(order.getString("moving_date"))+" "+getTime(order.getString("moving_date"));
-                    fromAddress = order.getString("from_address");
-                    toAddress = order.getString("to_address");
+                    if(!order.has("from_address") || order.getString("from_address").equals("null")){
+                        fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
+                    }
+                    else if(order.has("from_address"))  fromAddress = order.getString("from_address");
+                    if(!order.has("to_address") || order.getString("to_address").equals("null")){
+                        toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
+                    }
+                    else if(order.has("to_address")) toAddress = order.getString("to_address");
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
                     fee = order.getString("estimate_fee");
@@ -484,12 +490,17 @@ public class Today_Detail extends AppCompatActivity {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of change_status: " + responseData);
                 if(responseData.equals("success")) {
-                    Handler handler = new Handler();
-                    handler.postDelayed(() -> {
-                        Intent intent = new Intent(context, Order_Today.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }, 500);
+                    runOnUiThread(() -> {
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> {
+                            Intent intent = new Intent(context, Order_Today.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            Toast.makeText(context, "完成訂單", Toast.LENGTH_LONG).show();
+                            startActivity(intent);
+                        }, 500);
+
+                    });
+
                 };
             }
         });

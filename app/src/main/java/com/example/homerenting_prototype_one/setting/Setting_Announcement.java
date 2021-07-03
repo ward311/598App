@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,13 +54,13 @@ public class Setting_Announcement extends AppCompatActivity {
     RecyclerView announceView;
 
     ArrayList<String[]> data;
+    ArrayList<String[]> company_data;
 
     private static DatabaseHelper dbHelper;
     private static SQLiteDatabase db;
 
     Context context = this;
     String TAG = "Setting_Announcement";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,10 +87,11 @@ public class Setting_Announcement extends AppCompatActivity {
         });
 
         data = new ArrayList<>();
-
+        company_data = new ArrayList<>();
         dbHelper = new DatabaseHelper(this);
         readData();
-//        getData();
+        //getData();
+        getCompany_Announce_Data();
 
         setBack_btn();
         globalNav();
@@ -107,6 +110,7 @@ public class Setting_Announcement extends AppCompatActivity {
             Log.d(TAG, "【online database】");
             cursor.close();
             getData();
+            //getCompany_Announce_Data();
 //            TableContract.AnnouncementTable.getAllAnnounceData();
 //            TableContract.AnnouncementCompanyTable.getAllAnnounceCompanyData();
             return;
@@ -172,19 +176,105 @@ public class Setting_Announcement extends AppCompatActivity {
                         String date = announce.getString("announcement_date");
                         String summary = announce.getString("outline");
                         String announceContent = announce.getString("content");
-                        String isNew = announce.getString("new");
 
-                        String[] row_data = {annouceId, title, date, summary, announceContent, isNew};
+
+                        String[] row_data = {annouceId, title, date, summary, announceContent};
                         data.add(row_data);
+
+                        db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put((TableContract.AnnouncementTable.COLUMN_NAME_ANNOUNCEMENT_ID), annouceId);
+                        values.put((TableContract.AnnouncementTable.COLUMN_NAME_TITLE), title);
+                        values.put((TableContract.AnnouncementTable.COLUMN_NAME_OUTLINE), summary);
+                        values.put((TableContract.AnnouncementTable.COLUMN_NAME_CONTENT), announceContent);
+                        values.put((TableContract.AnnouncementTable.COLUMN_NAME_DATE), date);
+
+                        try{
+                            long newRowId = db.insertOrThrow(TableContract.AnnouncementTable.TABLE_NAME, null, values);
+                            if(newRowId != -1) {
+                                Log.d(TAG,"create successfully");}
+                            else Log.d(TAG, "create failed");
+                        }catch (SQLException e){
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(!responseData.equals("null")){
+                    for(int i=0; i < data.size(); i++)
+                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                    setRList();
+                }
+            }
+        });
+    }
+    private void getCompany_Announce_Data(){
+        String function_name = "announcement_company_data";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject announce_company = responseArr.getJSONObject(i);
+                        Log.i(TAG, "announce_company: "+ announce_company);
+
+                        String annouce_Id = announce_company.getString("announcement_id");
+                        String company_id = announce_company.getString("company_id");
+                        String isNew = announce_company.getString("new");
+
+                        String[] row_data = {annouce_Id, company_id, isNew};
+                        company_data.add(row_data);
+
+                        db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put((TableContract.AnnouncementCompanyTable.COLUMN_NAME_ANNOUNCEMENT_ID), annouce_Id);
+                        values.put((TableContract.AnnouncementCompanyTable.COLUMN_NAME_COMPANY_ID), getCompany_id(context));
+                        values.put((TableContract.AnnouncementCompanyTable.COLUMN_NAME_NEW), isNew);
+
+
+                        try{
+                            long newRowId = db.insertOrThrow(TableContract.AnnouncementCompanyTable.TABLE_NAME, null, values);
+                            if(newRowId != -1) {
+                                Log.d(TAG,"create successfully");}
+                            else Log.d(TAG, "create failed");
+                        }catch (SQLException e){
+                            e.printStackTrace();
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 if(!responseData.equals("null")){
-                    for(int i=0; i < data.size(); i++)
-                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                    setRList();
+                    for(int i=0; i < company_data.size(); i++){
+                        Log.i(TAG, "company_data: "+ Arrays.toString(company_data.get(i)));
+                    }
+
                 }
             }
         });

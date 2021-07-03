@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -64,7 +65,11 @@ public class Setting_Record extends AppCompatActivity {
 
         getOrder();
 
-        back_btn.setOnClickListener(v -> finish());
+        back_btn.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setClass(this, Setting.class);
+            finish();
+        });
 
         //底下nav
         valuation_btn.setOnClickListener(v -> {

@@ -265,7 +265,8 @@ public class System_Data extends AppCompatActivity {
 
     private void readVehicleData() {
         db = dbHelper.getReadableDatabase();
-        String sql_query = "SELECT * FROM "+ TableContract.VehicleTable.TABLE_NAME+";";
+        String sql_query = "SELECT * FROM "+ TableContract.VehicleTable.TABLE_NAME
+                + " WHERE company_id = "+getCompany_id(context)+" AND end_time IS NULL "+ ";" ;
         Cursor cursor = db.rawQuery(sql_query, null);
 
         Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database

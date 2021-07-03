@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Lifecycle;
 
 import com.applandeo.materialcalendarview.EventDay;
 import com.example.homerenting_prototype_one.add_order.Add_Order;
@@ -31,9 +33,7 @@ import com.example.homerenting_prototype_one.add_order.Add_Valuation;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.helper.DatabaseHelper;
-import com.example.homerenting_prototype_one.helper.SessionManager;
 import com.example.homerenting_prototype_one.model.TableContract;
-import com.example.homerenting_prototype_one.model.User;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.base_adapter.New_CalendarAdapter;
@@ -55,7 +55,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -70,10 +69,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android.app.PendingIntent.getActivity;
 import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.changeStatus;
 import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
-import static com.example.homerenting_prototype_one.show.global_function.dip2px;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDay;
 import static com.example.homerenting_prototype_one.show.global_function.getMonth;
@@ -94,7 +93,7 @@ public class Calendar extends AppCompatActivity {
     LayoutInflater inflater;
     View v;
     New_CalendarAdapter calendarAdapter, calendarAdapter_v, calendarAdapter_o;
-    ArrayList<String[]> data, data_v, data_o;
+    ArrayList<String[]> data, data_v, data_o, choose_data;
     ArrayList<Integer> checkedMonth = new ArrayList<>();
 
 
@@ -112,18 +111,120 @@ public class Calendar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         init();
-        setmCalendar();
+        //setmCalendar();
         onBackPressed();
 
         dbHelper = new DatabaseHelper(this);
-        runOnUiThread(() -> {
-            getAllOrdersData();
-            getAllMemberData();
-        });
+        new AsyncRetrieve().execute();
+        //getAllOrdersData();
+        //getAllMemberData();
         globalNav();
     }
 
+    private void getChoose(){
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(this))
+                .build();
+        Log.i(TAG, "company_id: "+getCompany_id(this));
 
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/get_data/choose_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            //連線失敗
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            //連線成功
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of getChoose: "+responseData); //顯示資料
+                if (responseData.equals("null") || responseData.equals("no result")) {
+                   Log.d(TAG, "NO data of get_Choose");
+                    return;
+                }
+                try {
+                    //轉換成json格式，array或object
+                    final JSONArray responseArr = new JSONArray(responseData);
+                    //Log.d(TAG,"responseObj: "+ responseArr);
+
+                    //一筆一筆的取JSONArray中的json資料
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject choose = responseArr.getJSONObject(i);
+                        String order_id = choose.getString("order_id");
+                        String company_id = choose.getString("company_id");
+                        String prefer_valuation = choose.getString("prefer_valuation");
+                        String valuation_date = choose.getString("valuation_date");
+                        String valuation_time = choose.getString("valuation_time");
+                        String valuation_status = choose.getString("valuation_status");
+                        String moving_date = choose.getString("moving_date");
+                        String estimate_fee = choose.getString("estimate_fee");
+                        String accurate_fee = choose.getString("accurate_fee");
+                        String estimate_worktime = choose.getString("estimate_worktime");
+                        String confirm = choose.getString("confirm");
+                        String isNew = choose.getString("new");
+                        String status = choose.getString("valuation_status");
+
+                        String[] row_data = {order_id, company_id, prefer_valuation,
+                                valuation_date, valuation_time, valuation_status, moving_date,
+                                estimate_fee, accurate_fee, estimate_worktime, confirm,
+                                isNew, status};
+                        choose_data.add(row_data);
+
+                        int success_counter = 0, fail_counter = 0;
+
+                            db = dbHelper.getWritableDatabase();
+                            ContentValues values = new ContentValues();
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_ORDER_ID, order_id);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_COMPANY_ID, company_id);
+                        values.put(TableContract.ChooseTable.COLUMN_PREFER_VALUATION, prefer_valuation);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_DATE, valuation_date);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_TIME, valuation_time);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_MOVING_DATE, moving_date);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_ESTIMATE_FEE, estimate_fee);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_ACCURATE_FEE, accurate_fee);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_ESTIMATE_WORKTIME, estimate_worktime);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_CONFIRM, confirm);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_NEW, isNew);
+                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_STATUS,valuation_status);
+//                      Log.d(TAG, (i+1)+". "+values.toString());
+
+                        try {
+                                long newRowId = db.insertOrThrow(TableContract.ChooseTable.TABLE_NAME, null, values);
+                                if (newRowId != -1) {
+                                    success_counter = success_counter + 1;
+                                    Log.d(TAG, "create choose successfully");
+                                } else {
+                                    fail_counter = fail_counter + 1;
+                                    Log.d(TAG, "create choose failed");
+                                }
+                            } catch (SQLException e) {
+                                if (e.getMessage().contains("no such table")) break;
+                                if (Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                                    success_counter = success_counter + 1;
+                                else {
+                                    e.printStackTrace();
+                                    Log.d(TAG, "insert furniture data: " + e.getMessage());
+                                }
+                            }
+                    }
+                } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
+                    e.printStackTrace();
+                    runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show());
+                }
+
+            }
+        });
+    }
     private void getOrder(String date) {
         initData();
         clearDatalist();
@@ -302,6 +403,14 @@ public class Calendar extends AppCompatActivity {
             dateText.setText(date);
             getOrder(date);
 
+            runOnUiThread(() -> {
+                final AlertDialog alertDialog = dialog.create();
+                if(!alertDialog.isShowing()){
+                    alertDialog.show();
+                }
+                cancel_btn.setOnClickListener(v -> alertDialog.dismiss());
+            });
+
             valuation_bar.setOnClickListener(v -> {
                 if (VB) {
                     VB = false;
@@ -341,19 +450,6 @@ public class Calendar extends AppCompatActivity {
                 intent.putExtras(bundle);
                 startActivity(intent);
             });
-
-            final AlertDialog alertDialog = dialog.create();
-
-            if(alertDialog != null && !alertDialog.isShowing()) {
-               alertDialog.show();
-            }
-
-            cancel_btn.setOnClickListener(v -> alertDialog.dismiss());
-
-
-
-
-
 
 
 //            alertDialog.getWindow().setLayout(dip2px(context, 370), dip2px(context, 600));
@@ -720,6 +816,7 @@ public class Calendar extends AppCompatActivity {
         data = new ArrayList<>();
         data_v = new ArrayList<>();
         data_o = new ArrayList<>();
+        choose_data = new ArrayList<>();
         initData();
         VB = true;
         OB = true;
@@ -730,6 +827,7 @@ public class Calendar extends AppCompatActivity {
         data.clear();
         data_v.clear();
         data_o.clear();
+        choose_data.clear();
         String[] row_data = {"編號", "時間", "地址", "0", "0"};
         data.add(row_data);
         data_v.add(row_data);
@@ -798,4 +896,15 @@ public class Calendar extends AppCompatActivity {
     public void onBackPressed(){
 
     }
+    public class AsyncRetrieve extends AsyncTask<String, String, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            setmCalendar();
+            getAllOrdersData();
+            getAllMemberData();
+            getChoose();
+            return null;
+        }
+    }
 }
+

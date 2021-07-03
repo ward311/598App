@@ -12,7 +12,8 @@ import android.util.Log;
 import com.example.homerenting_prototype_one.model.TableContract;
 
 
-
+import static com.example.homerenting_prototype_one.model.TableContract.AnnouncementCompanyTable.SQL_CREATE_ANNOUNCEMENT_COMPANY;
+import static com.example.homerenting_prototype_one.model.TableContract.AnnouncementCompanyTable.SQL_DELETE_ANNOUNCEMENT_COMPANY;
 import static com.example.homerenting_prototype_one.model.TableContract.AnnouncementTable.SQL_CREATE_ANNOUNCEMENT;
 import static com.example.homerenting_prototype_one.model.TableContract.AnnouncementTable.SQL_DELETE_ANNOUNCEMENT;
 import static com.example.homerenting_prototype_one.model.TableContract.CompanyTable.SQL_CREATE_COMPANY;
@@ -23,6 +24,8 @@ import static com.example.homerenting_prototype_one.model.TableContract.Comments
 import static com.example.homerenting_prototype_one.model.TableContract.CommentsTable.SQL_DELETE_COMMENTS;
 import static com.example.homerenting_prototype_one.model.TableContract.DiscountTable.SQL_CREATE_DISCOUNT;
 import static com.example.homerenting_prototype_one.model.TableContract.DiscountTable.SQL_DELETE_DISCOUNT;
+import static com.example.homerenting_prototype_one.model.TableContract.FurnitureTable.SQL_CREATE_FURNITURE;
+import static com.example.homerenting_prototype_one.model.TableContract.FurnitureTable.SQL_DELETE_FURNITURE;
 import static com.example.homerenting_prototype_one.model.TableContract.MemberTable.SQL_CREATE_MEMBER;
 import static com.example.homerenting_prototype_one.model.TableContract.MemberTable.SQL_DELETE_MEMBER;
 import static com.example.homerenting_prototype_one.model.TableContract.OrdersTable.SQL_CREATE_ORDERS;
@@ -59,6 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "create sqlite tables");
 //        db.execSQL("PRAGMA foreign_keys = ON");
         db.execSQL(SQL_CREATE_ANNOUNCEMENT);
+        db.execSQL(SQL_CREATE_ANNOUNCEMENT_COMPANY);
         db.execSQL(SQL_CREATE_MEMBER);
         db.execSQL(SQL_CREATE_COMPANY);
         db.execSQL(SQL_CREATE_ORDERS);
@@ -69,16 +73,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //      db.execSQL(SQL_CREATE_STAFF_LEAVE);
         db.execSQL(SQL_CREATE_VEHICLE);
         db.execSQL(SQL_CREATE_VEHICLE_MAINTAIN);
-
+        db.execSQL(SQL_CREATE_FURNITURE);
         db.execSQL(SQL_CREATE_DISCOUNT);
         db.execSQL(SQL_CREATE_PERIOD_DISCOUNT);
-//        db.execSQL(SQL_CREATE_CHOOSE);
+        db.execSQL(SQL_CREATE_CHOOSE);
     }
 
     @Override /*此方法會將舊TABLE全部刪除再新增新的TABLE，資料庫版本要更新*/
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, "onUpgrade");
         db.execSQL(SQL_DELETE_ANNOUNCEMENT);
+        db.execSQL(SQL_DELETE_ANNOUNCEMENT_COMPANY);
         db.execSQL(SQL_DELETE_MEMBER);
         db.execSQL(SQL_DELETE_COMPANY);
         db.execSQL(SQL_DELETE_ORDERS);
@@ -89,10 +94,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //      db.execSQL(SQL_DELETE_SQL_STAFF_LEAVE);
         db.execSQL(SQL_DELETE_VEHICLE);
         db.execSQL(SQL_DELETE_VEHICLE_MAINTAIN);
+        db.execSQL(SQL_DELETE_FURNITURE);
         db.execSQL(SQL_DELETE_DISCOUNT);
         db.execSQL(SQL_DELETE_PERIOD_DISCOUNT);
 
-//        db.execSQL(SQL_CREATE_CHOOSE);
+        db.execSQL(SQL_CREATE_CHOOSE);
         onCreate(db);
     }
 

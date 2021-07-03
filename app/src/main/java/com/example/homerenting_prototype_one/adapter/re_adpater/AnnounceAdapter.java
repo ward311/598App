@@ -2,12 +2,12 @@ package com.example.homerenting_prototype_one.adapter.re_adpater;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,18 +15,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homerenting_prototype_one.R;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.homerenting_prototype_one.show.global_function.removeAnnounceNew;
 
 public class AnnounceAdapter extends RecyclerView.Adapter<AnnounceAdapter.ViewHolder> {
     private ArrayList<String[]> data;
     private Context context;
+    private ArrayList<String[]> company_data;
 
     public AnnounceAdapter(Context context, ArrayList<String[]> data){
         this.context = context;
         this.data = data;
     }
+
 
     @NonNull
     @Override

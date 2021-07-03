@@ -631,7 +631,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         Intent intent = new Intent(context, Bonus_Distribution.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        Toast.makeText(context, "done", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "獎金分潤完成", Toast.LENGTH_LONG).show();
                     }, 1000);
                 }
                 else Toast.makeText(context, "金額尚未分潤完畢", Toast.LENGTH_SHORT).show();

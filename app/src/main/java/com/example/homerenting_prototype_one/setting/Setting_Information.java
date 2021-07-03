@@ -86,7 +86,13 @@ public class Setting_Information extends AppCompatActivity {
 
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
 
-        back_btn.setOnClickListener(v -> finish());
+        back_btn.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setClass(this, Setting.class);
+            finish();
+        });
+
+
 
         dbHelper = new DatabaseHelper(this);
         readData();

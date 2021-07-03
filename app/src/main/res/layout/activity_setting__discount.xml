@@ -21,8 +21,9 @@
 
             <ImageButton
                 android:id="@+id/back_imgBtn"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
                 android:background="#19B0ED"
                 android:scaleType="centerCrop"
                 android:src="@drawable/back_white" />
@@ -30,15 +31,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:text="優惠折扣"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="26sp" />
         </LinearLayout>
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="20dp"
             android:background="#FFFFFF"
             android:src="@drawable/logo_long" />

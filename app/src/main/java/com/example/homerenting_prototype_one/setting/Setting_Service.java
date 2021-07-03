@@ -111,8 +111,10 @@ public class Setting_Service extends AppCompatActivity {
         back_btn.setOnClickListener(v -> {
             removeOriginItem();
             showItems();
-//            update_serviceItem();
-//            finish();
+            update_serviceItem();
+            Intent intent = new Intent();
+            intent.setClass(this, Setting.class);
+            finish();
         });
 
         delete_btn.setOnClickListener(v -> {
@@ -500,9 +502,9 @@ public class Setting_Service extends AppCompatActivity {
         if(items.size() == 0) return "";
         String itemStr;
         itemStr = "[";
-        itemStr = itemStr+"[\""+items.get(0)[0] +"\", \""+items.get(0)[1]+"\"]";
+        itemStr = itemStr +"[\""+items.get(0)[0] +"\", \""+items.get(0)[1]+"\"]";
         for(int i = 1; i < items.size(); i++)
-            itemStr = itemStr+", [\""+items.get(i)[0] +"\", \""+items.get(i)[1]+"\"]";
+            itemStr = itemStr +", [\""+items.get(i)[0] +"\", \""+items.get(i)[1]+"\"]";
         itemStr = itemStr+"]";
         return itemStr;
     }

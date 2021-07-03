@@ -41,6 +41,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -91,7 +92,11 @@ public class Setting_Evaluation extends AppCompatActivity {
             startActivity(evaluation_detail);
         });
 
-        back_btn.setOnClickListener(v -> finish());
+        back_btn.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setClass(this, Setting.class);
+            finish();
+        });
         dbHelper = new DatabaseHelper(this);
 
         readData();

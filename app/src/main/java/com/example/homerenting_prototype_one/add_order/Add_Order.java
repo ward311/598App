@@ -129,15 +129,8 @@ public class Add_Order extends AppCompatActivity {
                 String c_City = cCity.getText().toString();
                 String moveOut_City = outCity.getText().toString();
 
+                outCity.setText(c_City);
 
-
-                if(!c_City.equals("") && !moveOut_City.equals("")){
-                    if(c_City.substring(0, 1).equals(moveOut_City.substring(0, 1)))
-                        outCity.setText(c_City);
-                }
-                else if(!c_City.equals("") || moveOut_City.length() <= 1){
-                       outCity.setText(c_City);
-                }
             }
         });
 
@@ -155,13 +148,8 @@ public class Add_Order extends AppCompatActivity {
                 String c_District = cDistrict.getText().toString();
                 String moveOut_District = outDistrict.getText().toString();
 
-                if(!c_District.equals("") && !moveOut_District.equals("")){
-                    if(c_District.substring(0,1).equals(moveOut_District.substring(0,1)))
-                        outDistrict.setText(c_District);
-                }
-                else if(!c_District.equals("") || moveOut_District.length() <= 1){
-                    outDistrict.setText(c_District);
-                }
+                outDistrict.setText(c_District);
+
             }
         });
 
@@ -180,13 +168,8 @@ public class Add_Order extends AppCompatActivity {
                 String c_Address = cAddress.getText().toString();
                 String moveOut_Address = outAddress.getText().toString();
 
-                if(!c_Address.equals("") && !moveOut_Address.equals("")){
-                    if(c_Address.substring(0, 1).equals(moveOut_Address.substring(0, 1)))
-                        outAddress.setText(c_Address);
-                }
-                else if(!c_Address.equals("") || moveOut_Address.length() <= 1){
-                    outAddress.setText(c_Address);
-                }
+                outAddress.setText(c_Address);
+
             }
         });
 
@@ -219,7 +202,7 @@ public class Add_Order extends AppCompatActivity {
                 intent.putExtra("end", "true");
                 startActivity(intent);
 
-            }, 1000);
+            }, 1500);
         });
 
         globalNav();

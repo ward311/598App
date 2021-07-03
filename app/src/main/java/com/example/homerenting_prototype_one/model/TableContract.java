@@ -207,25 +207,31 @@ public class TableContract {
         public static final String TABLE_NAME = "choose";
         public static final String COLUMN_NAME_ORDER_ID = "order_id";
         public static final String COLUMN_NAME_COMPANY_ID = "company_id";
+        public static final String COLUMN_PREFER_VALUATION = "prefer_valuation";
         public static final String COLUMN_NAME_VALUATION_DATE = "valuation_date";
         public static final String COLUMN_NAME_VALUATION_TIME = "valuation_time";
         public static final String COLUMN_NAME_MOVING_DATE = "moving_date";
         public static final String COLUMN_NAME_ESTIMATE_FEE = "estimate_fee";
         public static final String COLUMN_NAME_ACCURATE_FEE = "accurate_fee";
+        public static final String COLUMN_NAME_ESTIMATE_WORKTIME = "estimate_worktime";
         public static final String COLUMN_NAME_CONFIRM = "confirm";
+        public static final String COLUMN_NAME_NEW = "new";
         public static final String COLUMN_NAME_VALUATION_STATUS = "valuation_status";
 
         public static final String SQL_CREATE_CHOOSE = "" +
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
-                COLUMN_NAME_ORDER_ID+" int(10) NOT NULL, "+
-                COLUMN_NAME_COMPANY_ID+" int(10) NOT NULL, "+
+                COLUMN_NAME_ORDER_ID+" INTEGER(10) NOT NULL, "+
+                COLUMN_NAME_COMPANY_ID+" INTEGER(10) NOT NULL, "+
+                COLUMN_PREFER_VALUATION+" datetime DEFAULT NULL, "+
                 COLUMN_NAME_VALUATION_DATE+" date, "+
                 COLUMN_NAME_VALUATION_TIME+" varchar(99), "+
                 COLUMN_NAME_MOVING_DATE+" datetime, "+
-                COLUMN_NAME_ESTIMATE_FEE+" int(10), "+
-                COLUMN_NAME_ACCURATE_FEE+" int(10), "+
+                COLUMN_NAME_ESTIMATE_FEE+" INTEGER(10), "+
+                COLUMN_NAME_ACCURATE_FEE+" INTEGER(10), "+
+                COLUMN_NAME_ESTIMATE_WORKTIME+" INTEGER(3), "+
                 COLUMN_NAME_CONFIRM+" boolean DEFAULT FALSE, "+
-                COLUMN_NAME_VALUATION_STATUS+" enum('self', 'booking', 'match', 'cancel', 'chosen') DEFAULT 'self', "+
+                COLUMN_NAME_NEW+" TINYINT(1), "+
+                COLUMN_NAME_VALUATION_STATUS+" VARCHAR(10) DEFAULT 'self', "+
                 "PRIMARY KEY(order_id, company_id), "+
                 "FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE, "+
                 "FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE "+
@@ -642,17 +648,20 @@ public class TableContract {
 
     }
     public static class FurnitureTable implements BaseColumns{
-        public static final String TABLE_NAME = "furniture";
+        public static final String TABLE_NAME = "furniture01";
+        public static final String COLUMN_NAME_NO = "no";
         public static final String COLUMN_NAME_FURNITURE_ID = "furniture_id";
         public static final String COLUMN_NAME_SPACE_TYPE = "space_type";
         public static final String COLUMN_NAME_FURNITURE_NAME = "furniture_name";
         public static final String COLUMN_NAME_IMG = "img";
         public static final String SQL_CREATE_FURNITURE = ""+
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
+                COLUMN_NAME_NO+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_FURNITURE_ID+" INTEGER(10) NOT NULL, "+
-                COLUMN_NAME_SPACE_TYPE+ "VARCHAR(99), "+
+                COLUMN_NAME_SPACE_TYPE+ " VARCHAR(99), "+
                 COLUMN_NAME_FURNITURE_NAME+" VARCHAR(99), "+
-                "PRIMARY KEY (`furniture_id`) "+");";
+                COLUMN_NAME_IMG+" VARCHAR(99), "+
+                "PRIMARY KEY (`no`) "+");";
         public static final String SQL_DELETE_FURNITURE =
                 "DROP TABLE IF EXISTS "+TABLE_NAME;
     }
@@ -1083,7 +1092,7 @@ public class TableContract {
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_OUTLINE = "outline";
         public static final String COLUMN_NAME_CONTENT = "content";
-        public static final String COLUMN_NAME_DATE = "date";
+        public static final String COLUMN_NAME_DATE = "announcement_date";
         public static final String SQL_CREATE_ANNOUNCEMENT = ""+
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
                 COLUMN_NAME_ANNOUNCEMENT_ID+" INTEGER(10) NOT NULL, "+

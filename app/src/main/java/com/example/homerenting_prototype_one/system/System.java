@@ -13,12 +13,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
-import com.example.homerenting_prototype_one.bouns.System_Bonus;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.helper.DatabaseHelper;
 import com.example.homerenting_prototype_one.model.TableContract;
@@ -32,8 +30,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
 
 import okhttp3.Call;
@@ -71,8 +67,8 @@ public class System extends AppCompatActivity {
 
 
         dbHelper = new DatabaseHelper(this);
-//        getAllStaffData();
-//        getAllVehicleData();
+        getAllStaffData();
+        getAllVehicleData();
         if(sp.getString("title", null).contains("staff")){
             data_btn.setEnabled(false);
             data_btn.setBackgroundColor(Color.parseColor("#f1f1f1"));
@@ -167,179 +163,179 @@ public class System extends AppCompatActivity {
         startActivity(toCalendar);
     }
 
-//    private void getAllStaffData(){
-//        String function_name = "all_staff_data";
-//        Log.d(TAG, "start getAllStaffData and write in sqlite db");
-//        RequestBody body = new FormBody.Builder()
-//                .add("function_name", function_name)
-//                .add("company_id", getCompany_id(context))
-//                .build();
-//
-//        Request request = new Request.Builder()
-//                .url(BuildConfig.SERVER_URL + "/user_data.php")
-//                .post(body)
-//                .build();
-//
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        Call call = okHttpClient.newCall(request);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                e.printStackTrace();
-//                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                String responseData = response.body().string();
-//                Log.d(TAG, "responseData of getAllStaffData: "+responseData); //顯示資料
-//
-//                JSONArray responseArr;
-//                try {
-//                    responseArr= new JSONArray(responseData);
-//                }catch (JSONException e){
-//                    e.printStackTrace();
-//                    Log.d(TAG, "getAllStaffData: "+e.getMessage());
-//                    return;
-//                }
-//
-//                int success_counter = 0, fail_counter = 0;
-//                for (int i = 0; i < responseArr.length(); i++) {
-//                    JSONObject staff;
-//                    try {
-//                        staff = responseArr.getJSONObject(i);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        return;
-//                    }
-////                    Log.d(TAG, (i+1)+". member: "+member);
-//
-//                    db = dbHelper.getWritableDatabase();
-//                    ContentValues values = new ContentValues();
-//                    try {
-//                        values.put(TableContract.StaffTable.COLUMN_NAME_STAFF_ID, staff.getString(TableContract.StaffTable.COLUMN_NAME_STAFF_ID));
-//                        values.put(TableContract.StaffTable.COLUMN_NAME_STAFF_NAME, staff.getString(TableContract.StaffTable.COLUMN_NAME_STAFF_NAME));
-//                        values.put(TableContract.StaffTable.COLUMN_NAME_COMPANY_ID, staff.getString(TableContract.StaffTable.COLUMN_NAME_COMPANY_ID));
-//                        values.put(TableContract.StaffTable.COLUMN_NAME_START_TIME, staff.getString(TableContract.StaffTable.COLUMN_NAME_START_TIME));
-//                        values.put(TableContract.StaffTable.COLUMN_NAME_END_TIME, staff.getString(TableContract.StaffTable.COLUMN_NAME_END_TIME));
-////                        Log.d(TAG, (i+1)+". "+values.toString());
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        continue;
-//                    }
-//
-//                    try{
-//                        long newRowId = db.insertOrThrow(TableContract.StaffTable.TABLE_NAME, null, values);
-//                        if(newRowId != -1){
-//                            success_counter = success_counter + 1;
-//                            Log.d(TAG, "create staff successfully");
-//                        }
-//                        else{
-//                            fail_counter = fail_counter + 1;
-//                            Log.d(TAG, "create staff failed");
-//                        }
-//                    } catch (SQLException e){
-//                        if(e.getMessage().contains("no such table")) break;
-//                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
-//                            success_counter = success_counter + 1;
-//                        else{
-//                            e.printStackTrace();
-//                            Log.d(TAG, "insert staff data: "+e.getMessage());
-//                        }
-//                    }
-//                }
-//                Log.d(TAG, "staff data:\n success data: "+success_counter+", fail data: "+fail_counter);
-//            }
-//        });
-//    }
-//
-//    private void getAllVehicleData(){
-//        String function_name = "all_vehicle_data";
-//        Log.d(TAG, "start getAllVehicleData and write in sqlite db");
-//        RequestBody body = new FormBody.Builder()
-//                .add("function_name", function_name)
-//                .add("company_id", getCompany_id(context))
-//                .build();
-//
-//        Request request = new Request.Builder()
-//                .url(BuildConfig.SERVER_URL + "/user_data.php")
-//                .post(body)
-//                .build();
-//
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        Call call = okHttpClient.newCall(request);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                e.printStackTrace();
-//                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                String responseData = response.body().string();
-//                Log.d(TAG, "responseData of getAllVehicleData: "+responseData); //顯示資料
-//
-//                JSONArray responseArr;
-//                try {
-//                    responseArr= new JSONArray(responseData);
-//                }catch (JSONException e){
-//                    e.printStackTrace();
-//                    Log.d(TAG, "getAllVehicleData: "+e.getMessage());
-//                    return;
-//                }
-//
-//                int success_counter = 0, fail_counter = 0;
-//                for (int i = 0; i < responseArr.length(); i++) {
-//                    JSONObject vehicle;
-//                    try {
-//                        vehicle = responseArr.getJSONObject(i);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        return;
-//                    }
-////                    Log.d(TAG, (i+1)+". vehicle: "+vehicle);
-//
-//                    db = dbHelper.getWritableDatabase();
-//                    ContentValues values = new ContentValues();
-//                    try {
-//                        values.put(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_ID, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_ID));
-//                        values.put(TableContract.VehicleTable.COLUMN_NAME_PLATE_NUM, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_PLATE_NUM));
-//                        values.put(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT));
-//                        values.put(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_TYPE, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_TYPE));
-//                        values.put(TableContract.VehicleTable.COLUMN_NAME_COMPANY_ID, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_COMPANY_ID));
-//                        values.put(TableContract.VehicleTable.COLUMN_NAME_START_TIME, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_START_TIME));
-//                        values.put(TableContract.VehicleTable.COLUMN_NAME_END_TIME, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_END_TIME));
-//
-////                        Log.d(TAG, (i+1)+". "+values.toString());
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        continue;
-//                    }
-//
-//                    try{
-//                        long newRowId = db.insertOrThrow(TableContract.VehicleTable.TABLE_NAME, null, values);
-//                        if(newRowId != -1){
-//                            success_counter = success_counter + 1;
-//                            Log.d(TAG, "create vehicle successfully");
-//                        }
-//                        else{
-//                            fail_counter = fail_counter + 1;
-//                            Log.d(TAG, "create vehicle failed");
-//                        }
-//                    } catch (SQLException e){
-//                        if(e.getMessage().contains("no such table")) break;
-//                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
-//                            success_counter = success_counter + 1;
-//                        else{
-//                            e.printStackTrace();
-//                            Log.d(TAG, "insert vehicle data: "+e.getMessage());
-//                        }
-//                    }
-//                }
-//                Log.d(TAG, "vehicle data:\n success data: "+success_counter+", fail data: "+fail_counter);
-//            }
-//        });
-//    }
+    private void getAllStaffData(){
+        String function_name = "all_staff_data";
+        Log.d(TAG, "start getAllStaffData and write in sqlite db");
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData of getAllStaffData: "+responseData); //顯示資料
+
+                JSONArray responseArr;
+                try {
+                    responseArr= new JSONArray(responseData);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    Log.d(TAG, "getAllStaffData: "+e.getMessage());
+                    return;
+                }
+
+                int success_counter = 0, fail_counter = 0;
+                for (int i = 0; i < responseArr.length(); i++) {
+                    JSONObject staff;
+                    try {
+                        staff = responseArr.getJSONObject(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+//                    Log.d(TAG, (i+1)+". member: "+member);
+
+                    db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    try {
+                        values.put(TableContract.StaffTable.COLUMN_NAME_STAFF_ID, staff.getString(TableContract.StaffTable.COLUMN_NAME_STAFF_ID));
+                        values.put(TableContract.StaffTable.COLUMN_NAME_STAFF_NAME, staff.getString(TableContract.StaffTable.COLUMN_NAME_STAFF_NAME));
+                        values.put(TableContract.StaffTable.COLUMN_NAME_COMPANY_ID, staff.getString(TableContract.StaffTable.COLUMN_NAME_COMPANY_ID));
+                        values.put(TableContract.StaffTable.COLUMN_NAME_START_TIME, staff.getString(TableContract.StaffTable.COLUMN_NAME_START_TIME));
+                        values.put(TableContract.StaffTable.COLUMN_NAME_END_TIME, staff.getString(TableContract.StaffTable.COLUMN_NAME_END_TIME));
+//                        Log.d(TAG, (i+1)+". "+values.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+
+                    try{
+                        long newRowId = db.insertOrThrow(TableContract.StaffTable.TABLE_NAME, null, values);
+                        if(newRowId != -1){
+                            success_counter = success_counter + 1;
+                            Log.d(TAG, "create staff successfully");
+                        }
+                        else{
+                            fail_counter = fail_counter + 1;
+                            Log.d(TAG, "create staff failed");
+                        }
+                    } catch (SQLException e){
+                        if(e.getMessage().contains("no such table")) break;
+                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                            success_counter = success_counter + 1;
+                        else{
+                            e.printStackTrace();
+                            Log.d(TAG, "insert staff data: "+e.getMessage());
+                        }
+                    }
+                }
+                Log.d(TAG, "staff data:\n success data: "+success_counter+", fail data: "+fail_counter);
+            }
+        });
+    }
+
+    private void getAllVehicleData(){
+        String function_name = "all_vehicle_data";
+        Log.d(TAG, "start getAllVehicleData and write in sqlite db");
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData of getAllVehicleData: "+responseData); //顯示資料
+
+                JSONArray responseArr;
+                try {
+                    responseArr= new JSONArray(responseData);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    Log.d(TAG, "getAllVehicleData: "+e.getMessage());
+                    return;
+                }
+
+                int success_counter = 0, fail_counter = 0;
+                for (int i = 0; i < responseArr.length(); i++) {
+                    JSONObject vehicle;
+                    try {
+                        vehicle = responseArr.getJSONObject(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+//                    Log.d(TAG, (i+1)+". vehicle: "+vehicle);
+
+                    db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    try {
+                        values.put(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_ID, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_ID));
+                        values.put(TableContract.VehicleTable.COLUMN_NAME_PLATE_NUM, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_PLATE_NUM));
+                        values.put(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_WEIGHT));
+                        values.put(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_TYPE, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_VEHICLE_TYPE));
+                        values.put(TableContract.VehicleTable.COLUMN_NAME_COMPANY_ID, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_COMPANY_ID));
+                        values.put(TableContract.VehicleTable.COLUMN_NAME_START_TIME, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_START_TIME));
+                        values.put(TableContract.VehicleTable.COLUMN_NAME_END_TIME, vehicle.getString(TableContract.VehicleTable.COLUMN_NAME_END_TIME));
+
+//                        Log.d(TAG, (i+1)+". "+values.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+
+                    try{
+                        long newRowId = db.insertOrThrow(TableContract.VehicleTable.TABLE_NAME, null, values);
+                        if(newRowId != -1){
+                            success_counter = success_counter + 1;
+                            Log.d(TAG, "create vehicle successfully");
+                        }
+                        else{
+                            fail_counter = fail_counter + 1;
+                            Log.d(TAG, "create vehicle failed");
+                        }
+                    } catch (SQLException e){
+                        if(e.getMessage().contains("no such table")) break;
+                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                            success_counter = success_counter + 1;
+                        else{
+                            e.printStackTrace();
+                            Log.d(TAG, "insert vehicle data: "+e.getMessage());
+                        }
+                    }
+                }
+                Log.d(TAG, "vehicle data:\n success data: "+success_counter+", fail data: "+fail_counter);
+            }
+        });
+    }
 
 }

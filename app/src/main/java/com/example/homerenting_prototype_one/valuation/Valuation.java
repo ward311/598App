@@ -1,6 +1,7 @@
 package com.example.homerenting_prototype_one.valuation;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -85,15 +86,17 @@ public class Valuation extends AppCompatActivity {
 //        setwCount(0);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
-        getValuation();
-
+        //getValuation();
+        new Valuation.AsyncRetrieve().execute();
         lastWeek_btn.setOnClickListener(v -> {
             int wCount = getwCount();
             setwCount(wCount-1);
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            getValuation();
+            runOnUiThread(() -> {
+                new AsyncRetrieve().execute();
+            });
         });
 
         nextWeek_btn.setOnClickListener(v -> {
@@ -102,7 +105,9 @@ public class Valuation extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            getValuation();
+            runOnUiThread(() -> {
+                new AsyncRetrieve().execute();
+            });
         });
 
         //上方nav
@@ -278,5 +283,12 @@ public class Valuation extends AppCompatActivity {
         Intent toCalendar = new Intent(Valuation.this, Calendar.class);
         toCalendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(toCalendar);
+    }
+    public class AsyncRetrieve extends AsyncTask<String, String, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+           getValuation();
+           return null;
+        }
     }
 }

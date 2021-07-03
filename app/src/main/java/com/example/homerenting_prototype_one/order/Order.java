@@ -1,7 +1,11 @@
 package com.example.homerenting_prototype_one.order;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
 import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
 import com.example.homerenting_prototype_one.model.TableContract;
@@ -41,6 +46,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -75,8 +81,10 @@ public class Order extends AppCompatActivity {
     RecyclerView orderRList;
 
     ArrayList<String[]> data = new ArrayList<>();
+    ArrayList<String[]> furniture_data = new ArrayList<>();
     ListAdapter listAdapter;
-
+    private SQLiteDatabase db;
+    private DatabaseHelper dbHelper;
     Context context = this;
     String TAG = "Order";
 
@@ -103,14 +111,17 @@ public class Order extends AppCompatActivity {
 
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
-
+        dbHelper = new DatabaseHelper(this);
+        //getFurniture();
         lastWeek_btn.setOnClickListener(v -> {
             int wCount = getwCount();
             setwCount(wCount-1);
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            getOrder();
+            //getOrder();
+            runOnUiThread(() -> new AsyncRetrieve().execute());
+
         });
 
         nextWeek_btn.setOnClickListener(v -> {
@@ -119,7 +130,8 @@ public class Order extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            getOrder();
+            //getOrder();
+            runOnUiThread(() -> new AsyncRetrieve().execute());
         });
 
         //上方nav
@@ -167,7 +179,7 @@ public class Order extends AppCompatActivity {
         Log.d(TAG, "onRusume");
         super.onResume();
         init();
-        getOrder();
+        new AsyncRetrieve().execute();
     }
 
     private void init(){
@@ -175,6 +187,95 @@ public class Order extends AppCompatActivity {
         orderRList.setAdapter(null);
     }
 
+    private void getFurniture() {
+        String function_name = "get_all_furniture";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .build();
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/furniture.php")
+                .post(body)
+                .build();
+
+        //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            //連線失敗
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            //連線成功
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.i(TAG, "responseData of All Furniture: " + responseData); //顯示資料
+                JSONArray responseArr;
+                try {
+                    responseArr = new JSONArray(responseData);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "getAllFurnitureData: " + e.getMessage());
+                    return;
+                }
+                int success_counter = 0, fail_counter = 0;
+                for (int i = 0; i < responseArr.length(); i++) {
+                    JSONObject furniture;
+                    try {
+                        furniture = responseArr.getJSONObject(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    try {
+                        values.put(TableContract.FurnitureTable.COLUMN_NAME_NO, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_NO));
+                        values.put(TableContract.FurnitureTable.COLUMN_NAME_FURNITURE_ID, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_FURNITURE_ID));
+                        values.put(TableContract.FurnitureTable.COLUMN_NAME_SPACE_TYPE, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_SPACE_TYPE));
+                        values.put(TableContract.FurnitureTable.COLUMN_NAME_FURNITURE_NAME, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_FURNITURE_NAME));
+                        values.put(TableContract.FurnitureTable.COLUMN_NAME_IMG, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_IMG));
+//                      Log.d(TAG, (i+1)+". "+values.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+
+                    try {
+                        long newRowId = db.insertOrThrow(TableContract.FurnitureTable.TABLE_NAME, null, values);
+                        if (newRowId != -1) {
+                            success_counter = success_counter + 1;
+                            Log.d(TAG, "create furniture successfully");
+                        } else {
+                            fail_counter = fail_counter + 1;
+                            Log.d(TAG, "create furniture failed");
+                        }
+                    } catch (SQLException e) {
+                        if (e.getMessage().contains("no such table")) break;
+                        if (Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                            success_counter = success_counter + 1;
+                        else {
+                            e.printStackTrace();
+                            Log.d(TAG, "insert furniture data: " + e.getMessage());
+                        }
+                    }
+                }
+                if (!responseData.equals("null")) {
+                    for (int i = 0; i < furniture_data.size(); i++)
+                        Log.i(TAG, "furniture data: " + Arrays.toString(furniture_data.get(i)));
+
+                }
+            }
+        });
+    }
     private void getOrder(){
         clearDatalist();
         //傳至網頁的值
@@ -331,5 +432,13 @@ public class Order extends AppCompatActivity {
         Intent toCalendar = new Intent(Order.this, Calendar.class);
         toCalendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(toCalendar);
+    }
+    public class AsyncRetrieve extends AsyncTask<String, String, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+           getOrder();
+           getFurniture();
+            return null;
+        }
     }
 }

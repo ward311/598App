@@ -1,4 +1,4 @@
-package com.example.homerenting_prototype_one.bouns;
+package com.example.homerenting_prototype_one.system;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,10 +14,12 @@ import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.bouns.Bonus_Distribution;
+import com.example.homerenting_prototype_one.bouns.Bonus_List;
+import com.example.homerenting_prototype_one.bouns.Bonus_View;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
