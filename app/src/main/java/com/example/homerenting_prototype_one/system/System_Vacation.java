@@ -562,6 +562,8 @@ public class System_Vacation extends AppCompatActivity {
         back_btn.setOnClickListener(v -> {
             update_leave(current_date);
             Log.d(TAG, "back. date: "+current_date+", staffs:"+staffs+staffs_text+", cars:"+cars+cars_text);
+            Intent valuation_intent = new Intent(System_Vacation.this, System.class);
+            startActivity(valuation_intent);
         });
         valuation_btn.setOnClickListener(v -> {
             update_leave(current_date);
