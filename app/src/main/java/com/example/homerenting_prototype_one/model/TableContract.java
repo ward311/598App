@@ -1018,68 +1018,68 @@ public class TableContract {
                             }
                         }
                     }
-                    ArrayList<String[]> serviceItem = new ArrayList<>();;
-                    SQLiteDatabase db;
+                    //ArrayList<String[]> serviceItem = new ArrayList<>();;
+                    //SQLiteDatabase db;
 
-                    String company_id = "";
-                    String item_name = "";
-                    String start_time = "";
-                    String end_time = "";
-                    String service_id = "";
-                    String service_name = "";
-                    String isDelete = "";
-                    db = dbHelper.getReadableDatabase();
-                    String sql_query =
-                            "SELECT * FROM "+ ServiceItemTable.TABLE_NAME+" NATURAL JOIN "+TableContract.ServiceClassTable.TABLE_NAME+" " +
-                                    "WHERE company_id = "+getCompany_id(context)+" " +
-                                    "AND ((isDelete = FALSE AND end_time IS NOT NULL))"+" " +
-                                    "OR (end_time IS NULL)" ;
-                    Cursor cursor = db.rawQuery(sql_query, null);
-
-                    Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
-                    if(!cursor.moveToNext()){
-                        cursor.close();
-                        return;
-                    }
-                    while(!cursor.isAfterLast()){
-                        service_id = cursor.getString(cursor.getColumnIndexOrThrow(ServiceClassTable.COLUMN_NAME_SERVICE_ID));
-                        company_id = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_COMPANY_ID));
-                        item_name = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_ITEM_NAME));
-                        start_time = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_START_TIME));
-                        end_time = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_END_TIME));
-                        isDelete = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_END_TIME));
-                        service_name = cursor.getString(cursor.getColumnIndexOrThrow(ServiceClassTable.COLUMN_NAME_SERVICE_NAME));
-                        String[] serviceItem_data = {service_id, company_id, item_name, start_time, end_time, isDelete, service_name};
-                        Log.d(TAG,"("+(cursor.getPosition()+1)+"/"+cursor.getCount()+"). sqlite comment: "+ Arrays.toString(serviceItem_data));
-                        serviceItem.add(serviceItem_data);
-
-                        cursor.moveToNext();
-                    }
-                    ContentValues values = new ContentValues();
-                    for(int i=0; i < serviceItem.size(); i++){
-                        db = dbHelper.getWritableDatabase();
-                        values.put((ServiceItemTable.COLUMN_NAME_SERVICE_ID),service_id);
-                        values.put((ServiceItemTable.COLUMN_NAME_COMPANY_ID), company_id);
-                        values.put((ServiceItemTable.COLUMN_NAME_ITEM_NAME), item_name);
-                        values.put((ServiceItemTable.COLUMN_NAME_START_TIME),start_time);
-                        values.put((ServiceItemTable.COLUMN_NAME_END_TIME), end_time);
-                        values.put((ServiceItemTable.COLUMN_NAME_IS_DELETE), isDelete);
-                        //values.put((ServiceClassTable.COLUMN_NAME_SERVICE_NAME), service_name);
-
-
-                        Log.i(TAG, "data: "+ Arrays.toString(serviceItem.get(i)));
-                    }
-                    cursor.close();
-
-                    try{
-                        long newRowId = db.replace(TableContract.ServiceItemTable.TABLE_NAME, null, values);
-                        if(newRowId != -1) {
-                            Log.d(TAG,"create successfully");}
-                        else Log.d(TAG, "create failed");
-                    }catch (SQLException e){
-                        e.printStackTrace();
-                    }
-                    Log.d(TAG, table_name+" data:\n success data: "+success_counter+", fail data: "+fail_counter);
+                    //String company_id = "";
+                    //String item_name = "";
+                    //String start_time = "";
+                    //String end_time = "";
+                    //String service_id = "";
+                    //String service_name = "";
+                    //String isDelete = "";
+                    //db = dbHelper.getReadableDatabase();
+                    //String sql_query =
+                    //        "SELECT * FROM "+ ServiceItemTable.TABLE_NAME+" NATURAL JOIN "+TableContract.ServiceClassTable.TABLE_NAME+" " +
+                    //                "WHERE company_id = "+getCompany_id(context)+" " +
+                    //                "AND ((isDelete IS FALSE AND end_time IS NOT NULL))"+" " +
+                    //                "OR (end_time IS NULL)" ;
+                    //Cursor cursor = db.rawQuery(sql_query, null);
+//
+                    //Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+                    //if(!cursor.moveToNext()){
+                    //    cursor.close();
+                    //    return;
+                    //}
+                    //while(!cursor.isAfterLast()){
+                    //    service_id = cursor.getString(cursor.getColumnIndexOrThrow(ServiceClassTable.COLUMN_NAME_SERVICE_ID));
+                    //    company_id = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_COMPANY_ID));
+                    //    item_name = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_ITEM_NAME));
+                    //    start_time = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_START_TIME));
+                    //    end_time = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_END_TIME));
+                    //    isDelete = cursor.getString(cursor.getColumnIndexOrThrow(ServiceItemTable.COLUMN_NAME_IS_DELETE));
+                    //    service_name = cursor.getString(cursor.getColumnIndexOrThrow(ServiceClassTable.COLUMN_NAME_SERVICE_NAME));
+                    //    String[] serviceItem_data = {service_id, company_id, item_name, start_time, end_time, isDelete, service_name};
+                    //    Log.d(TAG,"("+(cursor.getPosition()+1)+"/"+cursor.getCount()+"). sqlite comment: "+ Arrays.toString(serviceItem_data));
+                    //    serviceItem.add(serviceItem_data);
+//
+                    //    cursor.moveToNext();
+                    //}
+                    //ContentValues values = new ContentValues();
+                    //for(int i=0; i < serviceItem.size(); i++){
+                    //    db = dbHelper.getWritableDatabase();
+                    //    values.put((ServiceItemTable.COLUMN_NAME_SERVICE_ID),service_id);
+                    //    values.put((ServiceItemTable.COLUMN_NAME_COMPANY_ID), company_id);
+                    //    values.put((ServiceItemTable.COLUMN_NAME_ITEM_NAME), item_name);
+                    //    values.put((ServiceItemTable.COLUMN_NAME_START_TIME),start_time);
+                    //    values.put((ServiceItemTable.COLUMN_NAME_END_TIME), end_time);
+                    //    values.put((ServiceItemTable.COLUMN_NAME_IS_DELETE), isDelete);
+                    //    //values.put((ServiceClassTable.COLUMN_NAME_SERVICE_NAME), service_name);
+//
+//
+                    //    Log.i(TAG, "data: "+ Arrays.toString(serviceItem.get(i)));
+                    //}
+                    //cursor.close();
+//
+                    //try{
+                    //    long newRowId = db.replace(TableContract.ServiceItemTable.TABLE_NAME, null, values);
+                    //    if(newRowId != -1) {
+                    //        Log.d(TAG,"create successfully");}
+                    //    else Log.d(TAG, "create failed");
+                    //}catch (SQLException e){
+                    //    e.printStackTrace();
+                    //}
+                    //Log.d(TAG, table_name+" data:\n success data: "+success_counter+", fail data: "+fail_counter);
                 }
             });
         }
