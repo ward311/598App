@@ -258,7 +258,7 @@ public class Setting_Announcement extends AppCompatActivity {
 
 
                         try{
-                            long newRowId = db.insertOrThrow(TableContract.AnnouncementCompanyTable.TABLE_NAME, null, values);
+                            long newRowId = db.replace(TableContract.AnnouncementCompanyTable.TABLE_NAME, null, values);
                             if(newRowId != -1) {
                                 Log.d(TAG,"create successfully");}
                             else Log.d(TAG, "create failed");
