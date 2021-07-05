@@ -140,14 +140,15 @@ public class RecyclerViewAction extends ItemTouchHelper.Callback {
 
     private void deleteTextData(int position){
         String id = t_adapter.getItem(position)[0];
-        String table = "staff";
+        String table = "";
+        if(t_adapter.getItem(0).length == 2) table = "staff";
         if(t_adapter.getItem(0).length > 2) table = "vehicle";
         final String finalTable = table;
 
         String function_name = "delete_staff_vehicle";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
-                .add("table", table)
+                .add("table", finalTable)
                 .add("id", id)
                 .build();
         Log.i(TAG, "delete: "+table+" "+id);

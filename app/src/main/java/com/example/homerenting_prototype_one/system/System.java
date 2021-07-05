@@ -225,7 +225,7 @@ public class System extends AppCompatActivity {
                     }
 
                     try{
-                        long newRowId = db.insertOrThrow(TableContract.StaffTable.TABLE_NAME, null, values);
+                        long newRowId = db.replace(TableContract.StaffTable.TABLE_NAME, null, values);
                         if(newRowId != -1){
                             success_counter = success_counter + 1;
                             Log.d(TAG, "create staff successfully");

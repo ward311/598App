@@ -97,8 +97,8 @@ public class System_Data extends AppCompatActivity {
         init();
 
         dbHelper = new DatabaseHelper(this);
-        getAllStaffData(dbHelper, context);
-        getAllVehicleData(dbHelper, context);
+        //getAllStaffData(dbHelper, context);
+        //getAllVehicleData(dbHelper, context);
         readStaffData();
 //        getStaffData();
         readVehicleData();
@@ -181,7 +181,8 @@ public class System_Data extends AppCompatActivity {
 
     private void readStaffData() {
         db = dbHelper.getReadableDatabase();
-        String sql_query = "SELECT * FROM "+ TableContract.StaffTable.TABLE_NAME+";";
+        String sql_query = "SELECT * FROM "+ TableContract.StaffTable.TABLE_NAME+
+                 " WHERE company_id = "+getCompany_id(context)+" AND end_time IS NULL "+ ";" ;
         Cursor cursor = db.rawQuery(sql_query, null);
 
         Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
@@ -209,12 +210,14 @@ public class System_Data extends AppCompatActivity {
     }
 
     private void getStaffData(){
+        String function_name = "all_staff_data";
         RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/get_data/all_staff_data.php")
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
                 .post(body)
                 .build();
 
@@ -297,12 +300,14 @@ public class System_Data extends AppCompatActivity {
     }
 
     private void getVehicleData(){
+        String function_name = "all_vehicle_data";
         RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
                 .build();
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/get_data/all_vehicle_data.php")
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
                 .post(body)
                 .build();
 
