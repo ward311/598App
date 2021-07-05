@@ -46,7 +46,7 @@ public class AnnounceAdapter extends RecyclerView.Adapter<AnnounceAdapter.ViewHo
         holder.title.setText(data.get(position)[1]);
         holder.date.setText(data.get(position)[2]);
         holder.summary.setText(data.get(position)[3]);
-        if(data.get(position)[5].equals("0")) holder.newIcon.setVisibility(View.INVISIBLE);
+        //if(data.get(position)[5].equals("0")) holder.newIcon.setVisibility(View.INVISIBLE);
 
         holder.announce.setOnClickListener(v -> {
             new AlertDialog.Builder(context)
