@@ -261,8 +261,8 @@ public class Add_Order extends AppCompatActivity {
         String phone = phone_edit.getText().toString();
 
         String out_city = outCity.getText().toString();
-        String out_district = outCity.getText().toString();
-        String out_address = outCity.getText().toString();
+        String out_district = outDistrict.getText().toString();
+        String out_address = outAddress.getText().toString();
         String move_out = out_city + out_district + out_address;
 
         String in_city = inCity.getText().toString();
@@ -358,8 +358,8 @@ public class Add_Order extends AppCompatActivity {
         boolean check = false;
 
         String out_city = outCity.getText().toString();
-        String out_district = outCity.getText().toString();
-        String out_address = outCity.getText().toString();
+        String out_district = outDistrict.getText().toString();
+        String out_address = outAddress.getText().toString();
         String move_out = out_city + out_district + out_address;
 
         String in_city = inCity.getText().toString();
