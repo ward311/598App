@@ -1,7 +1,9 @@
 package com.example.homerenting_prototype_one.bouns;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +27,8 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.DistributionAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
@@ -62,7 +66,8 @@ public class Distribution_Detail extends AppCompatActivity {
     Button checkBtn;
 
     Bundle bundle;
-
+    SQLiteDatabase db;
+    DatabaseHelper dbHelper;
     private DistributionAdapter distributionAdapter;
 
     private String order_id, name, gender, movingTime, fromAddress, toAddress, fee;
@@ -83,6 +88,7 @@ public class Distribution_Detail extends AppCompatActivity {
         setContentView(R.layout.activity_distribution__detail);
 
         linking();
+        dbHelper = new DatabaseHelper(this);
 
 //        bundle = new Bundle();
 //        bundle.putString("order_id", "147");
@@ -616,14 +622,14 @@ public class Distribution_Detail extends AppCompatActivity {
                     Log.i(TAG, "salaries("+i+"): "+salaries.get(i));
                     if(salaries.get(i) == -1){
                         checkAll = false;
-                        Log.d(TAG, "not complete thd distribution");
+                        Log.d(TAG, "not complete the distribution");
                         continue;
                     }
                     update_staff_salary(i);
                     updateComDis();
                 }
                 if((net == 0 || net < 10) && checkAll){
-                    Log.d(TAG, "complete, finish the distirbution");
+                    Log.d(TAG, "complete, finish the distribution");
                     changeStatus();
 
                     Handler handler = new Handler();
@@ -669,6 +675,24 @@ public class Distribution_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of update_staff_salary("+i+"): " + responseData);
+                db = dbHelper.getWritableDatabase();
+
+                ContentValues values = new ContentValues();
+                values.put(TableContract.StaffAssignmentTable.COLUMN_NAME_PAY, String.valueOf(salaries.get(i)));
+                String selection = TableContract.StaffAssignmentTable.COLUMN_NAME_ORDER_ID+" = ? AND " +
+                        TableContract.StaffAssignmentTable.COLUMN_NAME_STAFF_ID+" = ? ";
+                String[] selectionArgs = {order_id, staffIds.get(i)};
+
+                int count = db.update(
+                        TableContract.StaffAssignmentTable.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs
+                );
+                Log.d(TAG,""+count);
+                if(count != -1) Log.d(TAG, "local db update successfully");
+                else Log.d(TAG, "local db update failed");
+
             }
         });
     }
@@ -691,6 +715,7 @@ public class Distribution_Detail extends AppCompatActivity {
 
         OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
+        String finalCompany_dis = company_dis;
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -704,6 +729,21 @@ public class Distribution_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of update company distribution: " + responseData);
+                db = dbHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put(TableContract.CompanyTable.COLUMN_NAME_LAST_DISTRIBUTION, finalCompany_dis);
+                String selection = TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID+" = ?";
+                String[] selectionArgs = {getCompany_id(context)};
+
+                int count = db.update(
+                        TableContract.CompanyTable.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs
+                );
+                Log.d(TAG,""+count);
+                if(count != -1) Log.d(TAG, "local db update successfully");
+                else Log.d(TAG, "local db update failed");
             }
         });
     }
@@ -739,6 +779,7 @@ public class Distribution_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of change_status: " + responseData);
+
             }
         });
     }

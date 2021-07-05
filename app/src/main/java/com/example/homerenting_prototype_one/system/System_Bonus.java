@@ -2,8 +2,11 @@ package com.example.homerenting_prototype_one.system;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,10 +17,13 @@ import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.base_adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.bouns.Bonus_Distribution;
 import com.example.homerenting_prototype_one.bouns.Bonus_List;
 import com.example.homerenting_prototype_one.bouns.Bonus_View;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.valuation.Valuation;
@@ -28,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,17 +45,21 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
 import static com.example.homerenting_prototype_one.show.global_function.getDay;
 import static com.example.homerenting_prototype_one.show.global_function.getMonth;
+import static com.example.homerenting_prototype_one.show.global_function.getTime;
 import static com.example.homerenting_prototype_one.show.global_function.getToday;
 import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class System_Bonus extends AppCompatActivity {
     TextView month, doneOrderText, paidOrderText;
     Button viewBtn, distributedBtn, listBtn;
-
+    ArrayList<String[]> staff_assignments = new ArrayList<>();
     private Context context = this;
     private String TAG = "System_Bonus";
+    SQLiteDatabase db;
+    DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +74,12 @@ public class System_Bonus extends AppCompatActivity {
         distributedBtn = findViewById(R.id.bonusDistributed_btn_SB);
         listBtn = findViewById(R.id.bonusList_btn_SB);
 
-
         String today = getToday("yyyy-MM-dd");
         month.setText("至"+getYear(today)+"年"+getMonth(today)+"月"+getDay(today)+"日");
 
+        dbHelper = new DatabaseHelper(this);
         setDoneOrder();
+        getStaffAssignData();
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +110,75 @@ public class System_Bonus extends AppCompatActivity {
         });
 
         globalNav();
+    }
+    private void getStaffAssignData(){
+        RequestBody body = new FormBody.Builder()
+                .build();
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/get_data/staffassign_data.php")
+                .post(body)
+                .build();
+
+        //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在app畫面上呈現錯誤訊息
+                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    for (int i = 0; i < responseArr.length(); i++) {
+                        JSONObject staff_assign = responseArr.getJSONObject(i);
+                        String order_id = staff_assign.getString("order_id");
+                        String staff_id = staff_assign.getString("staff_id");
+                        String pay = staff_assign.getString("pay");
+                        String[] row_data = {order_id, staff_id, pay};
+                        staff_assignments.add(row_data);
+
+                        db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_ORDER_ID), order_id);
+                        values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_STAFF_ID), staff_id);
+                        values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_PAY), pay);
+
+                        try{
+                            long newRowId = db.replace(TableContract.StaffAssignmentTable.TABLE_NAME, null, values);
+                            if(newRowId != -1) {
+                                Log.d(TAG,"create successfully");}
+                            else Log.d(TAG, "create failed");
+                        }catch (SQLException e){
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            Log.d(TAG, "NO DATA");
+                        }
+                        //else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+        });
     }
 
     private void setDoneOrder(){

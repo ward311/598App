@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,8 +18,10 @@ import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.helper.DatabaseHelper;
 import com.example.homerenting_prototype_one.helper.SessionManager;
 import com.example.homerenting_prototype_one.main.Login;
+import com.example.homerenting_prototype_one.model.TableContract;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
@@ -49,7 +52,8 @@ public class Setting extends AppCompatActivity {
     Button sign_out;
     String TAG = "Setting";
     private SharedPreferences sp ;
-
+    SQLiteDatabase db;
+    DatabaseHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +65,10 @@ public class Setting extends AppCompatActivity {
         LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_LL_S);
         LinearLayout system_announcement = findViewById(R.id.announce_LL_S);
         LinearLayout history_record = findViewById(R.id.btn_logout);
+
+        dbHelper = new DatabaseHelper(this);
+        TableContract.ServiceClassTable.getServiceClass(dbHelper);
+        TableContract.ServiceItemTable.getServiceItem(dbHelper, context);
 
         if(sp.getString("title", null).contains("staff")){
             company_information.setEnabled(false);

@@ -37,6 +37,8 @@ import static com.example.homerenting_prototype_one.model.TableContract.ServiceC
 import static com.example.homerenting_prototype_one.model.TableContract.ServiceClassTable.getServiceClass;
 import static com.example.homerenting_prototype_one.model.TableContract.ServiceItemTable.SQL_CREATE_SERVICE_ITEM;
 import static com.example.homerenting_prototype_one.model.TableContract.ServiceItemTable.SQL_DELETE_SERVICE_ITEM;
+import static com.example.homerenting_prototype_one.model.TableContract.StaffAssignmentTable.SQL_CREATE_STAFF_ASSIGNMENT;
+import static com.example.homerenting_prototype_one.model.TableContract.StaffAssignmentTable.SQL_DELETE_STAFF_ASSIGNMENT;
 import static com.example.homerenting_prototype_one.model.TableContract.StaffLeaveTable.SQL_CREATE_STAFF_LEAVE;
 import static com.example.homerenting_prototype_one.model.TableContract.StaffLeaveTable.SQL_DELETE_SQL_STAFF_LEAVE;
 import static com.example.homerenting_prototype_one.model.TableContract.StaffTable.SQL_CREATE_STAFF;
@@ -70,6 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_SERVICE_CLASS);
         db.execSQL(SQL_CREATE_SERVICE_ITEM);
         db.execSQL(SQL_CREATE_STAFF);
+        db.execSQL(SQL_CREATE_STAFF_ASSIGNMENT);
 //      db.execSQL(SQL_CREATE_STAFF_LEAVE);
         db.execSQL(SQL_CREATE_VEHICLE);
         db.execSQL(SQL_CREATE_VEHICLE_MAINTAIN);
@@ -91,6 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_SERVICE_CLASS);
         db.execSQL(SQL_DELETE_SERVICE_ITEM);
         db.execSQL(SQL_DELETE_STAFF);
+        db.execSQL(SQL_DELETE_STAFF_ASSIGNMENT);
 //      db.execSQL(SQL_DELETE_SQL_STAFF_LEAVE);
         db.execSQL(SQL_DELETE_VEHICLE);
         db.execSQL(SQL_DELETE_VEHICLE_MAINTAIN);

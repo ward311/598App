@@ -862,7 +862,7 @@ public class TableContract {
                         }
 
                         try{
-                            long newRowId = db.insertOrThrow(table_name, null, values);
+                            long newRowId = db.replace(table_name, null, values);
                             if(newRowId != -1){
                                 success_counter = success_counter + 1;
                                 Log.d(TAG, "create "+table_name+" successfully");
@@ -972,7 +972,7 @@ public class TableContract {
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
                         ContentValues values = new ContentValues();
                         try {
-                            values.put(ServiceItemTable.COLUMN_NAME_COMPANY_ID, serviceItem.getString(ServiceItemTable.COLUMN_NAME_END_TIME));
+                            values.put(ServiceItemTable.COLUMN_NAME_COMPANY_ID, serviceItem.getString(ServiceItemTable.COLUMN_NAME_COMPANY_ID));
                             values.put(ServiceItemTable.COLUMN_NAME_ITEM_NAME, serviceItem.getString(ServiceItemTable.COLUMN_NAME_ITEM_NAME));
                             values.put(ServiceItemTable.COLUMN_NAME_START_TIME, serviceItem.getString(ServiceItemTable.COLUMN_NAME_START_TIME));
                             values.put(ServiceItemTable.COLUMN_NAME_END_TIME, serviceItem.getString(ServiceItemTable.COLUMN_NAME_END_TIME));
@@ -987,7 +987,7 @@ public class TableContract {
                         }
 
                         try{
-                            long newRowId = db.insertOrThrow(table_name, null, values);
+                            long newRowId = db.replace(table_name, null, values);
                             if(newRowId != -1){
                                 success_counter = success_counter + 1;
                                 Log.d(TAG, "create "+table_name+" successfully");
@@ -1072,7 +1072,7 @@ public class TableContract {
                     cursor.close();
 
                     try{
-                        long newRowId = db.insertOrThrow(TableContract.ServiceItemTable.TABLE_NAME, null, values);
+                        long newRowId = db.replace(TableContract.ServiceItemTable.TABLE_NAME, null, values);
                         if(newRowId != -1) {
                             Log.d(TAG,"create successfully");}
                         else Log.d(TAG, "create failed");
@@ -1325,7 +1325,6 @@ public class TableContract {
             }
         }
     }
-
 
 
     public static class VehicleMaintainTable implements BaseColumns{
