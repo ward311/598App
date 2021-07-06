@@ -183,7 +183,7 @@ public class Bonus_View extends AppCompatActivity {
                 int i;
                 Log.d(TAG, year+"/"+month+", data:"+data.size());
                 for(i = 0; i < data.size(); i++) {
-                    Log.d(TAG, Arrays.toString(data.get(0)));
+                    Log.d(TAG, Arrays.toString(data.get(i)));
                     runOnUiThread(() ->{
                         salaryRList.setAdapter(sAdapter);
                     });

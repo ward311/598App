@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -88,19 +89,29 @@ public class Bonus_List_Detail extends AppCompatActivity {
         DATA_WIDTH = dip2px(context, 90);
 
         title_text.setText( month+"月獎金報表" );
-
-        lock = true;
         getData();
         getDate();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                setHeaderRow();
+                setFixedTable();
+                setSalaryTable();
+                Log.d(TAG, "finish getting data.");
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 200);
+        //lock = true;
 
-        int i = 0;
-        while (lock){
-            if(i++%5000000 == 0) Log.d(TAG, (i/5000000)+". wait for getting data lock...");
-        }
-        Log.d(TAG, "finish getting data.");
-        setHeaderRow();
-        setFixedTable();
-        setSalaryTable();
+
+
+       // int i = 0;
+       // while (lock){
+       //     if(i++%5000000 == 0) Log.d(TAG, (i/5000000)+". wait for getting data lock...");
+       // }
+
+
 
 
         back_btn.setOnClickListener(v -> finish());
