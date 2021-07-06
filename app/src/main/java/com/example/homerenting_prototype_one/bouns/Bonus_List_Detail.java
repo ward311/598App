@@ -101,7 +101,7 @@ public class Bonus_List_Detail extends AppCompatActivity {
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 200);
+        handler.postDelayed(runnable, 300);
         //lock = true;
 
 

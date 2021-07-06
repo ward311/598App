@@ -2,6 +2,7 @@ package com.example.homerenting_prototype_one.bouns;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.opengl.Visibility;
@@ -19,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -615,33 +617,49 @@ public class Distribution_Detail extends AppCompatActivity {
 
     private void setCheckBtn(){
         checkBtn.setOnClickListener(v -> {
-            if(net < 0) Toast.makeText(context, "工錢總額大於搬家費用", Toast.LENGTH_SHORT).show();
-            else{
-                boolean checkAll = true;
-                for(int i = 0; i < salaries.size()-1; i++){
-                    Log.i(TAG, "salaries("+i+"): "+salaries.get(i));
-                    if(salaries.get(i) == -1){
-                        checkAll = false;
-                        Log.d(TAG, "not complete the distribution");
-                        continue;
-                    }
-                    update_staff_salary(i);
-                    updateComDis();
-                }
-                if((net == 0 || net < 10) && checkAll){
-                    Log.d(TAG, "complete, finish the distribution");
-                    changeStatus();
+            AlertDialog alertDialog = new AlertDialog.Builder(context)
+            .setTitle("確認分潤金額").setMessage("確定要分潤嗎？")
+            .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                      dialog.dismiss();
+                      if(net < 0) Toast.makeText(context, "工錢總額大於搬家費用", Toast.LENGTH_SHORT).show();
+                      else{
+                          boolean checkAll = true;
+                          for(int i = 0; i < salaries.size()-1; i++){
+                              Log.i(TAG, "salaries("+i+"): "+salaries.get(i));
+                              if(salaries.get(i) == -1){
+                                  checkAll = false;
+                                  Log.d(TAG, "not complete the distribution");
+                                  continue;
+                              }
+                              update_staff_salary(i);
+                              updateComDis();
+                          }
+                          if((net == 0 || net < 10) && checkAll){
+                              Log.d(TAG, "complete, finish the distribution");
+                              changeStatus();
 
-                    Handler handler = new Handler();
-                    handler.postDelayed(() -> {
-                        Intent intent = new Intent(context, Bonus_Distribution.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        Toast.makeText(context, "獎金分潤完成", Toast.LENGTH_LONG).show();
-                    }, 1000);
-                }
-                else Toast.makeText(context, "金額尚未分潤完畢", Toast.LENGTH_SHORT).show();
-            }
+                              Handler handler = new Handler();
+                              handler.postDelayed(() -> {
+                                  Intent intent = new Intent(context, Bonus_Distribution.class);
+                                  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                  startActivity(intent);
+                                  Toast.makeText(context, "獎金分潤完成", Toast.LENGTH_LONG).show();
+                              }, 1000);
+                          }
+                          else Toast.makeText(context, "金額尚未分潤完畢", Toast.LENGTH_SHORT).show();
+                      }
+                  }
+              })
+              .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                      dialog.dismiss();
+                  }
+              }).show();
+
+
         });
     }
 
