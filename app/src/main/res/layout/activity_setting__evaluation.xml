@@ -60,7 +60,7 @@
                     android:id="@+id/commentCount_ED"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="共1500則評論"
+                    android:hint="共1500則評論"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp" />
 

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -63,7 +64,7 @@ public class Setting_Evaluation extends AppCompatActivity {
     ArrayList<Double> stars;
     ArrayList<String[]> comments;
 
-    int commentcount = 0;
+    int numOfComments = 0;
     boolean lock = false;
 
     CommentAdapter commentAdapter;
@@ -184,7 +185,7 @@ public class Setting_Evaluation extends AppCompatActivity {
                 Log.i(TAG,"responseData: "+responseData); //顯示資料
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
-                    commentcount = responseArr.length();
+                    numOfComments = responseArr.length();
                     db = dbHelper.getWritableDatabase();
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject comment = responseArr.getJSONObject(i);
@@ -265,19 +266,24 @@ public class Setting_Evaluation extends AppCompatActivity {
 
     private void setStars(){
         int i = 0;
-        while (lock){ //等待stars收集好資料
-            if((++i)%5000000 == 0) Log.d(TAG, (i/5000000)+". wait for lock...");
-        }
         double allstar = 0;
         for(i = 0; i < stars.size(); i++) allstar = allstar+stars.get(i);
         allstar = allstar/stars.size();
         allstar = (double) Math.round(allstar*10)/10;
-
         final double finalAllStar = allstar;
         allStars.setText("評價 "+finalAllStar);
-        commentCount.setText("共"+commentcount+"則評論");
         commentAdapter.setAllStars(allstar);
-        commentAdapter.setCommentCount(commentcount);
+        /*while (lock){ //等待stars收集好資料
+            if((++i)%5000000 == 0) Log.d(TAG, (i/5000000)+". wait for lock...");
+        }*/
+
+        Runnable runnable = () -> {
+            commentAdapter.setCommentCount(numOfComments);
+            commentCount.setText("共"+data.size()+"則評論");
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 500);
+
     }
 
     private void globalNav(){
