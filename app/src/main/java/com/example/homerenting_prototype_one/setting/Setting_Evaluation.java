@@ -231,7 +231,7 @@ public class Setting_Evaluation extends AppCompatActivity {
                         values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT),commentStr);
                         values.put((TableContract.CommentsTable.COLUMN_NAME_REPLY), reply);
                         try{
-                            long newRowId = db.insertOrThrow(TableContract.CommentsTable.TABLE_NAME, null, values);
+                            long newRowId = db.replace(TableContract.CommentsTable.TABLE_NAME, null, values);
                             if(newRowId != -1) {
                                 Log.d(TAG,"create successfully");}
                             else Log.d(TAG, "create failed");

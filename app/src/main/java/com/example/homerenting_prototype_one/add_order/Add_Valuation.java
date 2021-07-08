@@ -288,7 +288,7 @@ public class Add_Valuation extends AppCompatActivity {
                 .add("address1", outAddress)
                 .add("incity", inCity)
                 .add("indistrict", inDistrict)
-                .add("address2", inCity)
+                .add("address2", inAddress)
                 .add("additional", notice)
                 .add("valuation_date", date)
                 .add("valuation_time", valuation_time)
