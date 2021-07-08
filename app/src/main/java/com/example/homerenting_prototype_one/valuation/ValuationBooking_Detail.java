@@ -5,26 +5,21 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -47,7 +42,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -569,9 +563,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             String[] car = cars.get(i);
             str = str + "[";
             for(int ii = 0; ii < car.length; ii++){
-                if(ii != 0) str = str + ", ";
-                if(ii == 1) str = str + "\""+ car[ii]+ "\"";
-                else str = str + car[ii];
+                if(ii != 0) str = str+ ", ";
+                if(ii == 1) str = str + "\" "+car[ii]+" \"";
+                else str = str + "\""+ car[ii] +"\"";
             }
             str = str + "]";
 //            Log.d(TAG, "car str:"+str);

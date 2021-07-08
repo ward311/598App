@@ -398,6 +398,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         movingDateText.setText(movingDate);
                         fromAddressText.setText(fromAddress);
                         toAddressText.setText(toAddress);
+
                     });
 
 
@@ -513,7 +514,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         if(!vehicle_demand.has("num")) break;
                         Log.i(TAG, "vehicle_demand:" + vehicle_demand);
                         if(i != 0) demandCar = demandCar + "\n";
-                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")+"噸"
+                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")
                                 +vehicle_demand.getString("vehicle_type")
                                 +vehicle_demand.getString("num")+"輛";
                     }
