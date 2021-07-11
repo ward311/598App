@@ -325,7 +325,7 @@ public class Add_Valuation extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 runOnUiThread(() -> {
-                    if(responseData.equals("success"))
+                    if(responseData.contains("success"))
                         Toast.makeText(context, "新增估價單成功", Toast.LENGTH_LONG).show();
                     else
                         Toast.makeText(context, "新增估價單失敗", Toast.LENGTH_LONG).show();

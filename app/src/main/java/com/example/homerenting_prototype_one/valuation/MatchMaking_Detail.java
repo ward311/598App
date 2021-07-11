@@ -72,10 +72,6 @@ public class MatchMaking_Detail extends AppCompatActivity {
         getVehicleDemandData();
 
 
-
-
-
-
         Button call_btn = findViewById(R.id.call_btn);
         call_btn.setOnClickListener(v -> {
             Intent call_intent = new Intent(Intent.ACTION_DIAL);

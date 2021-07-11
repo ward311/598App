@@ -563,11 +563,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             String[] car = cars.get(i);
             str = str + "[";
             for(int ii = 0; ii < car.length; ii++){
-                if(ii != 0) str = str+ ", ";
-                if(ii == 1) str = str + "\" "+car[ii]+" \"";
+                if(ii != 0) str = str+", ";
+                if(ii == 1) str = str +"\" "+car[ii]+"\"";
                 else str = str + "\""+ car[ii] +"\"";
             }
-            str = str + "]";
+            str = str +"]";
 //            Log.d(TAG, "car str:"+str);
         }
         str = str + "]";
