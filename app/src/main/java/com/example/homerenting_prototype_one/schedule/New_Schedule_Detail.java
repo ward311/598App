@@ -932,7 +932,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "submit: "+responseData);
-                if(responseData.equals("success"))
+                if(responseData.contains("success"))
                     runOnUiThread(() -> Toast.makeText(context, "更新成功", Toast.LENGTH_LONG).show());
                 else
                     runOnUiThread(() -> Toast.makeText(context, "更新失敗", Toast.LENGTH_LONG).show());

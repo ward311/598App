@@ -161,7 +161,7 @@ public class Login extends AppCompatActivity {
 
                 try {
                     JSONObject loginData = new JSONObject(responseData);
-                    if(loginData.getString("status").equals("success")){
+                    if(loginData.getString("status").equals("login success")){
                         JSONObject user = loginData.getJSONObject("user");
                         Log.d(TAG, "user: "+user.toString());
                         String company_id = user.getString("company_id");
@@ -178,7 +178,7 @@ public class Login extends AppCompatActivity {
                                 sp.edit().putString("title", title).apply();
                         });
                     }
-                    else if(loginData.getString("status").equals("failed")){
+                    else if(loginData.getString("status").equals("login failed")){
                         Log.d(TAG, "login failed: "+loginData.getString("message"));
                         runOnUiThread(() -> Toast.makeText(context, "登入失敗，請確認帳號密碼", Toast.LENGTH_LONG).show());
                     }
@@ -186,7 +186,7 @@ public class Login extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     runOnUiThread(() -> {
-                        if(responseData.equals("success")){
+                        if(responseData.equals("login success")){
                             Toast.makeText(context, "登入成功, 歡迎回來", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(context, Calendar.class));
 

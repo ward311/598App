@@ -456,7 +456,7 @@ public class Today_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of update_today_order: " + responseData);
-                check = responseData.equals("success");
+                check = responseData.contains("success");
             }
         });
     }
@@ -488,13 +488,14 @@ public class Today_Detail extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG, "responseData of change_status: " + responseData);
-                if(responseData.equals("success")) {
+
+                if(responseData.contains("success")) {
                     runOnUiThread(() -> {
                         Handler handler = new Handler();
                         handler.postDelayed(() -> {
                             Intent intent = new Intent(context, Order_Today.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            Log.d(TAG, "responseData of change_status: " + responseData);
                             Toast.makeText(context, "完成訂單", Toast.LENGTH_LONG).show();
                             startActivity(intent);
                         }, 500);

@@ -282,7 +282,7 @@ public class ForgetPassword extends AppCompatActivity {
                             Toast.makeText(context, "此帳號尚未註冊", Toast.LENGTH_LONG).show();
                         });
                     }else{
-                        Log.d(TAG, ""+resetData.getString("status")+""+resetData.getString("message"));
+                        Log.d(TAG, ""+resetData.getString("status")+" "+resetData.getString("message"));
                         runOnUiThread(() -> {
                             Intent goLogin = new Intent(context, Login.class);
                             goLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

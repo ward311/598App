@@ -240,7 +240,7 @@ public class Bonus_View extends AppCompatActivity {
         HorizontalBarChart hBarChart = dialog.findViewById(R.id.hBarChart_BD);
 
         BarDataSet barDataSet = new BarDataSet(getBarData(), ""); //放入資料(資料List, 該資料的標籤名稱)
-        barDataSet.setValueTextSize(20); //數值文字大小
+        barDataSet.setValueTextSize(10); //數值文字大小
         barDataSet.setValueFormatter(new IndexAxisValueFormatter(){ //去掉數值小數點
             @Override
             public String getFormattedValue(float value) {
@@ -250,7 +250,7 @@ public class Bonus_View extends AppCompatActivity {
         });
         barDataSet.setDrawValues(true); //在bar上顯示數值
         barDataSet.setColor(Color.parseColor("#FB8527")); //bar的顏色
-        barDataSet.setValueTextColor(Color.parseColor("#FFE7D3")); //數值文字顏色
+        //barDataSet.setValueTextColor(Color.parseColor("#FFE7D3")); //數值文字顏色
 
         BarData barData = new BarData(barDataSet);
         barData.setHighlightEnabled(false); //不能點擊反光
