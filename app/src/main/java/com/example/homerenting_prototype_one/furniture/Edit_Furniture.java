@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -77,9 +78,9 @@ public class Edit_Furniture extends AppCompatActivity {
 
     Bundle bundle;
     Context context = Edit_Furniture.this;
-
+    public static final int FUNC_ADDORDER = 1;
+    boolean addOrder = false;
     boolean newFurnitureLock = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +106,7 @@ public class Edit_Furniture extends AppCompatActivity {
         }
 
         bundle = getIntent().getExtras();
+        showBundleData();
         order_id = bundle.getString("order_id");
 //        order_id = "242";
         Log.i(TAG, "order_id: "+order_id);
@@ -561,6 +563,16 @@ public class Edit_Furniture extends AppCompatActivity {
         return checkZero;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == FUNC_ADDORDER){
+            if(resultCode == RESULT_OK){
+                bundle = data.getExtras();
+            }
+        }
+    }
+
     private void orderFurniture(){
         bundle.putString("furniture_data", Arrays.deepToString(furniture_data));
         Log.d(TAG, "furniture_data of add_order: "+ Arrays.deepToString(furniture_data));
@@ -568,9 +580,9 @@ public class Edit_Furniture extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtras(bundle);
         intent.setClass(context, Add_Order.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivityForResult(intent, FUNC_ADDORDER);
     }
 
     private void showBundleData(){

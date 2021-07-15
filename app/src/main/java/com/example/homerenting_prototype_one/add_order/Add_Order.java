@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -68,6 +69,7 @@ public class Add_Order extends AppCompatActivity {
 
     Context context = Add_Order.this;
     String TAG = "Add_Order";
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -176,14 +178,13 @@ public class Add_Order extends AppCompatActivity {
 
         editFurnitureBtn.setOnClickListener(v -> {
             Intent intent = new Intent();
-
             bundle.putString("order_id", "-1");
             getTextData();
             intent.putExtras(bundle);
             intent.setClass(context, Edit_Furniture.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            setResult(RESULT_OK, getIntent());
             startActivity(intent);
-
         });
 
 
