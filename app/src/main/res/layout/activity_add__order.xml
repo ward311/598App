@@ -20,20 +20,23 @@
         android:gravity="center"
         android:layout_margin="15dp"
         android:textStyle="bold"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical"
         android:layout_gravity="top"
-        android:background="#FFFFFF">
+        android:layout_marginTop="50dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:orientation="vertical"
-            android:layout_weight="9">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="9"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -55,18 +58,20 @@
                     android:layout_weight="3"
                     android:inputType="text" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="性別"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="性別"
+                    android:textColor="#000000" />
 
                 <RadioGroup
                     android:id="@+id/genderRG_AO"
@@ -122,7 +127,14 @@
                     android:layout_weight="0.7"
                     android:ems="1"
                     android:hint="高雄市"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/cCity_spin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5" />
 
                 <EditText
                     android:id="@+id/cDistrict"
@@ -131,15 +143,21 @@
                     android:layout_weight="0.6"
                     android:ems="1"
                     android:hint="鼓山區"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/cDistrcit_spin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5" />
 
                 <EditText
                     android:id="@+id/cAddress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.2"
-                    android:ems="1"
-                    android:hint="蓮海路70號"
+                    android:layout_weight="3.5"
+                    android:hint="路、巷弄門牌"
                     android:inputType="text" />
             </LinearLayout>
 
@@ -153,11 +171,11 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:digits="0123456789"
                     android:gravity="center_vertical"
-                    android:text="連絡電話"
-                    android:textColor="#000000"
                     android:maxLength="9"
-                    android:digits="0123456789" />
+                    android:text="連絡電話"
+                    android:textColor="#000000" />
 
                 <EditText
                     android:id="@+id/phone_AO"
@@ -167,6 +185,7 @@
                     android:inputType="phone" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -205,9 +224,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.6"
                     android:ems="1"
-                    android:hint="蓮海路70號"
+                    android:hint="路、巷弄門牌"
                     android:inputType="text" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -229,7 +249,14 @@
                     android:layout_weight="0.7"
                     android:ems="1"
                     android:hint="新北市"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/inCity_spin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5" />
 
                 <EditText
                     android:id="@+id/in_district"
@@ -238,15 +265,21 @@
                     android:layout_weight="0.7"
                     android:ems="1"
                     android:hint="新莊區"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/inDistrict_spin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5" />
 
                 <EditText
                     android:id="@+id/in_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.6"
-                    android:ems="10"
-                    android:hint="中華路258號"
+                    android:layout_weight="3.5"
+                    android:hint="路、巷弄門牌"
                     android:inputType="text" />
 
             </LinearLayout>
@@ -316,10 +349,11 @@
                         android:visibility="visible" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
+                android:background="#989898" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -440,125 +474,143 @@
                     android:layout_weight="3"
                     android:inputType="text" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center">
+
                 <Button
                     android:id="@+id/addOrder_btn_AO"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/roundedbutton"
                     android:text="完成新增搬家訂單"
-                    android:textColor="#FFFFFF"
-                    android:background="@drawable/roundedbutton"/>
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="#F2F2F2"
             android:orientation="horizontal">
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <ImageButton
                     android:id="@+id/valuationBlue_Btn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/valuation_btn_drawable"
+                    android:background="#00000000"
                     android:scaleType="centerCrop"
-                    android:background="#00000000"/>
+                    android:src="@drawable/valuation_btn_drawable" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="估價單"
-                    android:textSize="10sp"
-                    android:textColor="#D5D5D5"/>
+                    android:textColor="#D5D5D5"
+                    android:textSize="10sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <ImageButton
                     android:id="@+id/order_imgBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/order_blue"
+                    android:background="#00000000"
                     android:scaleType="centerCrop"
-                    android:background="#00000000"/>
+                    android:src="@drawable/order_blue" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="訂單"
-                    android:textSize="10sp"
-                    android:textColor="#19B0ED"/>
+                    android:textColor="#19B0ED"
+                    android:textSize="10sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <ImageButton
                     android:id="@+id/calendar_imgBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/calendar_btn_drawable"
+                    android:background="#00000000"
                     android:scaleType="centerCrop"
-                    android:background="#00000000"/>
+                    android:src="@drawable/calendar_btn_drawable" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="行事曆"
-                    android:textSize="10sp"
-                    android:textColor="#D5D5D5"/>
+                    android:textColor="#D5D5D5"
+                    android:textSize="10sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <ImageButton
                     android:id="@+id/system_imgBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/system_btn_drawable"
+                    android:background="#00000000"
                     android:scaleType="centerCrop"
-                    android:background="#00000000"/>
+                    android:src="@drawable/system_btn_drawable" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="人事系統"
-                    android:textSize="10sp"
-                    android:textColor="#D5D5D5"/>
+                    android:textColor="#D5D5D5"
+                    android:textSize="10sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <ImageButton
                     android:id="@+id/setting_imgBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/setting_btn_drawable"
+                    android:background="#00000000"
                     android:scaleType="centerCrop"
-                    android:background="#00000000"/>
+                    android:src="@drawable/setting_btn_drawable" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="我的系統"
-                    android:textSize="10sp"
-                    android:textColor="#D5D5D5"/>
+                    android:textColor="#D5D5D5"
+                    android:textSize="10sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

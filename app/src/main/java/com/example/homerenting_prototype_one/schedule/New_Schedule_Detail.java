@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -294,11 +295,16 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 if(!items_text.contains(name)){
                     items.add(tag);
                     items_text.add(sname);
+                    Log.d(TAG, ""+ Arrays.toString(items.toArray()));
+                    Log.d(TAG, ""+ Arrays.toString(items_text.toArray()));
+
                 }
             }
             else{ //取消選擇
                 items.remove(Integer.valueOf(tag));
                 items_text.remove(sname);
+                Log.d(TAG, ""+ Arrays.toString(items.toArray()));
+                Log.d(TAG, ""+ Arrays.toString(items_text.toArray()));
             }
 
             if(items == staffs) setStaffText();

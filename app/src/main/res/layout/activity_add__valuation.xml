@@ -105,7 +105,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
@@ -125,7 +125,14 @@
                     android:layout_weight="0.8"
                     android:ems="10"
                     android:hint="高雄市"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/con_city_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.5" />
 
                 <EditText
                     android:id="@+id/c_district_edit"
@@ -134,15 +141,22 @@
                     android:layout_weight="0.8"
                     android:ems="10"
                     android:hint="鼓山區"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/con_district_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.5" />
 
                 <EditText
                     android:id="@+id/c_address_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.4"
+                    android:layout_weight="3.5"
                     android:ems="10"
-                    android:hint="蓮海路70號"
+                    android:hint="路、巷弄門牌"
                     android:inputType="text" />
             </LinearLayout>
 
@@ -187,7 +201,7 @@
                     android:id="@+id/out_city_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7"
+                    android:layout_weight="1"
                     android:hint="高雄市"
                     android:inputType="text" />
 
@@ -195,7 +209,7 @@
                     android:id="@+id/out_district_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7"
+                    android:layout_weight="1"
                     android:ems="10"
                     android:hint="鼓山區"
                     android:inputType="text" />
@@ -204,9 +218,9 @@
                     android:id="@+id/out_address_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.6"
+                    android:layout_weight="2"
                     android:ems="10"
-                    android:hint="蓮海路70號"
+                    android:hint="路、巷弄門牌"
                     android:inputType="text" />
             </LinearLayout>
 
@@ -230,7 +244,14 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.7"
                     android:hint="新北市"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/incity_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5" />
 
                 <EditText
                     android:id="@+id/in_district_edit"
@@ -239,15 +260,22 @@
                     android:layout_weight="0.7"
                     android:ems="10"
                     android:hint="新莊區"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/indistrict_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5" />
 
                 <EditText
                     android:id="@+id/in_address_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.6"
+                    android:layout_weight="3.5"
                     android:ems="10"
-                    android:hint="中華路258號"
+                    android:hint="路、巷弄門牌"
                     android:inputType="text" />
             </LinearLayout>
 
