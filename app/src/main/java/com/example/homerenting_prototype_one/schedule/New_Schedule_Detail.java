@@ -105,11 +105,16 @@ public class New_Schedule_Detail extends AppCompatActivity {
             if(new_order_id == null)
                 Toast.makeText(context, "This is the first order.", Toast.LENGTH_LONG).show();
             else{
-                submit();
                 Intent intent = new Intent(context, New_Schedule_Detail.class);
                 intent.putExtras(bundle);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                submitBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        submit();
+                    }
+                });
             }
         });
 
@@ -119,11 +124,16 @@ public class New_Schedule_Detail extends AppCompatActivity {
             if(new_order_id == null)
                 Toast.makeText(context, "This is the final order.", Toast.LENGTH_LONG).show();
             else{
-                submit();
                 Intent intent = new Intent(context, New_Schedule_Detail.class);
                 intent.putExtras(bundle);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                submitBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        submit();
+                    }
+                });
             }
         });
 
