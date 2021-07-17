@@ -117,8 +117,8 @@ public class Add_Valuation extends AppCompatActivity {
                 String hh = String.valueOf(hourOfDay);
                 if(hourOfDay < 10) hh = "0"+hh;
                 timeText.setText(hh+":"+mm);
-                time = hourOfDay+":"+minute;
-                time2 = (hourOfDay+1)+":"+minute;
+                time = hourOfDay+":"+mm;
+                time2 = (hourOfDay+1)+":"+mm;
             },calendar.get(GregorianCalendar.DAY_OF_MONTH ),calendar.get(GregorianCalendar.MINUTE ),true);
             time_picker.show();
         });
