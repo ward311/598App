@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -94,6 +95,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         getStaffChip();
         getOrder();
 
+
         ArrayList<String> datalist = getDatalist();
         titleText.setText("人車派遣 "+(datalist.indexOf(order_id)+1)+"/"+datalist.size());
 
@@ -113,6 +115,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         submit();
+
                     }
                 });
             }
@@ -132,12 +135,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         submit();
+
                     }
                 });
             }
         });
 
-        submitBtn.setOnClickListener(v -> submit());
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submit();
+
+            }
+        });
+
 
         globalNav();
     }
@@ -303,8 +314,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
             String sname = chip.getText().toString();
             if(isChecked){ //加入選擇
                 if(!items_text.contains(name)){
-                    items.add(tag);
                     items_text.add(sname);
+                    if(!items.contains(Integer.valueOf(tag))){
+                        items.add(Integer.valueOf(tag));
+                    }
                     Log.d(TAG, ""+ Arrays.toString(items.toArray()));
                     Log.d(TAG, ""+ Arrays.toString(items_text.toArray()));
 
@@ -433,8 +446,19 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 getStaffVacation(movingDateWithoutTime);
                 getVehicleVacation(movingDateWithoutTime);
                 getOverlap(datetime, endtime);
-                getVehicleData();
-                getStaffData();
+
+                Looper.prepare();
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        getVehicleData();
+                        getStaffData();
+                        Log.d(TAG, "finish getting data.");
+                    }
+                };
+                Handler handler = new Handler();
+                handler.postDelayed(runnable, 500);
+                Looper.loop();
             }
         });
     }
@@ -477,6 +501,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         Log.i(TAG, "vehicle_assign:" + vehicle_assign);
                         car = car+vehicle_assign.getString("plate_num")+" ";
                         cars_text.add(vehicle_assign.getString("plate_num"));
+                        cars.add(Integer.valueOf(vehicle_assign.getString("vehicle_id")));
                     }
                     Log.d(TAG, "car: "+car);
 
@@ -584,6 +609,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         staff = staff+staff_assign.getString("staff_name");
                         staff = staff + " ";
                         staffs_text.add(staff_assign.getString("staff_name"));
+                        staffs.add(Integer.valueOf(staff_assign.getString("staff_id")));
                     }
 
                 } catch (JSONException e) {
@@ -958,7 +984,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         handler.postDelayed(() -> {
             if(bundle.containsKey("order_detail")){
                 Intent intent = new Intent(context, Order_Detail.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK );
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
