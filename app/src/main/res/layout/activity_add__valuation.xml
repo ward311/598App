@@ -150,11 +150,19 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2.5" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="65dp"
+                android:orientation="horizontal">
+
                 <EditText
                     android:id="@+id/c_address_edit"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3.5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:ems="10"
                     android:hint="路、巷弄門牌"
                     android:inputType="text" />
@@ -269,14 +277,22 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2.5" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="65dp"
+                android:orientation="horizontal">
+
                 <EditText
                     android:id="@+id/in_address_edit"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3.5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:ems="10"
                     android:hint="路、巷弄門牌"
-                    android:inputType="text" />
+                    android:inputType="textPostalAddress" />
             </LinearLayout>
 
             <View
