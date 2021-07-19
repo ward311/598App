@@ -175,7 +175,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="15dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
@@ -184,9 +184,9 @@
 
                 <EditText
                     android:id="@+id/phone_AV"
-                    android:layout_width="0dp"
+                    android:layout_width="80dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_weight="4"
                     android:inputType="phone" />
 
             </LinearLayout>
@@ -198,7 +198,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="10dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
@@ -207,9 +207,9 @@
 
                 <EditText
                     android:id="@+id/out_city_edit"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="0.4"
                     android:hint="高雄市"
                     android:inputType="text" />
 
@@ -217,7 +217,7 @@
                     android:id="@+id/out_district_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="1.2"
                     android:ems="10"
                     android:hint="鼓山區"
                     android:inputType="text" />
@@ -226,7 +226,7 @@
                     android:id="@+id/out_address_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:layout_weight="2.3"
                     android:ems="10"
                     android:hint="路、巷弄門牌"
                     android:inputType="text" />
