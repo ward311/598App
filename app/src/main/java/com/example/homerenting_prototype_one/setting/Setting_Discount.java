@@ -250,7 +250,7 @@ public class Setting_Discount extends AppCompatActivity {
                 LocalDate start = LocalDate.of(Integer.parseInt(getYear(startDate)), Integer.parseInt(getMonth(startDate)), Integer.parseInt(getDay(startDate)));
                 LocalDate end = LocalDate.of(Integer.parseInt(getYear(endDate)), Integer.parseInt(getMonth(endDate)), Integer.parseInt(getDay(endDate)));
 
-                if(start.isBefore(disableTime) && end.isAfter(disableTime) && !disable){
+                if((start.isBefore(disableTime)||start.isEqual(LocalDate.now())) && end.isAfter(disableTime) && !disable){
                     runOnUiThread(() -> switcher.setChecked(true));
 
                     Log.d(TAG, start+" < "+disableTime+" < "+end);
@@ -557,8 +557,9 @@ public class Setting_Discount extends AppCompatActivity {
                                 period_discounts.add(period_discount);
                                 Log.d(TAG, "add period_discount("+(period_discounts.size()-1)+"/"+period_discounts.size()+"): "
                                         +Arrays.toString(period_discounts.get(period_discounts.size()-1)));
-
-                                discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, finalEnable, discountTable.getChildCount()));
+                                discountTable.removeViewAt(discountTable.getChildCount()-1);
+                                discountTable.addView(addNewRow(discountId, discountName, percent, startTime, endTime, finalEnable, discountTable.getChildCount()-3));
+                                discountTable.addView(newAddBtn());
                             }
                         });
                         db = dbHelper.getWritableDatabase();

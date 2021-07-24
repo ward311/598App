@@ -245,15 +245,19 @@ public class Add_Valuation extends AppCompatActivity {
         }
         if(contact_citySpin.getSelectedItem().equals("請選擇縣市")){
             Toast.makeText(context, "請選擇聯絡地址",Toast.LENGTH_SHORT);
+            check = true;
         }
         if(contact_districtSpin.getSelectedItem().equals("請選擇鄉鎮市區")){
             Toast.makeText(context, "請選擇聯絡地址",Toast.LENGTH_SHORT).show();
+            check = true;
         }
         if(in_citySpin.getSelectedItem().equals("請選擇縣市")){
             Toast.makeText(context, "請選擇搬入地址",Toast.LENGTH_SHORT).show();
+            check = true;
         }
         if(in_districtSpin.getSelectedItem().equals("請選擇鄉鎮市區")){
             Toast.makeText(context, "請選擇搬入地址",Toast.LENGTH_SHORT).show();
+            check = true;
         }
 
         return check;
