@@ -120,7 +120,7 @@ public class Order extends AppCompatActivity {
             month_text.setText(getMonthStr());
             data.clear();
             //getOrder();
-            runOnUiThread(() -> new AsyncRetrieve().execute());
+            new AsyncRetrieve().execute();
 
         });
 
@@ -131,7 +131,7 @@ public class Order extends AppCompatActivity {
             month_text.setText(getMonthStr());
             data.clear();
             //getOrder();
-            runOnUiThread(() -> new AsyncRetrieve().execute());
+            new AsyncRetrieve().execute();
         });
 
         //上方nav

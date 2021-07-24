@@ -94,9 +94,9 @@ public class Valuation extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            runOnUiThread(() -> {
-                new AsyncRetrieve().execute();
-            });
+
+            new AsyncRetrieve().execute();
+
         });
 
         nextWeek_btn.setOnClickListener(v -> {
@@ -105,69 +105,46 @@ public class Valuation extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            runOnUiThread(() -> {
-                new AsyncRetrieve().execute();
-            });
+            new AsyncRetrieve().execute();
         });
 
         //上方nav
-        booking_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent bookingValuation_intent = new Intent(Valuation.this, Valuation_Booking.class);
-                bookingValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(bookingValuation_intent);
-            }
+        booking_btn.setOnClickListener(v -> {
+            Intent bookingValuation_intent = new Intent(Valuation.this, Valuation_Booking.class);
+            bookingValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(bookingValuation_intent);
         });
-        matchMaking_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent matchMakingValuation_intent = new Intent(Valuation.this, Valuation_MatchMaking.class);
-                matchMakingValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(matchMakingValuation_intent);
-            }
+        matchMaking_btn.setOnClickListener(v -> {
+            Intent matchMakingValuation_intent = new Intent(Valuation.this, Valuation_MatchMaking.class);
+            matchMakingValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(matchMakingValuation_intent);
         });
-        cancel_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cancelValuation_intent = new Intent(Valuation.this, Valuation_Cancel.class);
-                cancelValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(cancelValuation_intent);
-            }
+        cancel_btn.setOnClickListener(v -> {
+            Intent cancelValuation_intent = new Intent(Valuation.this, Valuation_Cancel.class);
+            cancelValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(cancelValuation_intent);
         });
 
         //底下nav
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Valuation.this, Order.class);
-                order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Valuation.this, Order.class);
+            order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(order_intent);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Valuation.this, Calendar.class);
-                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Valuation.this, Calendar.class);
+            calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(calender_intent);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Valuation.this, System.class);
-                system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Valuation.this, System.class);
+            system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(system_intent);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Valuation.this, Setting.class);
-                setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(Valuation.this, Setting.class);
+            setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(setting_intent);
         });
     }
 
@@ -200,12 +177,9 @@ public class Valuation extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Valuation.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
+                runOnUiThread(() -> {
+                    //在app畫面上呈現錯誤訊息
+                    Toast.makeText(Valuation.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
                 });
             }
 
@@ -255,23 +229,20 @@ public class Valuation extends AppCompatActivity {
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                     runOnUiThread(() -> {
                         valuationList.setAdapter(listAdapter);
-                        valuationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                String[] row_data = (String[])parent.getItemAtPosition(position);
-                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                String order_id = row_data[0];
+                        valuationList.setOnItemClickListener((parent, view, position, id) -> {
+                            String[] row_data = (String[])parent.getItemAtPosition(position);
+                            Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                            String order_id = row_data[0];
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("order_id", order_id);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("order_id", order_id);
 
-                                removeNew(order_id, Valuation.this);
+                            removeNew(order_id, Valuation.this);
 
-                                Intent intent = new Intent();
-                                intent.setClass(Valuation.this, Valuation_Detail.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
+                            Intent intent = new Intent();
+                            intent.setClass(Valuation.this, Valuation_Detail.class);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
                         });
                     });
                 }
@@ -284,9 +255,9 @@ public class Valuation extends AppCompatActivity {
         toCalendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(toCalendar);
     }
-    public class AsyncRetrieve extends AsyncTask<String, String, Void> {
+    public class AsyncRetrieve extends AsyncTask<Void, Void, Void> {
         @Override
-        protected Void doInBackground(String... strings) {
+        protected Void doInBackground(Void... Void) {
            getValuation();
            return null;
         }

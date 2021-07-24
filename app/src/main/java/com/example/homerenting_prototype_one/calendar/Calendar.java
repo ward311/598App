@@ -111,7 +111,7 @@ public class Calendar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         init();
-        //setmCalendar();
+
         onBackPressed();
 
         dbHelper = new DatabaseHelper(this);
@@ -896,9 +896,9 @@ public class Calendar extends AppCompatActivity {
     public void onBackPressed(){
 
     }
-    public class AsyncRetrieve extends AsyncTask<String, String, Void> {
+    public class AsyncRetrieve extends AsyncTask<Void, Void, Void> {
         @Override
-        protected Void doInBackground(String... strings) {
+        protected Void doInBackground(Void... Void) {
             setmCalendar();
             getAllOrdersData();
             getAllMemberData();

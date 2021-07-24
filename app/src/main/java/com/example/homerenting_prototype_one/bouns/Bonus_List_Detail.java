@@ -91,14 +91,11 @@ public class Bonus_List_Detail extends AppCompatActivity {
         title_text.setText( month+"月獎金報表" );
         getData();
         getDate();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                setHeaderRow();
-                setFixedTable();
-                setSalaryTable();
-                Log.d(TAG, "finish getting data.");
-            }
+        Runnable runnable = () -> {
+            setHeaderRow();
+            setFixedTable();
+            setSalaryTable();
+            Log.d(TAG, "finish getting data.");
         };
         Handler handler = new Handler();
         handler.postDelayed(runnable, 300);
@@ -321,7 +318,7 @@ public class Bonus_List_Detail extends AppCompatActivity {
 //            Log.d(TAG, "staff: "+staff.get(0)[0]);
             for(int ii = 0; ii < date.size(); ii++){ //第幾天
 //                Log.d(TAG, "date: "+month+"/"+date.get(ii));
-                String salary = "無資料";
+                String salary = "當日未派遣";
                 for(int iii = 0; iii < staff.size(); iii++){ //第幾筆資料
                     if(Integer.parseInt(staff.get(iii)[1]) == date.get(ii)){ //有沒有第ii天的資料
                         salary = staff.get(iii)[2];

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,11 +82,12 @@ public class System_Vacation extends AppCompatActivity {
         cars = new ArrayList<>();
 
         getStaffChip();
-        getVehicleChip();
+        //getVehicleChip();
 
         current_date = getToday("yyyy-MM-dd");
-        getStaffVacation(current_date);
-        getVehicleVacation(current_date);
+        new AsyncRetrieve().execute();
+        //getStaffVacation(current_date);
+        //getVehicleVacation(current_date);
 //        getAssigned(current_date);
 
 
@@ -110,7 +112,6 @@ public class System_Vacation extends AppCompatActivity {
 
     private void getStaffChip(){
         Log.d(TAG, "start getStaffChip()");
-        lock = true;
         lock = true;
         final Chip chip1 = findViewById(R.id.chip1_SV); //控制形狀用的chip
 
@@ -596,5 +597,13 @@ public class System_Vacation extends AppCompatActivity {
     public void onBackPressed() {
         update_leave(current_date);
         super.onBackPressed();
+    }
+    public class AsyncRetrieve extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void...Void) {
+            getStaffVacation(current_date);
+            getVehicleVacation(current_date);
+            return null;
+        }
     }
 }

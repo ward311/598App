@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -113,9 +114,9 @@ public class System_Schedule extends AppCompatActivity {
 
         getStaffChip();
         getVehicleChip();
-
-        getStaffVacation(getToday("yyyy-MM-dd"));
-        getVehicleVacation(getToday("yyyy-MM-dd"));
+        new AsyncRetrieve().execute();
+        //getStaffVacation(getToday("yyyy-MM-dd"));
+        //getVehicleVacation(getToday("yyyy-MM-dd"));
         setmCalendar();
 
         globalNav();
@@ -777,6 +778,14 @@ public class System_Schedule extends AppCompatActivity {
                 return 12;
             default:
                 return 0;
+        }
+    }
+    public class AsyncRetrieve extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void...Void) {
+            getStaffVacation(getToday("yyyy-MM-dd"));
+            getVehicleVacation(getToday("yyyy-MM-dd"));
+            return null;
         }
     }
 
