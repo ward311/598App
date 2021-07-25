@@ -580,7 +580,7 @@ public class Edit_Furniture extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtras(bundle);
         intent.setClass(context, Add_Order.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         //intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivityForResult(intent, FUNC_ADDORDER);
     }

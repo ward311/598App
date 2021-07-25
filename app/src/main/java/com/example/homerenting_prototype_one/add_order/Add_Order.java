@@ -224,6 +224,15 @@ public class Add_Order extends AppCompatActivity {
     }
 
     public void getTextData(){
+        int cCityChoice, cDisChoice, inCityChoice, inDisChoice;
+        cCityChoice = contact_citySpin.getSelectedItemPosition();
+        cDisChoice = contact_districtSpin.getSelectedItemPosition();
+        inCityChoice = in_citySpin.getSelectedItemPosition();
+        inDisChoice = in_districtSpin.getSelectedItemPosition();
+        bundle.putInt("cCityChoice", cCityChoice);
+        bundle.putInt("cDisChoice", cDisChoice);
+        bundle.putInt("inCityChoice", inCityChoice);
+        bundle.putInt("inDisChoice", inDisChoice);
         bundle.putString("name", name_edit.getText().toString());
         bundle.putInt("gender", genderRG.getCheckedRadioButtonId());
         bundle.putString("cCity", cCity.getText().toString());
@@ -244,23 +253,27 @@ public class Add_Order extends AppCompatActivity {
     }
 
      public void setTextData(){
-        if(bundle.containsKey("name")) name_edit.setText(bundle.getString("name"));
-        if(bundle.containsKey("gender")) genderRG.check(bundle.getInt("gender"));
-        if(bundle.containsKey("cCity")) cCity.setText(bundle.getString("cCity"));
-        if(bundle.containsKey("cDistrict")) cDistrict.setText(bundle.getString("cDistrict"));
-        if(bundle.containsKey("cAddress")) cAddress.setText(bundle.getString("cAddress"));
-        if(bundle.containsKey("phone")) phone_edit.setText(bundle.getString("phone"));
-        if(bundle.containsKey("outCity")) outCity.setText(bundle.getString("outCity"));
-        if(bundle.containsKey("outDistrict")) outDistrict.setText(bundle.getString("outDistrict"));
-        if(bundle.containsKey("outAddress")) outAddress.setText(bundle.getString("outAddress"));
-        if(bundle.containsKey("inCity")) inCity.setText(bundle.getString("inCity"));
-        if(bundle.containsKey("inDistrict")) inDistrict.setText(bundle.getString("inDistrict"));
-        if(bundle.containsKey("inAddress")) inAddress.setText(bundle.getString("inAddress"));
-        if(bundle.containsKey("pickDate")) movingDate_text.setText(bundle.getString("pickDate"));
-        if(bundle.containsKey("pickTime")) movingTime_text.setText(bundle.getString("pickTime"));
-        if(bundle.containsKey("price")) price_edit.setText(bundle.getString("price"));
-        if(bundle.containsKey("worktime")) worktime_edit.setText(bundle.getString("worktime"));
-        if(bundle.containsKey("notice")) notice_edit.setText(bundle.getString("notice"));
+         if(bundle.containsKey("cCityChoice")) contact_citySpin.setSelection(bundle.getInt("cCityChoice"));
+         if(bundle.containsKey("cDisChoice")) contact_districtSpin.setSelection(bundle.getInt("cDisChoice"));
+         if(bundle.containsKey("inCityChoice")) in_citySpin.setSelection(bundle.getInt("inCityChoice"));
+         if(bundle.containsKey("inDisChoice")) in_districtSpin.setSelection(bundle.getInt("inDisChoice"));
+         if(bundle.containsKey("name")) name_edit.setText(bundle.getString("name"));
+         if(bundle.containsKey("gender")) genderRG.check(bundle.getInt("gender"));
+         if(bundle.containsKey("cCity")) cCity.setText(bundle.getString("cCity"));
+         if(bundle.containsKey("cDistrict")) cDistrict.setText(bundle.getString("cDistrict"));
+         if(bundle.containsKey("cAddress")) cAddress.setText(bundle.getString("cAddress"));
+         if(bundle.containsKey("phone")) phone_edit.setText(bundle.getString("phone"));
+         if(bundle.containsKey("outCity")) outCity.setText(bundle.getString("outCity"));
+         if(bundle.containsKey("outDistrict")) outDistrict.setText(bundle.getString("outDistrict"));
+         if(bundle.containsKey("outAddress")) outAddress.setText(bundle.getString("outAddress"));
+         if(bundle.containsKey("inCity")) inCity.setText(bundle.getString("inCity"));
+         if(bundle.containsKey("inDistrict")) inDistrict.setText(bundle.getString("inDistrict"));
+         if(bundle.containsKey("inAddress")) inAddress.setText(bundle.getString("inAddress"));
+         if(bundle.containsKey("pickDate")) movingDate_text.setText(bundle.getString("pickDate"));
+         if(bundle.containsKey("pickTime")) movingTime_text.setText(bundle.getString("pickTime"));
+         if(bundle.containsKey("price")) price_edit.setText(bundle.getString("price"));
+         if(bundle.containsKey("worktime")) worktime_edit.setText(bundle.getString("worktime"));
+         if(bundle.containsKey("notice")) notice_edit.setText(bundle.getString("notice"));
 
     }
 
