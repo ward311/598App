@@ -1,6 +1,7 @@
 package com.example.homerenting_prototype_one.show;
 
 import android.content.Context;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -59,8 +60,9 @@ public class global_function {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-
-            Toast.makeText(context, "更新點擊狀態失敗", Toast.LENGTH_LONG).show();
+                Looper.prepare();
+                Toast.makeText(context, "更新點擊狀態失敗", Toast.LENGTH_LONG).show();
+                Looper.loop();
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {

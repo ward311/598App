@@ -11,23 +11,29 @@
         android:layout_weight="2"
         android:orientation="vertical"
         android:background="#19B0ED">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal">
+
             <ImageButton
                 android:id="@+id/back_imgBtn"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:scaleType="centerCrop"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="0dp"
                 android:background="#19B0ED"
-                android:src="@drawable/back_white"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/back_white" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="客戶評價"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"/>
+                android:textSize="26sp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

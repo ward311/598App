@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,7 +80,6 @@ public class Edit_Furniture extends AppCompatActivity {
     Bundle bundle;
     Context context = Edit_Furniture.this;
     public static final int FUNC_ADDORDER = 1;
-    boolean addOrder = false;
     boolean newFurnitureLock = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +147,10 @@ public class Edit_Furniture extends AppCompatActivity {
                         nowSpace = Integer.parseInt(new_furniture[2])+1;
                         furnitureSpaceSpr.setSelection(nowSpace);
                     }
-                    setList();
+                        setList();
+                }else{
+                    runOnUiThread(() -> Toast.makeText(context,"項目已存在",Toast.LENGTH_LONG).show());
+
                 }
             });
             builder.setNegativeButton("取消", (dialog, which) -> { newFurnitureLock = false; });
@@ -384,7 +387,8 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 if(furnitureIDs.size() > 0){
                     Log.d(TAG, "position: "+position);
-                    Toast.makeText(context, "選擇"+furniture[position], Toast.LENGTH_LONG).show();
+                    showToast(furniture, position);
+                    //Toast.makeText(context, "選擇"+furniture[position], Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "furnitureIDs.size: "+furnitureIDs.size());
                     Log.d(TAG, "furnitureIDs: "+furnitureIDs.get(0));
                     new_furniture[0]=furnitureIDs.get(position);
@@ -396,6 +400,27 @@ public class Edit_Furniture extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
+    }
+    private Toast mToastToShow;
+    public void showToast(String[]array, final int position) {
+        // Set the toast and duration
+        int toastDurationInMilliSeconds = 1000;
+        mToastToShow = Toast.makeText(this,"選擇"+array[position] , Toast.LENGTH_SHORT);
+
+        // Set the countdown to display the toast
+        CountDownTimer toastCountDown;
+        toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1000 /*Tick duration*/) {
+            public void onTick(long millisUntilFinished) {
+                mToastToShow.show();
+            }
+            public void onFinish() {
+                mToastToShow.cancel();
+            }
+        };
+
+        // Show the toast and starts the countdown
+        mToastToShow.show();
+        toastCountDown.start();
     }
 
     private void getSpace(final int choose){
@@ -572,8 +597,8 @@ public class Edit_Furniture extends AppCompatActivity {
             }
         }
     }
-
     private void orderFurniture(){
+
         bundle.putString("furniture_data", Arrays.deepToString(furniture_data));
         Log.d(TAG, "furniture_data of add_order: "+ Arrays.deepToString(furniture_data));
         showBundleData();
@@ -674,7 +699,13 @@ public class Edit_Furniture extends AppCompatActivity {
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Edit_Furniture.this, Setting.class);
-            startActivity(setting_intent);
+
         });
+    }
+    public void onBackPressed(){
+        Intent intent = new Intent(context, Add_Order.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivityForResult(intent, FUNC_ADDORDER);
+
     }
 }

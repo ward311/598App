@@ -253,10 +253,14 @@ public class Add_Order extends AppCompatActivity {
     }
 
      public void setTextData(){
-         if(bundle.containsKey("cCityChoice")) contact_citySpin.setSelection(bundle.getInt("cCityChoice"));
-         if(bundle.containsKey("cDisChoice")) contact_districtSpin.setSelection(bundle.getInt("cDisChoice"));
-         if(bundle.containsKey("inCityChoice")) in_citySpin.setSelection(bundle.getInt("inCityChoice"));
-         if(bundle.containsKey("inDisChoice")) in_districtSpin.setSelection(bundle.getInt("inDisChoice"));
+         if(bundle.containsKey("cCityChoice")) {
+             contact_citySpin.setSelection(bundle.getInt("cCityChoice"));
+             contact_districtSpin.setSelection(bundle.getInt("cDisChoice"));
+         }
+         if(bundle.containsKey("inCityChoice")){
+             in_citySpin.setSelection(bundle.getInt("inCityChoice"));
+             in_districtSpin.setSelection(bundle.getInt("inDisChoice"));
+         }
          if(bundle.containsKey("name")) name_edit.setText(bundle.getString("name"));
          if(bundle.containsKey("gender")) genderRG.check(bundle.getInt("gender"));
          if(bundle.containsKey("cCity")) cCity.setText(bundle.getString("cCity"));
@@ -714,5 +718,10 @@ public class Add_Order extends AppCompatActivity {
             Intent setting_intent = new Intent(Add_Order.this, Setting.class);
             startActivity(setting_intent);
         });
+    }
+    public void onBackPressed() {
+        Intent intent = new Intent(context, Calendar.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }
