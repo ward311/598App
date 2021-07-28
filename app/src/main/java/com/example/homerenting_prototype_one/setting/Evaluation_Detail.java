@@ -69,7 +69,7 @@ public class Evaluation_Detail extends AppCompatActivity {
     public static DatabaseHelper dbHelper;
     Context context = this;
     String TAG = "Evaluation_Detail";
-
+    int commentCount ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,14 +78,15 @@ public class Evaluation_Detail extends AppCompatActivity {
         time_press = findViewById(R.id.timePressed);
         bundle = getIntent().getExtras();
         comment_id = bundle.getString("comment_id");
-        int commentCount = bundle.getInt("commentCount");
+        //int commentCount = bundle.getInt("commentCount");
         double allStar = bundle.getDouble("allStar");
 
         linking();
-        commentCountText.setText("共"+commentCount+"則評論");
         allStarText.setText("評價 "+allStar);
         dbHelper = new DatabaseHelper(this);
         readData();
+        commentCountText.setText("共"+commentCount+"則評論");
+        Log.d(TAG, "commentCount: "+commentCount);
 //        getData();
 
         reply_edit.addTextChangedListener( new TextWatcher() {
@@ -163,6 +164,7 @@ public class Evaluation_Detail extends AppCompatActivity {
         Cursor cursor = db.rawQuery(sql_query, null);
 
         Log.d(TAG,"cursor count:"+cursor.getCount());//GET result from database
+        commentCount = cursor.getCount();
         if(!cursor.moveToNext()){
             cursor.close();
             getData();
