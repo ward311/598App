@@ -130,7 +130,8 @@ public class Evaluation_Detail extends AppCompatActivity {
 
         back_btn.setOnClickListener(v -> {
             Intent myIntent = new Intent(this, Setting_Evaluation.class);
-            this.startActivity(myIntent);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(myIntent);
         });
         globalNav();
     }
@@ -400,7 +401,8 @@ public class Evaluation_Detail extends AppCompatActivity {
         else {
             updateReply();
             Intent myIntent = new Intent(this, Setting_Evaluation.class);
-            this.startActivity(myIntent);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(myIntent);
         }
         super.onBackPressed();
     }
