@@ -85,15 +85,6 @@ public class Add_Order extends AppCompatActivity {
 
         linking();
         defaultInput(false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("提醒");
-        builder.setMessage("請先新增訂單資訊再選擇家具");
-        builder.setPositiveButton("確認", (dialog, id) -> dialog.dismiss());
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
-        dialog.setView(messageView);
-        messageView.setGravity(Gravity.CENTER);
         setSpinner();
         if(getIntent().getExtras() != null){
             bundle = getIntent().getExtras();
