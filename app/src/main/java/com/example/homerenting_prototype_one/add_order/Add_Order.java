@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.add_order;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -68,7 +70,6 @@ public class Add_Order extends AppCompatActivity {
     String gender = "男", furniture_data = "";
     String time;
     Bundle bundle;
-
     GregorianCalendar calendar = new GregorianCalendar();
     OkHttpClient okHttpClient = new OkHttpClient();
 
@@ -83,6 +84,16 @@ public class Add_Order extends AppCompatActivity {
         setContentView(R.layout.activity_add__order);
 
         linking();
+        defaultInput(false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("提醒");
+        builder.setMessage("請先新增訂單資訊再選擇家具");
+        builder.setPositiveButton("確認", (dialog, id) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+        dialog.setView(messageView);
+        messageView.setGravity(Gravity.CENTER);
         setSpinner();
         if(getIntent().getExtras() != null){
             bundle = getIntent().getExtras();
@@ -221,6 +232,131 @@ public class Add_Order extends AppCompatActivity {
 
         globalNav();
 
+    }
+
+    public void defaultInput(boolean status){
+        contact_citySpin.setEnabled(status);
+        contact_districtSpin.setEnabled(status);
+        cAddress.setEnabled(status);
+        phone_edit.setEnabled(status);
+        outCity.setEnabled(status);
+        outDistrict.setEnabled(status);
+        outAddress.setEnabled(status);
+        in_citySpin.setEnabled(status);
+        in_districtSpin.setEnabled(status);
+        editFurnitureBtn.setEnabled(status);
+        editFurnitureBtn.setAlpha(.5f);
+        movingDate_text.setEnabled(status);
+        movingTime_text.setEnabled(status);
+        price_edit.setEnabled(status);
+        worktime_edit.setEnabled(status);
+        notice_edit.setEnabled(status);
+        addOrderBtn.setEnabled(status);
+        addOrderBtn.setAlpha(.5f);
+        name_edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(name_edit.getText().length()!=0)
+                    contact_citySpin.setEnabled(!status);
+                    contact_districtSpin.setEnabled(!status);
+                    cAddress.setEnabled(!status);
+
+            }
+        });
+       cAddress.addTextChangedListener(new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+           }
+
+           @Override
+           public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+           }
+
+           @Override
+           public void afterTextChanged(Editable s) {
+                if(cAddress.getText().length()!=0){
+                    phone_edit.setEnabled(!status);
+                }
+           }
+       });
+        phone_edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(phone_edit.getText().length()!=0){
+                    outCity.setEnabled(!status);
+                    outDistrict.setEnabled(!status);
+                    outAddress.setEnabled(!status);
+                    in_citySpin.setEnabled(!status);
+                    in_districtSpin.setEnabled(!status);
+                    inAddress.setEnabled(!status);
+                }
+            }
+        });
+        inAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(inAddress.getText().length()!=0){
+                    movingDate_text.setEnabled(!status);
+                    movingTime_text.setEnabled(!status);
+                    price_edit.setEnabled(!status);
+                    worktime_edit.setEnabled(!status);
+                    notice_edit.setEnabled(!status);
+                }
+            }
+        });
+        worktime_edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(worktime_edit.getText().length()!=0){
+                        editFurnitureBtn.setEnabled(!status);
+                        editFurnitureBtn.setAlpha(1f);
+                        addOrderBtn.setEnabled(!status);
+                        addOrderBtn.setAlpha(1f);
+                }
+            }
+        });
     }
 
     public void getTextData(){
@@ -465,7 +601,7 @@ public class Add_Order extends AppCompatActivity {
             check = true;
         }
         if(contact_citySpin.getSelectedItem().equals("請選擇縣市")){
-            Toast.makeText(context, "請選擇聯絡地址",Toast.LENGTH_SHORT);
+            Toast.makeText(context, "請選擇聯絡地址",Toast.LENGTH_SHORT).show();
             check = true;
         }
         if(contact_districtSpin.getSelectedItem().equals("請選擇縣市")){
@@ -672,7 +808,7 @@ public class Add_Order extends AppCompatActivity {
         outAddress = findViewById(R.id.out_address);
 
         inCity = findViewById(R.id.in_city);
-        inDistrict = findViewById(R.id.in_district);;
+        inDistrict = findViewById(R.id.in_district);
         inAddress = findViewById(R.id.in_address);
 
         editFurnitureBtn = findViewById(R.id.edit_furniture_btn_AO);

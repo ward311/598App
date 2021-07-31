@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_add__order.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AppData/Local/Android/Sdk/platforms/android-29/data/res/layout-television/user_switching_dialog.xml" value="0.11226034308779011" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>
