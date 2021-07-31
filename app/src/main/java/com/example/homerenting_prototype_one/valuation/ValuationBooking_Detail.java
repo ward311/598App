@@ -665,4 +665,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             startActivity(setting_intent);
         });
     }
+    public void onBackPressed(){
+        Intent intent = new Intent(context, Valuation_Booking.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 }

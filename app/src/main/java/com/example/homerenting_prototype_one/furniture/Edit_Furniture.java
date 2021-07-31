@@ -703,9 +703,7 @@ public class Edit_Furniture extends AppCompatActivity {
         });
     }
     public void onBackPressed(){
-        Intent intent = new Intent(context, Add_Order.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivityForResult(intent, FUNC_ADDORDER);
+        super.onBackPressed();
 
     }
 }

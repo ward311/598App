@@ -58,9 +58,10 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="right"
-                        android:text="樓層 / "
+                        android:text="樓層 "
                         android:textColor="#FFFFFF" />
 
                     <TextView
@@ -68,6 +69,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
+                        android:gravity="center"
                         android:text="房間"
                         android:textColor="@android:color/background_light" />
 
@@ -75,15 +77,16 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="6"
-                        android:text="品項名稱"
-                        android:textColor="#FFFFFF"/>
+                        android:gravity="center"
+                        android:text="      品項名稱"
+                        android:textColor="#FFFFFF" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
-                        android:text="數量"
+                        android:text="  數量"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
                 <ListView

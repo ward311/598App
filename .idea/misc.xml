@@ -4,6 +4,24 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_add__order.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_add__valuation.xml" value="0.19067028985507245" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_edit__furniture.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_evaluation__detail.xml" value="0.19067028985507245" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_furniture__detail.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_furniture__location.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_order__detail.xml" value="0.25" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation.xml" value="0.21" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation__booking.xml" value="0.14" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation__detail.xml" value="0.25" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_booking__detail.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/add_furniture.xml" value="0.25" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/calendar_dialog.xml" value="0.14581231079717458" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/distribution_item.xml" value="0.19067028985507245" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/furniture_detail_btn.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/furniture_item.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/furniture_location_item.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/salary_item.xml" value="0.19067028985507245" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/text_item.xml" value="0.19067028985507245" />
         <entry key="..\:/Users/SH4DY/AppData/Local/Android/Sdk/platforms/android-29/data/res/layout-television/user_switching_dialog.xml" value="0.11226034308779011" />
       </map>
     </option>

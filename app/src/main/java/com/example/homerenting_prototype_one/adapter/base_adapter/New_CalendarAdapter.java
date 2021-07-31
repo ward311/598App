@@ -76,8 +76,11 @@ public class New_CalendarAdapter extends BaseAdapter {
             viewHolder.counter.setTypeface(null, Typeface.NORMAL);
             viewHolder.counter.setBackgroundColor(0x00000000);
             viewHolder.counter.setTextColor(Color.rgb(0,0,0));
+            viewHolder.counter.setOnClickListener(null);
             viewHolder.time.setTextColor(Color.rgb(0,0,0));
+            viewHolder.time.setOnClickListener(null);
             viewHolder.address.setTextColor(Color.rgb(0,0,0));
+            viewHolder.address.setOnClickListener(null);
         }
 
         return view;
