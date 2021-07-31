@@ -14,6 +14,7 @@
             android:layout_gravity="center"
             android:layout_weight="1.5"
             android:gravity="right"
+            android:paddingTop="5dp"
             android:text="1樓 / "
             android:textColor="#000000" />
 
@@ -32,6 +33,7 @@
             android:layout_height="match_parent"
             android:layout_weight="6"
             android:gravity="center"
+            android:paddingTop="15dp"
             android:text="單人沙發" />
 
         <TextView
