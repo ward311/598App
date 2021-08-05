@@ -165,7 +165,7 @@
                     android:id="@+id/cAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="0dp"
+                    android:layout_marginLeft="10dp"
                     android:ems="10"
                     android:hint="路、巷弄門牌"
                     android:inputType="text" />
@@ -298,7 +298,7 @@
                     android:id="@+id/in_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="路、巷弄門牌"
@@ -310,66 +310,6 @@
                 android:layout_height="1dp"
                 android:background="#989898"
                 android:visibility="visible" />
-
-            <LinearLayout
-                android:id="@+id/furniture_LL_AO"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="家具清單"
-                        android:textColor="#000000" />
-
-                </LinearLayout>
-                <!--                <TextView-->
-                <!--                    android:layout_width="0dp"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    android:text="家具清單"-->
-                <!--                    android:textColor="#000000"/>-->
-                <Button
-                    android:id="@+id/edit_furniture_btn_AO"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:background="#FFFFFFFF"
-                    android:gravity="center"
-                    android:text="新增家具"
-                    android:textColor="#FB8527" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#FB8527"
-                        android:text="編號 品項名稱   數量 備註   "
-                        android:textColor="#FFFFFF" />
-
-                    <ListView
-                        android:id="@+id/furniture_list_AO"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="visible" />
-                </LinearLayout>
-            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -472,6 +412,66 @@
                     android:layout_weight="3"
                     android:hint="1"
                     android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/furniture_LL_AO"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="家具清單"
+                        android:textColor="#000000" />
+
+                </LinearLayout>
+                <!--                <TextView-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:text="家具清單"-->
+                <!--                    android:textColor="#000000"/>-->
+                <Button
+                    android:id="@+id/edit_furniture_btn_AO"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:background="#FFFFFFFF"
+                    android:gravity="center"
+                    android:text="新增家具"
+                    android:textColor="#FB8527" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FB8527"
+                        android:text="編號 品項名稱   數量 備註   "
+                        android:textColor="#FFFFFF" />
+
+                    <ListView
+                        android:id="@+id/furniture_list_AO"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

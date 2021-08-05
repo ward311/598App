@@ -72,7 +72,7 @@ public class System_Data extends AppCompatActivity {
     TextView employee_text, car_text;
     Button addEmployee_btn, addCar_btn;
     ImageButton back_btn, valuation_btn, order_btn, calendar_btn, system_btn, setting_btn;
-
+    LinearLayout barLinear;
     private List<String> employee_aList, car_aList;
     private ArrayList<String[]> employees, vehicles;
     private ArrayList<String> new_employee;
@@ -137,6 +137,7 @@ public class System_Data extends AppCompatActivity {
         calendar_btn = findViewById(R.id.calendar_imgBtn);
         system_btn = findViewById(R.id.system_imgBtn);
         setting_btn = findViewById(R.id.setting_imgBtn);
+        barLinear = findViewById(R.id.bar_LinearLayout);
     }
 
     private void init(){

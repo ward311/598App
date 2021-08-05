@@ -190,8 +190,16 @@ public class Evaluation_Detail extends AppCompatActivity {
         runOnUiThread(() -> {
             nameText.setText(name);
             nameTitleText.setText(nameTitle);
-            fromAdressText.setText(fromAddress);
-            toAddressText.setText(toAddress);
+            if(fromAddress.contains("null")){
+                fromAdressText.setText("無填寫");
+            }else{
+                fromAdressText.setText(fromAddress);
+            }
+            if(toAddress.contains("null")){
+                toAddressText.setText("無填寫");
+            }else{
+                toAddressText.setText(toAddress);
+            }
             commentText.setText(commentStr);
             setStars(serviceStars, Math.round(Math.round(service_star)));
             setStars(workStars, Math.round(Math.round(work_star)));

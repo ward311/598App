@@ -327,7 +327,7 @@ public class System_Schedule extends AppCompatActivity {
                             Log.d(TAG, (ii/5000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
                     Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                    getVehicleChip();
+                    //getVehicleChip();
                 } catch (JSONException e) {
                     lock = false;
                     e.printStackTrace();

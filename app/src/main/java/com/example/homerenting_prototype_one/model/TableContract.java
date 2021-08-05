@@ -134,8 +134,8 @@ public class TableContract {
         public static final String COLUMN_NAME_IN_ADDRESS = "address2";
         public static final String COLUMN_NAME_FROM_ELEVATOR = "from_elevator";
         public static final String COLUMN_NAME_TO_ELEVATOR = "to_elevator";
-        public static final String COLUMN_NAME_STORAGE_SPACE = "storage_space";
-        public static final String COLUMN_NAME_CARTON_NUM = "carton_num";
+        //public static final String COLUMN_NAME_STORAGE_SPACE = "storage_space";
+        //public static final String COLUMN_NAME_CARTON_NUM = "carton_num";
         public static final String COLUMN_NAME_PROGRAM = "program";
         public static final String COLUMN_NAME_ORDER_STATUS = "order_status";
 //        public static final String COLUMN_NAME_NEW = "new";
@@ -157,8 +157,8 @@ public class TableContract {
                 COLUMN_NAME_IN_ADDRESS+" VARCHAR(100), "+
                 COLUMN_NAME_FROM_ELEVATOR+" BOOLEAN, "+
                 COLUMN_NAME_TO_ELEVATOR+" BOOLEAN, "+
-                COLUMN_NAME_STORAGE_SPACE+" VARCHAR(10), "+
-                COLUMN_NAME_CARTON_NUM+" INTEGER(10) NOT NULL, "+
+                //COLUMN_NAME_STORAGE_SPACE+" VARCHAR(10), "+
+                //COLUMN_NAME_CARTON_NUM+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_PROGRAM+" VARCHAR(4), "+
                 COLUMN_NAME_ORDER_STATUS+" VARCHAR(11) NOT NULL, "+
 //                COLUMN_NAME_NEW+" BOOLEAN DEFAULT TRUE, "+
@@ -207,7 +207,8 @@ public class TableContract {
         public static final String TABLE_NAME = "choose";
         public static final String COLUMN_NAME_ORDER_ID = "order_id";
         public static final String COLUMN_NAME_COMPANY_ID = "company_id";
-        public static final String COLUMN_PREFER_VALUATION = "prefer_valuation";
+        public static final String COLUMN_PREFER_VALUATION_DATE = "prefer_valuation_date";
+        public static final String COLUMN_PREFER_VALUATION_TIME = "prefer_valuation_time";
         public static final String COLUMN_NAME_VALUATION_DATE = "valuation_date";
         public static final String COLUMN_NAME_VALUATION_TIME = "valuation_time";
         public static final String COLUMN_NAME_MOVING_DATE = "moving_date";
@@ -222,7 +223,8 @@ public class TableContract {
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
                 COLUMN_NAME_ORDER_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_COMPANY_ID+" INTEGER(10) NOT NULL, "+
-                COLUMN_PREFER_VALUATION+" datetime DEFAULT NULL, "+
+                COLUMN_PREFER_VALUATION_DATE+" date DEFAULT NULL, "+
+                COLUMN_PREFER_VALUATION_TIME+" varchar(99) DEFAULT NULL, "+
                 COLUMN_NAME_VALUATION_DATE+" date, "+
                 COLUMN_NAME_VALUATION_TIME+" varchar(99), "+
                 COLUMN_NAME_MOVING_DATE+" datetime, "+

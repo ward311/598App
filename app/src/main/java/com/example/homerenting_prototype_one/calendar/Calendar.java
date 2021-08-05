@@ -162,7 +162,8 @@ public class Calendar extends AppCompatActivity {
                         JSONObject choose = responseArr.getJSONObject(i);
                         String order_id = choose.getString("order_id");
                         String company_id = choose.getString("company_id");
-                        String prefer_valuation = choose.getString("prefer_valuation");
+                        String prefer_valuation_date = choose.getString("prefer_valuation_date");
+                        String prefer_valuation_time = choose.getString("prefer_valuation_time");
                         String valuation_date = choose.getString("valuation_date");
                         String valuation_time = choose.getString("valuation_time");
                         String valuation_status = choose.getString("valuation_status");
@@ -174,10 +175,10 @@ public class Calendar extends AppCompatActivity {
                         String isNew = choose.getString("new");
                         String status = choose.getString("valuation_status");
 
-                        String[] row_data = {order_id, company_id, prefer_valuation,
-                                valuation_date, valuation_time, valuation_status, moving_date,
-                                estimate_fee, accurate_fee, estimate_worktime, confirm,
-                                isNew, status};
+                        String[] row_data = {order_id, company_id, prefer_valuation_date,
+                                prefer_valuation_time, valuation_date, valuation_time,
+                                valuation_status, moving_date, estimate_fee, accurate_fee,
+                                estimate_worktime, confirm, isNew, status};
                         choose_data.add(row_data);
 
                         int success_counter = 0, fail_counter = 0;
@@ -186,7 +187,8 @@ public class Calendar extends AppCompatActivity {
                             ContentValues values = new ContentValues();
                         values.put(TableContract.ChooseTable.COLUMN_NAME_ORDER_ID, order_id);
                         values.put(TableContract.ChooseTable.COLUMN_NAME_COMPANY_ID, company_id);
-                        values.put(TableContract.ChooseTable.COLUMN_PREFER_VALUATION, prefer_valuation);
+                        values.put(TableContract.ChooseTable.COLUMN_PREFER_VALUATION_DATE, prefer_valuation_date);
+                        values.put(TableContract.ChooseTable.COLUMN_PREFER_VALUATION_TIME, prefer_valuation_time);
                         values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_DATE, valuation_date);
                         values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_TIME, valuation_time);
                         values.put(TableContract.ChooseTable.COLUMN_NAME_MOVING_DATE, moving_date);
@@ -653,8 +655,8 @@ public class Calendar extends AppCompatActivity {
                         values.put(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE, order.getString(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM, order.getString(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM));
+                        //values.put(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE, order.getString(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE));
+                        //values.put(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM, order.getString(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_PROGRAM, order.getString(TableContract.OrdersTable.COLUMN_NAME_PROGRAM));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS, order.getString(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_AUTO, order.getString(TableContract.OrdersTable.COLUMN_NAME_AUTO));

@@ -37,10 +37,11 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:src="@drawable/logo_long"
-            android:background="#FFFFFF"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"/>
+            android:background="#FFFFFF"
+            android:src="@drawable/logo_long" />
     </LinearLayout>
 <!--    <ScrollView-->
 <!--        android:layout_width="fill_parent"-->

@@ -361,7 +361,13 @@ public class Setting_Service extends AppCompatActivity {
                 newItem_dialog.setView(container);
                 newItem_dialog.setPositiveButton("確認", (dialog, which) -> {
                     String newItem = newItem_edit.getText().toString();
-                    addChip(chipGroup, newItem, true);
+                    if(newItem.isEmpty()){
+                        newItem_dialog.create().dismiss();
+                        Toast.makeText(context, "欄位不得為空", Toast.LENGTH_LONG).show();
+                    }else{
+                        addChip(chipGroup, newItem, true);
+                    }
+
                 });
                 newItem_dialog.setNegativeButton("取消", null);
 

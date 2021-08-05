@@ -324,6 +324,8 @@ public class Add_Order extends AppCompatActivity {
                     price_edit.setEnabled(!status);
                     worktime_edit.setEnabled(!status);
                     notice_edit.setEnabled(!status);
+                    editFurnitureBtn.setEnabled(!status);
+                    editFurnitureBtn.setAlpha(1f);
                 }
             }
         });
@@ -341,8 +343,7 @@ public class Add_Order extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(worktime_edit.getText().length()!=0){
-                        editFurnitureBtn.setEnabled(!status);
-                        editFurnitureBtn.setAlpha(1f);
+
                         addOrderBtn.setEnabled(!status);
                         addOrderBtn.setAlpha(1f);
                 }

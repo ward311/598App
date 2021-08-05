@@ -6,40 +6,43 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.homerenting_prototype_one.R;
 
 public class MainActivity extends AppCompatActivity {
-    public ImageView btn;
-
-    Context context;
+    Animation anim;
+    ImageView imageView;
+    TextView initialText;
+    Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        LinearLayout hone_page = findViewById(R.id.homePage_Linear_M);
-        context = MainActivity.this;
-
-        hone_page.setOnClickListener(new View.OnClickListener() {
+        imageView=(ImageView)findViewById(R.id.logo_btn_M); // Declare an imageView to show the animation.
+        initialText = findViewById(R.id.welcomeText);
+        anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in); // Create the animation.
+        anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onClick(View v) {
-                Intent login_intent = new Intent(context, New_Login.class);
-                startActivity(login_intent);
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Intent login = new Intent(context, Login.class);
+                startActivity(login);
+                // HomeActivity.class is the activity to go after showing the splash screen.
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
             }
         });
-//        btn = findViewById(R.id.logo_btn);
-//        //btn.setImageResource(R.drawable.master_logo);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        imageView.startAnimation(anim);
+        initialText.startAnimation(anim);
     }
-//    public void enter(View view){
-////        Intent intent = new Intent(this,Activity_login.class);
-////        startActivity(intent);
-//    }
 }

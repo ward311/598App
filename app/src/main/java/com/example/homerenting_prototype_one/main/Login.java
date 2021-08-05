@@ -198,5 +198,9 @@ public class Login extends AppCompatActivity {
         });
 
     }
-
+    public void onBackPressed(){
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startActivity(startMain);
+    }
 }

@@ -20,13 +20,15 @@
         <activity android:name=".ChangePassword" android:screenOrientation="nosensor"/>
         <!-- Main -->
         <activity android:name=".main.New_Login" android:screenOrientation="nosensor"/>
-        <activity android:name=".main.MainActivity" android:screenOrientation="nosensor"/>
-        <activity android:name=".main.Login" android:screenOrientation="nosensor">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".main.MainActivity" android:screenOrientation="nosensor">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+        <activity android:name=".main.Login" android:screenOrientation="nosensor">
         </activity>
         <activity android:name=".calendar.Calendar" android:screenOrientation="nosensor"/> <!-- Order -->
         <activity android:name=".order.Order" android:screenOrientation="nosensor"/>

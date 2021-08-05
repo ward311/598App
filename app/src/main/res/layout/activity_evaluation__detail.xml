@@ -94,9 +94,10 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="horizontal">
@@ -107,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:text="唐文心"
                     android:textColor="#19B0ED"
-                    android:textSize="20sp" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/nameTitle_ED"
@@ -116,83 +117,99 @@
                     android:layout_marginLeft="10dp"
                     android:text="小姐" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
                     android:text="連絡電話"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/phone_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="0933669877" />
+                    android:text="0933669877"
+                    android:textSize="14sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="搬出地址"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/fromAddress_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="高雄市三民區建國二路15號" />
+                    android:text="高雄市三民區建國二路15號"
+                    android:textSize="14sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="搬入地址"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/toAddress_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="高雄市大社區中山路5號" />
+                    android:text="高雄市大社區中山路5號"
+                    android:textSize="14sp" />
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#989898"/>
+                android:background="#989898" />
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="服務品質"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="服務品質"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:id="@+id/serviceStar_LL_ED"
@@ -237,19 +254,22 @@
                         android:src="@drawable/star" />
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="工作態度"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="工作態度"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:id="@+id/workStar_LL_ED"
@@ -290,19 +310,22 @@
                         android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="價     格"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="價     格"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:id="@+id/priceStar_LL_ED"
@@ -406,14 +429,16 @@
                     android:layout_weight="1"
                     android:gravity="top"
                     android:text="顧客評價"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/comment_ED"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……" />
+                    android:text="巨力搬家公司服務完善，價格合理，工人們都很小心對待家具，能夠快速地把家具搬到指定地點，且還有提供倉儲服務，解決我們的煩惱……"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout

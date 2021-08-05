@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_LL_FI"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -10,7 +10,6 @@
         android:id="@+id/furniture_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="text"

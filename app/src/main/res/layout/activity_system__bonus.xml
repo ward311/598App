@@ -39,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
+            android:gravity="center|center_horizontal"
             android:orientation="vertical">
 
             <TextView
@@ -49,28 +50,31 @@
                 android:textColor="#FFFFFF"
                 android:textSize="30sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="top">
+            android:gravity="top"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/doneOrder_text_SB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="完成150筆訂單"
                 android:layout_gravity="top|right"
-                android:textSize="20sp"
-                android:textColor="#FFFFFF"/>
+                android:text="完成150筆訂單"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+
             <TextView
                 android:id="@+id/paidOrder_text_SB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="已分潤140筆工單"
                 android:layout_gravity="right"
-                android:textSize="20sp"
-                android:textColor="#FFFFFF"/>
+                android:text="已分潤140筆工單"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout

@@ -123,9 +123,13 @@ public class Setting_Discount extends AppCompatActivity {
 
             Log.d(TAG, "size of delete discount: "+delete_discounts.size());
             Log.d(TAG, "delete discount: "+delete_discounts);
+            if(checkShortDiscount() && checkLongDiscount()){
+                updateDiscount();
+                finish();
+            }else{
+                Toast.makeText(context, "優惠不得低於九折",Toast.LENGTH_LONG).show();
+            }
 
-            updateDiscount();
-            finish();
         });
 
 
@@ -250,7 +254,7 @@ public class Setting_Discount extends AppCompatActivity {
                 LocalDate start = LocalDate.of(Integer.parseInt(getYear(startDate)), Integer.parseInt(getMonth(startDate)), Integer.parseInt(getDay(startDate)));
                 LocalDate end = LocalDate.of(Integer.parseInt(getYear(endDate)), Integer.parseInt(getMonth(endDate)), Integer.parseInt(getDay(endDate)));
 
-                if((start.isBefore(disableTime)||start.isEqual(LocalDate.now())) && end.isAfter(disableTime) && !disable){
+                if(start.isBefore(disableTime) && end.isAfter(disableTime) && !disable){
                     runOnUiThread(() -> switcher.setChecked(true));
 
                     Log.d(TAG, start+" < "+disableTime+" < "+end);
@@ -792,7 +796,34 @@ public class Setting_Discount extends AppCompatActivity {
             }
         }
     }
+    private boolean checkShortDiscount(){
+            TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
+            Switch shortSw = (Switch) shortTermItem.getChildAt(SWITCH_INDEX);
+            EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
 
+            if(shortSw.isChecked()) {
+                if (Integer.parseInt(shortEdit.getText().toString())>=90) {
+                    return true;
+                }
+            }else{
+                return true;
+            }
+            return false;
+    }
+    private boolean checkLongDiscount(){
+            TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
+            Switch longSw = (Switch) longTermItem.getChildAt(SWITCH_INDEX);;
+            EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
+            if(longSw.isChecked()) {
+                if (Integer.parseInt(longEdit.getText().toString())>=90) {
+                    return true;
+                }
+            }else{
+                return true;
+            }
+            return false;
+
+    }
     private void updateDiscount(){
         String function_name = "modify_discount";
         RequestBody body = new FormBody.Builder()

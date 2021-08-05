@@ -599,9 +599,9 @@ public class Edit_Furniture extends AppCompatActivity {
     }
     private void orderFurniture(){
 
+        showBundleData();
         bundle.putString("furniture_data", Arrays.deepToString(furniture_data));
         Log.d(TAG, "furniture_data of add_order: "+ Arrays.deepToString(furniture_data));
-        showBundleData();
         Intent intent = new Intent();
         intent.putExtras(bundle);
         intent.setClass(context, Add_Order.class);
