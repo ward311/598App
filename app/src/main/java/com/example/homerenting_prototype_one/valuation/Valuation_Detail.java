@@ -255,7 +255,7 @@ public class Valuation_Detail extends AppCompatActivity {
                 public void onResponse(@NotNull Call call1, @NotNull Response response) throws IOException {
                     final String responseData = response.body().string();
                         runOnUiThread(() -> {
-                            if(responseData.equals("success")) Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
+                            if(responseData.contains("success")) Toast.makeText(context, "線上估價成功", Toast.LENGTH_LONG).show();
                             else Toast.makeText(context, "上傳失敗", Toast.LENGTH_LONG).show();
                         });
                     Log.d(TAG, "check_price_btn, responseData: " + responseData);

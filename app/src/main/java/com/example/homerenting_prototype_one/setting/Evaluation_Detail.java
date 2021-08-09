@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Time;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -70,6 +71,7 @@ public class Evaluation_Detail extends AppCompatActivity {
     Context context = this;
     String TAG = "Evaluation_Detail";
     int commentCount ;
+    double serviceStar ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,10 +84,13 @@ public class Evaluation_Detail extends AppCompatActivity {
         double allStar = bundle.getDouble("allStar");
 
         linking();
-        allStarText.setText("評價 "+allStar);
+
         dbHelper = new DatabaseHelper(this);
         readData();
+        DecimalFormat df = new DecimalFormat("##.0");
+        serviceStar = Double.parseDouble(df.format(serviceStar));
         commentCountText.setText("共"+commentCount+"則評論");
+        allStarText.setText("評價 "+serviceStar);
         Log.d(TAG, "commentCount: "+commentCount);
 //        getData();
 
@@ -186,7 +191,7 @@ public class Evaluation_Detail extends AppCompatActivity {
         double service_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY));
         double work_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE));
         double price_star = cursor.getDouble(cursor.getColumnIndexOrThrow(TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE));
-
+        serviceStar = (service_star + work_star + price_star)/3.0;
         runOnUiThread(() -> {
             nameText.setText(name);
             nameTitleText.setText(nameTitle);
