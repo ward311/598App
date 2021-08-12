@@ -85,7 +85,7 @@ public class Setting_Evaluation extends AppCompatActivity {
         stars = new ArrayList<>();
         comments = new ArrayList<>();
 
-        //getData();
+        getData(); /* remote DataBase fetch Data*/
 
         LinearLayout first_evaluation = findViewById(R.id.first_evaluation_layout);
         first_evaluation.setOnClickListener(v -> {
