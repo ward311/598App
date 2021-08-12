@@ -6,74 +6,170 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:icon="@drawable/home_logo"
-        android:hardwareAccelerated="true"
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/home_logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@drawable/home_logo"
         android:supportsRtl="true"
         android:textColor="@color/text_chip_state_list"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:targetApi="n">
-        <activity android:name=".ChangePassword" android:screenOrientation="nosensor"/>
-        <!-- Main -->
-        <activity android:name=".main.New_Login" android:screenOrientation="nosensor"/>
+        <activity
+            android:name=".Signature_Pad"
+            android:exported="true" />
+        <activity
+            android:name=".ChangePassword"
+            android:screenOrientation="nosensor" /> <!-- Main -->
+        <activity
+            android:name=".main.New_Login"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".main.MainActivity"
+            android:screenOrientation="nosensor">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <activity android:name=".main.MainActivity" android:screenOrientation="nosensor">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
-        <activity android:name=".main.Login" android:screenOrientation="nosensor">
-        </activity>
-        <activity android:name=".calendar.Calendar" android:screenOrientation="nosensor"/> <!-- Order -->
-        <activity android:name=".order.Order" android:screenOrientation="nosensor"/>
-        <activity android:name=".order.Order_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".order.Order_Booking" android:screenOrientation="nosensor"/>
-        <activity android:name=".order.Order_Today" android:screenOrientation="nosensor"/>
-        <activity android:name=".order.Today_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".order.Order_Cancel" android:screenOrientation="nosensor"/> <!-- Valuation -->
-        <activity android:name=".valuation.Valuation" android:screenOrientation="nosensor"/>
-        <activity android:name=".valuation.Valuation_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".valuation.Valuation_Booking" android:screenOrientation="nosensor"/>
-        <activity android:name=".valuation.ValuationBooking_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".valuation.Valuation_MatchMaking" android:screenOrientation="nosensor"/>
-        <activity android:name=".valuation.MatchMaking_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".valuation.Valuation_Cancel" android:screenOrientation="nosensor"/>
-        <activity android:name=".valuation.ValuationCancel_Detail" android:screenOrientation="nosensor"/> <!-- Furniture -->
-        <activity android:name=".furniture.Edit_Furniture" android:screenOrientation="nosensor"/>
-        <activity android:name=".furniture.Furniture_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".furniture.Furniture_Location" android:screenOrientation="nosensor"/> <!-- Schedule -->
-        <activity android:name=".schedule.New_Schedule_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".schedule.Schedule_Detail" android:screenOrientation="nosensor"/> <!-- Add Order -->
-        <activity android:name=".add_order.Add_Order" android:screenOrientation="nosensor"/>
-        <activity android:name=".add_order.Add_Valuation" android:screenOrientation="nosensor"/> <!-- System -->
-        <activity android:name=".system.System" android:screenOrientation="nosensor"/>
-        <activity android:name=".system.System_Data" android:screenOrientation="nosensor"/>
-        <activity android:name=".system.System_Vacation" android:screenOrientation="nosensor"/>
-        <activity android:name=".system.System_Schedule" android:screenOrientation="nosensor"/> <!-- Bouns -->
-        <activity android:name=".system.System_Bonus" android:screenOrientation="nosensor"/>
-        <activity android:name=".bouns.Bonus_View" android:screenOrientation="nosensor"/>
-        <activity android:name=".bouns.Bonus_Distribution" android:screenOrientation="nosensor"/>
-        <activity android:name=".bouns.Distribution_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".bouns.Bonus_List" android:screenOrientation="nosensor"/>
-        <activity android:name=".bouns.Bonus_List_Detail" android:screenOrientation="nosensor"/> <!-- Setting -->
-        <activity android:name=".setting.Setting" android:screenOrientation="nosensor"/>
-        <activity android:name=".setting.Setting_Information" android:screenOrientation="nosensor"/>
-        <activity android:name=".setting.Setting_Service" android:screenOrientation="nosensor"/>
-        <activity android:name=".setting.Setting_Discount" android:screenOrientation="nosensor"/>
-        <activity android:name=".setting.Setting_Evaluation" android:screenOrientation="nosensor"/>
-        <activity android:name=".setting.Evaluation_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".setting.Setting_Announcement" android:screenOrientation="nosensor"/>
-        <activity android:name=".setting.Setting_Record" android:screenOrientation="nosensor"/>
-        <activity android:name=".setting.Record_Detail" android:screenOrientation="nosensor"/>
-        <activity android:name=".Register_Company" android:screenOrientation="nosensor"/>
-        <activity android:name=".ForgetPassword" android:screenOrientation="nosensor"/>
-        <activity android:name=".Register" android:screenOrientation="nosensor"/>
+        <activity
+            android:name=".main.Login"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".calendar.Calendar"
+            android:screenOrientation="nosensor" /> <!-- Order -->
+        <activity
+            android:name=".order.Order"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".order.Order_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".order.Order_Booking"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".order.Order_Today"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".order.Today_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".order.Order_Cancel"
+            android:screenOrientation="nosensor" /> <!-- Valuation -->
+        <activity
+            android:name=".valuation.Valuation"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".valuation.Valuation_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".valuation.Valuation_Booking"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".valuation.ValuationBooking_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".valuation.Valuation_MatchMaking"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".valuation.MatchMaking_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".valuation.Valuation_Cancel"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".valuation.ValuationCancel_Detail"
+            android:screenOrientation="nosensor" /> <!-- Furniture -->
+        <activity
+            android:name=".furniture.Edit_Furniture"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".furniture.Furniture_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".furniture.Furniture_Location"
+            android:screenOrientation="nosensor" /> <!-- Schedule -->
+        <activity
+            android:name=".schedule.New_Schedule_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".schedule.Schedule_Detail"
+            android:screenOrientation="nosensor" /> <!-- Add Order -->
+        <activity
+            android:name=".add_order.Add_Order"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".add_order.Add_Valuation"
+            android:screenOrientation="nosensor" /> <!-- System -->
+        <activity
+            android:name=".system.System"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".system.System_Data"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".system.System_Vacation"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".system.System_Schedule"
+            android:screenOrientation="nosensor" /> <!-- Bouns -->
+        <activity
+            android:name=".system.System_Bonus"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".bouns.Bonus_View"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".bouns.Bonus_Distribution"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".bouns.Distribution_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".bouns.Bonus_List"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".bouns.Bonus_List_Detail"
+            android:screenOrientation="nosensor" /> <!-- Setting -->
+        <activity
+            android:name=".setting.Setting"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Setting_Information"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Setting_Service"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Setting_Discount"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Setting_Evaluation"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Evaluation_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Setting_Announcement"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Setting_Record"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Record_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".Register_Company"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".ForgetPassword"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".Register"
+            android:screenOrientation="nosensor" />
     </application>
 
 </manifest>

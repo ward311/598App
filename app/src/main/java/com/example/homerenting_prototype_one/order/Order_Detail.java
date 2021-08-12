@@ -180,7 +180,7 @@ public class Order_Detail extends AppCompatActivity {
 
         call_btn.setOnClickListener(v -> {
             Intent call_intent = new Intent(Intent.ACTION_DIAL);
-            call_intent.setData(Uri.parse("tel:0933669877"));
+            call_intent.setData(Uri.parse("tel:"+phone));
             startActivity(call_intent);
         });
 
@@ -338,7 +338,9 @@ public class Order_Detail extends AppCompatActivity {
                     if(!responseData.equals("null")) e.printStackTrace();
                 }
 
-                runOnUiThread(() -> staffText.setText(staff));
+                runOnUiThread(() ->{
+                    staffText.setText(staff);
+                } );
             }
         });
     }

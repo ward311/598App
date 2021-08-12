@@ -650,20 +650,20 @@ public class TableContract {
 
     }
     public static class FurnitureTable implements BaseColumns{
-        public static final String TABLE_NAME = "furniture01";
-        public static final String COLUMN_NAME_NO = "no";
+        public static final String TABLE_NAME = "furniture";
+        //public static final String COLUMN_NAME_NO = "no";
         public static final String COLUMN_NAME_FURNITURE_ID = "furniture_id";
         public static final String COLUMN_NAME_SPACE_TYPE = "space_type";
         public static final String COLUMN_NAME_FURNITURE_NAME = "furniture_name";
         public static final String COLUMN_NAME_IMG = "img";
         public static final String SQL_CREATE_FURNITURE = ""+
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ( "+
-                COLUMN_NAME_NO+" INTEGER(10) NOT NULL, "+
+                //COLUMN_NAME_NO+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_FURNITURE_ID+" INTEGER(10) NOT NULL, "+
                 COLUMN_NAME_SPACE_TYPE+ " VARCHAR(99), "+
                 COLUMN_NAME_FURNITURE_NAME+" VARCHAR(99), "+
                 COLUMN_NAME_IMG+" VARCHAR(99), "+
-                "PRIMARY KEY (`no`) "+");";
+                "PRIMARY KEY (`furniture_id`) "+");";
         public static final String SQL_DELETE_FURNITURE =
                 "DROP TABLE IF EXISTS "+TABLE_NAME;
     }

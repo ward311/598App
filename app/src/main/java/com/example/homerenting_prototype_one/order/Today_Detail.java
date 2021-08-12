@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +27,11 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.setting.Setting;
+import com.example.homerenting_prototype_one.Signature_Pad;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.valuation.Valuation;
-import com.example.homerenting_prototype_one.valuation.Valuation_Booking;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -43,7 +42,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -72,7 +70,7 @@ public class Today_Detail extends AppCompatActivity {
 
     String order_id;
 
-    Button furnitureBtn, changePriceBtn, check_btn;
+    Button furnitureBtn, changePriceBtn, check_btn, sign_btn;
 
     boolean change = false, check = false, result = false;
 
@@ -228,6 +226,18 @@ public class Today_Detail extends AppCompatActivity {
             Intent call_intent = new Intent(Intent.ACTION_DIAL);
             call_intent.setData(Uri.parse("tel:"+phone));
             startActivity(call_intent);
+        });
+
+        sign_btn.setOnClickListener(v -> {
+            fee = finalPriceText.getText().toString();
+            memo = memoEdit.getText().toString();
+            Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+            Intent sign_intent = new Intent(context, Signature_Pad.class);
+            bundle.putString("order_id", order_id);
+            bundle.putString("fee", fee);
+            bundle.putString("memo", memo);
+            sign_intent.putExtras(bundle);
+            startActivity(sign_intent);
         });
 
         globalNav();
@@ -415,6 +425,7 @@ public class Today_Detail extends AppCompatActivity {
         changePriceText = findViewById(R.id.changePrice_OTD);
         memoEdit = findViewById(R.id.PS_OTD);
         check_btn = findViewById(R.id.check_btn_OTD);
+        sign_btn = findViewById(R.id.sign_btn);
     }
 
     private void setFurniture_btn(){

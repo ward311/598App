@@ -238,7 +238,7 @@ public class Order extends AppCompatActivity {
                     db = dbHelper.getWritableDatabase();
                     ContentValues values = new ContentValues();
                     try {
-                        values.put(TableContract.FurnitureTable.COLUMN_NAME_NO, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_NO));
+                        //values.put(TableContract.FurnitureTable.COLUMN_NAME_NO, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_NO));
                         values.put(TableContract.FurnitureTable.COLUMN_NAME_FURNITURE_ID, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_FURNITURE_ID));
                         values.put(TableContract.FurnitureTable.COLUMN_NAME_SPACE_TYPE, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_SPACE_TYPE));
                         values.put(TableContract.FurnitureTable.COLUMN_NAME_FURNITURE_NAME, furniture.getString(TableContract.FurnitureTable.COLUMN_NAME_FURNITURE_NAME));
