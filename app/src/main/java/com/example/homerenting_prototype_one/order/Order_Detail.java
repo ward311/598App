@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -30,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -44,6 +46,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getDate
 import static com.example.homerenting_prototype_one.show.global_function.getDay;
 import static com.example.homerenting_prototype_one.show.global_function.getMonth;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getToday;
 import static com.example.homerenting_prototype_one.show.global_function.getYear;
 
 public class Order_Detail extends AppCompatActivity {
@@ -56,7 +59,7 @@ public class Order_Detail extends AppCompatActivity {
     String fromAddress, toAddress, remainder, car, staff, worktime, fee, memo;
     String order_id;
 
-    Button call_btn, furniture_btn, check_btn;
+    Button call_btn, furniture_btn, check_btn, goOrderDetail;
 
     Bundle bundle;
 
@@ -77,7 +80,11 @@ public class Order_Detail extends AppCompatActivity {
             call_btn.setVisibility(View.GONE);
             check_btn.setVisibility(View.GONE);
         }
-
+        if(!carText.getText().toString().equals("無填寫需求車輛")||!staffText.getText().toString().equals("尚未安排人員")){
+            check_btn.setText("更新派遣");
+        }else{
+            check_btn.setText("人車派遣");
+        }
         //傳值
         String function_name = "order_detail";
         RequestBody body = new FormBody.Builder()
@@ -182,6 +189,31 @@ public class Order_Detail extends AppCompatActivity {
             Intent call_intent = new Intent(Intent.ACTION_DIAL);
             call_intent.setData(Uri.parse("tel:"+phone));
             startActivity(call_intent);
+        });
+
+        goOrderDetail.setOnClickListener(v -> {
+            if(carText.getText().toString().equals("無填寫需求車輛")||staffText.getText().toString().equals("尚未安排人員")){
+                new AlertDialog.Builder(context)
+                        .setTitle("尚未派遣人車，是否前往派遣？")
+                        .setPositiveButton("前往派遣", (dialog, which) -> {
+                            Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("order_id", order_id);
+                            bundle.putString("order_detail", "true");
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("取消",null)
+                        .create()
+                        .show();
+            }else{
+                bundle.putString("order_id", order_id);
+                Intent order_detail = new Intent(this, Today_Detail.class);
+                order_detail.putExtras(bundle);
+                startActivity(order_detail);
+                this.finish();
+            }
+
         });
 
         globalNav();
@@ -361,6 +393,7 @@ public class Order_Detail extends AppCompatActivity {
         memoText = findViewById(R.id.PS_OD);
         check_btn = findViewById(R.id.check_order_btn);
         furniture_btn = findViewById(R.id.furniture_btn_OD);
+        goOrderDetail = findViewById(R.id.goToDetail_btn);
     }
 
     private void setFurniture_btn(int auto){
