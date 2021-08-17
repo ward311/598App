@@ -194,8 +194,6 @@ public class System_Schedule extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getOrders(year, month), 3000);
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -297,8 +295,6 @@ public class System_Schedule extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getStaffChip(), 3000);
             }
 
             @Override
@@ -365,8 +361,6 @@ public class System_Schedule extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getVehicleChip(), 3000);
             }
 
             @Override
@@ -492,8 +486,6 @@ public class System_Schedule extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getOrder(date), 3000);
             }
 
             @Override
@@ -597,8 +589,6 @@ public class System_Schedule extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getStaffVacation(date), 3000);
             }
 
             @Override
@@ -663,8 +653,6 @@ public class System_Schedule extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getVehicleVacation(date), 3000);
             }
 
             @Override
