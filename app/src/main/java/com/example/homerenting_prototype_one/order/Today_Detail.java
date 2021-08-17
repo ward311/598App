@@ -66,7 +66,7 @@ public class Today_Detail extends AppCompatActivity {
     EditText changePriceText, memoEdit;
 
     String name, gender, phone, contact_address, movingTime, fromAddress, toAddress;
-    String remainder, car, staff, worktime, fee, memo, status;
+    String remainder, car, staff, worktime, fee, memo, status, isWeb;
 
     String order_id;
 
@@ -153,7 +153,16 @@ public class Today_Detail extends AppCompatActivity {
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
                     status = order.getString("order_status");
+                    isWeb = order.getString("is_web");
+                    if(isWeb.equals("0")){
+                        runOnUiThread(()-> {
+                            check_btn.setVisibility(View.GONE);
+                            sign_btn.setX(500);
+                        });
 
+                    }else{
+                        runOnUiThread(()-> check_btn.setVisibility(View.VISIBLE));
+                    }
                     //顯示資料
                     runOnUiThread(() -> {
                         nameText.setText(name);

@@ -3,6 +3,7 @@ package com.example.homerenting_prototype_one.setting;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -115,6 +116,8 @@ public class Setting_Record extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getOrder(), 3000);
             }
 
             @Override

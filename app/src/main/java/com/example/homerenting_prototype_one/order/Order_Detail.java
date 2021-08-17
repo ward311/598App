@@ -56,7 +56,7 @@ public class Order_Detail extends AppCompatActivity {
     TextView remainderText, carText, staffText, worktimeText, feeText, memoText;
 
     String name, gender, phone, contact_address, movingDatetime, movingTime;
-    String fromAddress, toAddress, remainder, car, staff, worktime, fee, memo;
+    String fromAddress, toAddress, remainder, car, staff, worktime, fee, memo, status;
     String order_id;
 
     Button call_btn, furniture_btn, check_btn, goOrderDetail;
@@ -79,11 +79,7 @@ public class Order_Detail extends AppCompatActivity {
         if(bundle.getBoolean("btn")){
             call_btn.setVisibility(View.GONE);
             check_btn.setVisibility(View.GONE);
-        }
-        if(!carText.getText().toString().equals("無填寫需求車輛")||!staffText.getText().toString().equals("尚未安排人員")){
-            check_btn.setText("更新派遣");
-        }else{
-            check_btn.setText("人車派遣");
+            goOrderDetail.setVisibility(View.GONE);
         }
         //傳值
         String function_name = "order_detail";
@@ -147,6 +143,13 @@ public class Order_Detail extends AppCompatActivity {
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
 
+                    status = order.getString("order_status");
+                    if(status.equals("paid")||status.equals("done")||status.equals("cancel")){
+                        runOnUiThread(() ->{
+                            goOrderDetail.setVisibility(View.GONE);
+                            check_btn.setVisibility(View.GONE);
+                        });
+                    }
                     //顯示資料
                     runOnUiThread(() -> {
                         nameText.setText(name);

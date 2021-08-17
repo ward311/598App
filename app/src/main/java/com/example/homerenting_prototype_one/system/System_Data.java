@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -232,6 +233,8 @@ public class System_Data extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getStaffData(), 3000);
             }
 
             @Override
@@ -322,6 +325,8 @@ public class System_Data extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getVehicleData(), 3000);
             }
 
             @Override

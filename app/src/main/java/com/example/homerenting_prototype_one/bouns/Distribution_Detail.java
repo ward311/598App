@@ -201,6 +201,8 @@ public class Distribution_Detail extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getStaffData(), 3000);
             }
 
             @Override
@@ -419,6 +421,8 @@ public class Distribution_Detail extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getCompanyDetail(), 3000);
             }
 
             @Override

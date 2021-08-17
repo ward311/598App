@@ -3,6 +3,7 @@ package com.example.homerenting_prototype_one.valuation;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -179,8 +180,10 @@ public class Valuation extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 runOnUiThread(() -> {
                     //在app畫面上呈現錯誤訊息
-                    Toast.makeText(Valuation.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Valuation.this, "連線失敗", Toast.LENGTH_LONG).show();
                 });
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getValuation(), 3000);
             }
 
             //連線成功

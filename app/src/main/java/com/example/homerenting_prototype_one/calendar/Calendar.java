@@ -11,6 +11,7 @@ import android.graphics.drawable.InsetDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,7 +116,14 @@ public class Calendar extends AppCompatActivity {
         onBackPressed();
 
         dbHelper = new DatabaseHelper(this);
-        new AsyncRetrieve().execute();
+        runOnUiThread(()->setmCalendar());
+        Handler handler = new Handler();
+        handler.postDelayed(() -> new AsyncRetrieve().execute(), 3000);
+        handler.postDelayed(() -> {
+            getAllMemberData();
+            getChoose();
+        }, 4500);
+
         //getAllOrdersData();
         //getAllMemberData();
         globalNav();
@@ -407,7 +415,7 @@ public class Calendar extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 final AlertDialog alertDialog = dialog.create();
-                if(!alertDialog.isShowing()){
+                if(alertDialog != null){
                     alertDialog.show();
                 }
                 cancel_btn.setOnClickListener(v -> alertDialog.dismiss());
@@ -445,12 +453,14 @@ public class Calendar extends AppCompatActivity {
                 Intent intent = new Intent(context, Add_Valuation.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                finish();
             });
 
             addO_btn.setOnClickListener(v -> {
                 Intent intent = new Intent(context, Add_Order.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                finish();
             });
 
 
@@ -613,6 +623,10 @@ public class Calendar extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+
+                Handler handler = new Handler();
+                handler.postDelayed(() -> new AsyncRetrieve().execute(), 3000);
+
             }
 
             @Override
@@ -661,6 +675,7 @@ public class Calendar extends AppCompatActivity {
                         values.put(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS, order.getString(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_AUTO, order.getString(TableContract.OrdersTable.COLUMN_NAME_AUTO));
                         values.put(TableContract.OrdersTable.COLUMN_NAME_LAST_UPDATE, order.getString(TableContract.OrdersTable.COLUMN_NAME_LAST_UPDATE));
+                        values.put(TableContract.OrdersTable.COLUMN_NAME_IS_WEB, order.getString(TableContract.OrdersTable.COLUMN_NAME_IS_WEB));
 //                        Log.d(TAG, (i+1)+". "+values.toString())
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -681,13 +696,13 @@ public class Calendar extends AppCompatActivity {
                         if(e.getMessage().contains("no such table")) break;
                         if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
                             String selection = TableContract.OrdersTable.COLUMN_NAME_ORDER_ID+" = ?";
-                            String[] seletctionArgs = {values.getAsString(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID)};
+                            String[] selectionArgs = {values.getAsString(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID)};
 
                             int count = db.update(
                                     TableContract.OrdersTable.TABLE_NAME,
                                     values,
                                     selection,
-                                    seletctionArgs
+                                    selectionArgs
                             );
                             if(count != -1) success_counter = success_counter + 1;
                             else fail_counter = fail_counter + 1;
@@ -901,11 +916,14 @@ public class Calendar extends AppCompatActivity {
     public class AsyncRetrieve extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... Void) {
-            setmCalendar();
             getAllOrdersData();
-            getAllMemberData();
-            getChoose();
             return null;
+        }
+    }
+    protected void onDestroy(){
+        super.onDestroy();
+        if (dialog != null) {
+            dialog.create().dismiss();
         }
     }
 }

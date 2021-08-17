@@ -662,8 +662,11 @@ public class Edit_Furniture extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                runOnUiThread(() -> Toast.makeText(context, "修改家具完成", Toast.LENGTH_LONG).show());
                 Log.d(TAG, "responseData of modify_furniture: " + responseData);
+                    if(responseData.contains("success"))
+                        runOnUiThread(() ->Toast.makeText(context, "修改家具成功", Toast.LENGTH_LONG).show());
+                    else
+                        runOnUiThread(() ->Toast.makeText(context, "修改家具失敗", Toast.LENGTH_LONG).show());
             }
         });
     }

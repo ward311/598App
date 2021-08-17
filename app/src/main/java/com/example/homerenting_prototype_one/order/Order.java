@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -176,7 +177,7 @@ public class Order extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "onRusume");
+        Log.d(TAG, "onResume");
         super.onResume();
         init();
         new AsyncRetrieve().execute();
@@ -310,6 +311,8 @@ public class Order extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getOrder(), 3000);
             }
 
             //連線成功

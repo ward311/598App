@@ -848,12 +848,13 @@ public class Setting_Discount extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
+                runOnUiThread(()->Toast.makeText(context, "優惠修改完成", Toast.LENGTH_LONG).show());
                 Log.d(TAG, "responseData of update_discount: " + responseData);
             }
         });

@@ -142,6 +142,7 @@ public class TableContract {
         public static final String COLUMN_NAME_AUTO = "auto";
         public static final String COLUMN_NAME_LAST_UPDATE = "last_update";
         public static final String COLUMN_NAME_SIGNATURE = "signature";
+        public static final String COLUMN_NAME_IS_WEB = "is_web";
 
         public static final String SQL_CREATE_ORDERS = ""+
                 "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+ " ( "+
@@ -165,6 +166,7 @@ public class TableContract {
                 COLUMN_NAME_AUTO+" BOOLEAN DEFAULT TRUE, "+
                 COLUMN_NAME_LAST_UPDATE+" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "+
                 COLUMN_NAME_SIGNATURE+" CLOB, "+
+                COLUMN_NAME_IS_WEB+" TINYINT(1), "+
                 "PRIMARY KEY (`order_id`), "+
                 "FOREIGN KEY (`member_id`) "+
                 "REFERENCES member (`member_id`) ON DELETE SET NULL "+

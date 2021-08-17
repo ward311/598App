@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -133,7 +134,9 @@ public class System_Bonus extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show();
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> getStaffAssignData(), 3000);
                     }
                 });
             }
@@ -206,7 +209,7 @@ public class System_Bonus extends AppCompatActivity {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show();
                     }
                 });
             }
