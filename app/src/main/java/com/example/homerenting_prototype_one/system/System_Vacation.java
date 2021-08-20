@@ -566,31 +566,37 @@ public class System_Vacation extends AppCompatActivity {
             Log.d(TAG, "back. date: "+current_date+", staffs:"+staffs+staffs_text+", cars:"+cars+cars_text);
             Intent valuation_intent = new Intent(System_Vacation.this, System.class);
             startActivity(valuation_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         valuation_btn.setOnClickListener(v -> {
             update_leave(current_date);
             Intent valuation_intent = new Intent(System_Vacation.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         order_btn.setOnClickListener(v -> {
             update_leave(current_date);
             Intent order_intent = new Intent(System_Vacation.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             update_leave(current_date);
             Intent calender_intent = new Intent(System_Vacation.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             update_leave(current_date);
             Intent system_intent = new Intent(System_Vacation.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             update_leave(current_date);
             Intent setting_intent = new Intent(System_Vacation.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
 

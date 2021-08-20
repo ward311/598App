@@ -123,11 +123,17 @@ public class Setting_Discount extends AppCompatActivity {
 
             Log.d(TAG, "size of delete discount: "+delete_discounts.size());
             Log.d(TAG, "delete discount: "+delete_discounts);
-            if(checkShortDiscount() && checkLongDiscount()){
+            TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
+            EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
+            TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
+            EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
+            if(checkShortDiscount() + checkLongDiscount() <=20){
                 updateDiscount();
                 finish();
-            }else{
-                Toast.makeText(context, "優惠不得低於九折",Toast.LENGTH_LONG).show();
+            }else {
+              shortEdit.setText("90");
+              longEdit.setText("90");
+              Toast.makeText(context, "已超過優惠額度上限，請重新調整", Toast.LENGTH_LONG).show();
             }
 
         });
@@ -145,9 +151,23 @@ public class Setting_Discount extends AppCompatActivity {
 
             Log.d(TAG, "size of delete discount: "+delete_discounts.size());
             Log.d(TAG, "delete discount: "+delete_discounts);
-            Intent intent = new Intent();
-            intent.setClass(this, Setting.class);
-            finish();
+            TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
+            EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
+            TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
+            EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
+            if(checkShortDiscount() + checkLongDiscount() <=20){
+                updateDiscount();
+                Intent intent = new Intent(this, Setting.class);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+
+            }else {
+                shortEdit.setText("90");
+                longEdit.setText("90");
+                Toast.makeText(context, "已超過優惠額度上限，請重新調整", Toast.LENGTH_LONG).show();
+            }
+
         });
 
         globalNav();
@@ -796,32 +816,28 @@ public class Setting_Discount extends AppCompatActivity {
             }
         }
     }
-    private boolean checkShortDiscount(){
+    private int checkShortDiscount(){
             TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
             Switch shortSw = (Switch) shortTermItem.getChildAt(SWITCH_INDEX);
             EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
 
             if(shortSw.isChecked()) {
-                if (Integer.parseInt(shortEdit.getText().toString())>=90) {
-                    return true;
-                }
+                return 100 - Integer.parseInt(shortEdit.getText().toString());
+
             }else{
-                return true;
+              return 0;
             }
-            return false;
     }
-    private boolean checkLongDiscount(){
+    private int checkLongDiscount(){
             TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
-            Switch longSw = (Switch) longTermItem.getChildAt(SWITCH_INDEX);;
+            Switch longSw = (Switch) longTermItem.getChildAt(SWITCH_INDEX);
             EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
             if(longSw.isChecked()) {
-                if (Integer.parseInt(longEdit.getText().toString())>=90) {
-                    return true;
-                }
+                return 100 - Integer.parseInt(longEdit.getText().toString());
+
             }else{
-                return true;
+                return 0;
             }
-            return false;
 
     }
     private void updateDiscount(){
@@ -894,10 +910,22 @@ public class Setting_Discount extends AppCompatActivity {
 
         Log.d(TAG, "size of delete discount: "+delete_discounts.size());
         Log.d(TAG, "delete discount: "+delete_discounts);
+        TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
+        EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
+        TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
+        EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
+        if(checkShortDiscount() + checkLongDiscount() <=20){
+            updateDiscount();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+            super.onBackPressed();
+        }else {
+            shortEdit.setText("90");
+            longEdit.setText("90");
+            Toast.makeText(context, "已超過優惠額度上限，請重新調整", Toast.LENGTH_LONG).show();
+        }
 
-        updateDiscount();
-        finish();
-        super.onBackPressed();
+
     }
 
     private void globalNav(){
@@ -910,22 +938,28 @@ public class Setting_Discount extends AppCompatActivity {
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(Setting_Discount.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(Setting_Discount.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Setting_Discount.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Setting_Discount.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Setting_Discount.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
+
 }

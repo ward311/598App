@@ -857,12 +857,14 @@ public class Calendar extends AppCompatActivity {
             Intent valuation_intent = new Intent(context, Valuation.class);
             valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
 
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(context, Order.class);
             order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
 //        calendar_btn.setOnClickListener(v -> {
 //            Intent calender_intent = new Intent(context, Calendar.class);
@@ -872,11 +874,13 @@ public class Calendar extends AppCompatActivity {
             Intent system_intent = new Intent(context, System.class);
             system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(context, Setting.class);
             setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
 

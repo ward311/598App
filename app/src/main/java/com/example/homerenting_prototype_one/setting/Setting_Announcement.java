@@ -291,7 +291,11 @@ public class Setting_Announcement extends AppCompatActivity {
 
     private void setBack_btn(){
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
-        back_btn.setOnClickListener(v -> finish());
+        back_btn.setOnClickListener(v -> {
+            super.onBackPressed();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        });
     }
 
     private void globalNav(){
@@ -306,6 +310,7 @@ public class Setting_Announcement extends AppCompatActivity {
             public void onClick(View v) {
                 Intent valuation_intent = new Intent(Setting_Announcement.this, Valuation.class);
                 startActivity(valuation_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         order_btn.setOnClickListener(new View.OnClickListener() {
@@ -313,6 +318,7 @@ public class Setting_Announcement extends AppCompatActivity {
             public void onClick(View v) {
                 Intent order_intent = new Intent(Setting_Announcement.this, Order.class);
                 startActivity(order_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
@@ -320,6 +326,7 @@ public class Setting_Announcement extends AppCompatActivity {
             public void onClick(View v) {
                 Intent calender_intent = new Intent(Setting_Announcement.this, Calendar.class);
                 startActivity(calender_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
@@ -327,6 +334,7 @@ public class Setting_Announcement extends AppCompatActivity {
             public void onClick(View v) {
                 Intent system_intent = new Intent(Setting_Announcement.this, System.class);
                 startActivity(system_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         setting_btn.setOnClickListener(new View.OnClickListener() {
@@ -334,7 +342,13 @@ public class Setting_Announcement extends AppCompatActivity {
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Setting_Announcement.this, Setting.class);
                 startActivity(setting_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
+    }
+    public void onBackPressed(){
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 }

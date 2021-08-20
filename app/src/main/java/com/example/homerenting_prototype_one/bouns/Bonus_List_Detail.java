@@ -111,7 +111,11 @@ public class Bonus_List_Detail extends AppCompatActivity {
 
 
 
-        back_btn.setOnClickListener(v -> finish());
+        back_btn.setOnClickListener(v -> {
+            super.onBackPressed();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        });
         export_btn.setOnClickListener(v -> {
             Intent export_intent = new Intent();
             export_intent.setAction( Intent.ACTION_SEND );
@@ -393,22 +397,32 @@ public class Bonus_List_Detail extends AppCompatActivity {
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(Bonus_List_Detail.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(Bonus_List_Detail.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Bonus_List_Detail.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Bonus_List_Detail.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Bonus_List_Detail.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
+    }
+    public void onBackPressed(){
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+        finish();
     }
 }

@@ -222,6 +222,7 @@ public class Order_Today extends AppCompatActivity {
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(Order_Today.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
 //        order_btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -233,14 +234,17 @@ public class Order_Today extends AppCompatActivity {
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Order_Today.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Order_Today.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Order_Today.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
     private void setRList(){
@@ -290,6 +294,7 @@ public class Order_Today extends AppCompatActivity {
         Intent toOrder = new Intent(Order_Today.this, Order.class);
         toOrder.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toOrder);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
 }

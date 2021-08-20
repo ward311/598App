@@ -87,8 +87,9 @@ public class Setting_Information extends AppCompatActivity {
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
 
         back_btn.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setClass(this, Setting.class);
+            Intent intent = new Intent(this, Setting.class);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         });
 
@@ -414,22 +415,32 @@ public class Setting_Information extends AppCompatActivity {
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(Setting_Information.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(Setting_Information.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Setting_Information.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Setting_Information.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Setting_Information.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
+    }
+    public void onBackPressed(){
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 }

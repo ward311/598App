@@ -122,18 +122,22 @@ public class Valuation_Cancel extends AppCompatActivity {
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(Valuation_Cancel.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Valuation_Cancel.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Valuation_Cancel.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Valuation_Cancel.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
 

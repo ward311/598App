@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -108,6 +109,7 @@ public class System_Data extends AppCompatActivity {
         back_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(System_Data.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 
         employee_text.setOnClickListener(v -> showEmployeeList());
@@ -232,9 +234,11 @@ public class System_Data extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
+                Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
                 Handler handler = new Handler();
                 handler.postDelayed(() -> getStaffData(), 3000);
+                Looper.loop();
             }
 
             @Override
@@ -324,9 +328,11 @@ public class System_Data extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
+                Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
                 Handler handler = new Handler();
                 handler.postDelayed(() -> getVehicleData(), 3000);
+                Looper.loop();
             }
 
             @Override
@@ -598,22 +604,27 @@ public class System_Data extends AppCompatActivity {
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(System_Data.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(System_Data.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(System_Data.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(System_Data.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(System_Data.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
 

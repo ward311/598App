@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -171,6 +173,7 @@ public class Order_Booking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent valuation_intent = new Intent(Order_Booking.this, Valuation.class);
                 startActivity(valuation_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
 //        order_btn.setOnClickListener(new View.OnClickListener() {
@@ -185,6 +188,7 @@ public class Order_Booking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent calender_intent = new Intent(Order_Booking.this, Calendar.class);
                 startActivity(calender_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +196,7 @@ public class Order_Booking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent system_intent = new Intent(Order_Booking.this, System.class);
                 startActivity(system_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         setting_btn.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +204,7 @@ public class Order_Booking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Order_Booking.this, Setting.class);
                 startActivity(setting_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
     }
@@ -229,7 +235,11 @@ public class Order_Booking extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
+                Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(Order_Booking.this, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.loop();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getOrder(), 3000);
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)

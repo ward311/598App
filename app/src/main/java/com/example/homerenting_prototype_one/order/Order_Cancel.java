@@ -154,6 +154,7 @@ public class Order_Cancel extends AppCompatActivity {
             public void onClick(View v) {
                 Intent valuation_intent = new Intent(Order_Cancel.this, Valuation.class);
                 startActivity(valuation_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
 //        order_btn.setOnClickListener(new View.OnClickListener() {
@@ -168,6 +169,7 @@ public class Order_Cancel extends AppCompatActivity {
             public void onClick(View v) {
                 Intent calender_intent = new Intent(Order_Cancel.this, Calendar.class);
                 startActivity(calender_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +177,7 @@ public class Order_Cancel extends AppCompatActivity {
             public void onClick(View v) {
                 Intent system_intent = new Intent(Order_Cancel.this, System.class);
                 startActivity(system_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         setting_btn.setOnClickListener(new View.OnClickListener() {
@@ -182,6 +185,7 @@ public class Order_Cancel extends AppCompatActivity {
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Order_Cancel.this, Setting.class);
                 startActivity(setting_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
     }

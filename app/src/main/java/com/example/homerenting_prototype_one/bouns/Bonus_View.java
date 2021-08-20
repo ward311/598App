@@ -99,7 +99,11 @@ public class Bonus_View extends AppCompatActivity {
 
         chartBtn.setOnClickListener(v -> setChart());
 
-        backBtn.setOnClickListener(v -> finish());
+        backBtn.setOnClickListener(v ->{
+            super.onBackPressed();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        } );
 
 
         total_btn.setOnClickListener(v -> {
@@ -110,6 +114,9 @@ public class Bonus_View extends AppCompatActivity {
             intent.setClass(context, Bonus_List_Detail.class);
             intent.putExtras(bundle);
             startActivity(intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+
+
         });
 
         globalNav();
@@ -395,22 +402,27 @@ public class Bonus_View extends AppCompatActivity {
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(Bonus_View.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(Bonus_View.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Bonus_View.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Bonus_View.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Bonus_View.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
 }

@@ -31,7 +31,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -121,10 +126,25 @@ public class Order_Detail extends AppCompatActivity {
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
                     movingDatetime = order.getString("moving_date");
-                    Log.d(TAG, "movingDatetime:"+movingDatetime);
+                    Log.d(TAG, "movingDatetime: "+movingDatetime);
                     if(!movingDatetime.isEmpty() && !movingDatetime.equals("null"))
                         movingTime = getDate(movingDatetime)+" "+getTime(movingDatetime);
                     else movingTime = "";
+
+                    Date date = java.util.Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+                    String strDate = dateFormat.format(date);
+                    Log.d(TAG, "currentDate: "+strDate);
+                    Log.d(TAG, "movingDateTimeGetDate: "+ getDate(movingDatetime));
+                    if(!getDate(movingDatetime).equals(strDate)){
+                        runOnUiThread(() ->{
+                            goOrderDetail.setVisibility(View.GONE);
+                            check_btn.setX(400);
+                        });
+                    }else{
+                        goOrderDetail.setVisibility(View.VISIBLE);
+                        check_btn.setVisibility(View.VISIBLE);
+                    }
 
                     if(!order.has("from_address") || order.getString("from_address").equals("null")){
                         fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
@@ -178,6 +198,11 @@ public class Order_Detail extends AppCompatActivity {
         getVehicleData();
         getStaffData();
 
+        if(carText.getText().toString().equals("無填寫需求車輛") || staffText.getText().toString().equals("尚未安排人員")){
+            check_btn.setText("人車派遣");
+        }else{
+            check_btn.setText("更新派遣");
+        }
         check_btn.setOnClickListener(v -> {
             Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
             Bundle bundle = new Bundle();
@@ -422,22 +447,27 @@ public class Order_Detail extends AppCompatActivity {
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(Order_Detail.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(Order_Detail.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Order_Detail.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Order_Detail.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Order_Detail.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
 }

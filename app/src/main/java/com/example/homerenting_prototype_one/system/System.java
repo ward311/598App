@@ -87,33 +87,25 @@ public class System extends AppCompatActivity {
             vacation_btn.setEnabled(true);
         }
 
-        data_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent data_intent = new Intent(System.this, System_Data.class);
-                startActivity(data_intent);
-            }
+        data_btn.setOnClickListener(v -> {
+            Intent data_intent = new Intent(System.this, System_Data.class);
+            startActivity(data_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
-        schedule_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent schedule_intent = new Intent(System.this, System_Schedule.class);
-                startActivity(schedule_intent);
-            }
+        schedule_btn.setOnClickListener(v -> {
+            Intent schedule_intent = new Intent(System.this, System_Schedule.class);
+            startActivity(schedule_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
-        vacation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent vacation_intent = new Intent(System.this, System_Vacation.class);
-                startActivity(vacation_intent);
-            }
+        vacation_btn.setOnClickListener(v -> {
+            Intent vacation_intent = new Intent(System.this, System_Vacation.class);
+            startActivity(vacation_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
-        bonus_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent bonus_intent = new Intent(System.this, System_Bonus.class);
-                startActivity(bonus_intent);
-            }
+        bonus_btn.setOnClickListener(v -> {
+            Intent bonus_intent = new Intent(System.this, System_Bonus.class);
+            startActivity(bonus_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 
         //底下nav
@@ -123,6 +115,7 @@ public class System extends AppCompatActivity {
                 Intent valuation_intent = new Intent(System.this, Valuation.class);
                 valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(valuation_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         order_btn.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +124,7 @@ public class System extends AppCompatActivity {
                 Intent order_intent = new Intent(System.this, Order.class);
                 order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(order_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +133,7 @@ public class System extends AppCompatActivity {
                 Intent calender_intent = new Intent(System.this, Calendar.class);
                 calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(calender_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
 //        system_btn.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +149,7 @@ public class System extends AppCompatActivity {
                 Intent setting_intent = new Intent(System.this, Setting.class);
                 setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(setting_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
 

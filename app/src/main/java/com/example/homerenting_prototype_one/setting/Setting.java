@@ -116,26 +116,32 @@ public class Setting extends AppCompatActivity {
         company_information.setOnClickListener(v -> {
             Intent information_intent = new Intent(Setting.this, Setting_Information.class);
             startActivity(information_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
         service_item.setOnClickListener(v -> {
             Intent service_intent = new Intent(Setting.this, Setting_Service.class);
             startActivity(service_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
         discount.setOnClickListener(v -> {
             Intent discount_intent = new Intent(Setting.this, Setting_Discount.class);
             startActivity(discount_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
         customer_evaluation.setOnClickListener(v -> {
             Intent evaluation_intent = new Intent(Setting.this, Setting_Evaluation.class);
             startActivity(evaluation_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
         system_announcement.setOnClickListener(v -> {
             Intent announcement_intent = new Intent(Setting.this, Setting_Announcement.class);
             startActivity(announcement_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
         history_record.setOnClickListener(v -> {
             Intent record_intent = new Intent(Setting.this, Setting_Record.class);
             startActivity(record_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
         sign_out.setOnClickListener(view -> {
             SessionManager session = SessionManager.getInstance(context);
@@ -144,6 +150,7 @@ public class Setting extends AppCompatActivity {
 
             loginPage_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(loginPage_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             sp = getSharedPreferences("login", Context.MODE_PRIVATE);
             sp.edit().putBoolean("logged", false).apply();
             sp.edit().clear();
@@ -292,6 +299,7 @@ public class Setting extends AppCompatActivity {
                 Intent valuation_intent = new Intent(Setting.this, Valuation.class);
                 valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(valuation_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         order_btn.setOnClickListener(new View.OnClickListener() {
@@ -300,6 +308,7 @@ public class Setting extends AppCompatActivity {
                 Intent order_intent = new Intent(Setting.this, Order.class);
                 order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(order_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
@@ -308,6 +317,7 @@ public class Setting extends AppCompatActivity {
                 Intent calender_intent = new Intent(Setting.this, Calendar.class);
                 calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(calender_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
@@ -316,6 +326,7 @@ public class Setting extends AppCompatActivity {
                 Intent system_intent = new Intent(Setting.this, System.class);
                 system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(system_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         /*setting_btn.setOnClickListener(new View.OnClickListener() {
@@ -331,5 +342,6 @@ public class Setting extends AppCompatActivity {
         Intent toCalendar = new Intent(Setting.this, Calendar.class);
         toCalendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(toCalendar);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

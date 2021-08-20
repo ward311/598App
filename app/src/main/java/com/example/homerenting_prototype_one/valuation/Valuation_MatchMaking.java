@@ -140,6 +140,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent order_intent = new Intent(Valuation_MatchMaking.this, Order.class);
                 startActivity(order_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +148,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent calender_intent = new Intent(Valuation_MatchMaking.this, Calendar.class);
                 startActivity(calender_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         system_btn.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +156,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent system_intent = new Intent(Valuation_MatchMaking.this, System.class);
                 startActivity(system_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
         setting_btn.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +164,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
             public void onClick(View v) {
                 Intent setting_intent = new Intent(Valuation_MatchMaking.this, Setting.class);
                 startActivity(setting_intent);
+                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
             }
         });
     }

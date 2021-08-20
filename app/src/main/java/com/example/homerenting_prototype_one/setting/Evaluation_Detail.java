@@ -138,6 +138,7 @@ public class Evaluation_Detail extends AppCompatActivity {
             Intent myIntent = new Intent(this, Setting_Evaluation.class);
             myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(myIntent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         globalNav();
     }

@@ -662,7 +662,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
+                Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
+                Looper.loop();
                 Handler handler = new Handler();
                 handler.postDelayed(() -> getStaffVacation(date), 3000);
             }

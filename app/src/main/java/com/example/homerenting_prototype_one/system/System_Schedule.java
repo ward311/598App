@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.CalendarView;
@@ -294,7 +295,11 @@ public class System_Schedule extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
+                Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.loop();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getStaffChip(), 3000);
             }
 
             @Override
@@ -360,7 +365,13 @@ public class System_Schedule extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
+
+                Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.loop();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getVehicleChip(), 3000);
+
             }
 
             @Override
@@ -588,7 +599,12 @@ public class System_Schedule extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
+
+                Looper.prepare();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.loop();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getStaffVacation(date), 3000);
             }
 
             @Override
@@ -652,7 +668,11 @@ public class System_Schedule extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
+                Looper.prepare();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.loop();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> getVehicleVacation(date), 3000);
             }
 
             @Override
@@ -714,27 +734,37 @@ public class System_Schedule extends AppCompatActivity {
                 mCalendar.setVisibility(View.VISIBLE);
                 orderList.setVisibility(View.GONE);
             }
-            else finish();
+            else {
+                Intent intent = new Intent(this, System.class);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
         });
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(System_Schedule.this, Valuation.class);
             startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(System_Schedule.this, Order.class);
             startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(System_Schedule.this, Calendar.class);
             startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(System_Schedule.this, System.class);
             startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(System_Schedule.this, Setting.class);
             startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
 
@@ -747,7 +777,10 @@ public class System_Schedule extends AppCompatActivity {
             getStaffVacation(getToday("yyyy-MM-dd"));
             getVehicleVacation(getToday("yyyy-MM-dd"));
         }
-        else super.onBackPressed();
+        else{
+            super.onBackPressed();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
 
     }
 

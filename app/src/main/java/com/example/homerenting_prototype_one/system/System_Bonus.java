@@ -82,32 +82,25 @@ public class System_Bonus extends AppCompatActivity {
         setDoneOrder();
         getStaffAssignData();
 
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+        back_btn.setOnClickListener(v -> {
+            super.onBackPressed();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
         });
-        viewBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent view_intent = new Intent(context, Bonus_View.class);
-                startActivity(view_intent);
-            }
+        viewBtn.setOnClickListener(v -> {
+            Intent view_intent = new Intent(context, Bonus_View.class);
+            startActivity(view_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
-        distributedBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent dustributed_intent = new Intent(context, Bonus_Distribution.class);
-                startActivity(dustributed_intent);
-            }
+        distributedBtn.setOnClickListener(v -> {
+            Intent distributed_intent = new Intent(context, Bonus_Distribution.class);
+            startActivity(distributed_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
-        listBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent list_intent = new Intent(context, Bonus_List.class);
-                startActivity(list_intent);
-            }
+        listBtn.setOnClickListener(v -> {
+            Intent list_intent = new Intent(context, Bonus_List.class);
+            startActivity(list_intent);
+            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         });
 
         globalNav();
@@ -249,40 +242,30 @@ public class System_Bonus extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(System_Bonus.this, Valuation.class);
-                startActivity(valuation_intent);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(System_Bonus.this, Valuation.class);
+            startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(System_Bonus.this, Order.class);
-                startActivity(order_intent);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(System_Bonus.this, Order.class);
+            startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(System_Bonus.this, Calendar.class);
-                startActivity(calender_intent);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(System_Bonus.this, Calendar.class);
+            startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(System_Bonus.this, System.class);
-                startActivity(system_intent);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(System_Bonus.this, System.class);
+            startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(System_Bonus.this, Setting.class);
-                startActivity(setting_intent);
-            }
+        setting_btn.setOnClickListener(v -> {
+            Intent setting_intent = new Intent(System_Bonus.this, Setting.class);
+            startActivity(setting_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
 }
