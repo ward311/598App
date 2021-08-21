@@ -171,6 +171,12 @@ public class Order_Detail extends AppCompatActivity {
                             check_btn.setVisibility(View.GONE);
                         });
                     }
+                    if(status.equals("chosen")){
+                        runOnUiThread(() ->check_btn.setText("人車派遣"));
+                    }
+                    if(status.equals("assigned")){
+                        runOnUiThread(() ->check_btn.setText("更新派遣"));
+                    }
                     //顯示資料
                     runOnUiThread(() -> {
                         nameText.setText(name);
@@ -199,11 +205,6 @@ public class Order_Detail extends AppCompatActivity {
         getVehicleData();
         getStaffData();
 
-        if(carText.getText().toString().equals("無填寫需求車輛") || staffText.getText().toString().equals("尚未安排人員")){
-            check_btn.setText("人車派遣");
-        }else{
-            check_btn.setText("更新派遣");
-        }
         check_btn.setOnClickListener(v -> {
             Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
             Bundle bundle = new Bundle();
@@ -247,6 +248,9 @@ public class Order_Detail extends AppCompatActivity {
 
         globalNav();
     }
+
+
+
 
     private void getVehicleData(){
         RequestBody body = new FormBody.Builder()

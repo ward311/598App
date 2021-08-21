@@ -195,39 +195,9 @@ public class Today_Detail extends AppCompatActivity {
             fee = finalPriceText.getText().toString();
             memo = memoEdit.getText().toString();
             Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-
             update_today_order();
+            checkTotalPrice();
 
-            LayoutInflater inflater = getLayoutInflater();
-            View view = inflater.inflate(R.layout.qrcode_image, null);
-            ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
-            String url = "http://140.117.71.91/598_new/appecpay.php";
-            try {
-                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
-                qrcodeView.setImageBitmap(bitmap);
-            } catch (WriterException e){
-                e.printStackTrace();
-            }
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("匯款QR CODE");
-//               builder.setMessage("請掃描QR CODE");
-            builder.setView(view);
-            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if(check){
-                        change_order_status();
-                    }
-                    else {
-                        Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-            builder.setNegativeButton("取消", (dialog, which) -> { });
-            AlertDialog dialog = builder.create();
-            dialog.show();
         });
 
 
@@ -250,6 +220,66 @@ public class Today_Detail extends AppCompatActivity {
         });
 
         globalNav();
+    }
+
+    private void checkTotalPrice(){
+        Request request = new Request.Builder()
+                .url("http://140.117.71.91/598_new/appecpay.php?order_id="+order_id)
+                .build();
+        Log.d(TAG, "order_id: "+ order_id);
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "取得失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                        runOnUiThread(() ->{
+                            LayoutInflater inflater = getLayoutInflater();
+                            View view = inflater.inflate(R.layout.qrcode_image, null);
+                            ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
+
+                            String url = "http://140.117.71.91/598_new/appecpay.php?order_id="+order_id;
+                            try {
+                                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                                Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
+                                qrcodeView.setImageBitmap(bitmap);
+                            } catch (WriterException e){
+                                e.printStackTrace();
+                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setTitle("匯款QR CODE");
+//               builder.setMessage("請掃描QR CODE");
+                            builder.setView(view);
+                            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if(check){
+                                        change_order_status();
+                                    }
+                                    else {
+                                        Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                            builder.setNegativeButton("取消", (dialog, which) -> { });
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        });
+
+
+
+
+            }
+        });
     }
 
     private void getVehicleData(){
@@ -522,7 +552,7 @@ public class Today_Detail extends AppCompatActivity {
 
                     });
 
-                };
+                }
             }
         });
     }
