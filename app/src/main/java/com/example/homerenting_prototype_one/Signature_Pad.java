@@ -1,8 +1,8 @@
 package com.example.homerenting_prototype_one;
 
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
-import static com.example.homerenting_prototype_one.show.global_function.getDate;
-import static com.example.homerenting_prototype_one.show.global_function.getTime;
+
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
+
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -24,7 +24,7 @@ import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,9 +53,9 @@ public class Signature_Pad extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signature_pad);
-        signPad = (SignaturePad)findViewById(R.id.signaturePad);
-        checkBtn = (Button)findViewById(R.id.confirm_sign_btn);
-        clearBtn = (Button)findViewById(R.id.clear_btn);
+        signPad = findViewById(R.id.signaturePad);
+        checkBtn = findViewById(R.id.confirm_sign_btn);
+        clearBtn = findViewById(R.id.clear_btn);
         backBtn = findViewById(R.id.back_ImgBtn);
         checkBtn.setEnabled(false);
         checkBtn.setAlpha(.5f);
@@ -153,9 +153,7 @@ public class Signature_Pad extends AppCompatActivity {
                     JSONObject result = new JSONObject(responseData);
                     //取得資料
                     if(result.getString("status").equals("failed")){
-                        runOnUiThread(() -> {
-                            Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
-                        });
+                        runOnUiThread(() -> Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show());
                     }else{
                         Log.d(TAG, ""+result.getString("status")+" "+result.getString("message"));
                         update_today_order();
@@ -253,7 +251,7 @@ public class Signature_Pad extends AppCompatActivity {
                         }, 500);
 
                     });
-                };
+                }
             }
         });
     }

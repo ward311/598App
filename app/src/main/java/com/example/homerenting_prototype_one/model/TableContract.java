@@ -41,7 +41,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getComp
 
 
 public class TableContract {
-    private static String TAG = TableContract.class.getSimpleName();
+    private static final String  TAG = TableContract.class.getSimpleName();
     public static DatabaseHelper dbHelper;
     public TableContract() {}
 
@@ -1269,7 +1269,7 @@ public class TableContract {
 
 
         public static void getStaffLeave(DatabaseHelper dbHelper, Context context){
-            ArrayList<String[]> leave = new ArrayList<>();;
+            ArrayList<String[]> leave = new ArrayList<>();
             SQLiteDatabase db;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date datetime = simpleDateFormat.getCalendar().getTime();

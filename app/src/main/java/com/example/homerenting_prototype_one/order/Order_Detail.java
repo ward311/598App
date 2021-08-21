@@ -141,11 +141,12 @@ public class Order_Detail extends AppCompatActivity {
                             goOrderDetail.setVisibility(View.GONE);
                             check_btn.setX(400);
                         });
-                    }else{
-                        goOrderDetail.setVisibility(View.VISIBLE);
-                        check_btn.setVisibility(View.VISIBLE);
+                    }else {
+                        runOnUiThread(() ->{
+                            goOrderDetail.setVisibility(View.VISIBLE);
+                            check_btn.setVisibility(View.VISIBLE);
+                        });
                     }
-
                     if(!order.has("from_address") || order.getString("from_address").equals("null")){
                         fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
                     }
