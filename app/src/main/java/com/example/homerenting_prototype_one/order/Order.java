@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,9 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +40,10 @@ import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.valuation.Fragment_Valuation;
+import com.example.homerenting_prototype_one.valuation.Fragment_Valuation_Booking;
+import com.example.homerenting_prototype_one.valuation.Fragment_Valuation_Cancel;
+import com.example.homerenting_prototype_one.valuation.Fragment_Valuation_Match_Making;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 
 import org.jetbrains.annotations.NotNull;
@@ -69,6 +77,7 @@ import static com.example.homerenting_prototype_one.show.global_function.getMont
 import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getTime;
+import static com.example.homerenting_prototype_one.show.global_function.getToday;
 import static com.example.homerenting_prototype_one.show.global_function.getWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getYear;
 import static com.example.homerenting_prototype_one.show.global_function.getwCount;
@@ -93,6 +102,11 @@ public class Order extends AppCompatActivity {
     //private String company_id;
 
     boolean first = true;
+    public static final int FRAG_ORDER = 5 ;
+    public static final int FRAG_ORDER_BOOK = 6 ;
+    public static final int FRAG_ORDER_TODAY = 7 ;
+    public static final int FRAG_ORDER_CAN = 8 ;
+    public int current_FRAG;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +117,7 @@ public class Order extends AppCompatActivity {
         nextWeek_btn = findViewById(R.id.nextWeek_btn_O);
         orderRList = findViewById(R.id.order_recyclerView_O);
 
+        Button order_btn = findViewById(R.id.order_btn);
         Button booking_order = findViewById(R.id.bookingOrder_btn);
         Button today_order = findViewById(R.id.todayOrder_btn);
         Button cancel_order = findViewById(R.id.cancelOrder_btn);
@@ -110,7 +125,8 @@ public class Order extends AppCompatActivity {
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-
+        replaceFragment(new Fragment_Order());
+        current_FRAG = FRAG_ORDER;
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         dbHelper = new DatabaseHelper(this);
@@ -121,8 +137,32 @@ public class Order extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
+            switch (current_FRAG){
+                case 5 :
+                    replaceFragment(new Fragment_Order());
+                    break;
+                case 6 :
+                    replaceFragment(new Fragment_Order_Booking());
+                    break;
+                case 7 :
+                    replaceFragment(new Fragment_Order_Today());
+                    lastWeek_btn.setVisibility(View.GONE);
+                    nextWeek_btn.setVisibility(View.GONE);
+                    break;
+                case 8 :
+                    replaceFragment(new Fragment_Order_Cancel());
+
+                    break;
+                default :
+                    replaceFragment(new Fragment_Order());
+                    order_btn.setTextColor(Color.parseColor("#FB8527"));
+                    booking_order.setTextColor(Color.BLACK);
+                    today_order.setTextColor(Color.BLACK);
+                    cancel_order.setTextColor(Color.BLACK);
+                    break;
+            }
             //getOrder();
-            new AsyncRetrieve().execute();
+            //new AsyncRetrieve().execute();
 
         });
 
@@ -132,25 +172,92 @@ public class Order extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
+            switch (current_FRAG){
+                case 5 :
+                    replaceFragment(new Fragment_Order());
+                    break;
+                case 6 :
+                    replaceFragment(new Fragment_Order_Booking());
+                    break;
+                case 7 :
+                    replaceFragment(new Fragment_Order_Today());
+                    lastWeek_btn.setVisibility(View.GONE);
+                    nextWeek_btn.setVisibility(View.GONE);
+                    week_text.setText(getToday());
+                    month_text.setText(getMonthStr());
+                    break;
+                case 8 :
+                    replaceFragment(new Fragment_Order_Cancel());
+                    break;
+                default :
+                    replaceFragment(new Fragment_Order());
+                    order_btn.setTextColor(Color.parseColor("#FB8527"));
+                    booking_order.setTextColor(Color.BLACK);
+                    today_order.setTextColor(Color.BLACK);
+                    cancel_order.setTextColor(Color.BLACK);
+                    break;
+            }
             //getOrder();
-            new AsyncRetrieve().execute();
+            //new AsyncRetrieve().execute();
         });
 
         //上方nav
+        order_btn.setOnClickListener(v->{
+            replaceFragment(new Fragment_Order());
+            current_FRAG = FRAG_ORDER;
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            lastWeek_btn.setVisibility(View.VISIBLE);
+            nextWeek_btn.setVisibility(View.VISIBLE);
+            order_btn.setTextColor(Color.parseColor("#FB8527"));
+            booking_order.setTextColor(Color.BLACK);
+            today_order.setTextColor(Color.BLACK);
+            cancel_order.setTextColor(Color.BLACK);
+        });
         booking_order.setOnClickListener(v -> {
-            Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
+            /*Intent bookingOrder_intent = new Intent(Order.this, Order_Booking.class);
             bookingOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(bookingOrder_intent);
+            startActivity(bookingOrder_intent);*/
+            replaceFragment(new Fragment_Order_Booking());
+            current_FRAG = FRAG_ORDER_BOOK;
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            lastWeek_btn.setVisibility(View.VISIBLE);
+            nextWeek_btn.setVisibility(View.VISIBLE);
+            booking_order.setTextColor(Color.parseColor("#FB8527"));
+            order_btn.setTextColor(Color.BLACK);
+            today_order.setTextColor(Color.BLACK);
+            cancel_order.setTextColor(Color.BLACK);
         });
         today_order.setOnClickListener(v -> {
-            Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
+            /*Intent todayOrder_intent = new Intent(Order.this, Order_Today.class);
             todayOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(todayOrder_intent);
+            startActivity(todayOrder_intent);*/
+            replaceFragment(new Fragment_Order_Today());
+            lastWeek_btn.setVisibility(View.GONE);
+            nextWeek_btn.setVisibility(View.GONE);
+            week_text.setText(getToday());
+            month_text.setText(getMonthStr());
+            current_FRAG = FRAG_ORDER_TODAY;
+            today_order.setTextColor(Color.parseColor("#FB8527"));
+            order_btn.setTextColor(Color.BLACK);
+            booking_order.setTextColor(Color.BLACK);
+            cancel_order.setTextColor(Color.BLACK);
         });
         cancel_order.setOnClickListener(v -> {
-            Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
+            /*Intent cancelOrder_intent = new Intent(Order.this, Order_Cancel.class);
             cancelOrder_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(cancelOrder_intent);
+            startActivity(cancelOrder_intent);*/
+            replaceFragment(new Fragment_Order_Cancel());
+            current_FRAG = FRAG_ORDER_CAN;
+            week_text.setText(getWeek());
+            month_text.setText(getMonthStr());
+            lastWeek_btn.setVisibility(View.VISIBLE);
+            nextWeek_btn.setVisibility(View.VISIBLE);
+            cancel_order.setTextColor(Color.parseColor("#FB8527"));
+            order_btn.setTextColor(Color.BLACK);
+            booking_order.setTextColor(Color.BLACK);
+            today_order.setTextColor(Color.BLACK);
         });
 
         //底下nav
@@ -179,7 +286,12 @@ public class Order extends AppCompatActivity {
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
     }
-
+    private void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.framelayout, fragment);
+        fragmentTransaction.commit();
+    }
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");

@@ -1,37 +1,44 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import static com.example.homerenting_prototype_one.show.global_function.changeStatus;
+import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
+import static com.example.homerenting_prototype_one.show.global_function.getDate;
+import static com.example.homerenting_prototype_one.show.global_function.getDay;
+import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getMonth;
+import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
+import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getStartTime;
+import static com.example.homerenting_prototype_one.show.global_function.getWeek;
+import static com.example.homerenting_prototype_one.show.global_function.getYear;
+import static com.example.homerenting_prototype_one.show.global_function.getwCount;
+import static com.example.homerenting_prototype_one.show.global_function.setwCount;
+
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
 import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
-import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
-import com.example.homerenting_prototype_one.order.Order_Detail;
-import com.example.homerenting_prototype_one.setting.Setting;
-import com.example.homerenting_prototype_one.system.System;
-import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
-import com.example.homerenting_prototype_one.adapter.base_adapter.NoDataAdapter;
-import com.example.homerenting_prototype_one.calendar.Calendar;
-import com.example.homerenting_prototype_one.order.Order;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -52,116 +59,38 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.homerenting_prototype_one.show.global_function.changeStatus;
-import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
-import static com.example.homerenting_prototype_one.show.global_function.getDate;
-import static com.example.homerenting_prototype_one.show.global_function.getDay;
-import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
-import static com.example.homerenting_prototype_one.show.global_function.getMonth;
-import static com.example.homerenting_prototype_one.show.global_function.getMonthStr;
-import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
-import static com.example.homerenting_prototype_one.show.global_function.getStartTime;
-import static com.example.homerenting_prototype_one.show.global_function.getWeek;
-import static com.example.homerenting_prototype_one.show.global_function.getYear;
-import static com.example.homerenting_prototype_one.show.global_function.getwCount;
-import static com.example.homerenting_prototype_one.show.global_function.removeNew;
-import static com.example.homerenting_prototype_one.show.global_function.setwCount;
 
-public class Valuation_Booking extends AppCompatActivity {
-
+public class Fragment_Valuation_Booking extends Fragment {
+    View view;
+    RecyclerView valuationBookingList;
     TextView month_text;
     TextView week_text;
     ImageButton lastWeek_btn, nextWeek_btn;
-    RecyclerView valuationBookingList;
-
     ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter = new ListAdapter(data);
 
     OkHttpClient okHttpClient = new OkHttpClient();
 
     String TAG = "Valuation_Booking";
-    Context context = this;
+    Activity mContext;
     private final String PHP = "/user_data.php";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_valuation__booking);
-        month_text = findViewById(R.id.month_VB);
-        week_text = findViewById(R.id.week_VB);
-        lastWeek_btn = findViewById(R.id.lastWeek_btn_VB);
-        nextWeek_btn = findViewById(R.id.nextWeek_btn_VB);
-        valuationBookingList = findViewById(R.id.order_recyclerView_VB);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_valuation_booking, container, false);
+        return view;
+    }
 
-        Button self_btn = findViewById(R.id.selfEvaluation_btn);
-        Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
-        Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
-        ImageButton order_btn = findViewById(R.id.order_imgBtn);
-        ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
-        ImageButton system_btn = findViewById(R.id.system_imgBtn);
-        ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
-
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mContext = getActivity();
+        valuationBookingList = view.findViewById(R.id.valuationBookingRecycler);
 
         getValuationBooking();
 
-
-        //上方nav
-        self_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent selfValuation_intent = new Intent(Valuation_Booking.this, Valuation.class);
-                startActivity(selfValuation_intent);
-            }
-        });
-        matchMaking_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent matchMakingValuation_intent = new Intent(Valuation_Booking.this, Valuation_MatchMaking.class);
-                startActivity(matchMakingValuation_intent);
-            }
-        });
-        cancel_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cancelValuation_intent = new Intent(Valuation_Booking.this, Valuation_Cancel.class);
-                startActivity(cancelValuation_intent);
-
-            }
-        });
-
-        //底下nav
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Valuation_Booking.this, Order.class);
-                startActivity(order_intent);
-                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
-            }
-        });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Valuation_Booking.this, Calendar.class);
-                startActivity(calender_intent);
-                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
-            }
-        });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Valuation_Booking.this, System.class);
-                startActivity(system_intent);
-                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
-            }
-        });
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent setting_intent = new Intent(Valuation_Booking.this, Setting.class);
-                startActivity(setting_intent);
-                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
-            }
-        });
     }
 
     private void getValuationBooking(){
@@ -169,7 +98,7 @@ public class Valuation_Booking extends AppCompatActivity {
         String function_name = "valuation_member";
         String startDate =  getStartOfWeek();
         String endDate = getEndOfWeek();
-        String company_id = getCompany_id(this);
+        String company_id = getCompany_id(mContext);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id",company_id)
@@ -193,11 +122,11 @@ public class Valuation_Booking extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
+                mContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         //在app畫面上呈現錯誤訊息
-                        Toast.makeText(Valuation_Booking.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, "Toast onFailure.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -246,7 +175,7 @@ public class Valuation_Booking extends AppCompatActivity {
                                         Integer.parseInt(getMonth(date))<=monthToInt(String.valueOf(now.getMonth())) &&
                                         Integer.parseInt(getDay(date))<now.getDayOfMonth())) {
                             Log.d(TAG, "valuation_date "+date+" of order_id "+order_id+" is over time");
-                            changeStatus(order_id, "choose", "cancel", context);
+                            changeStatus(order_id, "choose", "cancel", mContext);
                             continue;
                         }
 
@@ -256,17 +185,14 @@ public class Valuation_Booking extends AppCompatActivity {
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                Log.d(TAG, "NO DATA");
-                                NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
-                                valuationBookingList.setLayoutManager(new LinearLayoutManager(context));
-                                valuationBookingList.setAdapter(noDataAdapter);
-                            }
-                            //else Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                    mContext.runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            Log.d(TAG, "NO DATA");
+                            NoDataRecyclerAdapter noDataAdapter = new NoDataRecyclerAdapter();
+                            valuationBookingList.setLayoutManager(new LinearLayoutManager(mContext));
+                            valuationBookingList.setAdapter(noDataAdapter);
                         }
+                        //else Toast.makeText(Valuation_Booking.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                     });
                 }
                 //顯示資訊
@@ -280,13 +206,13 @@ public class Valuation_Booking extends AppCompatActivity {
     }
 
     private void setRList(){
-        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(context, data, ValuationBooking_Detail.class);
+        final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(mContext, data, ValuationBooking_Detail.class);
         adapter.type = "Valuation";
-        runOnUiThread(new Runnable() {
+        mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                valuationBookingList.setLayoutManager(new LinearLayoutManager(context));
-                valuationBookingList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
+                valuationBookingList.setLayoutManager(new LinearLayoutManager(mContext));
+                valuationBookingList.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL)); //分隔線
                 valuationBookingList.setAdapter(adapter);
 
                 //側滑刪除
@@ -325,10 +251,5 @@ public class Valuation_Booking extends AppCompatActivity {
             default:
                 return 0;
         }
-    }
-    public void onBackPressed(){
-        Intent toValuation = new Intent(Valuation_Booking.this, Valuation.class);
-        toValuation.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(toValuation);
     }
 }

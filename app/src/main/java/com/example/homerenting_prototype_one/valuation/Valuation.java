@@ -1,12 +1,13 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ColorSpace;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -14,6 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
@@ -51,7 +55,11 @@ import static com.example.homerenting_prototype_one.show.global_function.removeN
 import static com.example.homerenting_prototype_one.show.global_function.setwCount;
 
 public class Valuation extends AppCompatActivity {
-
+    public static final int FRAG_VALU = 1 ;
+    public static final int FRAG_VALU_BOOK = 2 ;
+    public static final int FRAG_VALU_MATCH = 3 ;
+    public static final int FRAG_VALU_CAN = 4 ;
+    public int current_FRAG;
     TextView month_text;
     TextView week_text;
     ImageButton lastWeek_btn, nextWeek_btn;
@@ -63,6 +71,7 @@ public class Valuation extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
 
     String TAG = "Valuation";
+    Context context = this;
     private final String PHP = "/user_data.php";
 
     @Override
@@ -70,12 +79,16 @@ public class Valuation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation);
 
+        replaceFragment(new Fragment_Valuation());
+        current_FRAG = FRAG_VALU ;
+
         month_text = findViewById(R.id.month_V);
         week_text = findViewById(R.id.week_V);
         lastWeek_btn = findViewById(R.id.lastWeek_btn_V);
         nextWeek_btn = findViewById(R.id.nextWeek_btn_V);
         valuationList = findViewById(R.id.valuation_listView_V);
 
+        Button self_btn = findViewById(R.id.selfEvaluation_btn);
         Button booking_btn = findViewById(R.id.bookingEvaluation_btn);
         Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
         Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
@@ -84,19 +97,38 @@ public class Valuation extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
+
         //      setwCount(0);
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
         //getValuation();
-        new Valuation.AsyncRetrieve().execute();
+        //new Valuation.AsyncRetrieve().execute();
+
         lastWeek_btn.setOnClickListener(v -> {
             int wCount = getwCount();
             setwCount(wCount-1);
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
+            switch (current_FRAG){
+                case 1 :
+                    replaceFragment(new Fragment_Valuation());
+                    break;
+                case 2 :
+                    replaceFragment(new Fragment_Valuation_Booking());
+                    break;
+                case 3 :
+                    replaceFragment(new Fragment_Valuation_Match_Making());
+                    break;
+                case 4 :
+                    replaceFragment(new Fragment_Valuation_Cancel());
+                    break;
+                default :
+                    replaceFragment(new Fragment_Valuation());
+                    break;
+            }
 
-            new AsyncRetrieve().execute();
+            //new AsyncRetrieve().execute();
 
         });
 
@@ -106,24 +138,71 @@ public class Valuation extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            new AsyncRetrieve().execute();
+            switch (current_FRAG){
+                case 1 :
+                    replaceFragment(new Fragment_Valuation());
+                    break;
+                case 2 :
+                    replaceFragment(new Fragment_Valuation_Booking());
+                    break;
+                case 3 :
+                    replaceFragment(new Fragment_Valuation_Match_Making());
+                    break;
+                case 4 :
+                    replaceFragment(new Fragment_Valuation_Cancel());
+                    break;
+                default :
+                    replaceFragment(new Fragment_Valuation());
+                    self_btn.setTextColor(Color.parseColor("#FB8527"));
+                    booking_btn.setTextColor(Color.BLACK);
+                    matchMaking_btn.setTextColor(Color.BLACK);
+                    cancel_btn.setTextColor(Color.BLACK);
+                    break;
+            }
+            //new AsyncRetrieve().execute();
         });
 
         //上方nav
+        self_btn.setOnClickListener(v->{
+            replaceFragment(new Fragment_Valuation());
+            current_FRAG = FRAG_VALU;
+            self_btn.setTextColor(Color.parseColor("#FB8527"));
+            booking_btn.setTextColor(Color.BLACK);
+            matchMaking_btn.setTextColor(Color.BLACK);
+            cancel_btn.setTextColor(Color.BLACK);
+        });
         booking_btn.setOnClickListener(v -> {
-            Intent bookingValuation_intent = new Intent(Valuation.this, Valuation_Booking.class);
+            /*Intent bookingValuation_intent = new Intent(Valuation.this, Valuation_Booking.class);
             bookingValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(bookingValuation_intent);
+            startActivity(bookingValuation_intent);*/
+            replaceFragment(new Fragment_Valuation_Booking());
+            current_FRAG = FRAG_VALU_BOOK;
+            booking_btn.setTextColor(Color.parseColor("#FB8527"));
+            self_btn.setTextColor(Color.BLACK);
+            matchMaking_btn.setTextColor(Color.BLACK);
+            cancel_btn.setTextColor(Color.BLACK);
         });
         matchMaking_btn.setOnClickListener(v -> {
-            Intent matchMakingValuation_intent = new Intent(Valuation.this, Valuation_MatchMaking.class);
+            /*Intent matchMakingValuation_intent = new Intent(Valuation.this, Valuation_MatchMaking.class);
             matchMakingValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(matchMakingValuation_intent);
+            startActivity(matchMakingValuation_intent);*/
+            replaceFragment(new Fragment_Valuation_Match_Making());
+            current_FRAG = FRAG_VALU_MATCH;
+            matchMaking_btn.setTextColor(Color.parseColor("#FB8527"));
+            self_btn.setTextColor(Color.BLACK);
+            booking_btn.setTextColor(Color.BLACK);
+            cancel_btn.setTextColor(Color.BLACK);
         });
         cancel_btn.setOnClickListener(v -> {
-            Intent cancelValuation_intent = new Intent(Valuation.this, Valuation_Cancel.class);
+            /*Intent cancelValuation_intent = new Intent(Valuation.this, Valuation_Cancel.class);
             cancelValuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(cancelValuation_intent);
+            startActivity(cancelValuation_intent);*/
+            replaceFragment(new Fragment_Valuation_Cancel());
+            current_FRAG = FRAG_VALU_CAN;
+            cancel_btn.setTextColor(Color.parseColor("#FB8527"));
+            self_btn.setTextColor(Color.BLACK);
+            booking_btn.setTextColor(Color.BLACK);
+            matchMaking_btn.setTextColor(Color.BLACK);
         });
 
         //底下nav
@@ -151,6 +230,13 @@ public class Valuation extends AppCompatActivity {
             startActivity(setting_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
+    }
+
+    private void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
     }
 
     private void getValuation(){
