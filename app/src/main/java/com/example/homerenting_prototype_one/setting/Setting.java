@@ -116,32 +116,32 @@ public class Setting extends AppCompatActivity {
         company_information.setOnClickListener(v -> {
             Intent information_intent = new Intent(Setting.this, Setting_Information.class);
             startActivity(information_intent);
-            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         service_item.setOnClickListener(v -> {
             Intent service_intent = new Intent(Setting.this, Setting_Service.class);
             startActivity(service_intent);
-            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         discount.setOnClickListener(v -> {
             Intent discount_intent = new Intent(Setting.this, Setting_Discount.class);
             startActivity(discount_intent);
-            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         customer_evaluation.setOnClickListener(v -> {
             Intent evaluation_intent = new Intent(Setting.this, Setting_Evaluation.class);
             startActivity(evaluation_intent);
-            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         system_announcement.setOnClickListener(v -> {
             Intent announcement_intent = new Intent(Setting.this, Setting_Announcement.class);
             startActivity(announcement_intent);
-            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         history_record.setOnClickListener(v -> {
             Intent record_intent = new Intent(Setting.this, Setting_Record.class);
             startActivity(record_intent);
-            overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         sign_out.setOnClickListener(view -> {
             SessionManager session = SessionManager.getInstance(context);
