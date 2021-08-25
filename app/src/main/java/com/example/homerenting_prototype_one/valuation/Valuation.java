@@ -151,13 +151,7 @@ public class Valuation extends AppCompatActivity {
                 case 4 :
                     replaceFragment(new Fragment_Valuation_Cancel());
                     break;
-                default :
-                    replaceFragment(new Fragment_Valuation());
-                    self_btn.setTextColor(Color.parseColor("#FB8527"));
-                    booking_btn.setTextColor(Color.BLACK);
-                    matchMaking_btn.setTextColor(Color.BLACK);
-                    cancel_btn.setTextColor(Color.BLACK);
-                    break;
+
             }
             //new AsyncRetrieve().execute();
         });

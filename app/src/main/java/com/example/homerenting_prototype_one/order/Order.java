@@ -153,13 +153,6 @@ public class Order extends AppCompatActivity {
                     replaceFragment(new Fragment_Order_Cancel());
 
                     break;
-                default :
-                    replaceFragment(new Fragment_Order());
-                    order_btn.setTextColor(Color.parseColor("#FB8527"));
-                    booking_order.setTextColor(Color.BLACK);
-                    today_order.setTextColor(Color.BLACK);
-                    cancel_order.setTextColor(Color.BLACK);
-                    break;
             }
             //getOrder();
             //new AsyncRetrieve().execute();
