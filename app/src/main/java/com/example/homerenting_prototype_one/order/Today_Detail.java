@@ -543,11 +543,12 @@ public class Today_Detail extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Handler handler = new Handler();
                         handler.postDelayed(() -> {
-                            Intent intent = new Intent(context, Order_Today.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            //Intent intent = new Intent(context, Order_Today.class);
+                            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            /*收款完成先不要完成訂單，待顧客確認簽名之後 ( ref. Signature_Pad : change_order_status() )*/
                             Log.d(TAG, "responseData of change_status: " + responseData);
-                            Toast.makeText(context, "完成訂單", Toast.LENGTH_LONG).show();
-                            startActivity(intent);
+                            Toast.makeText(context, "完成訂單 - 已收款", Toast.LENGTH_LONG).show();
+                            //startActivity(intent);
                         }, 500);
 
                     });
