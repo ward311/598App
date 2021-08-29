@@ -131,8 +131,8 @@ public class Setting_Discount extends AppCompatActivity {
                 updateDiscount();
                 finish();
             }else {
-              shortEdit.setText("90");
-              longEdit.setText("90");
+              shortEdit.setText("10");
+              longEdit.setText("10");
               Toast.makeText(context, "已超過優惠額度上限，請重新調整", Toast.LENGTH_LONG).show();
             }
 
@@ -822,7 +822,7 @@ public class Setting_Discount extends AppCompatActivity {
             EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
 
             if(shortSw.isChecked()) {
-                return 100 - Integer.parseInt(shortEdit.getText().toString());
+                return Integer.parseInt(shortEdit.getText().toString());
 
             }else{
               return 0;
@@ -833,7 +833,7 @@ public class Setting_Discount extends AppCompatActivity {
             Switch longSw = (Switch) longTermItem.getChildAt(SWITCH_INDEX);
             EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
             if(longSw.isChecked()) {
-                return 100 - Integer.parseInt(longEdit.getText().toString());
+                return Integer.parseInt(longEdit.getText().toString());
 
             }else{
                 return 0;
