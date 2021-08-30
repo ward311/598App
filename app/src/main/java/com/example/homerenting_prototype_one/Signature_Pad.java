@@ -119,7 +119,7 @@ public class Signature_Pad extends AppCompatActivity {
 
         return base64Image;
     }
-    public void saveImage(){
+    public void  saveImage(){
         RequestBody body = new FormBody.Builder()
                 .add("order_id", order_id)
                 .add("encode", base64Image)

@@ -263,7 +263,8 @@ public class Today_Detail extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     if(check){
-                                        change_order_status();
+                                        //change_order_status();
+                                        Toast.makeText(context, "完成訂單 - 已收款", Toast.LENGTH_LONG).show();
                                     }
                                     else {
                                         Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
