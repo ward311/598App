@@ -72,10 +72,12 @@ import static com.example.homerenting_prototype_one.show.global_function.getYear
 
 public class Setting_Discount extends AppCompatActivity {
     TableLayout discountTable;
-    Switch valuate, deposit, cancel;
+    Switch valuate, deposit, cancel, fix;
     Button checkBtn, addBtn, deleteBtn;
+    EditText editFixDiscount;
     ImageButton backBtn;
 
+    String fixDiscount ;
     ArrayList<String[]> period_discounts;
     ArrayList<String> delete_discounts;
     private static DatabaseHelper dbHelper;
@@ -100,13 +102,14 @@ public class Setting_Discount extends AppCompatActivity {
         backBtn = findViewById(R.id.back_imgBtn);
         addBtn = findViewById(R.id.add_btn_SDC);
         deleteBtn = findViewById(R.id.delete_discount_btn);
-
+        editFixDiscount = findViewById(R.id.editTextFixDiscount);
         period_discounts = new ArrayList<>();
         delete_discounts = new ArrayList<>();
         dbHelper = new DatabaseHelper(this);
         getFreeRow();
         getPeriodRow(true);
         getFreeData();
+        getFixDiscount();
         getData();
         setAddBtn();
         setDeleteBtn();
@@ -123,16 +126,20 @@ public class Setting_Discount extends AppCompatActivity {
 
             Log.d(TAG, "size of delete discount: "+delete_discounts.size());
             Log.d(TAG, "delete discount: "+delete_discounts);
-            TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
+            TableRow fixTermItem = (TableRow) discountTable.getChildAt(3);
+            EditText fixEdit = (EditText) fixTermItem.getChildAt(DISCOUNT_INDEX);
+            TableRow shortTermItem = (TableRow) discountTable.getChildAt(4);
             EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
-            TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
+            TableRow longTermItem = (TableRow) discountTable.getChildAt(5);
             EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
-            if(checkShortDiscount() + checkLongDiscount() <=20){
+            fixDiscount = editFixDiscount.getText().toString();
+            if(checkShortDiscount() + checkFixDiscount() <=20){
                 updateDiscount();
+                update_fixDiscount();
                 finish();
             }else {
-              shortEdit.setText("10");
-              longEdit.setText("10");
+                fixEdit.setText("10");
+                shortEdit.setText("10");
               Toast.makeText(context, "已超過優惠額度上限，請重新調整", Toast.LENGTH_LONG).show();
             }
 
@@ -151,12 +158,14 @@ public class Setting_Discount extends AppCompatActivity {
 
             Log.d(TAG, "size of delete discount: "+delete_discounts.size());
             Log.d(TAG, "delete discount: "+delete_discounts);
-            TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
+            TableRow shortTermItem = (TableRow) discountTable.getChildAt(4);
             EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
-            TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
+            TableRow longTermItem = (TableRow) discountTable.getChildAt(5);
             EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
-            if(checkShortDiscount() + checkLongDiscount() <=20){
+            fixDiscount = editFixDiscount.getText().toString();
+            if(checkShortDiscount() + checkFixDiscount() <=20){
                 updateDiscount();
+                update_fixDiscount();
                 Intent intent = new Intent(this, Setting.class);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -174,7 +183,7 @@ public class Setting_Discount extends AppCompatActivity {
     }
 
     private void getFreeRow(){
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < 4; i++){
             TableRow freeItem = (TableRow) discountTable.getChildAt(i);
             int switchPosition = 2;
             switch (i){
@@ -187,6 +196,8 @@ public class Setting_Discount extends AppCompatActivity {
                 case 2:
                     cancel = (Switch) freeItem.getChildAt(switchPosition);
                     break;
+                case 3:
+                    fix = (Switch) freeItem.getChildAt(switchPosition);
             }
         }
         Log.d(TAG, "valuate is "+valuate.isChecked());
@@ -196,10 +207,10 @@ public class Setting_Discount extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getPeriodRow(boolean init){
-        for(int i = 3; i < discountTable.getChildCount()-1; i++){
+        for(int i = 4; i < discountTable.getChildCount()-1; i++){
             final String[] period_discount = getRowData(i);
             if(init){
-                final int finalI = i-3;
+                final int finalI = i-4;
                 final TableRow discountItem = (TableRow) discountTable.getChildAt(i);
                 final Switch switcher = (Switch) discountItem.getChildAt(SWITCH_INDEX);
                 final TextView startView = (TextView) discountItem.getChildAt(START_INDEX);
@@ -226,7 +237,7 @@ public class Setting_Discount extends AppCompatActivity {
                     period_discounts.remove(finalI);
                 });
             }
-            else period_discounts.set((i-3), period_discount);
+            else period_discounts.set((i-4), period_discount);
         }
     }
 
@@ -304,7 +315,7 @@ public class Setting_Discount extends AppCompatActivity {
                 String dayStr = String.valueOf(dayOfMonth);
                 if(dayOfMonth < 10) dayStr = "0"+dayStr;
                 dateBtn.setText(year+"-"+monthStr+"-"+dayStr);
-                period_discounts.get(index)[type+3] = year+"-"+monthStr+"-"+dayStr;
+                period_discounts.get(index-1)[type+3] = year+"-"+monthStr+"-"+dayStr;
                 Log.d(TAG, "date change("+(index)+"/"+period_discounts.size()+"): "+ Arrays.toString(period_discounts.get(index)));
             },calendar.get(GregorianCalendar.YEAR),calendar.get(GregorianCalendar.MONTH),calendar.get(GregorianCalendar.DAY_OF_MONTH));
             date_picker.getDatePicker().setMinDate(new Date().getTime());
@@ -435,7 +446,53 @@ public class Setting_Discount extends AppCompatActivity {
             }
         });
     }
+    private void getFixDiscount(){
+        RequestBody body = new FormBody.Builder()
+                .add("company_id", getCompany_id(context))
+                .build();
 
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL + "/get_data/fix_discount_data.php")
+                .post(body)
+                .build();
+
+        //連線
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.i(TAG,"responseData of getFixDiscountData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    JSONObject fixItem = responseArr.getJSONObject(0);
+                    Log.i(TAG, "fixItems: "+fixItem);
+                    String fixPercentage = fixItem.getString("fixDiscount");
+                    boolean fixChecked = fixItem.getString("isEnable").equals("1");
+
+                    runOnUiThread(() -> {
+                        editFixDiscount.setText(fixPercentage);
+                        fix.setChecked(fixChecked);
+                    });
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void readData() {
         db = dbHelper.getReadableDatabase();
@@ -555,8 +612,8 @@ public class Setting_Discount extends AppCompatActivity {
                         final boolean finalEnable = enable;
                         runOnUiThread(() -> {
                             int row_index = 0;
-                            if (discountName.equals("短期優惠")) row_index = 3;
-                            else if (discountName.equals("長期優惠")) row_index = 4;
+                            if (discountName.equals("短期優惠")) row_index = 4;
+                            else if (discountName.equals("其他優惠")) row_index = 5;
 
                             if(row_index != 0){
                                 TableRow discountItem1 = (TableRow) discountTable.getChildAt(row_index);
@@ -575,7 +632,7 @@ public class Setting_Discount extends AppCompatActivity {
                                 endView.setText(endTime);
                                 discountIdText.setText(discountId);
 
-                                period_discounts.set(row_index-3, period_discount);
+                                period_discounts.set(row_index-4, period_discount);
                             }
                             else {
                                 period_discounts.add(period_discount);
@@ -816,8 +873,20 @@ public class Setting_Discount extends AppCompatActivity {
             }
         }
     }
+    private int checkFixDiscount(){
+        TableRow fixTermItem = (TableRow) discountTable.getChildAt(3);
+        Switch fixSw = (Switch) fixTermItem.getChildAt(SWITCH_INDEX);
+        EditText fixEdit = (EditText) fixTermItem.getChildAt(DISCOUNT_INDEX);
+        if(fixSw.isChecked()) {
+            return Integer.parseInt(fixEdit.getText().toString());
+
+        }else{
+            return 0;
+        }
+    }
+
     private int checkShortDiscount(){
-            TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
+            TableRow shortTermItem = (TableRow) discountTable.getChildAt(4);
             Switch shortSw = (Switch) shortTermItem.getChildAt(SWITCH_INDEX);
             EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
 
@@ -828,8 +897,8 @@ public class Setting_Discount extends AppCompatActivity {
               return 0;
             }
     }
-    private int checkLongDiscount(){
-            TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
+    /*private int checkLongDiscount(){
+            TableRow longTermItem = (TableRow) discountTable.getChildAt(5);
             Switch longSw = (Switch) longTermItem.getChildAt(SWITCH_INDEX);
             EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
             if(longSw.isChecked()) {
@@ -838,8 +907,8 @@ public class Setting_Discount extends AppCompatActivity {
             }else{
                 return 0;
             }
+    }*/
 
-    }
     private void updateDiscount(){
         String function_name = "modify_discount";
         RequestBody body = new FormBody.Builder()
@@ -872,6 +941,37 @@ public class Setting_Discount extends AppCompatActivity {
                 String responseData = response.body().string();
                 runOnUiThread(()->Toast.makeText(context, "優惠修改完成", Toast.LENGTH_LONG).show());
                 Log.d(TAG, "responseData of update_discount: " + responseData);
+            }
+        });
+    }
+    private void update_fixDiscount(){
+        String function_name = "modify_fix_discount";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .add("fixDiscount", fixDiscount)
+                .add("isEnable", String.valueOf(fix.isChecked()))
+                .build();
+        Log.i(TAG, "fix discount: "+fixDiscount+" %off, isEnable: "+fix.isChecked());
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                runOnUiThread(()->Toast.makeText(context, "優惠修改完成", Toast.LENGTH_LONG).show());
+                Log.d(TAG, "responseData of update_fix_discount: " + responseData);
             }
         });
     }
@@ -910,11 +1010,11 @@ public class Setting_Discount extends AppCompatActivity {
 
         Log.d(TAG, "size of delete discount: "+delete_discounts.size());
         Log.d(TAG, "delete discount: "+delete_discounts);
-        TableRow shortTermItem = (TableRow) discountTable.getChildAt(3);
+        TableRow shortTermItem = (TableRow) discountTable.getChildAt(4);
         EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
-        TableRow longTermItem = (TableRow) discountTable.getChildAt(4);
+        TableRow longTermItem = (TableRow) discountTable.getChildAt(5);
         EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
-        if(checkShortDiscount() + checkLongDiscount() <=20){
+        if(checkShortDiscount() + checkFixDiscount() <=20){
             updateDiscount();
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();

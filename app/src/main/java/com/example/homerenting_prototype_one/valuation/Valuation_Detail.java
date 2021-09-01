@@ -65,7 +65,7 @@ public class Valuation_Detail extends AppCompatActivity {
     Button furniture_btn, check_date_btn, phoneCall_btn;
 
     String name, gender, nameTitle, phone, selfValTime, fromAddress, toAddress;
-    String contactTime, valTime, notice;
+    String contactTime, valTime, notice, estimate_fee;
     String sysValPrice, valPrice;
 
     String TAG = "Valuation_Detail";
@@ -149,6 +149,7 @@ public class Valuation_Detail extends AppCompatActivity {
                     }
                     else valTime = "無偏好時間";
                     notice = order.getString("additional");
+                    estimate_fee = order.getString("estimate_fee");
 
                     runOnUiThread(() -> {
                         //dialog.dismiss();
@@ -161,6 +162,11 @@ public class Valuation_Detail extends AppCompatActivity {
                         contactTimeText.setText(contactTime);
                         cusValTimeText.setText(valTime);
                         noticeText.setText(notice);
+                        if(!estimate_fee.equals("null")){
+                            sysValPriceText.setText(estimate_fee);
+                        }else{
+                            sysValPriceText.setText("3600~8000");
+                        }
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();

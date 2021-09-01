@@ -75,7 +75,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     Button check_btn, furniture_btn, phoneCall_btn;
 
     String order_id;
-    String name, gender, phone, contactTime, valuationTime, fromAddress, toAddress, remainder, memo;
+    String name, gender, phone, contactTime, valuationTime, fromAddress, toAddress, estimate_fee, remainder, memo;
 
     CarAdapter carAdapter;
 
@@ -207,6 +207,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
                     }
                     else if(order.has("to_address")) toAddress = order.getString("to_address");
+                    estimate_fee = order.getString("estimate_fee");
+
                     remainder = order.getString("additional");
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
@@ -223,6 +225,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         fromAddressText.setText(fromAddress);
                         toAddressText.setText(toAddress);
                         remainderText.setText(remainder);
+                        if(!estimate_fee.equals("null")){
+                            valPriceText.setText(estimate_fee);
+                        }else{
+                            valPriceText.setText("3600~8000");
+                        }
                         memoEdit.setText(memo);
                     });
 
@@ -399,18 +406,26 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             check = true;
         }
         else{
-            Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
-            if(Integer.parseInt(fee) < getValPrice(0)){
-                priceEdit.setError("所輸入之搬家價格不得低於"+getValPrice(0));
-                Log.d(TAG, "搬家價格過低");
-                check = true;
+            if(valPriceText.getText().equals("3600~8000")){
+                Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
+                if(Integer.parseInt(fee) < getValPrice(0)){
+                    priceEdit.setError("所輸入之搬家價格不得低於"+getValPrice(0));
+                    Log.d(TAG, "搬家價格過低");
+                    check = true;
+                }
+
+                if(Integer.parseInt(fee) > getValPrice(1)){
+                    priceEdit.setError("所輸入之搬家價格不得高於"+getValPrice(1));
+                    Log.d(TAG, "搬家價格過高");
+                    check = true;
+                }
+            }else{
+                if(valPriceText.getText().length()==0){
+                    priceEdit.setError("所輸入之搬家價格不得為空");
+                    check = true;
+                }
             }
 
-            if(Integer.parseInt(fee) > getValPrice(1)){
-                priceEdit.setError("所輸入之搬家價格不得高於"+getValPrice(1));
-                Log.d(TAG, "搬家價格過高");
-                check = true;
-            }
         }
         return check;
     }

@@ -111,9 +111,6 @@ public class Valuation extends AppCompatActivity {
             month_text.setText(getMonthStr());
             data.clear();
             switch (current_FRAG){
-                case 1 :
-                    replaceFragment(new Fragment_Valuation());
-                    break;
                 case 2 :
                     replaceFragment(new Fragment_Valuation_Booking());
                     break;

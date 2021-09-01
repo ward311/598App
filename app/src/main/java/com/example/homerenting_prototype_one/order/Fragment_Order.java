@@ -86,12 +86,12 @@ public class Fragment_Order extends Fragment {
         new AsyncRetrieve().execute();
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         init();
         new AsyncRetrieve().execute();
-    }
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,7 +104,6 @@ public class Fragment_Order extends Fragment {
     private void init(){
         data.clear();
         orderRList.setAdapter(null);
-        new Fragment_Order.AsyncRetrieve().execute();
     }
     public class AsyncRetrieve extends AsyncTask<String, String, Void> {
         @Override

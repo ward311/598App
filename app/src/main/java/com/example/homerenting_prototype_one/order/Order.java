@@ -138,9 +138,6 @@ public class Order extends AppCompatActivity {
             month_text.setText(getMonthStr());
             data.clear();
             switch (current_FRAG){
-                case 5 :
-                    replaceFragment(new Fragment_Order());
-                    break;
                 case 6 :
                     replaceFragment(new Fragment_Order_Booking());
                     break;
@@ -151,7 +148,9 @@ public class Order extends AppCompatActivity {
                     break;
                 case 8 :
                     replaceFragment(new Fragment_Order_Cancel());
-
+                    break;
+                default :
+                    replaceFragment(new Fragment_Order());
                     break;
             }
             //getOrder();
@@ -290,7 +289,7 @@ public class Order extends AppCompatActivity {
         Log.d(TAG, "onResume");
         super.onResume();
         init();
-        new AsyncRetrieve().execute();
+        //new AsyncRetrieve().execute();
     }
 
     private void init(){
@@ -422,9 +421,6 @@ public class Order extends AppCompatActivity {
                 //在app畫面上呈現錯誤訊息
                 Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getOrder(), 3000);
-                Looper.loop();
             }
 
             //連線成功
