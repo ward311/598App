@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order_Today;
 import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.github.gcacace.signaturepad.views.SignaturePad;
@@ -156,18 +157,18 @@ public class Signature_Pad extends AppCompatActivity {
                         runOnUiThread(() -> Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show());
                     }else{
                         Log.d(TAG, ""+result.getString("status")+" "+result.getString("message"));
-                        update_today_order();
+                        update_today_order(); /*金額費用上傳*/
                         runOnUiThread(() -> {
                             Handler handler = new Handler();
                             handler.postDelayed(() -> {
-                                Intent intent = new Intent(context, Order_Today.class);
+                                Intent intent = new Intent(context, Calendar.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 Log.d(TAG, "responseData of change_status: " + responseData);
                                 Toast.makeText(context, "訂單完成", Toast.LENGTH_LONG).show();
                                 startActivity(intent);
                             }, 500);
                         });
-                        change_order_status();
+                        change_order_status(); /*更改訂單狀態 -> done */
                     }
                     //顯示資料
                 } catch (JSONException e) {

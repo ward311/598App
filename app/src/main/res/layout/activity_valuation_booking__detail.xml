@@ -105,7 +105,7 @@
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="25dp"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="聯絡時間"
@@ -123,12 +123,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="25dp"
                         android:layout_weight="1"
                         android:text="估價時間"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/valuationTime_VBD"
@@ -141,12 +142,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="25dp"
                         android:layout_weight="1"
                         android:text="搬出地址"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/FromAddress_VBD"
@@ -159,12 +161,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="25dp"
                         android:layout_weight="1"
                         android:text="搬入地址"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/ToAddress_VBD"

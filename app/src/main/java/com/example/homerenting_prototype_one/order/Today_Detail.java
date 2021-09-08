@@ -61,12 +61,12 @@ public class Today_Detail extends AppCompatActivity {
     ConstraintLayout cLayout;
 
     TextView nameText, nameTitleText, phoneText, movingTimeText, fromAddressText, toAddressText;
-    TextView remainderText, carText, staffText, worktimeText, feeText, toPriceText, finalPriceText, priceUnitText;
+    TextView remainderText, carText, staffText, worktimeText, feeText, toPriceText, finalPriceText, priceUnitText, extraPriceText;
 
     EditText changePriceText, memoEdit;
 
     String name, gender, phone, contact_address, movingTime, fromAddress, toAddress;
-    String remainder, car, staff, worktime, fee, memo, status, isWeb;
+    String remainder, car, staff, worktime, fee, memo, status, isWeb, additional_price;
 
     String order_id;
 
@@ -150,6 +150,8 @@ public class Today_Detail extends AppCompatActivity {
                     fee = order.getString("estimate_fee");
                     if(fee.equals("null")) fee = "0";
                     price_origin = Integer.parseInt(fee);
+                    additional_price = order.getString("additional_price");
+                    if(additional_price.equals("null")) additional_price = "0";
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
                     status = order.getString("order_status");
@@ -176,6 +178,7 @@ public class Today_Detail extends AppCompatActivity {
                         remainderText.setText(remainder);
                         worktimeText.setText(worktime);
                         feeText.setText(fee);
+                        extraPriceText.setText(additional_price);
                         finalPriceText.setText(fee);
                         memoEdit.setText(memo);
                     });
@@ -192,11 +195,13 @@ public class Today_Detail extends AppCompatActivity {
         getStaffData();
 
         check_btn.setOnClickListener(v -> {
-            fee = finalPriceText.getText().toString();
+            int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+            int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
+            fee = String.valueOf(finalPrice + additional_fee);
             memo = memoEdit.getText().toString();
             Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-            update_today_order();
-            checkTotalPrice();
+            update_today_order(); /*金額費用上傳*/
+            checkTotalPrice(); /* URL GET_METHOD 顯示訂單資料 */
 
         });
 
@@ -208,7 +213,9 @@ public class Today_Detail extends AppCompatActivity {
         });
 
         sign_btn.setOnClickListener(v -> {
-            fee = finalPriceText.getText().toString();
+            int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+            int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
+            fee = String.valueOf(finalPrice + additional_fee);
             memo = memoEdit.getText().toString();
             Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
             Intent sign_intent = new Intent(context, Signature_Pad.class);
@@ -459,6 +466,7 @@ public class Today_Detail extends AppCompatActivity {
         worktimeText = findViewById(R.id.worktime_OTD);
         feeText = findViewById(R.id.price_OTD);
         toPriceText = findViewById(R.id.toPrice_OTD);
+        extraPriceText = findViewById(R.id.extra_Price);
         finalPriceText = findViewById(R.id.finalPrice_OTD);
         priceUnitText = findViewById(R.id.priceUnitText_OTD);
         changePriceBtn = findViewById(R.id.changePrice_btn_OTD);

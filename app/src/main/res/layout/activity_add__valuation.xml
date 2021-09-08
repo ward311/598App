@@ -20,6 +20,7 @@
         android:gravity="center"
         android:layout_margin="15dp"
         android:textStyle="bold"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -105,7 +106,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="25dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
@@ -162,7 +163,7 @@
                     android:id="@+id/c_address_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.9"
                     android:ems="10"
                     android:hint="路、巷弄門牌"
                     android:inputType="text" />
@@ -186,8 +187,40 @@
                     android:id="@+id/phone_AV"
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="4.7"
                     android:inputType="phone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="聯絡時段"
+                    android:textColor="#000000" />
+
+                <Spinner
+                    android:id="@+id/contact_period"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.7"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/contactAvailable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TextView"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -210,6 +243,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="0.4"
+                    android:gravity="center"
                     android:hint="高雄市"
                     android:inputType="text" />
 
@@ -217,8 +251,9 @@
                     android:id="@+id/out_district_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.2"
+                    android:layout_weight="1.4"
                     android:ems="10"
+                    android:gravity="center"
                     android:hint="鼓山區"
                     android:inputType="text" />
 
@@ -226,8 +261,9 @@
                     android:id="@+id/out_address_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2.3"
+                    android:layout_weight="2.7"
                     android:ems="10"
+                    android:gravity="center"
                     android:hint="路、巷弄門牌"
                     android:inputType="text" />
             </LinearLayout>
@@ -399,7 +435,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.5"
                     android:gravity="center"
-                    android:hint="點擊選擇時間"
+                    android:hint="點擊選擇日期"
                     android:textSize="15sp"
                     android:visibility="visible" />
 
@@ -434,7 +470,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="5"
+                android:layout_weight="4.5"
                 android:orientation="horizontal">
 
                 <TextView

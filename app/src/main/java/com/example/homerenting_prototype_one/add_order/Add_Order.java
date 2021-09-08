@@ -848,8 +848,8 @@ public class Add_Order extends AppCompatActivity {
         });
     }
     public void onBackPressed() {
-        Intent intent = new Intent(context, Calendar.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        super.onBackPressed();
+        finish();
+
     }
 }

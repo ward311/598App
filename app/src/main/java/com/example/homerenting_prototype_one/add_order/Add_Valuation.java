@@ -31,6 +31,7 @@ import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.order.Order;
 import com.example.homerenting_prototype_one.setting.Setting;
+import com.example.homerenting_prototype_one.valuation.Fragment_Valuation_Booking;
 import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.valuation.Valuation_Booking;
 
@@ -59,10 +60,12 @@ public class Add_Valuation extends AppCompatActivity {
     EditText outCityText, outDistrictText, outAddressText;
     EditText inCityText, inDistrictText, inAddressText;
     TextView dateText, timeText;
+    TextView contactAvailable;
     RadioGroup genderRG;
     Button addBtn;
     Spinner contact_citySpin, contact_districtSpin;
     Spinner in_citySpin, in_districtSpin;
+    Spinner contactTime;
 
     String gender = "男";
     String time, time2;
@@ -82,6 +85,7 @@ public class Add_Valuation extends AppCompatActivity {
 
         linking();
         setSpinner();
+        setTimePeriodSpinner();
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
         Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
 
@@ -179,15 +183,13 @@ public class Add_Valuation extends AppCompatActivity {
 
             Handler handler = new Handler();
             handler.postDelayed(() -> {
-                Intent finish_valuation_intent = new Intent();
-                finish_valuation_intent.setClass(context, Valuation_Booking.class);
+                Intent finish_valuation_intent = new Intent(getApplicationContext(), Calendar.class);
                 startActivity(finish_valuation_intent);
             }, 1000);
         });
 
         globleBtn();
     }
-
     private boolean checkEmpty(){
         boolean check = false;
         if(TextUtils.isEmpty(nameText.getText().toString())){
@@ -208,6 +210,10 @@ public class Add_Valuation extends AppCompatActivity {
         }
         if(TextUtils.isEmpty(cAddressText.getText().toString())){
             cAddressText.setError("請輸入聯絡地址");
+            check = true;
+        }
+        if(TextUtils.isEmpty(contactAvailable.getText().toString())){
+            contactAvailable.setError("請輸入聯絡地址");
             check = true;
         }
         if(TextUtils.isEmpty(outCityText.getText().toString())){
@@ -236,11 +242,11 @@ public class Add_Valuation extends AppCompatActivity {
         }
 
         if(TextUtils.isEmpty(dateText.getText().toString())){
-            dateText.setError("請選擇日期");
+            dateText.setError("請選擇估價日期");
             check = true;
         }
         if(time == null || time.equals("")){
-            timeText.setError("請選擇時間");
+            timeText.setError("請選擇估價時間");
             check = true;
         }
         if(contact_citySpin.getSelectedItem().equals("請選擇縣市")){
@@ -278,11 +284,10 @@ public class Add_Valuation extends AppCompatActivity {
         String inDistrict = inDistrictText.getText().toString();
         String inAddress = inAddressText.getText().toString();
         String inCitySite = inCity + inDistrict + inAddress;
-
         String notice = noticeText.getText().toString();
         String date = dateText.getText().toString();
         String valuation_time = time+"~"+time2;
-
+        String contact_time = contactAvailable.getText().toString();
         switch(genderRG.getCheckedRadioButtonId()){
             case R.id.male_rbtn_AV:
                 gender = "男";
@@ -304,6 +309,7 @@ public class Add_Valuation extends AppCompatActivity {
                 .add("member_name", name)
                 .add("gender", gender)
                 .add("contact_address", commSite)
+                .add("contact_time", contact_time)
                 .add("phone", phone)
                 .add("outcity", outCity)
                 .add("outdistrict", outDistrict)
@@ -319,6 +325,7 @@ public class Add_Valuation extends AppCompatActivity {
                 ", member_name: " + name +
                 ", gender: " + gender +
                 ", contact_address: " + commSite +
+                ", contact_time: " + contact_time +
                 ", phone: " + phone +
                 ", cCity: " + cCity+
                 ", cDistrict: " + cDistrict +
@@ -561,6 +568,32 @@ public class Add_Valuation extends AppCompatActivity {
 
     }
 
+    private void setTimePeriodSpinner(){
+        final String[] periods= {"請選擇時段", "平日白天", "平日晚上", "假日白天", "假日晚上",
+                "平日皆可", "假日皆可", "以上皆可"};
+        ArrayAdapter<String> periodsList = new ArrayAdapter<>(context,
+                android.R.layout.simple_spinner_dropdown_item, periods);
+        contactTime.setAdapter(periodsList);
+        contactTime.setSelection(0);
+
+        contactTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int pos = contactTime.getSelectedItemPosition();
+                if(pos!=0){
+                    contactAvailable.setText(contactTime.getSelectedItem().toString());
+                }else{
+                    contactAvailable.setText("未選擇時間");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
     private void linking(){
         nameText = findViewById(R.id.name_AV);
         cAddressText = findViewById(R.id.c_city_edit);
@@ -583,5 +616,12 @@ public class Add_Valuation extends AppCompatActivity {
         contact_districtSpin = findViewById(R.id.con_district_spinner);
         in_citySpin = findViewById(R.id.incity_spinner);
         in_districtSpin = findViewById(R.id.indistrict_spinner);
+        contactTime = findViewById(R.id.contact_period);
+        contactAvailable = findViewById(R.id.contactAvailable);
+    }
+
+    public void onBackPressed(){
+        super.onBackPressed();
+        finish();
     }
 }

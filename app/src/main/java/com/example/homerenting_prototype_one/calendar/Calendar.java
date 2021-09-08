@@ -415,8 +415,10 @@ public class Calendar extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 final AlertDialog alertDialog = dialog.create();
-                if(alertDialog != null){
+                if(!alertDialog.isShowing()){
                     alertDialog.show();
+                }else{
+                    alertDialog.dismiss();
                 }
                 cancel_btn.setOnClickListener(v -> alertDialog.dismiss());
             });
@@ -453,14 +455,14 @@ public class Calendar extends AppCompatActivity {
                 Intent intent = new Intent(context, Add_Valuation.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
-                finish();
+                dialog.create().dismiss();
             });
 
             addO_btn.setOnClickListener(v -> {
                 Intent intent = new Intent(context, Add_Order.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
-                finish();
+                dialog.create().dismiss();
             });
 
 
@@ -924,11 +926,10 @@ public class Calendar extends AppCompatActivity {
             return null;
         }
     }
-    protected void onDestroy(){
+    /*protected void onDestroy(){
         super.onDestroy();
-        if (dialog != null) {
-            dialog.create().dismiss();
-        }
-    }
+        dialog.create().dismiss();
+
+    }*/
 }
 

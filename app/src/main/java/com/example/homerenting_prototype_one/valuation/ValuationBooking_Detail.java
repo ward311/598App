@@ -221,7 +221,15 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         else nameTitleText.setText("");
                         phoneText.setText(phone);
                         contactTimeText.setText(contactTime);
-                        valuationTimeText.setText(valuationTime);
+                        if(contactTime.equals("null")){
+                            contactTimeText.setText("未填寫時間");
+                        }
+                        if(valuationTime.contains("null")){
+                            String[] newVal = valuationTime.split("null");
+                            valuationTimeText.setText(newVal[0]);
+                        }else{
+                            valuationTimeText.setText(valuationTime);
+                        }
                         fromAddressText.setText(fromAddress);
                         toAddressText.setText(toAddress);
                         remainderText.setText(remainder);
@@ -374,7 +382,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     .setPositiveButton( "確認", (dialog, which) -> {
                         Handler handler = new Handler();
                         handler.postDelayed(() -> {
-                            Intent intent = new Intent(context, Valuation_Booking.class);
+                            Intent intent = new Intent(context, Valuation.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }, 1000);
@@ -686,8 +694,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         });
     }
     public void onBackPressed(){
-        Intent intent = new Intent(context, Valuation_Booking.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+       super.onBackPressed();
+       finish();
     }
 }

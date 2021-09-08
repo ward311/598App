@@ -217,6 +217,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.2"
                     android:ems="1"
+                    android:gravity="center"
                     android:hint="高雄市"
                     android:inputType="text" />
 
@@ -226,6 +227,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.2"
                     android:ems="1"
+                    android:gravity="center"
                     android:hint="鼓山區"
                     android:inputType="text" />
 

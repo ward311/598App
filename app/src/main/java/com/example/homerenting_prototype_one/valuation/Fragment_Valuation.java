@@ -97,7 +97,7 @@ public class Fragment_Valuation extends Fragment {
                 .add("startDate", startDate)
                 .add("endDate", endDate)
                 .build();
-        Log.i(TAG, "getOrder: company_id: "+company_id+", startDate:"+startDate+", endDate:"+endDate+", status:"+"self");
+        Log.i(TAG, "getValuation: company_id: "+company_id+", startDate:"+startDate+", endDate:"+endDate+", status:"+"self");
 
         //連線要求
         Request request = new Request.Builder()

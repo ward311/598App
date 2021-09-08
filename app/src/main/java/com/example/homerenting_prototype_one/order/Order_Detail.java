@@ -58,10 +58,10 @@ public class Order_Detail extends AppCompatActivity {
     OkHttpClient okHttpClient = new OkHttpClient();
 
     TextView nameText, nameTitleText, phoneText, movingTimeText, fromAddressText, toAddressText;
-    TextView remainderText, carText, staffText, worktimeText, feeText, memoText;
+    TextView remainderText, carText, staffText, worktimeText, feeText, memoText, extraFeeText;
 
     String name, gender, phone, contact_address, movingDatetime, movingTime;
-    String fromAddress, toAddress, remainder, car, staff, worktime, fee, memo, status;
+    String fromAddress, toAddress, remainder, car, staff, worktime, fee, memo, status, additional_fee;
     String order_id;
 
     Button call_btn, furniture_btn, check_btn, goOrderDetail;
@@ -160,7 +160,10 @@ public class Order_Detail extends AppCompatActivity {
                     if(worktime.equals("null")) worktime = "未預計工時";
                     fee = order.getString("estimate_fee");
                     if(fee.isEmpty() || fee.equals("null")) fee = order.getString("estimate_fee");
-                    fee = fee+"元";
+                    fee = fee+" 元";
+                    additional_fee = order.getString("additional_price");
+                    if(additional_fee.equals("null")) additional_fee = "0 元";
+                    additional_fee +=" 元";
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
 
@@ -190,6 +193,7 @@ public class Order_Detail extends AppCompatActivity {
                         remainderText.setText(remainder);
                         worktimeText.setText(worktime);
                         feeText.setText(fee);
+                        extraFeeText.setText(additional_fee);
                         memoText.setText(memo);
                     });
 
@@ -423,6 +427,7 @@ public class Order_Detail extends AppCompatActivity {
         staffText = findViewById(R.id.staff_OD);
         worktimeText = findViewById(R.id.worktime_OD);
         feeText = findViewById(R.id.price_OD);
+        extraFeeText = findViewById(R.id.extraFeeText);
         memoText = findViewById(R.id.PS_OD);
         check_btn = findViewById(R.id.check_order_btn);
         furniture_btn = findViewById(R.id.furniture_btn_OD);

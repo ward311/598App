@@ -380,6 +380,36 @@
                     app:layout_constraintTop_toTopOf="@+id/changePrice_btn_OTD" />
 
                 <TextView
+                    android:id="@+id/textExtra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="額外費用"
+                    android:textColor="#000000"
+                    app:layout_constraintStart_toStartOf="@+id/GL_V1"
+                    app:layout_constraintTop_toBottomOf="@+id/priceText" />
+
+                <TextView
+                    android:id="@+id/extra_Price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    app:layout_constraintBottom_toBottomOf="@+id/textExtra"
+                    app:layout_constraintStart_toStartOf="@+id/GL_V2"
+                    app:layout_constraintTop_toTopOf="@+id/textExtra" />
+
+                <TextView
+                    android:id="@+id/extraPrice_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="元"
+                    app:layout_constraintBottom_toBottomOf="@+id/textExtra"
+                    app:layout_constraintStart_toEndOf="@+id/extra_Price"
+                    app:layout_constraintTop_toTopOf="@+id/textExtra"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
                     android:id="@+id/PS_Text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -393,18 +423,20 @@
                     android:id="@+id/PS_OTD"
                     android:layout_width="0dp"
                     android:layout_height="110dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:background="#F2F2F2"
                     android:ems="10"
                     android:inputType="textPersonName"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/GL_V2"
-                    app:layout_constraintTop_toBottomOf="@+id/priceText" />
+                    app:layout_constraintTop_toBottomOf="@+id/priceText"
+                    app:layout_constraintVertical_bias="0.3" />
 
                 <Button
                     android:id="@+id/check_btn_OTD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/roundedbutton"
                     android:text="收款"
                     android:textColor="#FFFFFF"
@@ -420,7 +452,7 @@
                     android:id="@+id/sign_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/roundedbutton"
                     android:text="確認工單"
                     android:textColor="#FFFFFF"
