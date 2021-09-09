@@ -193,13 +193,13 @@ public class Today_Detail extends AppCompatActivity {
 
         getVehicleData();
         getStaffData();
-
+        /*收款按鈕*/
         check_btn.setOnClickListener(v -> {
             int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
             int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
-            fee = String.valueOf(finalPrice + additional_fee);
+            fee = String.valueOf(finalPrice);
             memo = memoEdit.getText().toString();
-            Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+            Log.d(TAG,"check_price_btn, moving_fee: "+fee+", extra_fee: "+ additional_fee +", memo: "+memo);
             update_today_order(); /*金額費用上傳*/
             checkTotalPrice(); /* URL GET_METHOD 顯示訂單資料 */
 
@@ -215,12 +215,12 @@ public class Today_Detail extends AppCompatActivity {
         sign_btn.setOnClickListener(v -> {
             int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
             int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
-            fee = String.valueOf(finalPrice + additional_fee);
+            String moving_fee = String.valueOf(finalPrice);
             memo = memoEdit.getText().toString();
             Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
             Intent sign_intent = new Intent(context, Signature_Pad.class);
             bundle.putString("order_id", order_id);
-            bundle.putString("fee", fee);
+            bundle.putString("fee", moving_fee);
             bundle.putString("memo", memo);
             sign_intent.putExtras(bundle);
             startActivity(sign_intent);
@@ -492,7 +492,7 @@ public class Today_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(context))
-                .add("accurate_fee", fee)
+                .add("accurate_fee", fee) /*只有搬家費用*/
                 .add("memo", memo)
                 .build();
 

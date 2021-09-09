@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -625,7 +626,8 @@ public class Calendar extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-
+                Looper.prepare();
+                Looper.loop();
                 Handler handler = new Handler();
                 handler.postDelayed(() -> new AsyncRetrieve().execute(), 3000);
 
