@@ -65,7 +65,7 @@ public class Valuation_Detail extends AppCompatActivity {
     Button furniture_btn, check_date_btn, phoneCall_btn;
 
     String name, gender, nameTitle, phone, selfValTime, fromAddress, toAddress;
-    String contactTime, valTime, notice, estimate_fee;
+    String contactTime, valDate, valTime, notice, estimate_fee;
     String sysValPrice, valPrice;
 
     String TAG = "Valuation_Detail";
@@ -143,15 +143,30 @@ public class Valuation_Detail extends AppCompatActivity {
                     else if(order.has("to_address")) toAddress = order.getString("to_address");
                     contactTime = order.getString("contact_time");
                     if(!order.getString("valuation_date").equals("null")){
-                        valTime = getDate(order.getString("valuation_date"));
-                        if(!order.getString("valuation_time").equals("null"))
-                            valTime = valTime+" "+order.getString("valuation_time");
+                        valDate = getDate(order.getString("valuation_date"));
+                        if(!order.getString("valuation_time").equals("null")){
+                            valTime = order.getString("valuation_time");
+                            runOnUiThread(()->{
+                                String[] date = valDate.split("/");
+                                String month = date[0];
+                                String day = date[1];
+                                String[] times = valTime.split("~");
+                                String time1 = times[0];
+                                String time2 = times[1];
+                                int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+                                pickDate_edit.setText(year + "-" + month + "-" + day);
+                                pickTime_edit.setText(time1);
+                                pickTime2_edit.setText(time2);
+                            });
+                        }
+
                     }
                     else valTime = "無偏好時間";
                     notice = order.getString("additional");
                     estimate_fee = order.getString("estimate_fee");
 
                     runOnUiThread(() -> {
+
                         //dialog.dismiss();
                         nameText.setText(name);
                         nameTitleText.setText(nameTitle);
@@ -160,7 +175,7 @@ public class Valuation_Detail extends AppCompatActivity {
                         fromAddressText.setText(fromAddress);
                         toAddressText.setText(toAddress);
                         contactTimeText.setText(contactTime);
-                        cusValTimeText.setText(valTime);
+                        cusValTimeText.setText(valDate +" "+valTime);
                         noticeText.setText(notice);
                         if(!estimate_fee.equals("null")){
                             sysValPriceText.setText(estimate_fee);

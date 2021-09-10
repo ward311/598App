@@ -26,6 +26,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.schedule.New_Schedule_Detail;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.Signature_Pad;
 import com.example.homerenting_prototype_one.system.System;
@@ -71,7 +72,7 @@ public class Today_Detail extends AppCompatActivity {
     String order_id;
 
     Button furnitureBtn, changePriceBtn, check_btn, sign_btn;
-
+    AlertDialog.Builder dialog;
     boolean change = false, check = false, result = false;
 
     int price_origin, price;
@@ -409,6 +410,16 @@ public class Today_Detail extends AppCompatActivity {
     }
 
     private void changePrice(){
+        changePriceText.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                new AlertDialog.Builder(context)
+                        .setTitle("變更提醒")
+                        .setMessage("價格變動請在備註欄附註原因")
+                        .setPositiveButton("知道了", (dialog, which) -> dialog.dismiss())
+                        .create()
+                        .show();
+            }
+        });
         changePriceText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
