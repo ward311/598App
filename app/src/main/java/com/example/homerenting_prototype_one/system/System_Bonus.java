@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -61,11 +63,12 @@ public class System_Bonus extends AppCompatActivity {
     private String TAG = "System_Bonus";
     SQLiteDatabase db;
     DatabaseHelper dbHelper;
-
+    SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system__bonus);
+        sp = getSharedPreferences("login", Context.MODE_PRIVATE);
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
         month = findViewById(R.id.monthdate_SB);
         doneOrderText = findViewById(R.id.doneOrder_text_SB);
@@ -81,6 +84,17 @@ public class System_Bonus extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         setDoneOrder();
         getStaffAssignData();
+        if(sp.getString("title", null).contains("staff")){
+            distributedBtn.setEnabled(false);
+            distributedBtn.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            distributedBtn.setAlpha(.3F);
+            listBtn.setEnabled(false);
+            listBtn.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            listBtn.setAlpha(.3F);
+        }else{
+            distributedBtn.setEnabled(true);
+            listBtn.setEnabled(true);
+        }
 
         back_btn.setOnClickListener(v -> {
             super.onBackPressed();
