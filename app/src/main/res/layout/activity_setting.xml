@@ -52,6 +52,7 @@
                 android:textSize="20sp" />
 
             <ImageView
+                android:id="@+id/companyImage"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:layout_gravity="right"

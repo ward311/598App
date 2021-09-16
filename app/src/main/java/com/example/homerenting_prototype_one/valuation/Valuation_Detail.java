@@ -161,7 +161,10 @@ public class Valuation_Detail extends AppCompatActivity {
                         }
 
                     }
-                    else valTime = "無偏好時間";
+                    else{
+                        valDate = "無偏好";
+                        valTime = "時間";
+                    }
                     notice = order.getString("additional");
                     estimate_fee = order.getString("estimate_fee");
 

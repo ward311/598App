@@ -80,11 +80,10 @@ public class System_Data extends AppCompatActivity {
     private ArrayList<String> new_employee;
 
     TextAdapter e_adapter, c_adapter;
-
+    Bundle bundle = new Bundle();
     int currentList;
     String new_carType;
-
-
+    String new_plateNum;
     private static DatabaseHelper dbHelper;
     private static SQLiteDatabase db;
 
@@ -479,7 +478,7 @@ public class System_Data extends AppCompatActivity {
             car_dialog.setPositiveButton("確認", (dialog, which) -> {
                 //輸入的內容
                 String new_weight = weight_edit.getText().toString();
-                String new_plateNum = plateNum_edit.getText().toString();
+                new_plateNum = plateNum_edit.getText().toString();
 
                 if(new_carType == null) new_carType = type_edit.getText().toString();
                 else type_edit.setText(new_carType);
@@ -499,7 +498,6 @@ public class System_Data extends AppCompatActivity {
                 }
                 else{
                     add_car(new_weight, new_carType, new_plateNum); //寫入資料庫
-                    Log.i(TAG, new_weight+"噸"+new_carType+" "+new_plateNum);
                 }
             });
 
@@ -596,6 +594,29 @@ public class System_Data extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG,"responseData of add_vehicle: "+responseData); //顯示資料
+                try {
+                    JSONObject addVehicle = new JSONObject(responseData);
+                    //取得資料
+                    if(addVehicle.getString("status").equals("failed")){
+                        runOnUiThread(() -> Toast.makeText(context, "新增車輛失敗", Toast.LENGTH_LONG).show());
+                    }else{
+                        Log.d(TAG, ""+addVehicle.getString("status")+" "+addVehicle.getString("message"));
+
+                        runOnUiThread(() -> {
+                            Toast.makeText(context, "請上傳車輛行照進行認證", Toast.LENGTH_LONG).show();
+                            Intent license_intent = new Intent(context, System_License.class);
+                            Log.i(TAG, weight+"噸, "+type+", "+new_plateNum);
+                            bundle.putString("new_plateNum", new_plateNum);
+                            license_intent.putExtras(bundle);
+                            startActivity(license_intent);
+                        });
+
+                    }
+                    //顯示資料
+                } catch (JSONException e) {
+                    e.printStackTrace();
+//
+                }
             }
         });
     }
