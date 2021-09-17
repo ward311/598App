@@ -75,7 +75,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     Button check_btn, furniture_btn, phoneCall_btn;
 
     String order_id;
-    String name, gender, phone, contactTime, valuationTime, fromAddress, toAddress, estimate_fee, remainder, memo;
+    String name, gender, phone, contactTime, valuationTime, fromAddress, toAddress, estimate_fee, remainder, memo, isAuto;
     String duration, distance, mvfopt, mvtopt;
     String estimateDis, estimateTime;
     CarAdapter carAdapter;
@@ -111,7 +111,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         furniture_btn.setOnClickListener(v -> {
             Intent intent = new Intent(context, Edit_Furniture.class);
-            fromBooking.putBoolean("clickFromBooking", true);
+            fromBooking.putString("clickFromBooking", isAuto);
             fromBooking.putString("estimate_distance", estimateDis);
             fromBooking.putString("estimate_time", estimateTime);
             fromBooking.putString("mvfopt", mvfopt);
@@ -223,6 +223,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     estimateTime = order.getString("estimate_time");//duration
 
                     remainder = order.getString("additional");
+                    isAuto = order.getString("auto");
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
 

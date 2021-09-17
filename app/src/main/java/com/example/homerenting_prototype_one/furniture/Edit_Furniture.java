@@ -167,7 +167,7 @@ public class Edit_Furniture extends AppCompatActivity {
     }
     private void getBundleFromBooking(){
         fromBooking = getIntent().getExtras();
-        Log.d(TAG, "fromBooking: "+fromBooking.getBoolean("clickFromBooking")+
+        Log.d(TAG, "fromBooking: "+fromBooking.getString("clickFromBooking")+
                 " estimate_dis: "+fromBooking.getString("estimate_distance")+
                 " estimate_time: "+fromBooking.getString("estimate_time")+
                 " mvfopt: "+fromBooking.getString("mvfopt")+
