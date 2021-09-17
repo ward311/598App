@@ -161,6 +161,7 @@ public class Today_Detail extends AppCompatActivity {
                         runOnUiThread(()-> {
                             check_btn.setVisibility(View.GONE);
                             sign_btn.setX(500);
+                            sign_btn.setText("收取款項確認工單");
                         });
 
                     }else{
@@ -205,7 +206,6 @@ public class Today_Detail extends AppCompatActivity {
             checkTotalPrice(); /* URL GET_METHOD 顯示訂單資料 */
 
         });
-
 
         call_btn.setOnClickListener(v -> {
             Intent call_intent = new Intent(Intent.ACTION_DIAL);
