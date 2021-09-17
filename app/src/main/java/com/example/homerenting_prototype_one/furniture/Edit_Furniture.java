@@ -64,7 +64,7 @@ public class Edit_Furniture extends AppCompatActivity {
     private final String PHP = "/furniture.php";
     String TAG = "Edit_Furniture";
     String order_id, fspace;
-
+    String duration, distance, mvfopt, mvtopt;
     String[] space, furniture;
     String[] new_furniture = new String[3];
 
@@ -78,6 +78,7 @@ public class Edit_Furniture extends AppCompatActivity {
     FurnitureAdapter adapter;
 
     Bundle bundle;
+    Bundle fromBooking;
     Context context = Edit_Furniture.this;
     public static final int FUNC_ADDORDER = 1;
     boolean newFurnitureLock = false;
@@ -106,6 +107,9 @@ public class Edit_Furniture extends AppCompatActivity {
         }
 
         bundle = getIntent().getExtras();
+
+        getBundleFromBooking();
+
         showBundleData();
         order_id = bundle.getString("order_id");
 //        order_id = "242";
@@ -161,7 +165,14 @@ public class Edit_Furniture extends AppCompatActivity {
 
         globalNav();
     }
-
+    private void getBundleFromBooking(){
+        fromBooking = getIntent().getExtras();
+        Log.d(TAG, "fromBooking: "+fromBooking.getBoolean("clickFromBooking")+
+                " estimate_dis: "+fromBooking.getString("estimate_distance")+
+                " estimate_time: "+fromBooking.getString("estimate_time")+
+                " mvfopt: "+fromBooking.getString("mvfopt")+
+                " mvtopt: "+fromBooking.getString("mvtopt"));
+    }
     private void getFurnitureData(){
         String function_name = "furniture_detail";
         String company_id = getCompany_id(this);
@@ -301,6 +312,9 @@ public class Edit_Furniture extends AppCompatActivity {
                     }
                     builder.setMessage(message);
                     builder.setPositiveButton("確定", (dialog, which) -> {
+                        /*if(fromBooking.getBoolean("clickFromBooking")){
+                            calculateFurnitureAPI();
+                        }*/
                         modifyFurniture();
                         toValuationBookingDetail();
                     });
@@ -633,7 +647,44 @@ public class Edit_Furniture extends AppCompatActivity {
 
 
     }
+    private void calculateFurnitureAPI(){
+        String function_name = "calculate_furniture";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()//修改處
+                .add("function_name", function_name)
+                .add("duration", duration)
+                .add("distance", distance)
+                .add("mvfopt", mvfopt)
+                .add("mvtopt", mvtopt)
+                .add("furniture_data", Arrays.deepToString(furniture_data))
+                .build();
+        Log.d(TAG,"furniture_data:"+ Arrays.deepToString(furniture_data));
 
+        Request request = new Request.Builder()
+                .url("https://igprice.com/api/price/GetPrice")//修改處
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of calculate_furniture: " + responseData);
+                if(responseData.contains("success"))//修改處
+                    runOnUiThread(() ->Toast.makeText(context, "修改家具成功", Toast.LENGTH_LONG).show());
+                else
+                    runOnUiThread(() ->Toast.makeText(context, "修改家具失敗", Toast.LENGTH_LONG).show());
+            }
+        });
+    }
     private void modifyFurniture(){
         String function_name = "modify_furniture";
         String company_id = getCompany_id(context);
@@ -707,6 +758,6 @@ public class Edit_Furniture extends AppCompatActivity {
     }
     public void onBackPressed(){
         super.onBackPressed();
-
+        
     }
 }

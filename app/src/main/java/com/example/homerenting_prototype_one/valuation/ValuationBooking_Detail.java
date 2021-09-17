@@ -76,7 +76,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     String order_id;
     String name, gender, phone, contactTime, valuationTime, fromAddress, toAddress, estimate_fee, remainder, memo;
-
+    String duration, distance, mvfopt, mvtopt;
+    String estimateDis, estimateTime;
     CarAdapter carAdapter;
 
     ArrayList<String[]> cars;
@@ -87,7 +88,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     Context context = ValuationBooking_Detail.this;
     Bundle bundle;
-
+    Bundle fromBooking = new Bundle();
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,13 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         furniture_btn.setOnClickListener(v -> {
             Intent intent = new Intent(context, Edit_Furniture.class);
+            fromBooking.putBoolean("clickFromBooking", true);
+            fromBooking.putString("estimate_distance", estimateDis);
+            fromBooking.putString("estimate_time", estimateTime);
+            fromBooking.putString("mvfopt", mvfopt);
+            fromBooking.putString("mvtopt", mvtopt);
             intent.putExtras(bundle);
+            intent.putExtras(fromBooking);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
@@ -208,6 +215,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     }
                     else if(order.has("to_address")) toAddress = order.getString("to_address");
                     estimate_fee = order.getString("estimate_fee");
+
+
+                    mvfopt = order.getString("from_elevator");
+                    mvtopt = order.getString("to_elevator");
+                    estimateDis = order.getString("estimate_distance");//distance
+                    estimateTime = order.getString("estimate_time");//duration
 
                     remainder = order.getString("additional");
                     memo = order.getString("memo");
