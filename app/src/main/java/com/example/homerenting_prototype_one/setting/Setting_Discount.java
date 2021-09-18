@@ -843,7 +843,7 @@ public class Setting_Discount extends AppCompatActivity {
         for(int i = 0; i < discountTable.getChildCount()-1; i++){
             TableRow tr = (TableRow) discountTable.getChildAt(i);
             Button db = (Button) tr.getChildAt(0);
-            db.setVisibility(View.VISIBLE);
+            db.setVisibility(View.GONE);
         }
 //        deleteBtn.setOnClickListener(v -> {
 //            if(!deleteMode){

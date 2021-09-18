@@ -367,7 +367,8 @@
                         android:id="@+id/add_btn_SDC"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:background="@drawable/ic_baseline_add_circle_outline_24" />
+                        android:background="@drawable/ic_baseline_add_circle_outline_24"
+                        android:visibility="gone" />
                 </LinearLayout>
 
             </TableRow>

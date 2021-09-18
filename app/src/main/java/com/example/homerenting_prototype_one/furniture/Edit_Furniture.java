@@ -647,7 +647,7 @@ public class Edit_Furniture extends AppCompatActivity {
 
 
     }
-    private void calculateFurnitureAPI(){
+    private void calculateFurnitureAPI(){ /*計算家具變更價格API*/
         String function_name = "calculate_furniture";
         String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()//修改處
