@@ -167,6 +167,10 @@ public class Edit_Furniture extends AppCompatActivity {
     }
     private void getBundleFromBooking(){
         fromBooking = getIntent().getExtras();
+        duration = fromBooking.getString("estimate_time");
+        distance = fromBooking.getString("estimate_distance");
+        mvfopt = fromBooking.getString("mvfopt");
+        mvtopt = fromBooking.getString("mvtopt");
         Log.d(TAG, "fromBooking: "+fromBooking.getString("clickFromBooking")+
                 " estimate_dis: "+fromBooking.getString("estimate_distance")+
                 " estimate_time: "+fromBooking.getString("estimate_time")+
@@ -312,11 +316,8 @@ public class Edit_Furniture extends AppCompatActivity {
                     }
                     builder.setMessage(message);
                     builder.setPositiveButton("確定", (dialog, which) -> {
-                        /*if(fromBooking.getBoolean("clickFromBooking")){
-                            calculateFurnitureAPI();
-                        }*/
-                        modifyFurniture();
-                        toValuationBookingDetail();
+                            modifyFurniture();
+                            toValuationBookingDetail();
                     });
                     builder.setNegativeButton("取消", (dialog, which) -> { });
                     AlertDialog dialog = builder.create();
@@ -326,8 +327,14 @@ public class Edit_Furniture extends AppCompatActivity {
             else{
                 if(order_id.equals("-1")) orderFurniture();
                 else {
-                    modifyFurniture();
-                    toValuationBookingDetail();
+                    if(fromBooking.getString("clickFromBooking").equals("1")){
+                        calculateFurnitureAPI();
+                        modifyFurniture();
+                        toValuationBookingDetail();
+                    }else{
+                        modifyFurniture();
+                        toValuationBookingDetail();
+                    }
                 }
             }
         });
@@ -658,10 +665,12 @@ public class Edit_Furniture extends AppCompatActivity {
                 .add("mvtopt", mvtopt)
                 .add("furniture_data", Arrays.deepToString(furniture_data))
                 .build();
-        Log.d(TAG,"furniture_data:"+ Arrays.deepToString(furniture_data));
+        Log.d(TAG,"duration:"+ duration+" distance: "+
+                distance +" movefrom: "+mvfopt+" moveto: "+mvtopt+
+                " furniture_dataToCalculate:"+ Arrays.deepToString(furniture_data));
 
         Request request = new Request.Builder()
-                .url("https://igprice.com/api/price/GetPrice")//修改處
+                .url(BuildConfig.SERVER_URL+"/furniture.php")//修改處
                 .post(body)
                 .build();
 
@@ -678,10 +687,6 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of calculate_furniture: " + responseData);
-                if(responseData.contains("success"))//修改處
-                    runOnUiThread(() ->Toast.makeText(context, "修改家具成功", Toast.LENGTH_LONG).show());
-                else
-                    runOnUiThread(() ->Toast.makeText(context, "修改家具失敗", Toast.LENGTH_LONG).show());
             }
         });
     }
@@ -714,10 +719,7 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of modify_furniture: " + responseData);
-                    if(responseData.contains("success"))
-                        runOnUiThread(() ->Toast.makeText(context, "修改家具成功", Toast.LENGTH_LONG).show());
-                    else
-                        runOnUiThread(() ->Toast.makeText(context, "修改家具失敗", Toast.LENGTH_LONG).show());
+
             }
         });
     }
