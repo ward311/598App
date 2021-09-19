@@ -66,7 +66,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     TextView nameText, nameTitleText, phoneText, contactTimeText, valuationTimeText;
     TextView fromAddressText, toAddressText, remainderText;
     TextView movingDateText, movingTimeText, valPriceText, newValPriceText;
-
+    TextView sugCarsText;
     EditText carNumEdit, carWeightEdit, carTypeEdit;
     EditText worktimeEdit, priceEdit, memoEdit;
 
@@ -89,6 +89,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     Context context = ValuationBooking_Detail.this;
     Bundle bundle;
     Bundle fromBooking = new Bundle();
+    Bundle getFromEdit = new Bundle();
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         cars.add(newString);
 
         bundle = getIntent().getExtras();
+        fromBooking = getIntent().getExtras();
+        getFromEdit = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         Log.i(TAG, "order_id: "+order_id);
 
@@ -108,7 +111,31 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         setValPrice();
 
         getOrder();
+        if(getFromEdit.getString("suggestCars")==null){
+            sugCarsText.setText("無建議車輛");
+        }else{
+            String nullCar = getFromEdit.getString("suggestCars");
+            String[] split_car = nullCar.split("[*]");
+            String isZero = split_car[1];
+            Log.d(TAG, "zero: "+isZero);
+            if(isZero.equals(" 0")){
+                sugCarsText.setText("無建議車輛");
+            }else{
+                sugCarsText.setText(getFromEdit.getString("suggestCars"));
+            }
+        }
+        if(getFromEdit.getString("suggestPrice")==null){
+            setValPrice();
+            valPriceText.setText("3600~8000");
+        }else{
+            newValPriceText.setText(getFromEdit.getString("suggestPrice"));
+        }
 
+        //int total = (int) ((int)((Integer.parseInt(getFromEdit.getString("suggestPrice"))+600))*0.9);
+        //newValPriceText.setText(String.valueOf(total));
+
+        Log.d(TAG, "get Car from API: "+getFromEdit.getString("suggestCars")+
+                ", price from API: "+getFromEdit.getString("suggestPrice"));
         furniture_btn.setOnClickListener(v -> {
             Intent intent = new Intent(context, Edit_Furniture.class);
             fromBooking.putString("clickFromBooking", isAuto);
@@ -223,7 +250,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     estimateTime = order.getString("estimate_time");//duration
 
                     remainder = order.getString("additional");
-                    isAuto = order.getString("auto");
+                    isAuto = order.getString("is_web");
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
 
@@ -370,6 +397,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bundle = getIntent().getExtras();
+        getFromEdit= getIntent().getExtras();
+
+
     }
 
     private void setCheckBtn(){
@@ -453,6 +483,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     }
 
     private void setValPrice() {
+        Log.d(TAG, ""+bundle.getBoolean("isEdited"));
         if (bundle.getBoolean("isEdited")){
             valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             newValPriceText.setVisibility(View.VISIBLE);
@@ -669,6 +700,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         newValPriceText = findViewById(R.id.newValPrice_VBD);
         memoEdit = findViewById(R.id.PS_VBD);
         carAssignRList = findViewById(R.id.car_assign_VBD);
+        sugCarsText = findViewById(R.id.sugText);
     }
 
     private void globalNav(){
@@ -679,7 +711,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        back_btn.setOnClickListener(v -> finish());
+       back_btn.setOnClickListener(v -> {
+           Intent calendar = new Intent(context, Calendar.class);
+           calendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+           startActivity(calendar);
+
+       });
 
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(context, Valuation.class);
@@ -708,7 +745,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         });
     }
     public void onBackPressed(){
-       super.onBackPressed();
-       finish();
+        super.onBackPressed();
+        Intent calendar = new Intent(context, Calendar.class);
+        calendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(calendar);
+
     }
 }

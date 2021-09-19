@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,8 @@ public class Edit_Furniture extends AppCompatActivity {
     String duration, distance, mvfopt, mvtopt;
     String[] space, furniture;
     String[] new_furniture = new String[3];
+    String suggestCar;
+    String totalPrice;
 
     int[][] furniture_data;
     int nowSpace;
@@ -317,7 +320,13 @@ public class Edit_Furniture extends AppCompatActivity {
                     builder.setMessage(message);
                     builder.setPositiveButton("確定", (dialog, which) -> {
                             modifyFurniture();
-                            toValuationBookingDetail();
+                            if(fromBooking.getString("clickFromBooking").equals("1")){
+                                calculateFurnitureAPI();
+                            }else{
+                                toValuationBookingDetail();
+                            }
+
+                            //toValuationBookingDetail();
                     });
                     builder.setNegativeButton("取消", (dialog, which) -> { });
                     AlertDialog dialog = builder.create();
@@ -328,9 +337,9 @@ public class Edit_Furniture extends AppCompatActivity {
                 if(order_id.equals("-1")) orderFurniture();
                 else {
                     if(fromBooking.getString("clickFromBooking").equals("1")){
-                        calculateFurnitureAPI();
-                        modifyFurniture();
-                        toValuationBookingDetail();
+                            calculateFurnitureAPI();
+                            modifyFurniture();
+                            //toValuationBookingDetail();
                     }else{
                         modifyFurniture();
                         toValuationBookingDetail();
@@ -342,12 +351,13 @@ public class Edit_Furniture extends AppCompatActivity {
 
     private void toValuationBookingDetail() {
         bundle.putBoolean("isEdited", isEdited());
-        Log.d(TAG, "edited furniture: "+isEdited());
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-        intent.setClass(context, ValuationBooking_Detail.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        Log.d(TAG, "isEdited: "+isEdited());
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            intent.putExtras(fromBooking);
+            intent.setClass(context, ValuationBooking_Detail.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
     }
 
     private void setSpaceSpr(){
@@ -687,6 +697,36 @@ public class Edit_Furniture extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of calculate_furniture: " + responseData);
+                try {
+                    JSONObject jsonObject = new JSONObject(responseData);
+                    JSONObject data = jsonObject.getJSONObject("Data");
+                    String data_status = jsonObject.getString("Status");
+                    if(!data_status.equals("200")){
+                        runOnUiThread(()->{
+                            Intent intent = new Intent();
+                            intent.putExtras(bundle);
+                            intent.putExtras(fromBooking);
+                            intent.setClass(context, ValuationBooking_Detail.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                        });
+                    }else{
+                        suggestCar = data.getString("SugCars");
+                        totalPrice = data.getString("TotalPrice");
+                        Log.d(TAG, "api sugcars: "+suggestCar+", Price: "+totalPrice);
+                        runOnUiThread(()->{
+                            fromBooking.putString("suggestCars", suggestCar);
+                            fromBooking.putString("suggestPrice", totalPrice);
+                            if(!suggestCar.equals(null)&&!totalPrice.equals(null))
+                                toValuationBookingDetail();
+                        });
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
@@ -759,7 +799,6 @@ public class Edit_Furniture extends AppCompatActivity {
         });
     }
     public void onBackPressed(){
-        super.onBackPressed();
 
     }
 }

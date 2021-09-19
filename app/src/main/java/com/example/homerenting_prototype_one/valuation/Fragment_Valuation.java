@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,6 +119,8 @@ public class Fragment_Valuation extends Fragment {
                     //在app畫面上呈現錯誤訊息
                     Toast.makeText(mContext, "連線失敗", Toast.LENGTH_LONG).show();
                 });
+                Looper.prepare();
+                Looper.loop();
                 Handler handler = new Handler();
                 handler.postDelayed(() -> getValuation(), 3000);
             }
