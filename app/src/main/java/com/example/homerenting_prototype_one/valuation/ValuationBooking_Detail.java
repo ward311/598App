@@ -345,9 +345,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                                 +" discount: "+discount
                                 +" isDiscount: "+isDiscount, Toast.LENGTH_LONG).show();*/
                         if(isDiscount){
-                            current_discount.setText("目前公司折扣: "+fixDiscount + "%off");
+                            current_discount.setText("定價折扣: "+fixDiscount + "%off");
                         }else{
-                            current_discount.setText("目前公司無折扣");
+                            current_discount.setText("目前無折扣");
                         }
 
                     });

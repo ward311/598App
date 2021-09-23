@@ -259,9 +259,6 @@ public class Signature_Pad extends AppCompatActivity {
 
     public void onBackPressed(){
         super.onBackPressed();
-        Intent back_intent = new Intent(this, Today_Detail.class);
-        back_intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(back_intent);
         this.finish();
     }
 }
