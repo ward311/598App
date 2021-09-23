@@ -67,6 +67,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     TextView fromAddressText, toAddressText, remainderText;
     TextView movingDateText, movingTimeText, valPriceText, newValPriceText;
     TextView sugCarsText;
+    TextView valRangeText;
+    TextView program_type;
+    TextView current_discount;
     EditText carNumEdit, carWeightEdit, carTypeEdit;
     EditText worktimeEdit, priceEdit, memoEdit;
 
@@ -76,13 +79,19 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     String order_id;
     String name, gender, phone, contactTime, valuationTime, fromAddress, toAddress, estimate_fee, remainder, memo, isAuto;
-    String duration, distance, mvfopt, mvtopt;
+    String program;
+    String mvfopt, mvtopt;
+    String sugCars;
     String estimateDis, estimateTime;
+    String fixDiscount, fixEnable;
+
+    Boolean isDiscount;
+    String lowPrice, middlePrice, highPrice;
     CarAdapter carAdapter;
 
     ArrayList<String[]> cars;
     int valPrice = -1, firstRowEmpty = 1;
-
+    float discount = 0;
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
 
@@ -109,8 +118,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         linking(); //將xml裡的元件連至此java
         setValPrice();
-
+        getCompanyFixDis();
         getOrder();
+        priceChangeAlert();
         if(getFromEdit.getString("suggestCars")==null){
             sugCarsText.setText("無建議車輛");
         }else{
@@ -121,14 +131,25 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             if(isZero.equals(" 0")){
                 sugCarsText.setText("無建議車輛");
             }else{
-                sugCarsText.setText(getFromEdit.getString("suggestCars"));
+                Handler handler = new Handler();
+                handler.postDelayed(() -> sugCarsText.setText(getFromEdit.getString("suggestCars")), 1500);
+
             }
         }
         if(getFromEdit.getString("suggestPrice")==null){
-            setValPrice();
+            //setValPrice();
             valPriceText.setText("3600~8000");
         }else{
-            newValPriceText.setText(getFromEdit.getString("suggestPrice"));
+
+            Handler handler = new Handler();
+            handler.postDelayed(() -> newValPriceText.setText(getFromEdit.getString("suggestPrice")), 1500);
+            handler.postDelayed(()->{
+                Log.d(TAG, "discount get: "+ discount+
+                        "isDis: "+isDiscount);
+                calculate();
+            } , 1500);
+
+
         }
 
         //int total = (int) ((int)((Integer.parseInt(getFromEdit.getString("suggestPrice"))+600))*0.9);
@@ -186,7 +207,157 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         globalNav(); //底下nav
     }
+    private void calculate(){
+        int most = 0;
+        int least = 0;
+        if(isDiscount){
+            discount = (100 - discount) / 100;
+            Log.d(TAG, "折扣換算: "+discount) ;
+        }else{
+            discount = 1;
+        }
+        int suggest = Integer.parseInt(newValPriceText.getText().toString());
 
+        switch (program){
+            case "一般方案":
+                if(suggest<=5000){
+                    least = (suggest+600) * 8/10;
+                    most = (int) ((suggest+600)*discount);
+                    break;
+                }else if(suggest>=5001&&suggest<=10000){
+                    least = (suggest+1200) * 8/10;
+                    most = (int) ((suggest+1800) * discount);
+                    break;
+                }else if(suggest>=10001&&suggest<=15000){
+                    least = (suggest+2400) * 8/10;
+                    most = (int) ((suggest+2400) * discount);
+                    break;
+                }else if(suggest>=15001&&suggest<=30000){
+                    least = (suggest+3000) * 8/10;
+                    most = (int) ((suggest+3000) * discount);
+                    break;
+                }else{
+                    least = (suggest+3600) * 8/10;
+                    most = (int) ((suggest+3600) * discount);
+                    break;
+                }
+
+            case "升等方案":
+                if(suggest<=5000){
+                    least = (suggest+1680) * 8/10;
+                    most = (int) ((suggest+1680)*discount);
+                    break;
+                }else if(suggest>=5001&&suggest<=10000){
+                    least = (suggest+3360) * 8/10;
+                    most = (int) ((suggest+3360) * discount);
+                    break;
+                }else if(suggest>=10001&&suggest<=15000){
+                    least = (suggest+5040) * 8/10;
+                    most = (int) ((suggest+5040) * discount);
+                    break;
+                }else if(suggest>=15001&&suggest<=30000){
+                    least = (suggest+6720) * 8/10;
+                    most = (int) ((suggest+6720) * discount);
+                    break;
+                }else{
+                    least = (suggest+10080) * 8/10;
+                    most = (int) ((suggest+10080) * discount);
+                    break;
+                }
+            default:
+                if(suggest<=5000){
+                    least = (suggest) * 8/10;
+                    most = (int) ((suggest)*discount);
+                    break;
+                }else if(suggest>=5001&&suggest<=10000){
+                    least = (suggest) * 8/10;
+                    most = (int) ((suggest) * discount);
+                    break;
+                }else if(suggest>=10001&&suggest<=15000){
+                    least = (suggest) * 8/10;
+                    most = (int) ((suggest) * discount);
+                    break;
+                }else if(suggest>=15001&&suggest<=30000){
+                    least = (suggest) * 8/10;
+                    most = (int) ((suggest) * discount);
+                    break;
+                }else{
+                    least = (suggest) * 8/10;
+                    most = (int) ((suggest) * discount);
+                    break;
+                }
+        }
+        String suggestStr = String.valueOf(most);
+        String lowestStr = String.valueOf(least);
+        Log.d(TAG, ""+ least +" "+ most);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> valRangeText.setText(lowestStr +"~"+suggestStr), 2000);
+    }
+    private void getCompanyFixDis(){
+        String function_name = "company_fix_discount";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", company_id)
+                .build();
+        Log.d(TAG, "company_id: "+company_id);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    JSONObject company02 = responseArr.getJSONObject(0);
+//                    Log.i(TAG,"JSONObject of order:"+order);
+
+                    //取得資料
+                    fixDiscount = company02.getString("fixDiscount");
+                    fixEnable = company02.getString("isEnable");
+                    discount = Integer.parseInt(fixDiscount);
+                    if(fixEnable.equals("1")){
+                        isDiscount = true;
+                    }else{
+                        isDiscount = false;
+                    }
+                    runOnUiThread(()->{
+                        /*Toast.makeText(context, "fixDiscount: "+fixDiscount+" "+
+                                " isEnable: "+ fixEnable
+                                +" discount: "+discount
+                                +" isDiscount: "+isDiscount, Toast.LENGTH_LONG).show();*/
+                        if(isDiscount){
+                            current_discount.setText("目前公司折扣: "+fixDiscount + "%off");
+                        }else{
+                            current_discount.setText("目前公司無折扣");
+                        }
+
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
     private void getOrder(){
         //傳至網頁的值，傳function_name
         String function_name = "valuation_detail";
@@ -241,14 +412,16 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
                     }
                     else if(order.has("to_address")) toAddress = order.getString("to_address");
+                    lowPrice = order.getString("low_price");
                     estimate_fee = order.getString("estimate_fee");
-
-
+                    middlePrice = order.getString("middle_price");
+                    highPrice = order.getString("high_price");
                     mvfopt = order.getString("from_elevator");
                     mvtopt = order.getString("to_elevator");
                     estimateDis = order.getString("estimate_distance");//distance
                     estimateTime = order.getString("estimate_time");//duration
-
+                    sugCars = order.getString("SugCars");
+                    program = order.getString("program");
                     remainder = order.getString("additional");
                     isAuto = order.getString("is_web");
                     memo = order.getString("memo");
@@ -274,12 +447,23 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         fromAddressText.setText(fromAddress);
                         toAddressText.setText(toAddress);
                         remainderText.setText(remainder);
+                        if(sugCars.equals("null") || sugCars.isEmpty()){
+                            sugCarsText.setText("無建議車輛");
+                        }else{
+                            sugCarsText.setText(sugCars);
+                        }
                         if(!estimate_fee.equals("null")){
                             valPriceText.setText(estimate_fee);
+                            int original = Integer.parseInt(middlePrice);
+                            String lowString = String.valueOf(original*8/10);
+                            String originalStr = String.valueOf(original);
+                            valRangeText.setText(lowString+"~"+originalStr);
                         }else{
                             valPriceText.setText("3600~8000");
                         }
                         memoEdit.setText(memo);
+                        program_type.setText(program);
+                        //Toast.makeText(context, "program: "+program,Toast.LENGTH_LONG).show();
                     });
 
                     int auto = order.getInt("auto");
@@ -419,6 +603,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
             updateValuation(moving_date, estimate_worktime, fee);
             updateCarDemand();
+            updateSugCars();
 
             new AlertDialog.Builder(context)
                     .setTitle("媒合中")
@@ -458,7 +643,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             check = true;
         }
         else{
-            if(valPriceText.getText().equals("3600~8000")){
+            if(valPriceText.getText().length()!=0){
                 Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
                 if(Integer.parseInt(fee) < getValPrice(0)){
                     priceEdit.setError("所輸入之搬家價格不得低於"+getValPrice(0));
@@ -466,11 +651,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     check = true;
                 }
 
-                if(Integer.parseInt(fee) > getValPrice(1)){
-                    priceEdit.setError("所輸入之搬家價格不得高於"+getValPrice(1));
-                    Log.d(TAG, "搬家價格過高");
-                    check = true;
-                }
             }else{
                 if(valPriceText.getText().length()==0){
                     priceEdit.setError("所輸入之搬家價格不得為空");
@@ -497,10 +677,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     }
 
     private int getValPrice(int i){
-        TextView valText;
-        if(valPrice < 0) valText = valPriceText;
-        else valText = newValPriceText;
-        String valPriceStr = valText.getText().toString();
+        String valPriceStr = valRangeText.getText().toString();
         String[] token = valPriceStr.split("~");
         Log.d(TAG, "valPriceStr: "+valPriceStr+", token:"+token[0]+" & "+token[1]);
         return Integer.parseInt(token[i]);
@@ -678,6 +855,52 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             }
         });
     }
+    private void updateSugCars(){
+        String function_name = "update_sugCars";
+        String company_id = getCompany_id(context);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id",company_id)
+                .add("order_id", order_id)
+                .add("sugCars",sugCarsText.getText().toString())
+
+                .build();
+        Log.d(TAG, "check_btn: order_id: "+order_id+", "+
+                "suggest Cars : "+ sugCarsText.getText().toString());
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData: " + responseData);
+            }
+        });
+    }
+    private void priceChangeAlert(){
+        priceEdit.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                new androidx.appcompat.app.AlertDialog.Builder(context)
+                        .setTitle("變更提醒")
+                        .setMessage("估價費用若高於估價區間請在備註欄附註原因")
+                        .setPositiveButton("知道了", (dialog, which) -> dialog.dismiss())
+                        .create()
+                        .show();
+            }
+        });
+    }
 
     public void linking(){
         nameText = findViewById(R.id.name_VBD);
@@ -701,6 +924,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         memoEdit = findViewById(R.id.PS_VBD);
         carAssignRList = findViewById(R.id.car_assign_VBD);
         sugCarsText = findViewById(R.id.sugText);
+        valRangeText = findViewById(R.id.range_text);
+        program_type = findViewById(R.id.setProgram);
+        current_discount = findViewById(R.id.cur_dis);
     }
 
     private void globalNav(){

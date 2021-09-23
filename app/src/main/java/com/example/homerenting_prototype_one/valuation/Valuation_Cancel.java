@@ -84,7 +84,7 @@ public class Valuation_Cancel extends AppCompatActivity {
 
         week_text.setText(getWeek());
         month_text.setText(getMonthStr());
-        getValuationCancel();
+        //getValuationCancel();
 
         lastWeek_btn.setOnClickListener(v -> {
             int wCount = getwCount();
@@ -92,7 +92,7 @@ public class Valuation_Cancel extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            getValuationCancel();
+            //getValuationCancel();
         });
 
         nextWeek_btn.setOnClickListener(v -> {
@@ -101,7 +101,7 @@ public class Valuation_Cancel extends AppCompatActivity {
             week_text.setText(getWeek());
             month_text.setText(getMonthStr());
             data.clear();
-            getValuationCancel();
+            //getValuationCancel();
         });
 
         //上方nav

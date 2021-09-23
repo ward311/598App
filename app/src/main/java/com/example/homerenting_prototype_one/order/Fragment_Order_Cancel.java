@@ -158,30 +158,27 @@ public class Fragment_Order_Cancel extends Fragment {
                     });
                 }
                 //顯示資訊
-                if(!responseData.equals("null")) {
+                  if(!responseData.equals("null")) {
                     for (int i = 0; i < data.size(); i++)
                         Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
                     final ListAdapter listAdapter = new ListAdapter(data);
                     mContext.runOnUiThread(() -> {
                         orderList.setAdapter(listAdapter);
-                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                String[] row_data = (String[]) parent.getItemAtPosition(position);
-                                Log.d(TAG, "row_data: " + Arrays.toString(row_data));
-                                String order_id = row_data[0];
+                        orderList.setOnItemClickListener((parent, view, position, id) -> {
+                            String[] row_data = (String[]) parent.getItemAtPosition(position);
+                            Log.d(TAG, "row_data: " + Arrays.toString(row_data));
+                            String order_id = row_data[0];
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("order_id", order_id);
-                                bundle.putBoolean("btn", true);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("order_id", order_id);
+                            bundle.putBoolean("btn", true);
 
-                                removeNew(order_id, mContext);
+                            removeNew(order_id, mContext);
 
-                                Intent intent = new Intent();
-                                intent.setClass(mContext, Order_Detail.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
+                            Intent intent = new Intent();
+                            intent.setClass(mContext, Order_Detail.class);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
                         });
                     });
                 }

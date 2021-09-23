@@ -138,6 +138,9 @@ public class Order extends AppCompatActivity {
             month_text.setText(getMonthStr());
             data.clear();
             switch (current_FRAG){
+                case 5 :
+                    replaceFragment(new Fragment_Order());
+                    break;
                 case 6 :
                     replaceFragment(new Fragment_Order_Booking());
                     break;
@@ -148,9 +151,6 @@ public class Order extends AppCompatActivity {
                     break;
                 case 8 :
                     replaceFragment(new Fragment_Order_Cancel());
-                    break;
-                default :
-                    replaceFragment(new Fragment_Order());
                     break;
             }
             //getOrder();
@@ -180,13 +180,6 @@ public class Order extends AppCompatActivity {
                     break;
                 case 8 :
                     replaceFragment(new Fragment_Order_Cancel());
-                    break;
-                default :
-                    replaceFragment(new Fragment_Order());
-                    order_btn.setTextColor(Color.parseColor("#FB8527"));
-                    booking_order.setTextColor(Color.BLACK);
-                    today_order.setTextColor(Color.BLACK);
-                    cancel_order.setTextColor(Color.BLACK);
                     break;
             }
             //getOrder();

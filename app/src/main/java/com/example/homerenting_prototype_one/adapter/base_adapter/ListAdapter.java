@@ -58,12 +58,13 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if(context == null){
             context = parent.getContext();
         }
+
         if (view == null){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item,null);
+            view = LayoutInflater.from(context).inflate(R.layout.row_item,null);
             viewHolder = new ViewHolder();
             viewHolder.item_layout = view.findViewById(R.id.row_layout);
             viewHolder.time_layout = view.findViewById(R.id.timeLayout);
@@ -79,16 +80,20 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
             viewHolder.new_icon = view.findViewById(R.id.new_icon_img);
             view.setTag(viewHolder);
         }
-        Log.i(TAG, "position: "+position+"/"+getCount());
-        viewHolder = (ViewHolder)view.getTag();
-        viewHolder.item_layout.setTag(R.id.row_layout,position);
-        viewHolder.date_text.setTag(R.id.data_text,position);
-        viewHolder.time_text.setTag(R.id.time_text,position);
-        viewHolder.name_text.setTag(R.id.name_SD,position);
-        viewHolder.gender_text.setTag(R.id.gender_text,position);
-        viewHolder.phone_text.setTag(R.id.phone_text,position);
-        viewHolder.address_text.setTag(R.id.address_text,position);
-        viewHolder.new_icon.setTag(R.id.new_icon_img,position);
+            Log.i(TAG, "position: "+position+"/"+getCount());
+            viewHolder = (ViewHolder)view.getTag();
+            viewHolder.item_layout.setTag(R.id.row_layout,position);
+            viewHolder.date_text.setTag(R.id.data_text,position);
+            viewHolder.time_text.setTag(R.id.time_text,position);
+            viewHolder.name_text.setTag(R.id.name_SD,position);
+            viewHolder.gender_text.setTag(R.id.gender_text,position);
+            viewHolder.phone_text.setTag(R.id.phone_text,position);
+            viewHolder.address_text.setTag(R.id.address_text,position);
+            viewHolder.new_icon.setTag(R.id.new_icon_img,position);
+
+
+
+
 
         int i = 1;
         //time zone

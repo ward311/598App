@@ -108,7 +108,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                         valuationtime = valuationtime+" "+order.getString("valuation_time");
                     if(!order.getString("moving_date").equals("null"))
                         movingTime = getDate(order.getString("moving_date")) + " " + getTime(order.getString("moving_date"));
-                    else movingTime = "";
+                    else movingTime = "無";
 
                     if(!order.has("from_address") || order.getString("from_address").equals("null")){
                         fromAddress = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
@@ -126,8 +126,8 @@ public class ValuationCancel_Detail extends AppCompatActivity {
 
                     runOnUiThread(() -> {
                         nameText.setText(name);
-                        if(gender.equals("female")) nameTitleText.setText("小姐");
-                        else if(gender.equals("male")) nameTitleText.setText("先生");
+                        if(gender.equals("女")) nameTitleText.setText("小姐");
+                        else if(gender.equals("男")) nameTitleText.setText("先生");
                         else nameTitleText.setText("");
                         phoneText.setText(phone);
                         movingTimeText.setText(movingTime);

@@ -111,6 +111,9 @@ public class Valuation extends AppCompatActivity {
             month_text.setText(getMonthStr());
             data.clear();
             switch (current_FRAG){
+                case 1 :
+                    replaceFragment(new Fragment_Valuation());
+                    break;
                 case 2 :
                     replaceFragment(new Fragment_Valuation_Booking());
                     break;
@@ -119,9 +122,6 @@ public class Valuation extends AppCompatActivity {
                     break;
                 case 4 :
                     replaceFragment(new Fragment_Valuation_Cancel());
-                    break;
-                default :
-                    replaceFragment(new Fragment_Valuation());
                     break;
             }
 
@@ -342,7 +342,7 @@ public class Valuation extends AppCompatActivity {
     public class AsyncRetrieve extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... Void) {
-           getValuation();
+           //getValuation();
            return null;
         }
     }

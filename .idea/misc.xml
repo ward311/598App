@@ -3,6 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting__discount.xml" value="0.30104166666666665" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_system__data.xml" value="0.13874873864783047" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_system_license.xml" value="0.30104166666666665" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation.xml" value="0.14581231079717458" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation__cancel.xml" value="0.1358695652173913" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_booking__detail.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_cancel__detail.xml" value="0.5" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/fragment_valuation__cancel.xml" value="0.14581231079717458" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/row_item.xml" value="0.21" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_add__order.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_edit__furniture.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting.xml" value="0.20244565217391305" />

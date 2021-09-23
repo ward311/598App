@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.valuation;
 
+import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getEndOfWeek;
 import static com.example.homerenting_prototype_one.show.global_function.getStartOfWeek;
@@ -7,6 +8,7 @@ import static com.example.homerenting_prototype_one.show.global_function.removeN
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -47,11 +49,10 @@ public class Fragment_Valuation_Cancel extends Fragment {
     ListView valuationCancelList;
 
     ArrayList<String[]> data = new ArrayList<>();
-    ListAdapter listAdapter;
 
     OkHttpClient okHttpClient = new OkHttpClient();
 
-    String TAG = "Valuation_Cancel";
+    String TAG = "Valuation_CancelFragment";
     private final String PHP = "/user_data.php";
 
     @Override
@@ -59,7 +60,8 @@ public class Fragment_Valuation_Cancel extends Fragment {
         super.onActivityCreated(savedInstanceState);
        mContext = getActivity();
        valuationCancelList = view.findViewById(R.id.listView_ValuationCancel);
-       getValuationCancel();
+        new AsyncRetrieve().execute();
+       //getValuationCancel();
     }
 
     @Override
@@ -71,6 +73,7 @@ public class Fragment_Valuation_Cancel extends Fragment {
     }
 
     private void getValuationCancel(){
+        clearDatalist();
         //將傳至網頁的值
         String function_name = "cancel_valuation_member";
         String startDate =  getStartOfWeek();
@@ -139,7 +142,7 @@ public class Fragment_Valuation_Cancel extends Fragment {
                 if(!responseData.equals("null")) {
                     for (int i = 0; i < data.size(); i++)
                         Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
-                    listAdapter = new ListAdapter(data);
+                    final ListAdapter listAdapter = new ListAdapter(data);
                     mContext.runOnUiThread(() -> {
                         valuationCancelList.setAdapter(listAdapter);
                         valuationCancelList.setOnItemClickListener((parent, view, position, id) -> {
@@ -161,5 +164,12 @@ public class Fragment_Valuation_Cancel extends Fragment {
                 }
             }
         });
+    }
+    public class AsyncRetrieve extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... Void) {
+            getValuationCancel();
+            return null;
+        }
     }
 }
