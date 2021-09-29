@@ -305,10 +305,6 @@ public class Evaluation_Detail extends AppCompatActivity {
         }
     }
 
-    private void updateReplyDB(){
-
-    }
-
     private void updateReply(){
         String function_name = "update_reply";
         String reply = reply_text.getText().toString();

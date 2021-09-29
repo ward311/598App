@@ -69,7 +69,7 @@ public class Today_Detail extends AppCompatActivity {
     String name, gender, phone, contact_address, movingTime, fromAddress, toAddress;
     String remainder, car, staff, worktime, fee, memo, status, isWeb, additional_price;
 
-    String order_id;
+    String order_id, member_id;
 
     Button furnitureBtn, changePriceBtn, check_btn, sign_btn;
     AlertDialog.Builder dialog;
@@ -134,6 +134,7 @@ public class Today_Detail extends AppCompatActivity {
 
                     //取得資料
                     name = order.getString("member_name");
+                    member_id = order.getString("member_id");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
                     contact_address = order.getString("contact_address");
@@ -228,9 +229,9 @@ public class Today_Detail extends AppCompatActivity {
             Intent sign_intent = new Intent(context, Signature_Pad.class);
             new AlertDialog.Builder(context)
                     .setTitle("更新會員資料")
-                    .setMessage("是否同意會員聯絡地址更新為搬出地址？")
+                    .setMessage("是否同意會員聯絡地址更新為搬入地址？")
                     .setPositiveButton("是", (dialog, which) -> {
-                       Toast.makeText(context, "會員資料已更新", Toast.LENGTH_LONG).show();
+                        updateAddress();
                         int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
                         int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
                         String moving_fee = String.valueOf(finalPrice);
@@ -485,7 +486,44 @@ public class Today_Detail extends AppCompatActivity {
             }
         });
     }
+    private void updateAddress(){
+        String function_name = "modify_contact_address";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("member_id", member_id)
+                .add("address", toAddress)
+                .build();
+        Log.d(TAG, "update member_id: "+member_id+", address: "+toAddress);
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of update_address: " + responseData); //顯示資料
+                runOnUiThread(() -> {
+                    if(responseData.contains("success"))
+                        Toast.makeText(context, "更新地址成功", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(context, "更新地址失敗", Toast.LENGTH_LONG).show();
+                });
+
+            }
+        });
+    }
     private void setPriceUnitPlace(){
         ConstraintSet s = new ConstraintSet();
         s.clone(cLayout);
