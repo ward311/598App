@@ -214,17 +214,49 @@ public class Today_Detail extends AppCompatActivity {
         });
 
         sign_btn.setOnClickListener(v -> {
-            int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+            /*int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
             int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
             String moving_fee = String.valueOf(finalPrice);
             memo = memoEdit.getText().toString();
             Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-            Intent sign_intent = new Intent(context, Signature_Pad.class);
+
             bundle.putString("order_id", order_id);
             bundle.putString("fee", moving_fee);
             bundle.putString("memo", memo);
-            sign_intent.putExtras(bundle);
-            startActivity(sign_intent);
+            sign_intent.putExtras(bundle);*/
+            //startActivity(sign_intent);
+            Intent sign_intent = new Intent(context, Signature_Pad.class);
+            new AlertDialog.Builder(context)
+                    .setTitle("更新會員資料")
+                    .setMessage("是否同意會員聯絡地址更新為搬出地址？")
+                    .setPositiveButton("是", (dialog, which) -> {
+                       Toast.makeText(context, "會員資料已更新", Toast.LENGTH_LONG).show();
+                        int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+                        int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
+                        String moving_fee = String.valueOf(finalPrice);
+                        memo = memoEdit.getText().toString();
+                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                        bundle.putString("order_id", order_id);
+                        bundle.putString("fee", moving_fee);
+                        bundle.putString("memo", memo);
+                        sign_intent.putExtras(bundle);
+                        startActivity(sign_intent);
+                    })
+                    .setNegativeButton("否", (dialog, which) -> {
+                        int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+                        int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
+                        String moving_fee = String.valueOf(finalPrice);
+                        memo = memoEdit.getText().toString();
+                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                        bundle.putString("order_id", order_id);
+                        bundle.putString("fee", moving_fee);
+                        bundle.putString("memo", memo);
+                        sign_intent.putExtras(bundle);
+                        startActivity(sign_intent);
+                    })
+                    .create()
+                    .show();
+
         });
 
         globalNav();
