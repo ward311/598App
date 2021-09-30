@@ -265,9 +265,9 @@ public class Today_Detail extends AppCompatActivity {
 
     private void checkTotalPrice(){
         Request request = new Request.Builder()
-                .url("http://140.117.71.91/598_new/appecpay.php?order_id="+order_id)
+                .url("http://140.117.71.91/598_new/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context))
                 .build();
-        Log.d(TAG, "order_id: "+ order_id);
+        Log.d(TAG, "order_id: "+ order_id+ " company_id: "+getCompany_id(context));
         OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -287,7 +287,8 @@ public class Today_Detail extends AppCompatActivity {
                             View view = inflater.inflate(R.layout.qrcode_image, null);
                             ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
 
-                            String url = "http://140.117.71.91/598_new/appecpay.php?order_id="+order_id;
+                            String url = "http://140.117.71.91/598_new/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context);
+                            Log.d(TAG, "website: "+ url);
                             try {
                                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                                 Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
