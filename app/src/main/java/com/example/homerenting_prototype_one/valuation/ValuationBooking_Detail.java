@@ -226,7 +226,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     break;
                 }else if(suggest>=5001&&suggest<=10000){
                     least = (suggest+1200) * 8/10;
-                    most = (int) ((suggest+1800) * discount);
+                    most = (int) ((suggest+1200) * discount);
                     break;
                 }else if(suggest>=10001&&suggest<=15000){
                     least = (suggest+2400) * 8/10;
@@ -340,10 +340,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         isDiscount = false;
                     }
                     runOnUiThread(()->{
-                        /*Toast.makeText(context, "fixDiscount: "+fixDiscount+" "+
+                        Toast.makeText(context, "fixDiscount: "+fixDiscount+" "+
                                 " isEnable: "+ fixEnable
                                 +" discount: "+discount
-                                +" isDiscount: "+isDiscount, Toast.LENGTH_LONG).show();*/
+                                +" isDiscount: "+isDiscount, Toast.LENGTH_LONG).show();
                         if(isDiscount){
                             current_discount.setText("定價折扣: "+fixDiscount + "%off");
                         }else{
