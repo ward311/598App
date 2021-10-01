@@ -264,7 +264,8 @@ public class System_License extends AppCompatActivity {
                     String [] new_data = data.split("null");
                     String path = new_data [0];
                     Log.d(TAG, "path: "+path);
-                    updateLicense(path);
+                    String base64 = Base64.encodeToString(path.getBytes(), Base64.DEFAULT);
+                    updateLicense(base64);
                 }
 
                 //close the streams //
