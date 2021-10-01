@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +51,9 @@ public class Setting extends AppCompatActivity {
 
     Context context = this;
     Button sign_out;
+    ImageView companyImage;
     String TAG = "Setting";
+    String imageUrl;
     private SharedPreferences sp ;
     SQLiteDatabase db;
     DatabaseHelper dbHelper;
@@ -65,7 +68,7 @@ public class Setting extends AppCompatActivity {
         LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_LL_S);
         LinearLayout system_announcement = findViewById(R.id.announce_LL_S);
         LinearLayout history_record = findViewById(R.id.btn_logout);
-
+        companyImage = findViewById(R.id.companyImage);
         dbHelper = new DatabaseHelper(this);
         TableContract.ServiceClassTable.getServiceClass(dbHelper);
         TableContract.ServiceItemTable.getServiceItem(dbHelper, context);
@@ -111,8 +114,6 @@ public class Setting extends AppCompatActivity {
         sign_out = findViewById(R.id.signout_btn);
 
         getCompanyDetail();
-
-
         company_information.setOnClickListener(v -> {
             Intent information_intent = new Intent(Setting.this, Setting_Information.class);
             startActivity(information_intent);
@@ -184,12 +185,9 @@ public class Setting extends AppCompatActivity {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //在app畫面上呈現錯誤訊息
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
+                runOnUiThread(() -> {
+                    //在app畫面上呈現錯誤訊息
+                    Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
                 });
             }
 
@@ -201,21 +199,17 @@ public class Setting extends AppCompatActivity {
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject company = responseArr.getJSONObject(0);
-                    final String email = company.getString("email");
+                    String email = company.getString("email");
+                    imageUrl = "http://140.117.71.91/598_new/"+company.getString("img");
+                    Log.d(TAG, imageUrl);
+                    runOnUiThread(() -> company_email.setText(email));
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            company_email.setText(email);
-                        }
-                    });
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
-
     private void getCommentData() {
         String function_name = "comment_data";
         RequestBody body = new FormBody.Builder()
@@ -293,41 +287,29 @@ public class Setting extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
         //底下nav
-        valuation_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent valuation_intent = new Intent(Setting.this, Valuation.class);
-                valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(valuation_intent);
-                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
-            }
+        valuation_btn.setOnClickListener(v -> {
+            Intent valuation_intent = new Intent(Setting.this, Valuation.class);
+            valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(valuation_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
-        order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent order_intent = new Intent(Setting.this, Order.class);
-                order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(order_intent);
-                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
-            }
+        order_btn.setOnClickListener(v -> {
+            Intent order_intent = new Intent(Setting.this, Order.class);
+            order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(order_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
-        calendar_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calender_intent = new Intent(Setting.this, Calendar.class);
-                calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(calender_intent);
-                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
-            }
+        calendar_btn.setOnClickListener(v -> {
+            Intent calender_intent = new Intent(Setting.this, Calendar.class);
+            calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(calender_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
-        system_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent system_intent = new Intent(Setting.this, System.class);
-                system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(system_intent);
-                overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
-            }
+        system_btn.setOnClickListener(v -> {
+            Intent system_intent = new Intent(Setting.this, System.class);
+            system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(system_intent);
+            overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
         });
         /*setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override

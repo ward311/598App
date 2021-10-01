@@ -239,6 +239,7 @@ public class Setting_Evaluation extends AppCompatActivity {
                         }catch (SQLException e){
                             e.printStackTrace();
                         }
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -248,6 +249,11 @@ public class Setting_Evaluation extends AppCompatActivity {
                     for(int i=0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                     setRList();
+                }else{
+                    runOnUiThread(()->{
+                            commentCount.setText("共0則評論");
+                            allStars.setText("評價0.0");
+                    });
                 }
             }
         });
