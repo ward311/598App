@@ -92,7 +92,7 @@ public class Evaluation_Detail extends AppCompatActivity {
         commentCountText.setText("共"+commentCount+"則評論");
         allStarText.setText("評價 "+serviceStar);
         Log.d(TAG, "commentCount: "+commentCount);
-//        getData();
+    //   getData();
 
         reply_edit.addTextChangedListener( new TextWatcher() {
             @Override

@@ -208,17 +208,14 @@ public class Fragment_Valuation_Booking extends Fragment {
     private void setRList(){
         final SwipeDeleteAdapter adapter = new SwipeDeleteAdapter(mContext, data, ValuationBooking_Detail.class);
         adapter.type = "Valuation";
-        mContext.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                valuationBookingList.setLayoutManager(new LinearLayoutManager(mContext));
-                valuationBookingList.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL)); //分隔線
-                valuationBookingList.setAdapter(adapter);
+        mContext.runOnUiThread(() -> {
+            valuationBookingList.setLayoutManager(new LinearLayoutManager(mContext));
+            valuationBookingList.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL)); //分隔線
+            valuationBookingList.setAdapter(adapter);
 
-                //側滑刪除
+            //側滑刪除
 //                ItemTouchHelper helper = new ItemTouchHelper(new RecyclerViewAction(context, adapter));
 //                helper.attachToRecyclerView(valuationBookingList);
-            }
         });
     }
 

@@ -142,10 +142,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         }else{
 
             Handler handler = new Handler();
-            handler.postDelayed(() -> newValPriceText.setText(getFromEdit.getString("suggestPrice")), 1500);
+            handler.postDelayed(() -> valPriceText.setText(getFromEdit.getString("suggestPrice")), 1500);
             handler.postDelayed(()->{
                 Log.d(TAG, "discount get: "+ discount+
-                        "isDis: "+isDiscount);
+                        " isDis: "+isDiscount);
                 calculate();
             } , 1500);
 
@@ -208,88 +208,100 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         globalNav(); //底下nav
     }
     private void calculate(){
-        int most = 0;
-        int least = 0;
+        float most = 0;
+        float least = 0;
         if(isDiscount){
             discount = (100 - discount) / 100;
             Log.d(TAG, "折扣換算: "+discount) ;
         }else{
             discount = 1;
         }
-        int suggest = Integer.parseInt(newValPriceText.getText().toString());
+        float suggest = Integer.parseInt(valPriceText.getText().toString());
 
         switch (program){
             case "一般方案":
                 if(suggest<=5000){
-                    least = (suggest+600) * 8/10;
-                    most = (int) ((suggest+600)*discount);
+                    least = Math.round((suggest+600) * 8/10);
+                    most = Math.round((suggest+600)*discount);
                     break;
                 }else if(suggest>=5001&&suggest<=10000){
-                    least = (suggest+1200) * 8/10;
-                    most = (int) ((suggest+1200) * discount);
+                    least = Math.round((suggest+1200) * 8/10);
+                    most =  Math.round((suggest+1200) * discount);
                     break;
                 }else if(suggest>=10001&&suggest<=15000){
-                    least = (suggest+2400) * 8/10;
-                    most = (int) ((suggest+2400) * discount);
+                    least = Math.round((suggest+1800) * 8/10);
+                    most =  Math.round((suggest+1800) * discount);
                     break;
-                }else if(suggest>=15001&&suggest<=30000){
-                    least = (suggest+3000) * 8/10;
-                    most = (int) ((suggest+3000) * discount);
+                }else if(suggest>=15001&&suggest<=20000){
+                    least = Math.round((suggest+2400) * 8/10);
+                    most =  Math.round((suggest+2400) * discount);
+                    break;
+                }else if(suggest>=20001&&suggest<=30000) {
+                    least = Math.round((suggest+3000) * 8/10);
+                    most =  Math.round((suggest+3000) * discount);
                     break;
                 }else{
-                    least = (suggest+3600) * 8/10;
-                    most = (int) ((suggest+3600) * discount);
+                    least = Math.round((suggest+3600) * 8/10);
+                    most =  Math.round((suggest+3600) * discount);
                     break;
                 }
 
             case "升等方案":
                 if(suggest<=5000){
-                    least = (suggest+1680) * 8/10;
-                    most = (int) ((suggest+1680)*discount);
+                    least = Math.round((suggest+1680) * 8/10);
+                    most =  Math.round((suggest+1680)*discount);
                     break;
                 }else if(suggest>=5001&&suggest<=10000){
-                    least = (suggest+3360) * 8/10;
-                    most = (int) ((suggest+3360) * discount);
+                    least = Math.round((suggest+3360) * 8/10);
+                    most =  Math.round((suggest+3360) * discount);
                     break;
                 }else if(suggest>=10001&&suggest<=15000){
-                    least = (suggest+5040) * 8/10;
-                    most = (int) ((suggest+5040) * discount);
+                    least = Math.round((suggest+5040) * 8/10);
+                    most =  Math.round((suggest+5040) * discount);
                     break;
-                }else if(suggest>=15001&&suggest<=30000){
-                    least = (suggest+6720) * 8/10;
-                    most = (int) ((suggest+6720) * discount);
+                }else if(suggest>=15001&&suggest<=20000){
+                    least = Math.round((suggest+6720) * 8/10);
+                    most =  Math.round((suggest+6720) * discount);
+                    break;
+                }else if(suggest>=20001&&suggest<=30000){
+                    least = Math.round((suggest+8400) * 8/10);
+                    most =  Math.round((suggest+8400) * discount);
                     break;
                 }else{
-                    least = (suggest+10080) * 8/10;
-                    most = (int) ((suggest+10080) * discount);
+                    least = Math.round((suggest+10080) * 8/10);
+                    most =  Math.round((suggest+10080) * discount);
                     break;
                 }
-            default:
+            case "超值方案":
                 if(suggest<=5000){
-                    least = (suggest) * 8/10;
-                    most = (int) ((suggest)*discount);
+                    least = Math.round((suggest) * 8/10);
+                    most =  Math.round((suggest)*discount);
                     break;
                 }else if(suggest>=5001&&suggest<=10000){
-                    least = (suggest) * 8/10;
-                    most = (int) ((suggest) * discount);
+                    least = Math.round((suggest) * 8/10);
+                    most = Math.round((suggest) * discount);
                     break;
                 }else if(suggest>=10001&&suggest<=15000){
-                    least = (suggest) * 8/10;
-                    most = (int) ((suggest) * discount);
+                    least = Math.round((suggest) * 8/10);
+                    most = Math.round((suggest) * discount);
                     break;
-                }else if(suggest>=15001&&suggest<=30000){
-                    least = (suggest) * 8/10;
-                    most = (int) ((suggest) * discount);
+                }else if(suggest>=15001&&suggest<=20000){
+                    least = Math.round((suggest) * 8/10);
+                    most =  Math.round((suggest)*discount);
+                    break;
+                }else if(suggest>=20001&&suggest<=30000){
+                    least = Math.round((suggest) * 8/10);
+                    most =  Math.round((suggest)*discount);
                     break;
                 }else{
-                    least = (suggest) * 8/10;
-                    most = (int) ((suggest) * discount);
+                    least = Math.round((suggest) * 8/10);
+                    most =  Math.round((suggest)*discount);
                     break;
                 }
         }
-        String suggestStr = String.valueOf(most);
-        String lowestStr = String.valueOf(least);
-        Log.d(TAG, ""+ least +" "+ most);
+        String suggestStr = String.valueOf((int)most);
+        String lowestStr = String.valueOf((int)least);
+        Log.d(TAG, ""+ (int)least +" "+ (int)most);
 
         Handler handler = new Handler();
         handler.postDelayed(() -> valRangeText.setText(lowestStr +"~"+suggestStr), 2000);
@@ -665,12 +677,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     private void setValPrice() {
         Log.d(TAG, ""+bundle.getBoolean("isEdited"));
         if (bundle.getBoolean("isEdited")){
-            valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            newValPriceText.setVisibility(View.VISIBLE);
+            //valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            newValPriceText.setVisibility(View.INVISIBLE);
             valPrice = 1;
         }
         else {
-            valPriceText.setPaintFlags(valPriceText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            //valPriceText.setPaintFlags(valPriceText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             newValPriceText.setVisibility(View.INVISIBLE);
             valPrice = -1;
         }
