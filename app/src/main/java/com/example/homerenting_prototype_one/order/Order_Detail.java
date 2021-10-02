@@ -299,9 +299,9 @@ public class Order_Detail extends AppCompatActivity {
                     Log.d(TAG, "car: "+car);
 
                     runOnUiThread(() -> carText.setText(car));
+                    if(!responseData.equals("null")) getVehicleDemandData();
                 } catch (JSONException e) {
-                    if(!responseData.equals("null")) e.printStackTrace();
-                    getVehicleDemandData();
+                    e.printStackTrace();
                 }
             }
         });

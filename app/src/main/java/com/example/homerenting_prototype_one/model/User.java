@@ -7,6 +7,7 @@ public class User {
     private String email;
     private String phone;
     private String token;
+    private String title;
     private String verifyCode;
 
 //    public User(String id, String company_id, String name, String phone){
@@ -36,4 +37,7 @@ public class User {
 
     public String getVerifyCode(){return verifyCode; }
     public void setVerifyCode(String code){this.verifyCode = code;}
+
+    public String getTitle(){return title;}
+    public void setTitle(String title){this.title = title;}
 }

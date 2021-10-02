@@ -54,7 +54,7 @@ public class Bonus_Distribution extends AppCompatActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
     private Context context = this;
-    private String TAG = "Order";
+    private String TAG = "Bonus_Distribution";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

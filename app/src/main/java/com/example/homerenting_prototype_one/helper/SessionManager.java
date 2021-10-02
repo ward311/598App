@@ -60,6 +60,8 @@ public class SessionManager {
                 user.setEmail(obj.getString("user_email"));
                 user.setPhone(obj.getString("user_phone"));
                 user.setToken(obj.getString("token"));
+                user.setVerifyCode(obj.getString("verify_code"));
+                user.setTitle(obj.getString("title"));
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.d(TAG, "user data is not json type");

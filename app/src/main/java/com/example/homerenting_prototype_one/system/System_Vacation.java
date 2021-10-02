@@ -519,7 +519,7 @@ public class System_Vacation extends AppCompatActivity {
     }
 
     private void update_leave(final String date){
-        String function_name = "modify_vehicle_staff_leave";
+        String function_name = "modify_staff_vehicle_leave";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
