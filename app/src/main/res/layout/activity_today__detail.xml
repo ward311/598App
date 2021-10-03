@@ -204,6 +204,17 @@
                     app:layout_constraintStart_toStartOf="@+id/GL_V2"
                     app:layout_constraintTop_toBottomOf="@+id/view" />
 
+                <Button
+                    android:id="@+id/furniture_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/system_schedule_btn_drawable"
+                    android:text="修改傢具"
+                    android:textColor="#FB8527"
+                    app:layout_constraintStart_toEndOf="@+id/furniture_btn_OTD"
+                    app:layout_constraintTop_toBottomOf="@id/view" />
+
                 <View
                     android:id="@+id/view2"
                     android:layout_width="416dp"

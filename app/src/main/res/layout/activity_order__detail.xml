@@ -244,6 +244,15 @@
         app:layout_constraintTop_toBottomOf="@+id/view3" />
 
     <TextView
+        android:id="@+id/car_demanding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="偏好需求車輛"
+        app:layout_constraintStart_toEndOf="@+id/car_OD"
+        app:layout_constraintTop_toTopOf="@+id/car_OD" />
+
+    <TextView
         android:id="@+id/staffText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

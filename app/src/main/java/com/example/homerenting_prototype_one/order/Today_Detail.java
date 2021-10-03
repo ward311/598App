@@ -26,6 +26,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
 import com.example.homerenting_prototype_one.schedule.New_Schedule_Detail;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.Signature_Pad;
@@ -71,13 +72,14 @@ public class Today_Detail extends AppCompatActivity {
 
     String order_id, member_id;
 
-    Button furnitureBtn, changePriceBtn, check_btn, sign_btn;
+    Button furnitureBtn, changePriceBtn, check_btn, sign_btn, change_furniture;
     AlertDialog.Builder dialog;
     boolean change = false, check = false, result = false;
 
     int price_origin, price;
 
     Bundle bundle;
+    Bundle fromBooking = new Bundle();
 
 
     String TAG = "Today_Detail";
@@ -213,7 +215,15 @@ public class Today_Detail extends AppCompatActivity {
             call_intent.setData(Uri.parse("tel:"+phone));
             startActivity(call_intent);
         });
-
+        change_furniture.setOnClickListener( v->{
+            Intent change_intent = new Intent(this, Edit_Furniture.class);
+            bundle.putBoolean("fromOrder", true);
+            bundle.putString("order_id", order_id);
+            fromBooking.putString("clickFromBooking","0");
+            change_intent.putExtras(bundle);
+            change_intent.putExtras(fromBooking);
+            startActivity(change_intent);
+        });
         sign_btn.setOnClickListener(v -> {
             /*int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
             int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
@@ -556,6 +566,7 @@ public class Today_Detail extends AppCompatActivity {
         memoEdit = findViewById(R.id.PS_OTD);
         check_btn = findViewById(R.id.check_btn_OTD);
         sign_btn = findViewById(R.id.sign_btn);
+        change_furniture = findViewById(R.id.furniture_btn);
     }
 
     private void setFurniture_btn(){
@@ -657,9 +668,8 @@ public class Today_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         back_btn.setOnClickListener(v -> {
-            super.onBackPressed();
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
+            this.finish();
         });
         //底下nav
         valuation_btn.setOnClickListener(v -> {

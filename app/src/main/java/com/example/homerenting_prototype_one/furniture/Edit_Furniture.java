@@ -27,6 +27,8 @@ import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.adapter.base_adapter.FurnitureAdapter;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.add_order.Add_Order;
+import com.example.homerenting_prototype_one.order.Order_Today;
+import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -322,6 +324,11 @@ public class Edit_Furniture extends AppCompatActivity {
                             modifyFurniture();
                             if(fromBooking.getString("clickFromBooking").equals("1")){
                                 calculateFurnitureAPI();
+                            }else if(bundle.containsKey("fromOrder")){
+                                Intent today = new Intent(this, Today_Detail.class);
+                                today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                today.putExtras(bundle);
+                                startActivity(today);
                             }else{
                                 toValuationBookingDetail();
                             }
@@ -340,6 +347,12 @@ public class Edit_Furniture extends AppCompatActivity {
                             calculateFurnitureAPI();
                             modifyFurniture();
                             //toValuationBookingDetail();
+                    }else if(bundle.containsKey("fromOrder")){
+                        Intent today = new Intent(this, Today_Detail.class);
+                        today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        today.putExtras(bundle);
+                        modifyFurniture();
+                        startActivity(today);
                     }else{
                         modifyFurniture();
                         toValuationBookingDetail();

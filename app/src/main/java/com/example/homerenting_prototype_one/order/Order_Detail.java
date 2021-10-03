@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -59,7 +60,7 @@ public class Order_Detail extends AppCompatActivity {
 
     TextView nameText, nameTitleText, phoneText, movingTimeText, fromAddressText, toAddressText;
     TextView remainderText, carText, staffText, worktimeText, feeText, memoText, extraFeeText;
-
+    TextView carDemand;
     String name, gender, phone, contact_address, movingDatetime, movingTime;
     String fromAddress, toAddress, remainder, car, staff, worktime, fee, memo, status, additional_fee;
     String order_id;
@@ -86,6 +87,58 @@ public class Order_Detail extends AppCompatActivity {
             check_btn.setVisibility(View.GONE);
             goOrderDetail.setVisibility(View.GONE);
         }
+
+        getOrder();
+        Handler handler = new Handler();
+        handler.postDelayed(() -> getVehicleData(),1500);
+
+        getStaffData();
+
+        check_btn.setOnClickListener(v -> {
+            Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("order_id", order_id);
+            bundle.putString("order_detail", "true");
+            intent.putExtras(bundle);
+            startActivity(intent);
+        });
+
+
+        call_btn.setOnClickListener(v -> {
+            Intent call_intent = new Intent(Intent.ACTION_DIAL);
+            call_intent.setData(Uri.parse("tel:"+phone));
+            startActivity(call_intent);
+        });
+
+        goOrderDetail.setOnClickListener(v -> {
+            if(carText.getText().toString().equals("無填寫需求車輛")||staffText.getText().toString().equals("尚未安排人員")){
+                new AlertDialog.Builder(context)
+                        .setTitle("尚未派遣人車，是否前往派遣？")
+                        .setPositiveButton("前往派遣", (dialog, which) -> {
+                            Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("order_id", order_id);
+                            bundle.putString("order_detail", "true");
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("取消",null)
+                        .create()
+                        .show();
+            }else{
+                bundle.putString("order_id", order_id);
+                Intent order_detail = new Intent(this, Today_Detail.class);
+                order_detail.putExtras(bundle);
+                startActivity(order_detail);
+                this.finish();
+            }
+
+        });
+
+        globalNav();
+    }
+
+    private void getOrder(){
         //傳值
         String function_name = "order_detail";
         RequestBody body = new FormBody.Builder()
@@ -209,56 +262,7 @@ public class Order_Detail extends AppCompatActivity {
                 }
             }
         });
-
-        getVehicleData();
-        getStaffData();
-
-        check_btn.setOnClickListener(v -> {
-            Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("order_id", order_id);
-            bundle.putString("order_detail", "true");
-            intent.putExtras(bundle);
-            startActivity(intent);
-        });
-
-
-        call_btn.setOnClickListener(v -> {
-            Intent call_intent = new Intent(Intent.ACTION_DIAL);
-            call_intent.setData(Uri.parse("tel:"+phone));
-            startActivity(call_intent);
-        });
-
-        goOrderDetail.setOnClickListener(v -> {
-            if(carText.getText().toString().equals("無填寫需求車輛")||staffText.getText().toString().equals("尚未安排人員")){
-                new AlertDialog.Builder(context)
-                        .setTitle("尚未派遣人車，是否前往派遣？")
-                        .setPositiveButton("前往派遣", (dialog, which) -> {
-                            Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("order_id", order_id);
-                            bundle.putString("order_detail", "true");
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                        })
-                        .setNegativeButton("取消",null)
-                        .create()
-                        .show();
-            }else{
-                bundle.putString("order_id", order_id);
-                Intent order_detail = new Intent(this, Today_Detail.class);
-                order_detail.putExtras(bundle);
-                startActivity(order_detail);
-                this.finish();
-            }
-
-        });
-
-        globalNav();
     }
-
-
-
 
     private void getVehicleData(){
         RequestBody body = new FormBody.Builder()
@@ -297,9 +301,8 @@ public class Order_Detail extends AppCompatActivity {
                         car = car+vehicle_assign.getString("plate_num")+" ";
                     }
                     Log.d(TAG, "car: "+car);
-
                     runOnUiThread(() -> carText.setText(car));
-                    if(!responseData.equals("null")) getVehicleDemandData();
+                    getVehicleDemandData();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -335,7 +338,7 @@ public class Order_Detail extends AppCompatActivity {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of vehicle_demand_data: " + responseData); //顯示資料
 
-                car = "無填寫需求車輛";
+                car = "無填寫偏好需求車輛";
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -357,8 +360,7 @@ public class Order_Detail extends AppCompatActivity {
                 } catch (JSONException e) {
                     if(!responseData.equals("null")) e.printStackTrace();
                 }
-
-                runOnUiThread(() -> carText.setText(car));
+                runOnUiThread(() -> carDemand.setText(car));
             }
         });
     }
@@ -408,7 +410,7 @@ public class Order_Detail extends AppCompatActivity {
                     }
 
                 } catch (JSONException e) {
-                    if(!responseData.equals("null")) e.printStackTrace();
+                     e.printStackTrace();
                 }
 
                 runOnUiThread(() ->{
@@ -436,6 +438,7 @@ public class Order_Detail extends AppCompatActivity {
         check_btn = findViewById(R.id.check_order_btn);
         furniture_btn = findViewById(R.id.furniture_btn_OD);
         goOrderDetail = findViewById(R.id.goToDetail_btn);
+        carDemand = findViewById(R.id.car_demanding);
     }
 
     private void setFurniture_btn(int auto){
@@ -457,7 +460,7 @@ public class Order_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
-        back_btn.setOnClickListener(v -> finish());
+        back_btn.setOnClickListener(v -> this.finish());
         valuation_btn.setOnClickListener(v -> {
             Intent valuation_intent = new Intent(Order_Detail.this, Valuation.class);
             startActivity(valuation_intent);

@@ -39,6 +39,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -99,7 +100,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         ArrayList<String> datalist = getDatalist();
         titleText.setText("人車派遣 "+(datalist.indexOf(order_id)+1)+"/"+datalist.size());
 
-        backBtn.setOnClickListener(v -> finish());
+        backBtn.setOnClickListener(v -> this.finish());
 
         lastBtn.setOnClickListener(v -> {
             String new_order_id = getlastDatalist(order_id);
@@ -141,13 +142,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
             }
         });
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submit();
-
-            }
-        });
+        submitBtn.setOnClickListener(v -> submit());
 
 
         globalNav();
@@ -456,13 +451,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 getOverlap(datetime, endtime);
 
                 Looper.prepare();
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        getVehicleData();
-                        getStaffData();
-                        Log.d(TAG, "finish getting data.");
-                    }
+                Runnable runnable = () -> {
+                    getVehicleData();
+                    getStaffData();
+                    Log.d(TAG, "finish getting data.");
                 };
                 Handler handler = new Handler();
                 handler.postDelayed(runnable, 500);
@@ -482,6 +474,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
+
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -1009,7 +1002,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
         handler.postDelayed(() -> {
             if(bundle.containsKey("order_detail")){
                 Intent intent = new Intent(context, Order_Detail.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK );
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK );
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
