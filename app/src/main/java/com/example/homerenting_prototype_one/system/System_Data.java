@@ -357,7 +357,9 @@ public class System_Data extends AppCompatActivity {
                         String type = vehicle.getString("vehicle_type");
                         String plate_num = vehicle.getString("plate_num");
                         String verified = vehicle.getString("verified");
-                        String[] row_data = {vehicle_id, weight, type, plate_num, verified};
+                        String confirm_time = vehicle.getString("confirm_time");
+                        String reply = vehicle.getString("reply");
+                        String[] row_data = {vehicle_id, weight, type, plate_num, verified, confirm_time, reply};
                         vehicles.add(row_data);
                     }
                 } catch (JSONException e) {

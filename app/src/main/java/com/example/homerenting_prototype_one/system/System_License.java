@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.BuildConfig;
@@ -71,6 +72,7 @@ public class System_License extends AppCompatActivity {
     Bundle bundle;
     String new_plateNum;
     Bitmap selectedImage;
+    TextView title;
     private String uploadServerUri = "http://140.117.71.91/598_new/app/uploadImage.php";
     private int serverResponseCode = 0;
     String img_src;

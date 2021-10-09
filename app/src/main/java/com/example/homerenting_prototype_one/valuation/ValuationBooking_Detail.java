@@ -6,7 +6,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -109,7 +108,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         cars = new ArrayList<>();
         String[] newString = {"", "", ""};
         cars.add(newString);
-
+        Handler handler = new Handler();
         bundle = getIntent().getExtras();
         fromBooking = getIntent().getExtras();
         getFromEdit = getIntent().getExtras();
@@ -131,7 +130,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             if(isZero.equals(" 0")){
                 sugCarsText.setText("無建議車輛");
             }else{
-                Handler handler = new Handler();
                 handler.postDelayed(() -> sugCarsText.setText(getFromEdit.getString("suggestCars")), 1500);
 
             }
@@ -141,7 +139,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             valPriceText.setText("3600~8000");
         }else{
 
-            Handler handler = new Handler();
             handler.postDelayed(() -> valPriceText.setText(getFromEdit.getString("suggestPrice")), 1500);
             handler.postDelayed(()->{
                 Log.d(TAG, "discount get: "+ discount+

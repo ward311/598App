@@ -249,6 +249,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:text="偏好需求車輛"
+        android:textSize="12sp"
+        android:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/car_OD"
         app:layout_constraintTop_toTopOf="@+id/car_OD" />
 

@@ -83,7 +83,9 @@ public class System_Vacation extends AppCompatActivity {
         cars = new ArrayList<>();
 
         getStaffChip();
-        //getVehicleChip();
+        Handler handler = new Handler();
+        handler.postDelayed(() -> getVehicleChip(), 500);
+
 
         current_date = getToday("yyyy-MM-dd");
         new AsyncRetrieve().execute();
@@ -163,12 +165,11 @@ public class System_Vacation extends AppCompatActivity {
                         runOnUiThread(() -> staffGroup.addView(setChipDetail(staffGroup, staff_id, staff_name, chip1)));
                     }
                     int ii = 0;
-                    while((staffGroup.getChildCount()-1) != responseArr.length()){
+                    /*while((staffGroup.getChildCount()-1) != responseArr.length()){
                         if((++ii)%5000000 == 0)
                             Log.d(TAG, (ii/5000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                    }
+                    }*/
                     Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                    getVehicleChip();
                 } catch (JSONException e) {
                     lock = false;
                     e.printStackTrace();
@@ -223,17 +224,21 @@ public class System_Vacation extends AppCompatActivity {
                         //取欄位資料
                         final String vehicle_id = vehicle.getString("vehicle_id");
                         final String plate_num = vehicle.getString("plate_num");
-                        runOnUiThread(() -> carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num, chip1)));
+                        final String verify = vehicle.getString("verified");
+                        if(verify.equals("1")){
+                            runOnUiThread(() -> carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num, chip1)));
+                        }
+
 
                     }
 
                     int ii = 0;
-                    while((carGroup.getChildCount()-1) != responseArr.length()){
+                    /*while((carGroup.getChildCount()-1) != responseArr.length()){
                         if((++ii)%5000000 == 0)
                             Log.d(TAG, (ii/5000000)+". waiting in getVehicleChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
                     Log.d(TAG, "waiting in getVehicleChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                    lock = false;
+                    */lock = false;
                 } catch (JSONException e) {
                     lock = false;
                     e.printStackTrace();
@@ -357,9 +362,9 @@ public class System_Vacation extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                while (lock){
+                /*while (lock){
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getStaffVacation...");
-                }
+                }*/
                 Log.d(TAG, "getStaffVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_text);
             }
@@ -420,10 +425,10 @@ public class System_Vacation extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                while (lock){
+                /*while (lock){
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVehicleVacation...");
                 }
-                Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());*/
                 setChipCheck(carGroup, cars_text);
             }
         });
@@ -508,9 +513,9 @@ public class System_Vacation extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                while (lock){
+                /*while (lock){
                     if((++ii)%5000000 == 0) Log.d(TAG, (ii/5000000)+". waiting for lock in getAssigned...");
-                }
+                }*/
                 Log.d(TAG, "getAssigned: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_text);
                 setChipCheck(carGroup, cars_text);

@@ -93,7 +93,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
         linking(); //將xml裡的元件連至此java
 
-        getStaffChip();
+        Handler handler = new Handler();
+        handler.postDelayed(() -> getStaffChip(), 500);
+
         getOrder();
 
 
@@ -259,8 +261,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         //取欄位資料
                         final String vehicle_id = vehicle.getString("vehicle_id");
                         final String plate_num = vehicle.getString("plate_num");
+                        final String verify = vehicle.getString("verified");
+                        if(verify.equals("1")){
+                            runOnUiThread(() -> carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num)));
+                        }
 
-                        runOnUiThread(() -> carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num)));
                     }
 
                     int ii = 0;

@@ -338,7 +338,7 @@ public class Order_Detail extends AppCompatActivity {
                 final String responseData = response.body().string();
                 Log.d(TAG, "responseData of vehicle_demand_data: " + responseData); //顯示資料
 
-                car = "無填寫偏好需求車輛";
+                car = "無偏好車輛";
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);

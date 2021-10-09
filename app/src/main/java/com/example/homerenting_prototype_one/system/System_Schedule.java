@@ -115,7 +115,9 @@ public class System_Schedule extends AppCompatActivity {
         orderList.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL)); //分隔線
 
         getStaffChip();
-        getVehicleChip();
+        Handler handler = new Handler();
+        handler.postDelayed(() -> getVehicleChip(), 500);
+
         new AsyncRetrieve().execute();
         //getStaffVacation(getToday("yyyy-MM-dd"));
         //getVehicleVacation(getToday("yyyy-MM-dd"));
@@ -328,11 +330,11 @@ public class System_Schedule extends AppCompatActivity {
                     }
 
                     int ii = 0;
-                    while((staffGroup.getChildCount()-1) != responseArr.length()){
+                    /*while((staffGroup.getChildCount()-1) != responseArr.length()){
                         if((++ii)%5000000 == 0)
                             Log.d(TAG, (ii/5000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
-                    Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                    Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());*/
                     //getVehicleChip();
                 } catch (JSONException e) {
                     lock = false;
@@ -396,19 +398,22 @@ public class System_Schedule extends AppCompatActivity {
                         final String plate_num = vehicle.getString("plate_num");
                         final String vehicle_weight = vehicle.getString("vehicle_weight");
                         final String vehicle_type = vehicle.getString("vehicle_type");
+                        final String verify = vehicle.getString("verified");
+                        if(verify.equals("1")){
+                             runOnUiThread(() -> {
+                                carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num));
+                                Chip carChip = (Chip) carGroup.getChildAt(carGroup.getChildCount()-1);
+                            });
+                        }
 
-                        runOnUiThread(() -> {
-                            carGroup.addView(setChipDetail(carGroup, vehicle_id, plate_num));
-                            Chip carChip = (Chip) carGroup.getChildAt(carGroup.getChildCount()-1);
-                        });
                     }
 
                     int ii = 0;
-                    while((carGroup.getChildCount()-1) != responseArr.length()){
+                    /*while((carGroup.getChildCount()-1) != responseArr.length()){
                         if((++ii)%5000000 == 0)
                             Log.d(TAG, (ii/5000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     }
-                    Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
+                    Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());*/
                     lock = false;
                 } catch (JSONException e) {
                     lock = false;
