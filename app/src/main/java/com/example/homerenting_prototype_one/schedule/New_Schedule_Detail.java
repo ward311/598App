@@ -2,6 +2,7 @@ package com.example.homerenting_prototype_one.schedule;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -96,8 +97,8 @@ public class New_Schedule_Detail extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(() -> getStaffChip(), 500);
 
-        getOrder();
-
+        //getOrder();
+        new MyAsyncTask().execute();
 
         ArrayList<String> datalist = getDatalist();
         titleText.setText("人車派遣 "+(datalist.indexOf(order_id)+1)+"/"+datalist.size());
@@ -545,7 +546,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
                 Handler handler = new Handler();
+                Looper.prepare();
                 handler.postDelayed(() -> getVehicleDemandData(), 3000);
+                Looper.loop();
             }
 
             @Override
@@ -662,9 +665,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 //在app畫面上呈現錯誤訊息
                 Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
-                Looper.loop();
                 Handler handler = new Handler();
                 handler.postDelayed(() -> getStaffVacation(date), 3000);
+                Looper.loop();
             }
 
             @Override
@@ -727,9 +730,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
+                Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
                 Handler handler = new Handler();
                 handler.postDelayed(() -> getVehicleVacation(date), 3000);
+                Looper.loop();
             }
 
             @Override
@@ -798,10 +803,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 //在app畫面上呈現錯誤訊息
                 Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
-                Looper.loop();
                 Handler handler = new Handler();
-
                 handler.postDelayed(() -> getOverlap(date, endtime), 3000);
+                Looper.loop();
             }
 
             @Override
@@ -1090,5 +1094,13 @@ public class New_Schedule_Detail extends AppCompatActivity {
             Intent setting_intent = new Intent(context, Setting.class);
             startActivity(setting_intent);
         });
+    }
+    public class MyAsyncTask extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            getOrder();
+            return null;
+        }
     }
 }
