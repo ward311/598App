@@ -7,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,7 +42,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,32 +87,29 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String sugCars;
     String estimateDis, estimateTime;
     String fixDiscount, fixEnable;
-
-    Boolean isDiscount;
     String lowPrice, middlePrice, highPrice;
+    Boolean isDiscount;
     CarAdapter carAdapter;
-
+    Date setDate;
     ArrayList<String[]> cars;
     int valPrice = -1, firstRowEmpty = 1;
     float discount = 0;
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
-
     Context context = ValuationBooking_Detail.this;
     Bundle bundle;
     Bundle fromBooking = new Bundle();
     Bundle getFromEdit = new Bundle();
+    Handler handler = new Handler();
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valuation_booking__detail);
         final GregorianCalendar calendar = new GregorianCalendar();
-
         cars = new ArrayList<>();
         String[] newString = {"", "", ""};
         cars.add(newString);
-        Handler handler = new Handler();
         bundle = getIntent().getExtras();
         fromBooking = getIntent().getExtras();
         getFromEdit = getIntent().getExtras();
@@ -117,8 +118,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
         linking(); //將xml裡的元件連至此java
         setValPrice();
-        getCompanyFixDis();
-        getOrder();
+        //getCompanyFixDis();
+        //getOrder();
+        new Async().execute();
         priceChangeAlert();
         if(getFromEdit.getString("suggestCars")==null){
             sugCarsText.setText("無建議車輛");
@@ -131,7 +133,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 sugCarsText.setText("無建議車輛");
             }else{
                 handler.postDelayed(() -> sugCarsText.setText(getFromEdit.getString("suggestCars")), 1500);
-
             }
         }
         if(getFromEdit.getString("suggestPrice")==null){
@@ -167,6 +168,20 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             startActivity(intent);
         });
 
+        handler.postDelayed(() -> {
+            try {
+                int year = Year.now().getValue();
+                String[] dateSplit = valuationTime.split(" ");
+                String valDate = dateSplit[0];
+                setDate = convertDate(year +"/"+valDate);
+                Log.d(TAG,"getDATE "+ year +"/"+valDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        },1000);
+
+
+        /*將估價時間轉換成Date類型以限制選擇搬家日期必須在估價日期之後*/
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
         Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
         movingDateText.setOnClickListener(v -> {
@@ -181,7 +196,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 }
                 movingDateText.setText(year+"-"+(month+1)+"-"+dayOfMonth);
             },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
-            date_picker.getDatePicker().setMinDate(new Date().getTime());
+            date_picker.getDatePicker().setMinDate(setDate.getTime());
             date_picker.show();
         });
 
@@ -203,6 +218,21 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         setCheckBtn();
 
         globalNav(); //底下nav
+    }
+    public class Async extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            getCompanyFixDis();
+            getOrder();
+            return null;
+        }
+
+    }
+
+    private Date convertDate(String date) throws ParseException {
+        Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse(date);
+        return date1;
     }
     private void calculate(){
         float most = 0;
@@ -349,16 +379,15 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         isDiscount = false;
                     }
                     runOnUiThread(()->{
-                        Toast.makeText(context, "fixDiscount: "+fixDiscount+" "+
+                        /*Toast.makeText(context, "fixDiscount: "+fixDiscount+" "+
                                 " isEnable: "+ fixEnable
                                 +" discount: "+discount
-                                +" isDiscount: "+isDiscount, Toast.LENGTH_LONG).show();
+                                +" isDiscount: "+isDiscount, Toast.LENGTH_LONG).show();*/
                         if(isDiscount){
                             current_discount.setText("定價折扣: "+fixDiscount + "%off");
                         }else{
                             current_discount.setText("目前無折扣");
                         }
-
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
