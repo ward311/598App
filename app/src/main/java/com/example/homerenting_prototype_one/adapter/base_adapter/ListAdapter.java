@@ -98,9 +98,9 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         int i = 1;
         //time zone
         if(data.get(position).length > 8){
-            Log.i(TAG, "date: "+data.get(position)[i]);
+            Log.i(TAG, "date: "+data.get(position)[i]);//i=1
             viewHolder.date_text.setText(data.get(position)[i++]);
-            Log.i(TAG, "time: "+data.get(position)[i]);
+            Log.i(TAG, "time: "+data.get(position)[i]);//i=2
             viewHolder.time_text.setText(data.get(position)[i++]);
         }
         else{
@@ -109,23 +109,23 @@ public class ListAdapter extends BaseAdapter implements View.OnClickListener{
         }
 
         //main zone
-        Log.i(TAG, "name: "+data.get(position)[i]);
+        Log.i(TAG, "name: "+data.get(position)[i]);//i=3
         viewHolder.name_text.setText(data.get(position)[i++]);
-        Log.i(TAG, "gender: "+data.get(position)[i]);
+        Log.i(TAG, "gender: "+data.get(position)[i]);//i=4
         viewHolder.gender_text.setText(data.get(position)[i++]);
-        Log.i(TAG, "phone: "+data.get(position)[i]);
+        Log.i(TAG, "phone: "+data.get(position)[i]);//i=5
         viewHolder.phone_text.setText(data.get(position)[i++]);
-        Log.i(TAG, "address: "+data.get(position)[i]);
+        Log.i(TAG, "address: "+data.get(position)[i]);//i=6
         viewHolder.address_text.setText(data.get(position)[i++]);
 
         //add(auto)
-        if(data.get(position)[i++].equals("0")) {
+        if(data.get(position)[i++].equals("0")) {//i=7
             Log.d(TAG, "add_icon("+position+"): "+data.get(position)[i-1]);
-            viewHolder.add_text.setVisibility(View.VISIBLE);
+            viewHolder.add_text.setVisibility(View.VISIBLE);//自行新增 (自)圖示
         }
         else viewHolder.add_text.setVisibility(View.GONE);
 
-        //icon zone
+        //icon zone   i=8
         if(!data.get(position)[i++].equals("1") || Arrays.asList(data.get(position)).contains("done_today"))
             viewHolder.new_icon.setVisibility(View.INVISIBLE);
         if(Arrays.asList(data.get(position)).contains("cancel") || Arrays.asList(data.get(position)).contains("done_today")){

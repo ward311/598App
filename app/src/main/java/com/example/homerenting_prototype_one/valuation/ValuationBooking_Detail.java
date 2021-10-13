@@ -331,7 +331,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         Log.d(TAG, ""+ (int)least +" "+ (int)most);
 
         Handler handler = new Handler();
-        handler.postDelayed(() -> valRangeText.setText(lowestStr +"~"+suggestStr), 2000);
+        newValPriceText.setText("到府估價");
+        handler.postDelayed(() -> {
+            valRangeText.setText(lowestStr +"~"+suggestStr);
+        }, 2000);
     }
     private void getCompanyFixDis(){
         String function_name = "company_fix_discount";
@@ -704,12 +707,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         Log.d(TAG, ""+bundle.getBoolean("isEdited"));
         if (bundle.getBoolean("isEdited")){
             //valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            newValPriceText.setVisibility(View.INVISIBLE);
+            //newValPriceText.setVisibility(View.INVISIBLE);
             valPrice = 1;
         }
         else {
             //valPriceText.setPaintFlags(valPriceText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            newValPriceText.setVisibility(View.INVISIBLE);
+            //newValPriceText.setVisibility(View.INVISIBLE);
             valPrice = -1;
         }
     }

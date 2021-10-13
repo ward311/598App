@@ -44,7 +44,7 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
         if(data.get(position).length > 2){
             text = text+"噸"+data.get(position)[2]+" "+data.get(position)[3];
             if(data.get(position)[4].equals("1") ){
-                text = text + " (已審核)";
+                text = text + " (審核通過)";
                 holder.item.setTextColor(Color.parseColor("#19B0ED"));
                 holder.item.setOnClickListener(v -> {
                     input.setText("通過時間: "+data.get(position)[5]);
@@ -81,8 +81,8 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
                                 bundle.putString("new_plateNum", data.get(position)[3]);
                                 Intent license = new Intent(mContext , System_License.class);
                                 license.putExtras(bundle);
+                                license.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 mContext.startActivity(license);
-
                             })
                             .create()
                             .show();

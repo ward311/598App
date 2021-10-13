@@ -273,7 +273,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 }
                 else {
                     if(!furniture_company.equals("999")) { //如果家具有公司id(已改變)
-                        row_data[2] = "0";
+                        row_data[2] = num;
                         row_data[3] = num;
                     }
                     data.add(row_data);

@@ -312,6 +312,7 @@ public class System_License extends AppCompatActivity {
                 .add("company_id", getCompany_id(context))
                 .add("plate_num", new_plateNum)
                 .add("license", filePath)
+                .add("verified", "0")
                 .build();
         Log.d(TAG, "company_id: "+getCompany_id(context));
         Log.d(TAG, "plate_num: "+new_plateNum);

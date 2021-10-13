@@ -372,7 +372,6 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
-                        android:text="3600~8000"
                         android:textColor="#FF0000"
                         android:textSize="18sp"
                         android:visibility="visible" />
