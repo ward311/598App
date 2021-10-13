@@ -202,10 +202,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         runOnUiThread(() -> staffGroup.addView(setChipDetail(staffGroup, staff_id, staff_name)));
                     }
                     int ii = 0;
-                    while((staffGroup.getChildCount()-1) != responseArr.length()){
+                    /*while((staffGroup.getChildCount()-1) != responseArr.length()){
                         if((++ii)%5000000 == 0)
                             Log.d(TAG, (ii/5000000)+". waiting in getChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                    }
+                    }*/
                     Log.d(TAG, "waiting in getChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     getVehicleChip();
                 } catch (JSONException e) {
@@ -270,10 +270,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     }
 
                     int ii = 0;
-                    while((carGroup.getChildCount()-1) != responseArr.length()){
+                    /*while((carGroup.getChildCount()-1) != responseArr.length()){
                         if((++ii)%5000000 == 0)
                             Log.d(TAG, (ii/5000000)+". waiting in getVehicleChip(): staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                    }
+                    }*/
                     Log.d(TAG, "waiting in getVehicleChip() final: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                     lock = false;
                 } catch (JSONException e) {
@@ -448,9 +448,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                while (lock){
+                /*while (lock){
                     if((++ii)%5000000 == 0) Log.d(TAG, (ii/50000000)+". waiting for lock in getOrder...");
-                }
+                }*/
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 getStaffVacation(movingDateWithoutTime);
                 getVehicleVacation(movingDateWithoutTime);
@@ -695,9 +695,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                while (lock){
+                /*while (lock){
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getStaffVacation...");
-                }
+                }*/
                 Log.d(TAG, "getStaffVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_vacation, "vacation");
             }
@@ -762,9 +762,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                while (lock){
+                /* (lock){
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVehicleVacation...");
-                }
+                }*/
                 Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(carGroup, cars_vacation, "vacation");
             }
@@ -848,9 +848,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                while (lock){
+                /*while (lock){
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getOverlap...");
-                }
+                }*/
                 Log.d(TAG, "getOverlap: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(staffGroup, staffs_lap, "overlap");
                 setChipCheck(carGroup, cars_lap, "overlap");
