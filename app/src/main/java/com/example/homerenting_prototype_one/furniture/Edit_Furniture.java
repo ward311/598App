@@ -119,7 +119,8 @@ public class Edit_Furniture extends AppCompatActivity {
         order_id = bundle.getString("order_id");
 //        order_id = "242";
         Log.i(TAG, "order_id: "+order_id);
-
+        Log.d(TAG, "fromOrder: "+bundle.getBoolean("fromOrder"));
+        Log.d(TAG, "isWeb: "+bundle.getString("isWeb"));
         fspace = "all";
         nowSpace = 0;
 
@@ -321,16 +322,26 @@ public class Edit_Furniture extends AppCompatActivity {
                     }
                     builder.setMessage(message);
                     builder.setPositiveButton("確定", (dialog, which) -> {
-                            modifyFurniture();
                             if(fromBooking.getString("clickFromBooking").equals("1")){
                                 calculateFurnitureAPI();
-                            }else if(bundle.containsKey("fromOrder")){
+                                modifyFurniture("999");
+                            }else if(bundle.getBoolean("fromOrder")){
                                 Intent today = new Intent(this, Today_Detail.class);
-                                today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                today.putExtras(bundle);
-                                startActivity(today);
+                                Handler handler = new Handler();
+                                if(bundle.getString("isWeb").equals("1")){
+                                    today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    today.putExtras(bundle);
+                                    modifyFurniture("999");
+                                }else{
+                                    today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    today.putExtras(bundle);
+                                    modifyFurniture(getCompany_id(context));
+                                }
+                                handler.postDelayed(() -> startActivity(today),1500);
                             }else{
+                                modifyFurniture(getCompany_id(context));
                                 toValuationBookingDetail();
+
                             }
 
                             //toValuationBookingDetail();
@@ -345,16 +356,23 @@ public class Edit_Furniture extends AppCompatActivity {
                 else {
                     if(fromBooking.getString("clickFromBooking").equals("1")){
                             calculateFurnitureAPI();
-                            modifyFurniture();
+                            modifyFurniture("999");
                             //toValuationBookingDetail();
                     }else if(bundle.containsKey("fromOrder")){
+                        Handler handler = new Handler();
                         Intent today = new Intent(this, Today_Detail.class);
-                        today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        today.putExtras(bundle);
-                        modifyFurniture();
-                        startActivity(today);
+                        if(bundle.getString("isWeb").equals("1")){
+                            today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            today.putExtras(bundle);
+                            modifyFurniture("999");
+                        }else{
+                            today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            today.putExtras(bundle);
+                            modifyFurniture(getCompany_id(context));
+                        }
+                        handler.postDelayed(() -> startActivity(today),1500);
                     }else{
-                        modifyFurniture();
+                        modifyFurniture(getCompany_id(context));
                         toValuationBookingDetail();
                     }
                 }
@@ -743,13 +761,13 @@ public class Edit_Furniture extends AppCompatActivity {
             }
         });
     }
-    private void modifyFurniture(){
+    private void modifyFurniture(String company_ID){
         String function_name = "modify_furniture";
-        String company_id = getCompany_id(context);
+        //String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
-                .add("company_id",company_id)
+                .add("company_id",company_ID)
                 .add("furniture_data", Arrays.deepToString(furniture_data))
                 .build();
         Log.d(TAG,"order_id: "+order_id+", furniture_data:"+ Arrays.deepToString(furniture_data));

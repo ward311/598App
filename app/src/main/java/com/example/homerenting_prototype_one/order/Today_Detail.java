@@ -219,6 +219,7 @@ public class Today_Detail extends AppCompatActivity {
             Intent change_intent = new Intent(this, Edit_Furniture.class);
             bundle.putBoolean("fromOrder", true);
             bundle.putString("order_id", order_id);
+            bundle.putString("isWeb", isWeb);
             fromBooking.putString("clickFromBooking","0");
             change_intent.putExtras(bundle);
             change_intent.putExtras(fromBooking);

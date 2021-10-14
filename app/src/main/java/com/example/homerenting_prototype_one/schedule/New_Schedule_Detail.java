@@ -457,12 +457,12 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 getOverlap(datetime, endtime);
 
                 Looper.prepare();
+                Handler handler = new Handler();
                 Runnable runnable = () -> {
                     getVehicleData();
                     getStaffData();
                     Log.d(TAG, "finish getting data.");
                 };
-                Handler handler = new Handler();
                 handler.postDelayed(runnable, 500);
                 Looper.loop();
             }
