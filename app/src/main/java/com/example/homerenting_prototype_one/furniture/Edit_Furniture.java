@@ -274,7 +274,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 }
                 else {
                     if(!furniture_company.equals("999")) { //如果家具有公司id(已改變)
-                        row_data[2] = num;
+                        row_data[2] = "0";
                         row_data[3] = num;
                     }
                     data.add(row_data);
@@ -316,7 +316,7 @@ public class Edit_Furniture extends AppCompatActivity {
                     String message = "確定後，數量為0的";
                     int i;
                     for(i = 0; i < zeroFurniture.size(); i++){
-                        message = message+zeroFurniture.get(i);
+                        message = message+"\n"+zeroFurniture.get(i);
                         if(i!=(zeroFurniture.size()-1)) message = message+", ";
                         else message = message+"將會從家具清單中刪除";
                     }
@@ -324,22 +324,22 @@ public class Edit_Furniture extends AppCompatActivity {
                     builder.setPositiveButton("確定", (dialog, which) -> {
                             if(fromBooking.getString("clickFromBooking").equals("1")){
                                 calculateFurnitureAPI();
-                                modifyFurniture("999");
+                                modifyFurniture();
                             }else if(bundle.getBoolean("fromOrder")){
                                 Intent today = new Intent(this, Today_Detail.class);
                                 Handler handler = new Handler();
                                 if(bundle.getString("isWeb").equals("1")){
                                     today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     today.putExtras(bundle);
-                                    modifyFurniture("999");
+                                    modifyFurniture();
                                 }else{
                                     today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     today.putExtras(bundle);
-                                    modifyFurniture(getCompany_id(context));
+                                    modifyFurniture();
                                 }
-                                handler.postDelayed(() -> startActivity(today),1500);
+                                handler.postDelayed(() -> startActivity(today),2000);
                             }else{
-                                modifyFurniture(getCompany_id(context));
+                                modifyFurniture();
                                 toValuationBookingDetail();
 
                             }
@@ -356,7 +356,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 else {
                     if(fromBooking.getString("clickFromBooking").equals("1")){
                             calculateFurnitureAPI();
-                            modifyFurniture("999");
+                            modifyFurniture();
                             //toValuationBookingDetail();
                     }else if(bundle.containsKey("fromOrder")){
                         Handler handler = new Handler();
@@ -364,15 +364,15 @@ public class Edit_Furniture extends AppCompatActivity {
                         if(bundle.getString("isWeb").equals("1")){
                             today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             today.putExtras(bundle);
-                            modifyFurniture("999");
+                            modifyFurniture();
                         }else{
                             today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             today.putExtras(bundle);
-                            modifyFurniture(getCompany_id(context));
+                            modifyFurniture();
                         }
                         handler.postDelayed(() -> startActivity(today),1500);
                     }else{
-                        modifyFurniture(getCompany_id(context));
+                        modifyFurniture();
                         toValuationBookingDetail();
                     }
                 }
@@ -761,13 +761,13 @@ public class Edit_Furniture extends AppCompatActivity {
             }
         });
     }
-    private void modifyFurniture(String company_ID){
+    private void modifyFurniture(){
         String function_name = "modify_furniture";
-        //String company_id = getCompany_id(context);
+        String company_id = getCompany_id(context);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
-                .add("company_id",company_ID)
+                .add("company_id",company_id)
                 .add("furniture_data", Arrays.deepToString(furniture_data))
                 .build();
         Log.d(TAG,"order_id: "+order_id+", furniture_data:"+ Arrays.deepToString(furniture_data));

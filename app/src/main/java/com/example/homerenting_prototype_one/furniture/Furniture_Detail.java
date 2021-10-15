@@ -98,12 +98,7 @@ public class Furniture_Detail extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Furniture_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(Furniture_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override

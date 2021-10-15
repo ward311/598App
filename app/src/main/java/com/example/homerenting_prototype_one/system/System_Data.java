@@ -573,9 +573,8 @@ public class System_Data extends AppCompatActivity {
                 .add("vehicle_type", type)
                 .add("plate_num", plate_num)
                 .add("company_id", company_id)
-                .add("verified", "0")
                 .build();
-        Log.i(TAG, "vehicle_weight: "+weight+", vehicle_type"+type+", plate_num"+plate_num);
+        Log.i(TAG, "vehicle_weight: "+weight+", vehicle_type: "+type+", plate_num: "+plate_num);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")

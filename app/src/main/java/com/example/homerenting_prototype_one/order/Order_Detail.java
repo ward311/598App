@@ -302,10 +302,11 @@ public class Order_Detail extends AppCompatActivity {
                     }
                     Log.d(TAG, "car: "+car);
                     runOnUiThread(() -> carText.setText(car));
-                    getVehicleDemandData();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                getVehicleDemandData();
             }
         });
     }
