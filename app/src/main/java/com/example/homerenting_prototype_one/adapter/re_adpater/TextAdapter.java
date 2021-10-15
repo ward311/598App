@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,12 +42,15 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String text = data.get(position)[1];
         final TextView input = new TextView (mContext);
+        holder.carStatus.setVisibility(View.GONE);
         if(data.get(position).length > 2){
+            holder.carStatus.setVisibility(View.VISIBLE);
             text = text+"噸"+data.get(position)[2]+" "+data.get(position)[3];
             if(data.get(position)[4].equals("1") ){
-                text = text + " (審核通過)";
+                holder.carStatus.setText("審核通過");
+                holder.carStatus.setTextColor(Color.parseColor("#19B0ED"));
                 holder.item.setTextColor(Color.parseColor("#19B0ED"));
-                holder.item.setOnClickListener(v -> {
+                holder.cars.setOnClickListener(v -> {
                     input.setText("通過時間: "+data.get(position)[5]);
                     input.setTextColor(Color.BLACK);
                     input.setPadding(0,100,0,0);
@@ -62,13 +66,15 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
             else if(data.get(position)[4].equals("0")){
                 holder.item.setAlpha(.5f);
                 holder.item.setTextColor(Color.parseColor("#FB8527"));
-                text = text + " (審核中)";
+                holder.carStatus.setText("審核中");
+                holder.carStatus.setTextColor(Color.parseColor("#FB8527"));
 
             }else if(data.get(position)[4].equals("2")){
                 holder.item.setAlpha(.5f);
                 holder.item.setTextColor(Color.RED);
-                text = text + " (審核失敗)";
-                holder.item.setOnClickListener(v -> {
+                holder.carStatus.setText("審核失敗");
+                holder.carStatus.setTextColor(Color.RED);
+                holder.cars.setOnClickListener(v -> {
                     Log.d(TAG, ""+data.get(position)[3]);
                     input.setText("失敗原因 : "+data.get(position)[6]);
                     input.setTextColor(Color.BLACK);
@@ -94,6 +100,7 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
 
         }
             holder.item.setText(text);
+
     }
 
     @Override
@@ -112,11 +119,13 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView item;
-
+        TextView item, carStatus;
+        LinearLayout cars;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             item = itemView.findViewById(R.id.text_item_TI);
+            carStatus = itemView.findViewById(R.id.car_status);
+            cars = itemView.findViewById(R.id.car_Layout);
         }
     }
 }

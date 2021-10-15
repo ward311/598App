@@ -3,28 +3,30 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/activity_edit__furniture.xml" value="0.264" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/activity_order__detail.xml" value="0.4" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/activity_setting.xml" value="0.264" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/activity_setting__evaluation.xml" value="0.264" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/activity_valuation__detail.xml" value="0.16" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/calendar_day_layout.xml" value="0.25" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/calendar_dialog.xml" value="0.264" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/calendar_layout.xml" value="0.1" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/furniture_detail_btn.xml" value="0.1828125" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/furniture_item.xml" value="0.23229166666666667" />
-        <entry key="..\:/Android/598_movingApp/app/src/main/res/layout/furniture_location_item.xml" value="0.4" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/drawable/round_shape.xml" value="0.32135416666666666" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_add__valuation.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_checkable_spinner_item.xml" value="0.18" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_edit__furniture.xml" value="0.15539858728557013" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_furniture__detail.xml" value="0.25" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_furniture__location.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_new_schedule_detail.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_order__detail.xml" value="0.5" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting.xml" value="0.5" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting__discount.xml" value="0.30104166666666665" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_system__data.xml" value="0.25" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_system_license.xml" value="0.30104166666666665" />
-        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_today__detail.xml" value="0.2223731884057971" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_today__detail.xml" value="0.39280774550484093" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation.xml" value="0.14581231079717458" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation__cancel.xml" value="0.1358695652173913" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation__detail.xml" value="0.33" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_booking__detail.xml" value="0.33" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_cancel__detail.xml" value="0.5" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/car_dialog.xml" value="0.14581231079717458" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/car_item.xml" value="0.25" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/fragment_valuation__cancel.xml" value="0.14581231079717458" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/furniture_item.xml" value="0.33" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/row_item.xml" value="0.21" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/text_item.xml" value="0.33" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_add__order.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_edit__furniture.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting.xml" value="0.20244565217391305" />

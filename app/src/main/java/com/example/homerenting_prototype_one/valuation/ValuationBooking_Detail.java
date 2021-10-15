@@ -14,11 +14,14 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,7 +78,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     TextView current_discount;
     EditText carNumEdit, carWeightEdit, carTypeEdit;
     EditText worktimeEdit, priceEdit, memoEdit;
-
+    String result = "";
     RecyclerView carAssignRList;
 
     Button check_btn, furniture_btn, phoneCall_btn;
@@ -88,6 +91,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String estimateDis, estimateTime;
     String fixDiscount, fixEnable;
     String lowPrice, middlePrice, highPrice;
+    Spinner memoSpinner;
     Boolean isDiscount;
     CarAdapter carAdapter;
     Date setDate;
@@ -214,10 +218,38 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
 
         setPhoneBtn();
-
         setCheckBtn();
-
+        setSpr();
         globalNav(); //底下nav
+    }
+    private void setSpr(){
+        final String[] reasons= {"請選擇原因","家具項目修改", "額外追加服務", "其他自行填寫"};
+
+        ArrayAdapter<String> reasonsList = new ArrayAdapter<>(context,
+                android.R.layout.simple_spinner_dropdown_item, reasons);
+        memoSpinner.setAdapter(reasonsList);
+        memoSpinner.setSelection(0);
+        memoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int pos = memoSpinner.getSelectedItemPosition();
+                if(pos!=0){
+                    if(pos!=3){
+                       result += memoSpinner.getSelectedItem().toString()+"\n";
+                       memoEdit.setText(result);
+                    }
+                    else{
+                        memoEdit.getText().clear();
+                        result = "";
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
     public class Async extends AsyncTask<Void, Void, Void> {
 
@@ -331,7 +363,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         Log.d(TAG, ""+ (int)least +" "+ (int)most);
 
         Handler handler = new Handler();
-        newValPriceText.setText("到府估價");
+        //newValPriceText.setText("到府估價");
         handler.postDelayed(() -> {
             valRangeText.setText(lowestStr +"~"+suggestStr);
         }, 2000);
@@ -968,6 +1000,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         valRangeText = findViewById(R.id.range_text);
         program_type = findViewById(R.id.setProgram);
         current_discount = findViewById(R.id.cur_dis);
+        memoSpinner = findViewById(R.id.memoSpr);
     }
 
     private void globalNav(){
