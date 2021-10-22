@@ -31,11 +31,12 @@
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_edit__furniture.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting.xml" value="0.20244565217391305" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting__discount.xml" value="0.33" />
+        <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting__evaluation.xml" value="0.2033514492753623" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_system__data.xml" value="0.20244565217391305" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_system_license.xml" value="0.33" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_today__detail.xml" value="0.25" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation__detail.xml" value="0.33" />
-        <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_booking__detail.xml" value="0.28854166666666664" />
+        <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_booking__detail.xml" value="0.33" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_cancel__detail.xml" value="0.17806484295845998" />
       </map>
     </option>

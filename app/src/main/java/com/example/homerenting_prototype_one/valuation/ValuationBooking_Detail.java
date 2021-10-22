@@ -6,6 +6,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -76,9 +78,12 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     TextView valRangeText;
     TextView program_type;
     TextView current_discount;
+    TextView onlineText;
     EditText carNumEdit, carWeightEdit, carTypeEdit;
     EditText worktimeEdit, priceEdit, memoEdit;
     String result = "";
+    String suggestStr;
+    String lowestStr;
     RecyclerView carAssignRList;
 
     Button check_btn, furniture_btn, phoneCall_btn;
@@ -144,8 +149,11 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             valPriceText.setText("3600~8000");
         }else{
 
-            handler.postDelayed(() -> valPriceText.setText(getFromEdit.getString("suggestPrice")), 1500);
+            handler.postDelayed(() -> newValPriceText.setText(getFromEdit.getString("suggestPrice")), 1500);
             handler.postDelayed(()->{
+                valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                onlineText.setText("到府估價");
+                onlineText.setTextColor(Color.parseColor("#FB8527"));
                 Log.d(TAG, "discount get: "+ discount+
                         " isDis: "+isDiscount);
                 calculate();
@@ -275,7 +283,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         }else{
             discount = 1;
         }
-        float suggest = Integer.parseInt(valPriceText.getText().toString());
+        float suggest = Integer.parseInt(newValPriceText.getText().toString());
 
         switch (program){
             case "一般方案":
@@ -358,8 +366,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     break;
                 }
         }
-        String suggestStr = String.valueOf((int)most);
-        String lowestStr = String.valueOf((int)least);
+        suggestStr = String.valueOf((int)most);
+        lowestStr = String.valueOf((int)least);
         Log.d(TAG, ""+ (int)least +" "+ (int)most);
 
         Handler handler = new Handler();
@@ -670,6 +678,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 //                Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
 
             boolean check = true;
+
             if(checkEmpty(estimate_worktime, fee)) check = false;
             if(checkCarsViewEmpty()) check = false;
             if(!check) return;
@@ -713,6 +722,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         if(TextUtils.isEmpty(fee)){
             priceEdit.setError("請輸入搬家價格");
             Log.d(TAG, "搬家價格為空");
+            check = true;
+        }
+        if(Integer.valueOf(fee)>=Integer.valueOf(suggestStr) && memo.isEmpty()){
+            memoEdit.setError("請新增備註");
             check = true;
         }
         else{
@@ -1001,6 +1014,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         program_type = findViewById(R.id.setProgram);
         current_discount = findViewById(R.id.cur_dis);
         memoSpinner = findViewById(R.id.memoSpr);
+        onlineText = findViewById(R.id.valuate_textView);
     }
 
     private void globalNav(){

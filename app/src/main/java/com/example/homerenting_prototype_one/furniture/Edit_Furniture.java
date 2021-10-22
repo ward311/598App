@@ -324,7 +324,7 @@ public class Edit_Furniture extends AppCompatActivity {
                     builder.setPositiveButton("確定", (dialog, which) -> {
                             if(fromBooking.getString("clickFromBooking").equals("1")){
                                 calculateFurnitureAPI();
-                                modifyFurniture();
+                                modify_webFurniture();
                             }else if(bundle.getBoolean("fromOrder")){
                                 Intent today = new Intent(this, Today_Detail.class);
                                 Handler handler = new Handler();
@@ -356,7 +356,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 else {
                     if(fromBooking.getString("clickFromBooking").equals("1")){
                             calculateFurnitureAPI();
-                            modifyFurniture();
+                            modify_webFurniture();
                             //toValuationBookingDetail();
                     }else if(bundle.containsKey("fromOrder")){
                         Handler handler = new Handler();
@@ -757,6 +757,38 @@ public class Edit_Furniture extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+            }
+        });
+    }
+
+    private void modify_webFurniture(){
+        String function_name = "modify_web_furniture";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("furniture_data", Arrays.deepToString(furniture_data))
+                .build();
+        Log.d(TAG,"order_id: "+order_id+", furniture_data:"+ Arrays.deepToString(furniture_data));
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+PHP)
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of modify_web_furniture: " + responseData);
 
             }
         });
