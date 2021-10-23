@@ -400,7 +400,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
                         android:text="3600~8000"
-                        android:textColor="#FB8527"
                         android:textSize="18sp" />
 
                     <TextView

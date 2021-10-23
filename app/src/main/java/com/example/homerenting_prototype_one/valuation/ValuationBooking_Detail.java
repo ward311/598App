@@ -153,7 +153,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             handler.postDelayed(()->{
                 valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 onlineText.setText("到府估價");
-                onlineText.setTextColor(Color.parseColor("#FB8527"));
+                onlineText.setTextColor(Color.RED);
                 Log.d(TAG, "discount get: "+ discount+
                         " isDis: "+isDiscount);
                 calculate();
@@ -245,6 +245,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     if(pos!=3){
                        result += memoSpinner.getSelectedItem().toString()+"\n";
                        memoEdit.setText(result);
+                       memoEdit.setSelection(memoEdit.getText().length());
                     }
                     else{
                         memoEdit.getText().clear();
@@ -374,6 +375,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         //newValPriceText.setText("到府估價");
         handler.postDelayed(() -> {
             valRangeText.setText(lowestStr +"~"+suggestStr);
+            valRangeText.setTextColor(Color.RED);
         }, 2000);
     }
     private void getCompanyFixDis(){
@@ -534,7 +536,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                             sugCarsText.setText(sugCars);
                         }
                         if(!estimate_fee.equals("null")){
-                            valPriceText.setText(estimate_fee);
+                            valPriceText.setText(estimate_fee+" (原估價)");
                             int original = Integer.parseInt(middlePrice);
                             String lowString = String.valueOf(original*8/10);
                             String originalStr = String.valueOf(original);

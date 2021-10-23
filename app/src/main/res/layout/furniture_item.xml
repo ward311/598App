@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <TextView
@@ -18,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:paddingRight="5dp"
             android:text="text"
             android:visibility="visible" />
 
@@ -25,17 +25,19 @@
             android:id="@+id/room_FI"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="25dp"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:gravity="center"
+            android:paddingRight="25dp"
             android:text="room" />
 
         <TextView
             android:id="@+id/originalNum_FI"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="center|right"
+            android:paddingRight="5dp"
             android:text="0"
             android:visibility="visible" />
 
@@ -44,15 +46,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
             android:text="->"
             android:visibility="visible" />
 
         <Button
             android:id="@+id/minus_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:gravity="center"
             android:text="-"
             android:visibility="visible" />
@@ -68,8 +68,8 @@
 
         <Button
             android:id="@+id/plus_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:gravity="center"
             android:text="+"
             android:visibility="visible" />

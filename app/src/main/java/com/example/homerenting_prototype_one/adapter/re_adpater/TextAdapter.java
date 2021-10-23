@@ -66,7 +66,7 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
             else if(data.get(position)[4].equals("0")){
                 holder.item.setAlpha(.5f);
                 holder.item.setTextColor(Color.parseColor("#FB8527"));
-                holder.carStatus.setText("審核中");
+                holder.carStatus.setText("審核階段");
                 holder.carStatus.setTextColor(Color.parseColor("#FB8527"));
 
             }else if(data.get(position)[4].equals("2")){
