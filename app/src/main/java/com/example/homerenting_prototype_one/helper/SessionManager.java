@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.homerenting_prototype_one.model.User;
@@ -13,10 +14,13 @@ import com.example.homerenting_prototype_one.model.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SessionManager {
-    private String TAG = "SessionMananger";
+import java.util.Map;
+import java.util.Set;
 
-    SharedPreferences pref;
+public class SessionManager {
+    private String TAG = "SessionManager";
+
+    SharedPreferences pref ;
 
     Editor editor;
 
@@ -46,6 +50,7 @@ public class SessionManager {
         editor.putString("user_id", id);
         editor.putString("user", userJsonObjStr);
         editor.commit();
+        editor.apply();
     }
 
     public User getUserDetail(){

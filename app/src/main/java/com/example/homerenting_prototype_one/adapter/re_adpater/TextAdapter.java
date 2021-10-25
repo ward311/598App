@@ -1,6 +1,7 @@
 package com.example.homerenting_prototype_one.adapter.re_adpater;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,7 +31,6 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
     public TextAdapter(ArrayList<String[]> data){
         this.data = data;
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -50,7 +51,8 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
                 holder.carStatus.setText("審核通過");
                 holder.carStatus.setTextColor(Color.parseColor("#19B0ED"));
                 holder.item.setTextColor(Color.parseColor("#19B0ED"));
-                holder.cars.setOnClickListener(v -> {
+                /*holder.cars.setOnClickListener(v -> {
+                    avoidDoubleClicks(v);
                     input.setText("通過時間: "+data.get(position)[5]);
                     input.setTextColor(Color.BLACK);
                     input.setPadding(0,100,0,0);
@@ -59,15 +61,20 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
                             .setTitle("審核通過")
                             .setView(input)
                             .setPositiveButton("瞭解", null)
+                            .setCancelable(true)
+                            .setOnDismissListener(dialog -> {
+                                ((ViewGroup)holder.cars.getParent()).removeView(input);
+                            })
                             .create()
                             .show();
-                });
+                });*/
             }
             else if(data.get(position)[4].equals("0")){
                 holder.item.setAlpha(.5f);
                 holder.item.setTextColor(Color.parseColor("#FB8527"));
                 holder.carStatus.setText("審核階段");
                 holder.carStatus.setTextColor(Color.parseColor("#FB8527"));
+                holder.item.setClickable(false);
 
             }else if(data.get(position)[4].equals("2")){
                 holder.item.setAlpha(.5f);
@@ -75,11 +82,12 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
                 holder.carStatus.setText("審核失敗");
                 holder.carStatus.setTextColor(Color.RED);
                 holder.cars.setOnClickListener(v -> {
+                    avoidDoubleClicks(v);
                     Log.d(TAG, ""+data.get(position)[3]);
                     input.setText("失敗原因 : "+data.get(position)[6]);
                     input.setTextColor(Color.BLACK);
                     input.setGravity(Gravity.CENTER);
-                    new AlertDialog.Builder(mContext)
+                   new AlertDialog.Builder(mContext)
                             .setTitle("審核失敗")
                             .setMessage(input.getText().toString())
                             .setNegativeButton("取消", null)
@@ -90,8 +98,13 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
                                 license.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 mContext.startActivity(license);
                             })
-                            .create()
-                            .show();
+                           .setCancelable(true)
+                           .setOnDismissListener(dialog -> {
+                               ((ViewGroup)holder.cars.getParent()).removeView(input);
+                           })
+                           .create()
+                           .show();
+
                 });
             }else{
                 holder.item.setAlpha(.5f);
@@ -101,6 +114,15 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.ViewHolder> {
         }
             holder.item.setText(text);
 
+    }
+
+    public static void avoidDoubleClicks(final View view) {
+        final long DELAY_IN_MS = 900;
+        if (!view.isClickable()) {
+            return;
+        }
+        view.setClickable(false);
+        view.postDelayed(() -> view.setClickable(true), DELAY_IN_MS);
     }
 
     @Override

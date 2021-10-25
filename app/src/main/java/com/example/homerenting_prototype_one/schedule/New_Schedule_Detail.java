@@ -446,19 +446,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getOrder", Toast.LENGTH_LONG).show());
                     }
                 }
-
+                getStaffVacation(movingDateWithoutTime);
+                getVehicleVacation(movingDateWithoutTime);
                 int ii = 0;
                 /*while (lock){
                     if((++ii)%5000000 == 0) Log.d(TAG, (ii/50000000)+". waiting for lock in getOrder...");
                 }*/
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                getStaffVacation(movingDateWithoutTime);
-                getVehicleVacation(movingDateWithoutTime);
+
                 getOverlap(datetime, endtime);
 
                 Looper.prepare();
                 Handler handler = new Handler();
                 Runnable runnable = () -> {
+
                     getVehicleData();
                     getStaffData();
                     Log.d(TAG, "finish getting data.");
@@ -663,11 +664,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                Looper.prepare();
                 runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getStaffVacation(date), 3000);
-                Looper.loop();
             }
 
             @Override
@@ -762,9 +759,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                /* (lock){
+                while (lock){
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVehicleVacation...");
-                }*/
+                }
                 Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
                 setChipCheck(carGroup, cars_vacation, "vacation");
             }

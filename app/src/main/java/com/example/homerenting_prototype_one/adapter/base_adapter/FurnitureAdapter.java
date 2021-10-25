@@ -171,15 +171,16 @@ public class FurnitureAdapter extends BaseAdapter{
     private void setEditedNum(ViewHolder viewHolder, int position) {
         viewHolder.originalNumber.setText(data.get(position)[2]);
         viewHolder.originalNumber.setVisibility(View.VISIBLE);
-        viewHolder.to.setVisibility(View.VISIBLE);
+        //viewHolder.to.setVisibility(View.VISIBLE);
         viewHolder.item.setBackgroundColor(Color.parseColor("#FFE7E7"));
         viewHolder.number.setText(data.get(position)[3]);
 //        Log.d(TAG, position+". ("+space+")edited data: "+ Arrays.toString(data.get(position)));
     }
 
     private void setOriginalNum(ViewHolder viewHolder, int position) {
-        viewHolder.originalNumber.setVisibility(View.INVISIBLE);
-        viewHolder.to.setVisibility(View.INVISIBLE);
+        //viewHolder.originalNumber.setVisibility(View.INVISIBLE);
+        viewHolder.originalNumber.setText(data.get(position)[2]);
+        //viewHolder.to.setVisibility(View.INVISIBLE);
         viewHolder.item.setBackgroundColor(Color.parseColor("#FFFFFF"));
         viewHolder.number.setText(data.get(position)[2]);
 //        Log.d(TAG, position+". ("+space+")original data: "+ Arrays.toString(data.get(position)));

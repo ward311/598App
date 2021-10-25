@@ -174,6 +174,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             fromBooking.putString("estimate_time", estimateTime);
             fromBooking.putString("mvfopt", mvfopt);
             fromBooking.putString("mvtopt", mvtopt);
+            bundle.putString("isWeb", isAuto);
             intent.putExtras(bundle);
             intent.putExtras(fromBooking);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1028,9 +1029,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
        back_btn.setOnClickListener(v -> {
-           Intent calendar = new Intent(context, Calendar.class);
-           calendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-           startActivity(calendar);
+           super.onBackPressed();
+           this.finish();
 
        });
 
@@ -1062,9 +1062,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     }
     public void onBackPressed(){
         super.onBackPressed();
-        Intent calendar = new Intent(context, Calendar.class);
-        calendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(calendar);
+        this.finish();
 
     }
 }

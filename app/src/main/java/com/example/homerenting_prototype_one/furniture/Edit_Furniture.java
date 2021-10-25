@@ -274,7 +274,7 @@ public class Edit_Furniture extends AppCompatActivity {
                 }
                 else {
                     if(!furniture_company.equals("999")) { //如果家具有公司id(已改變)
-                        row_data[2] = "0";
+                        row_data[2] = num;
                         row_data[3] = num;
                     }
                     data.add(row_data);
@@ -331,7 +331,7 @@ public class Edit_Furniture extends AppCompatActivity {
                                 if(bundle.getString("isWeb").equals("1")){
                                     today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     today.putExtras(bundle);
-                                    modifyFurniture();
+                                    modify_webFurniture();
                                 }else{
                                     today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     today.putExtras(bundle);
@@ -364,7 +364,7 @@ public class Edit_Furniture extends AppCompatActivity {
                         if(bundle.getString("isWeb").equals("1")){
                             today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             today.putExtras(bundle);
-                            modifyFurniture();
+                            modify_webFurniture();
                         }else{
                             today.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             today.putExtras(bundle);
@@ -761,7 +761,6 @@ public class Edit_Furniture extends AppCompatActivity {
             }
         });
     }
-
     private void modify_webFurniture(){
         String function_name = "modify_web_furniture";
         RequestBody body = new FormBody.Builder()

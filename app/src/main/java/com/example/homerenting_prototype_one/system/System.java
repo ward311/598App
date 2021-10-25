@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -336,5 +337,11 @@ public class System extends AppCompatActivity {
             }
         });
     }
+    public class AsyncTask extends android.os.AsyncTask{
 
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            return null;
+        }
+    }
 }
