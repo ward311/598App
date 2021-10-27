@@ -553,7 +553,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         //Toast.makeText(context, "program: "+program,Toast.LENGTH_LONG).show();
                     });
 
-                    int auto = order.getInt("auto");
+                    if(isAuto.equals("1")){
+                        convert_furniture();
+                    }
 //                    if(auto==0) runOnUiThread(() -> furnitureLL.setVisibility(View.GONE));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -568,7 +570,41 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             }
         });
     }
+    private void convert_furniture(){
+        String function_name = "convert_furniture";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id", company_id)
+                .build();
+        Log.d(TAG, "order_id: "+order_id);
 
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/furniture.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData: "+responseData); //顯示資料
+
+            }
+        });
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setPhoneBtn(){
         phoneCall_btn.setOnClickListener(v -> {
