@@ -196,6 +196,7 @@ public class Valuation_Detail extends AppCompatActivity {
         furniture_btn.setOnClickListener(v -> {
             Intent detail_intent = new Intent(  );
             detail_intent.setClass( Valuation_Detail.this, Furniture_Detail.class );
+            bundle.putString("key", "self");
             detail_intent.putExtras(bundle);
             startActivity( detail_intent );
         });

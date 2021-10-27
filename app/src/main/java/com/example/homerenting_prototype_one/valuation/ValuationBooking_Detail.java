@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -209,7 +211,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 }
                 movingDateText.setText(year+"-"+(month+1)+"-"+dayOfMonth);
             },calendar.get( GregorianCalendar.YEAR ),calendar.get( GregorianCalendar.MONTH ),calendar.get( GregorianCalendar.DAY_OF_MONTH));
-            date_picker.getDatePicker().setMinDate(setDate.getTime());
+            //date_picker.getDatePicker().setMinDate(setDate.getTime());
+            date_picker.getDatePicker().setMinDate(new Date().getTime());
             date_picker.show();
         });
 
@@ -727,11 +730,13 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             Log.d(TAG, "搬家價格為空");
             check = true;
         }
-        if(Integer.valueOf(fee)>=Integer.valueOf(suggestStr) && memo.isEmpty()){
-            memoEdit.setError("請新增備註");
-            check = true;
-        }
-        else{
+        if(getFromEdit.getString("suggestPrice")==null){
+            //setValPrice();
+            valPriceText.setText("3600~8000");
+            if(Integer.valueOf(fee)>=Integer.valueOf("8000") && memo.isEmpty()){
+                memoEdit.setError("請新增備註");
+                check = true;
+            }
             if(valPriceText.getText().length()!=0){
                 Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
                 if(Integer.parseInt(fee) < getValPrice(0)){
@@ -746,8 +751,30 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     check = true;
                 }
             }
+        }else{
+            if(Integer.valueOf(fee)>=Integer.valueOf(suggestStr) && memo.isEmpty()){
+                memoEdit.setError("請新增備註");
+                check = true;
+            }
+            else{
+                if(valPriceText.getText().length()!=0){
+                    Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
+                    if(Integer.parseInt(fee) < getValPrice(0)){
+                        priceEdit.setError("所輸入之搬家價格不得低於"+getValPrice(0));
+                        Log.d(TAG, "搬家價格過低");
+                        check = true;
+                    }
 
+                }else{
+                    if(valPriceText.getText().length()==0){
+                        priceEdit.setError("所輸入之搬家價格不得為空");
+                        check = true;
+                    }
+                }
+
+            }
         }
+
         return check;
     }
 
@@ -1029,9 +1056,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
        back_btn.setOnClickListener(v -> {
-           super.onBackPressed();
-           this.finish();
-
+           Intent valB = new Intent(this, Valuation.class);
+           valB.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+           startActivity(valB);
        });
 
         valuation_btn.setOnClickListener(v -> {

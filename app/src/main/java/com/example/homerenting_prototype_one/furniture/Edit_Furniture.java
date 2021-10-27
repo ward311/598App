@@ -766,9 +766,12 @@ public class Edit_Furniture extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)
+                .add("company_id", getCompany_id(context))
                 .add("furniture_data", Arrays.deepToString(furniture_data))
                 .build();
-        Log.d(TAG,"order_id: "+order_id+", furniture_data:"+ Arrays.deepToString(furniture_data));
+        Log.d(TAG,"order_id: "+order_id+
+                ", company_id: "+getCompany_id(context)+
+                ", furniture_data:"+ Arrays.deepToString(furniture_data));
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+PHP)

@@ -447,6 +447,7 @@ public class Order_Detail extends AppCompatActivity {
             furniture_btn.setOnClickListener(v -> {
                 Intent detail_intent = new Intent();
                 detail_intent.setClass( context, Furniture_Location.class);
+                bundle.putString("key", "order_detail");
                 detail_intent.putExtras(bundle);
                 startActivity( detail_intent);
             });

@@ -78,74 +78,144 @@ public class Furniture_Detail extends AppCompatActivity {
         detail_list = findViewById( id.furniture_detail_listView );
 
         data = new ArrayList<>();
+        if(key.equals("self")){
+            String function_name = "furniture_detail";
+            String company_id = getCompany_id(this);
+            RequestBody body = new FormBody.Builder()
+                    .add("function_name", function_name)
+                    .add("order_id", order_id)
+                    .add("company_id", company_id)
+                    .build();
 
-        String function_name = "furniture_detail";
-        String company_id = getCompany_id(this);
-        RequestBody body = new FormBody.Builder()
-                .add("function_name", function_name)
-                .add("order_id", order_id)
-                .add("company_id", company_id)
-                .build();
+            Request request = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL+PHP)
+                    .post(body)
+                    .build();
 
-        Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+PHP)
-                .post(body)
-                .build();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(Furniture_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String responseData = response.body().string();
-                Log.d(TAG,"responseData: "+responseData);
-
-                try {
-                    final JSONArray responseArr = new JSONArray(responseData);
-
-                    for (int i = 0; i < responseArr.length(); i++) {
-                        JSONObject furniture = responseArr.getJSONObject(i);
-                        final String furniture_name = furniture.getString("furniture_name");
-                        final String num = furniture.getString("num");
-                        final String furniture_memo = " ";
-
-                        String[] row_data = {furniture_name, num, furniture_memo};
-                        data.add(row_data);
-                    }
-                } catch (JSONException e) {
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     e.printStackTrace();
+                    runOnUiThread(() -> Toast.makeText(Furniture_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    final String responseData = response.body().string();
+                    Log.d(TAG,"responseData: "+responseData);
+
+                    try {
+                        final JSONArray responseArr = new JSONArray(responseData);
+
+                        for (int i = 0; i < responseArr.length(); i++) {
+                            JSONObject furniture = responseArr.getJSONObject(i);
+                            final String furniture_name = furniture.getString("furniture_name");
+                            final String num = furniture.getString("num");
+                            final String furniture_memo = " ";
+
+                            String[] row_data = {furniture_name, num, furniture_memo};
+                            data.add(row_data);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(responseData.equals("null")){
+                                    Log.d(TAG, "NO DATA");
+                                    NoDataAdapter noData = new NoDataAdapter();
+                                    detail_list.setAdapter(noData);
+                                }
+                                //else Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                    //顯示資訊
+                    for(int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(responseData.equals("null")){
-                                Log.d(TAG, "NO DATA");
-                                NoDataAdapter noData = new NoDataAdapter();
-                                detail_list.setAdapter(noData);
-                            }
-                            //else Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            DetailAdapter detail_adapter = new DetailAdapter(data);
+                            detail_list.setAdapter(detail_adapter);
                         }
                     });
+
+                }
+            });
+        }else{
+            String function_name = "furniture_fine_detail";
+            String company_id = getCompany_id(this);
+            RequestBody body = new FormBody.Builder()
+                    .add("function_name", function_name)
+                    .add("order_id", order_id)
+                    .add("company_id", company_id)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(BuildConfig.SERVER_URL+PHP)
+                    .post(body)
+                    .build();
+
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> Toast.makeText(Furniture_Detail.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
                 }
 
-                //顯示資訊
-                for(int i = 0; i < data.size(); i++)
-                    Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        DetailAdapter detail_adapter = new DetailAdapter(data);
-                        detail_list.setAdapter(detail_adapter);
-                    }
-                });
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    final String responseData = response.body().string();
+                    Log.d(TAG,"responseData: "+responseData);
 
-            }
-        });
+                    try {
+                        final JSONArray responseArr = new JSONArray(responseData);
+
+                        for (int i = 0; i < responseArr.length(); i++) {
+                            JSONObject furniture = responseArr.getJSONObject(i);
+                            final String furniture_name = furniture.getString("furniture_name");
+                            final String num = furniture.getString("num");
+                            final String furniture_memo = " ";
+
+                            String[] row_data = {furniture_name, num, furniture_memo};
+                            data.add(row_data);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(responseData.equals("null")){
+                                    Log.d(TAG, "NO DATA");
+                                    NoDataAdapter noData = new NoDataAdapter();
+                                    detail_list.setAdapter(noData);
+                                }
+                                //else Toast.makeText(context, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                    //顯示資訊
+                    for(int i = 0; i < data.size(); i++)
+                        Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DetailAdapter detail_adapter = new DetailAdapter(data);
+                            detail_list.setAdapter(detail_adapter);
+                        }
+                    });
+
+                }
+            });
+        }
+
 
 //        String[][] datas = {{"test1", "100"}, {"test2", "200"}};
 //        data.add(datas[0]);
