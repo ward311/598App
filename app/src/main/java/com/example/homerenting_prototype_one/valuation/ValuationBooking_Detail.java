@@ -136,31 +136,31 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         if(getFromEdit.getString("suggestCars")==null){
             sugCarsText.setText("無建議車輛");
         }else{
-            String nullCar = getFromEdit.getString("suggestCars");
-            String[] split_car = nullCar.split("[*]");
-            String isZero = split_car[1];
-            Log.d(TAG, "zero: "+isZero);
-            if(isZero.equals(" 0")){
-                sugCarsText.setText("無建議車輛");
+            String returnCar = getFromEdit.getString("suggestCars");
+            handler.postDelayed(() -> sugCarsText.setText(returnCar), 1000);
+            //String[] split_car = returnCar.split("[*]");
+            //String isZero = split_car[1];
+            //Log.d(TAG, "zero: "+isZero);
+            /*if(isZero.equals(" 0")){
+                sugCarsText.setText("123");
             }else{
-                handler.postDelayed(() -> sugCarsText.setText(getFromEdit.getString("suggestCars")), 1500);
-            }
+
+            }*/
         }
         if(getFromEdit.getString("suggestPrice")==null){
             //setValPrice();
             valPriceText.setText("3600~8000");
         }else{
 
-            handler.postDelayed(() -> newValPriceText.setText(getFromEdit.getString("suggestPrice")), 1500);
             handler.postDelayed(()->{
                 valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                onlineText.setText("到府估價");
+                onlineText.setText("系統估價");
                 onlineText.setTextColor(Color.RED);
                 Log.d(TAG, "discount get: "+ discount+
                         " isDis: "+isDiscount);
                 calculate();
+                newValPriceText.setText(suggestStr);
             } , 1500);
-
 
         }
 
@@ -288,7 +288,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         }else{
             discount = 1;
         }
-        float suggest = Integer.parseInt(newValPriceText.getText().toString());
+        float suggest = Integer.parseInt(getFromEdit.getString("suggestPrice"));
 
         switch (program){
             case "一般方案":
@@ -540,7 +540,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                             sugCarsText.setText(sugCars);
                         }
                         if(!estimate_fee.equals("null")){
-                            valPriceText.setText(estimate_fee+" (原估價)");
+                            valPriceText.setText(estimate_fee+" (原)");
                             int original = Integer.parseInt(middlePrice);
                             String lowString = String.valueOf(original*8/10);
                             String originalStr = String.valueOf(original);
@@ -554,7 +554,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     });
 
                     if(isAuto.equals("1")){
-                        convert_furniture();
+                        handler.postDelayed(() -> convert_furniture(),500);
                     }
 //                    if(auto==0) runOnUiThread(() -> furnitureLL.setVisibility(View.GONE));
                 } catch (JSONException e) {
@@ -769,7 +769,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         if(getFromEdit.getString("suggestPrice")==null){
             //setValPrice();
             valPriceText.setText("3600~8000");
-            if(Integer.valueOf(fee)>=Integer.valueOf("8000") && memo.isEmpty()){
+            if(Integer.valueOf(fee)>Integer.valueOf("8000") && memo.isEmpty()){
                 memoEdit.setError("請新增備註");
                 check = true;
             }
@@ -788,7 +788,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 }
             }
         }else{
-            if(Integer.valueOf(fee)>=Integer.valueOf(suggestStr) && memo.isEmpty()){
+            if(Integer.valueOf(fee)>Integer.valueOf(suggestStr) && memo.isEmpty()){
                 memoEdit.setError("請新增備註");
                 check = true;
             }

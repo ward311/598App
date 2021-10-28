@@ -133,8 +133,12 @@ public class Edit_Furniture extends AppCompatActivity {
             setFurnitureList();
             setCheck_btn();
         }
-        else getFurnitureData();
-
+        else if(bundle.getString("isWeb").equals("1")){
+            get_WebFurnitureData();
+        }
+        else{
+            getFurnitureData();
+        }
         add_btn.setOnClickListener(v -> {
             setSpinner();
             newFurnitureLock = true;
@@ -182,6 +186,46 @@ public class Edit_Furniture extends AppCompatActivity {
                 " estimate_time: "+fromBooking.getString("estimate_time")+
                 " mvfopt: "+fromBooking.getString("mvfopt")+
                 " mvtopt: "+fromBooking.getString("mvtopt"));
+    }
+    private void get_WebFurnitureData(){
+        String function_name = "furniture_fine_detail";
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id", company_id)
+                .build();
+        Log.d(TAG, "order_id: "+order_id);
+
+        //連線要求
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/furniture.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(Edit_Furniture.this, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of furniture_list: "+responseData);
+
+
+                getListData(responseData);
+                setFurnitureList();
+                setCheck_btn();
+            }
+        });
     }
     private void getFurnitureData(){
         String function_name = "furniture_detail";
@@ -240,10 +284,10 @@ public class Edit_Furniture extends AppCompatActivity {
 
                 String furniture_id = furniture.getString("furniture_id");
                 String name = furniture.getString("furniture_name");
-                String num = furniture.getString("num");
                 String space_type = furniture.getString("space_type");
                 String furniture_company = furniture.getString("company_id");
-
+                String num = furniture.getString("num");
+                if(num.equals("0")) continue;
                 ArrayList<String[]> list = null;
                 switch(space_type){
                     case "客廳":
