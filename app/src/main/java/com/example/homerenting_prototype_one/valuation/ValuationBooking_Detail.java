@@ -104,7 +104,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     Date setDate;
     ArrayList<String[]> cars;
     int valPrice = -1, firstRowEmpty = 1;
-    float discount = 0;
+    float discount ;
     String TAG = "Valuation_Booking_Detail";
     private final String PHP = "/user_data.php";
     Context context = ValuationBooking_Detail.this;
@@ -288,33 +288,33 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         }else{
             discount = 1;
         }
-        float suggest = Integer.parseInt(getFromEdit.getString("suggestPrice"));
+        float suggest = Integer.parseInt(getFromEdit.getString("suggestPrice")); /*API回傳方案是一般方案*/
 
         switch (program){
-            case "一般方案":
+            case "超值方案":
                 if(suggest<=5000){
-                    least = Math.round((suggest+600) * 8/10);
-                    most = Math.round((suggest+600)*discount);
+                    least = Math.round((suggest-600) * 8/10);
+                    most = Math.round((suggest-600)*discount);
                     break;
                 }else if(suggest>=5001&&suggest<=10000){
-                    least = Math.round((suggest+1200) * 8/10);
-                    most =  Math.round((suggest+1200) * discount);
+                    least = Math.round((suggest-1200) * 8/10);
+                    most =  Math.round((suggest-1200) * discount);
                     break;
                 }else if(suggest>=10001&&suggest<=15000){
-                    least = Math.round((suggest+1800) * 8/10);
-                    most =  Math.round((suggest+1800) * discount);
+                    least = Math.round((suggest-1800) * 8/10);
+                    most =  Math.round((suggest-1800) * discount);
                     break;
                 }else if(suggest>=15001&&suggest<=20000){
-                    least = Math.round((suggest+2400) * 8/10);
-                    most =  Math.round((suggest+2400) * discount);
+                    least = Math.round((suggest-2400) * 8/10);
+                    most =  Math.round((suggest-2400) * discount);
                     break;
                 }else if(suggest>=20001&&suggest<=30000) {
-                    least = Math.round((suggest+3000) * 8/10);
-                    most =  Math.round((suggest+3000) * discount);
+                    least = Math.round((suggest-3000) * 8/10);
+                    most =  Math.round((suggest-3000) * discount);
                     break;
                 }else{
-                    least = Math.round((suggest+3600) * 8/10);
-                    most =  Math.round((suggest+3600) * discount);
+                    least = Math.round((suggest-3600) * 8/10);
+                    most =  Math.round((suggest-3600) * discount);
                     break;
                 }
 
@@ -344,7 +344,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     most =  Math.round((suggest+10080) * discount);
                     break;
                 }
-            case "超值方案":
+            case "一般方案":
                 if(suggest<=5000){
                     least = Math.round((suggest) * 8/10);
                     most =  Math.round((suggest)*discount);
@@ -381,6 +381,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             valRangeText.setText(lowestStr +"~"+suggestStr);
             valRangeText.setTextColor(Color.RED);
         }, 2000);
+
     }
     private void getCompanyFixDis(){
         String function_name = "company_fix_discount";
@@ -541,10 +542,28 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         }
                         if(!estimate_fee.equals("null")){
                             valPriceText.setText(estimate_fee+" (原)");
-                            int original = Integer.parseInt(middlePrice);
-                            String lowString = String.valueOf(original*8/10);
-                            String originalStr = String.valueOf(original);
-                            valRangeText.setText(lowString+"~"+originalStr);
+                            switch(program){
+                                case("一般方案"):
+                                    float original = Integer.parseInt(middlePrice);
+                                    String lowString = String.valueOf(Math.round(original*8/10));
+                                    String originalStr = String.valueOf((int)original);
+                                    valRangeText.setText(lowString+"~"+originalStr);
+                                    break;
+                                case("超值方案"):
+                                    original = Integer.parseInt(lowPrice);
+                                    lowString = String.valueOf(Math.round(original*8/10));
+                                    originalStr = String.valueOf((int)original);
+                                    valRangeText.setText(lowString+"~"+originalStr);
+                                    break;
+                                case("升等方案"):
+                                    original = Integer.parseInt(highPrice);
+                                    lowString = String.valueOf(Math.round(original*8/10));
+                                    originalStr = String.valueOf((int)original);
+                                    valRangeText.setText(lowString+"~"+originalStr);
+                                    break;
+
+                            }
+
                         }else{
                             valPriceText.setText("3600~8000");
                         }

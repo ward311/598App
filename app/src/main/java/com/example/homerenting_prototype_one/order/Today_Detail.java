@@ -72,7 +72,7 @@ public class Today_Detail extends AppCompatActivity {
 
     String order_id, member_id;
 
-    Button furnitureBtn, changePriceBtn, check_btn, sign_btn, change_furniture;
+    Button furnitureBtn, changePriceBtn, check_btn, sign_btn, change_furniture, cash_btn;
     AlertDialog.Builder dialog;
     boolean change = false, check = false, result = false;
 
@@ -89,7 +89,7 @@ public class Today_Detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today__detail);
         Button call_btn = findViewById(R.id.call_btn);
-
+        cash_btn = findViewById(R.id.cashier_btn);
 //        bundle = new Bundle();
 //        bundle.putString("order_id", "74");
         bundle = getIntent().getExtras();
@@ -198,6 +198,39 @@ public class Today_Detail extends AppCompatActivity {
 
         getVehicleData();
         getStaffData();
+        cash_btn.setOnClickListener(v -> {
+            Intent sign_intent = new Intent(context, Signature_Pad.class);
+            new AlertDialog.Builder(context)
+                    .setTitle("更新會員資料")
+                    .setMessage("是否同意會員聯絡地址更新為搬入地址？")
+                    .setPositiveButton("是", (dialog, which) -> {
+                        updateAddress();
+                        int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+                        int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
+                        String moving_fee = String.valueOf(finalPrice);
+                        memo = memoEdit.getText().toString();
+                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                        bundle.putString("order_id", order_id);
+                        bundle.putString("fee", moving_fee);
+                        bundle.putString("memo", memo);
+                        sign_intent.putExtras(bundle);
+                        startActivity(sign_intent);
+                    })
+                    .setNegativeButton("否", (dialog, which) -> {
+                        int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+                        int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
+                        String moving_fee = String.valueOf(finalPrice);
+                        memo = memoEdit.getText().toString();
+                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                        bundle.putString("order_id", order_id);
+                        bundle.putString("fee", moving_fee);
+                        bundle.putString("memo", memo);
+                        sign_intent.putExtras(bundle);
+                        startActivity(sign_intent);
+                    })
+                    .create()
+                    .show();
+        });
         /*收款按鈕*/
         check_btn.setOnClickListener(v -> {
             int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
@@ -503,7 +536,7 @@ public class Today_Detail extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("member_id", member_id)
-                .add("address", toAddress)
+
                 .build();
         Log.d(TAG, "update member_id: "+member_id+", address: "+toAddress);
         Request request = new Request.Builder()

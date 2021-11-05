@@ -17,6 +17,7 @@ import android.util.Log;
 
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.calendar.Calendar;
@@ -50,6 +51,7 @@ public class Signature_Pad extends AppCompatActivity {
     Bundle bundle;
     String order_id, fee, memo;
     Boolean check = false;
+    TextView resultView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,7 @@ public class Signature_Pad extends AppCompatActivity {
         checkBtn = findViewById(R.id.confirm_sign_btn);
         clearBtn = findViewById(R.id.clear_btn);
         backBtn = findViewById(R.id.back_ImgBtn);
+        resultView = findViewById(R.id.finalView);
         checkBtn.setEnabled(false);
         checkBtn.setAlpha(.5f);
         clearBtn.setEnabled(false);
@@ -69,6 +72,7 @@ public class Signature_Pad extends AppCompatActivity {
         memo = bundle.getString("memo");
         Log.d(TAG, "order_id : "+order_id);
         Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+        resultView.setText("今日訂單總計費用 : "+fee+" \n"+"備註事項 : "+memo+"\n\n顧客簽名後視同確認工單無誤");
         signPad.setPenColor(Color.BLACK);
         signPad.setOnSignedListener(new SignaturePad.OnSignedListener() {
             @Override
