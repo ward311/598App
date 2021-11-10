@@ -64,7 +64,7 @@ public class Order_Detail extends AppCompatActivity {
     String name, gender, phone, contact_address, movingDatetime, movingTime;
     String fromAddress, toAddress, remainder, car, staff, worktime, fee, memo, status, additional_fee;
     String order_id;
-
+    String depositFee;
     Button call_btn, furniture_btn, check_btn, goOrderDetail;
 
     Bundle bundle;
@@ -214,9 +214,11 @@ public class Order_Detail extends AppCompatActivity {
                     fee = order.getString("estimate_fee");
                     if(fee.isEmpty() || fee.equals("null")) fee = order.getString("estimate_fee");
                     fee = fee+" 元";
-                    additional_fee = order.getString("additional_price");
-                    if(additional_fee.equals("null")) additional_fee = "0 元";
-                    additional_fee +=" 元";
+                    //additional_fee = order.getString("additional_price");
+                    //if(additional_fee.equals("null")) additional_fee = "0 元";
+                    //additional_fee +=" 元";
+                    depositFee = order.getString("deposit_fee");
+                    if(depositFee.equals("null")) depositFee = "0 元";
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
 
@@ -250,7 +252,7 @@ public class Order_Detail extends AppCompatActivity {
                         remainderText.setText(remainder);
                         worktimeText.setText(worktime);
                         feeText.setText(fee);
-                        extraFeeText.setText(additional_fee);
+                        extraFeeText.setText(depositFee);
                         memoText.setText(memo);
                     });
 

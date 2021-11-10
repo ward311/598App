@@ -343,37 +343,34 @@ public class Setting_Service extends AppCompatActivity {
 
     private void setAddChip(final ChipGroup chipGroup){
         Chip addItem = (Chip) chipGroup.getChildAt(chipGroup.getChildCount()-1);
-        addItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //輸入欄
-                final EditText newItem_edit = new EditText(context);
-                //設定margin
-                FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.leftMargin = 80;
-                params.rightMargin = params.leftMargin;
-                newItem_edit.setLayoutParams(params);
-                //要放到FrameLayout裡，margin才有用
-                FrameLayout container = new FrameLayout(context);
-                container.addView(newItem_edit);
+        addItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //輸入欄
+            final EditText newItem_edit = new EditText(context);
+            //設定margin
+            FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = 80;
+            params.rightMargin = params.leftMargin;
+            newItem_edit.setLayoutParams(params);
+            //要放到FrameLayout裡，margin才有用
+            FrameLayout container = new FrameLayout(context);
+            container.addView(newItem_edit);
 
-                AlertDialog.Builder newItem_dialog = new AlertDialog.Builder(context);
-                newItem_dialog.setTitle("新增項目");
-                newItem_dialog.setView(container);
-                newItem_dialog.setPositiveButton("確認", (dialog, which) -> {
-                    String newItem = newItem_edit.getText().toString();
-                    if(newItem.isEmpty()){
-                        newItem_dialog.create().dismiss();
-                        Toast.makeText(context, "欄位不得為空", Toast.LENGTH_LONG).show();
-                    }else{
-                        addChip(chipGroup, newItem, true);
-                    }
+            AlertDialog.Builder newItem_dialog = new AlertDialog.Builder(context);
+            newItem_dialog.setTitle("新增項目");
+            newItem_dialog.setView(container);
+            newItem_dialog.setPositiveButton("確認", (dialog, which) -> {
+                String newItem = newItem_edit.getText().toString();
+                if(newItem.isEmpty()){
+                    newItem_dialog.create().dismiss();
+                    Toast.makeText(context, "欄位不得為空", Toast.LENGTH_LONG).show();
+                }else{
+                    addChip(chipGroup, newItem, true);
+                }
 
-                });
-                newItem_dialog.setNegativeButton("取消", null);
+            });
+            newItem_dialog.setNegativeButton("取消", null);
 
-                newItem_dialog.create().show();
-            }
+            newItem_dialog.create().show();
         });
     }
 

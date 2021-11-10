@@ -3,10 +3,11 @@ package com.example.homerenting_prototype_one;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
 
-
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,12 +16,16 @@ import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.calendar.Calendar;
+import com.example.homerenting_prototype_one.furniture.Furniture_Location;
 import com.example.homerenting_prototype_one.order.Order_Today;
 import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.github.gcacace.signaturepad.views.SignaturePad;
@@ -44,12 +49,13 @@ import okhttp3.Response;
 public class Signature_Pad extends AppCompatActivity {
     SignaturePad signPad ;
     Button clearBtn, checkBtn;
+    TextView detailBtn;
     ImageView backBtn;
     Context context = this;
     String TAG = "Signature_Pad";
     String base64Image;
     Bundle bundle;
-    String order_id, fee, memo;
+    String order_id, fee, memo, deposit;
     Boolean check = false;
     TextView resultView;
     @Override
@@ -61,6 +67,7 @@ public class Signature_Pad extends AppCompatActivity {
         clearBtn = findViewById(R.id.clear_btn);
         backBtn = findViewById(R.id.back_ImgBtn);
         resultView = findViewById(R.id.finalView);
+        detailBtn = findViewById(R.id.detailBtn);
         checkBtn.setEnabled(false);
         checkBtn.setAlpha(.5f);
         clearBtn.setEnabled(false);
@@ -70,9 +77,10 @@ public class Signature_Pad extends AppCompatActivity {
         order_id = bundle.getString("order_id");
         fee = bundle.getString("fee");
         memo = bundle.getString("memo");
+        deposit = bundle.getString("deposit");
         Log.d(TAG, "order_id : "+order_id);
-        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-        resultView.setText("今日訂單總計費用 : "+fee+" \n"+"備註事項 : "+memo+"\n\n顧客簽名後視同確認工單無誤");
+        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo+", deposit: "+deposit);
+        resultView.setText("顧客簽名後視同確認搬家訂單無誤");
         signPad.setPenColor(Color.BLACK);
         signPad.setOnSignedListener(new SignaturePad.OnSignedListener() {
             @Override
@@ -113,6 +121,35 @@ public class Signature_Pad extends AppCompatActivity {
             startActivity(back_intent);
             this.finish();
         });
+        detailBtn.setOnClickListener(v -> {
+            int toPay = Integer.parseInt(fee) - Integer.parseInt(deposit);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            TextView mTitle = new TextView(this);
+            mTitle.setText("訂單詳情");
+            mTitle.setTextColor(Color.BLACK);
+            mTitle.setPadding(0,10,0,0);
+            mTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+            mTitle.setGravity(Gravity.CENTER);
+            builder.setCustomTitle(mTitle);
+            builder.setMessage("搬家費用: "+fee+"\n已付訂金:"+deposit+
+                    "\n應付費用:"+toPay+"\n備註事項:"+memo);
+            builder.setPositiveButton("確定", null);
+            builder.setNegativeButton("查看家具清單", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent detail_intent = new Intent();
+                    detail_intent.setClass( context, Furniture_Location.class);
+                    bundle.putString( "key","order" );
+                    detail_intent.putExtras(bundle);
+                    startActivity( detail_intent);
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        });
+
     }
 
     private String convertImage(Bitmap pic){

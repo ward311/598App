@@ -115,13 +115,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 intent.putExtras(bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                submitBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        submit();
-
-                    }
-                });
+                submitBtn.setOnClickListener(v1 -> submit());
             }
         });
 
@@ -135,13 +129,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 intent.putExtras(bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                submitBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        submit();
-
-                    }
-                });
+                submitBtn.setOnClickListener(v12 -> submit());
             }
         });
 
@@ -165,6 +153,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newBuilder().connectTimeout(3,TimeUnit.MINUTES)
+                .writeTimeout(3,TimeUnit.MINUTES)
+                .readTimeout(3,TimeUnit.MINUTES);
         Call call = okHttpClient.newCall(request);
 
         call.enqueue(new Callback() {

@@ -27,7 +27,6 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.furniture.Edit_Furniture;
-import com.example.homerenting_prototype_one.schedule.New_Schedule_Detail;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.Signature_Pad;
 import com.example.homerenting_prototype_one.system.System;
@@ -69,7 +68,7 @@ public class Today_Detail extends AppCompatActivity {
 
     String name, gender, phone, contact_address, movingTime, fromAddress, toAddress;
     String remainder, car, staff, worktime, fee, memo, status, isWeb, additional_price;
-
+    String depositFee;
     String order_id, member_id;
 
     Button furnitureBtn, changePriceBtn, check_btn, sign_btn, change_furniture, cash_btn;
@@ -154,8 +153,9 @@ public class Today_Detail extends AppCompatActivity {
                     fee = order.getString("estimate_fee");
                     if(fee.equals("null")) fee = "0";
                     price_origin = Integer.parseInt(fee);
-                    additional_price = order.getString("additional_price");
-                    if(additional_price.equals("null")) additional_price = "0";
+                    //additional_price = order.getString("additional_price");
+                    //if(additional_price.equals("null")) additional_price = "0";
+                    depositFee = order.getString("deposit_fee");
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
                     status = order.getString("order_status");
@@ -183,7 +183,7 @@ public class Today_Detail extends AppCompatActivity {
                         remainderText.setText(remainder);
                         worktimeText.setText(worktime);
                         feeText.setText(fee);
-                        extraPriceText.setText(additional_price);
+                        extraPriceText.setText(depositFee);
                         finalPriceText.setText(fee);
                         memoEdit.setText(memo);
                     });
@@ -213,6 +213,7 @@ public class Today_Detail extends AppCompatActivity {
                         bundle.putString("order_id", order_id);
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
+                        bundle.putString("deposit", depositFee);
                         sign_intent.putExtras(bundle);
                         startActivity(sign_intent);
                     })
@@ -225,6 +226,7 @@ public class Today_Detail extends AppCompatActivity {
                         bundle.putString("order_id", order_id);
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
+                        bundle.putString("deposit", depositFee);
                         sign_intent.putExtras(bundle);
                         startActivity(sign_intent);
                     })
@@ -284,6 +286,7 @@ public class Today_Detail extends AppCompatActivity {
                         bundle.putString("order_id", order_id);
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
+                        bundle.putString("deposit", depositFee);
                         sign_intent.putExtras(bundle);
                         startActivity(sign_intent);
                     })
@@ -296,6 +299,7 @@ public class Today_Detail extends AppCompatActivity {
                         bundle.putString("order_id", order_id);
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
+                        bundle.putString("deposit", depositFee);
                         sign_intent.putExtras(bundle);
                         startActivity(sign_intent);
                     })
@@ -309,7 +313,7 @@ public class Today_Detail extends AppCompatActivity {
 
     private void checkTotalPrice(){
         Request request = new Request.Builder()
-                .url("http://140.117.71.91/598_new/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context))
+                .url("https://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context))
                 .build();
         Log.d(TAG, "order_id: "+ order_id+ " company_id: "+getCompany_id(context));
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -599,7 +603,7 @@ public class Today_Detail extends AppCompatActivity {
         changePriceText = findViewById(R.id.changePrice_OTD);
         memoEdit = findViewById(R.id.PS_OTD);
         check_btn = findViewById(R.id.check_btn_OTD);
-        sign_btn = findViewById(R.id.sign_btn);
+        sign_btn = findViewById(R.id.signature_btn);
         change_furniture = findViewById(R.id.furniture_btn);
     }
 
