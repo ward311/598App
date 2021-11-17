@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.homerenting_prototype_one">
+    package="com.example.homerenting_prototype_one" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -20,7 +20,10 @@
         android:textColor="@color/text_chip_state_list"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="n">
+        tools:targetApi="n" >
+        <activity
+            android:name=".order.Confirm_Detail"
+            android:exported="false" />
         <activity
             android:name=".system.System_License"
             android:exported="true" />
@@ -35,7 +38,7 @@
             android:screenOrientation="nosensor" />
         <activity
             android:name=".main.MainActivity"
-            android:screenOrientation="nosensor">
+            android:screenOrientation="nosensor" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

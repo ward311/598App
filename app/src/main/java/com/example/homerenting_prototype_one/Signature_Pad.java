@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
+import com.example.homerenting_prototype_one.order.Confirm_Detail;
 import com.example.homerenting_prototype_one.order.Order_Today;
 import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.github.gcacace.signaturepad.views.SignaturePad;
@@ -133,18 +134,8 @@ public class Signature_Pad extends AppCompatActivity {
             mTitle.setGravity(Gravity.CENTER);
             builder.setCustomTitle(mTitle);
             builder.setMessage("搬家費用: "+fee+"\n已付訂金:"+deposit+
-                    "\n應付費用:"+toPay+"\n備註事項:"+memo);
+                    "\n應付費用:"+toPay);
             builder.setPositiveButton("確定", null);
-            builder.setNegativeButton("查看家具清單", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent detail_intent = new Intent();
-                    detail_intent.setClass( context, Furniture_Location.class);
-                    bundle.putString( "key","order" );
-                    detail_intent.putExtras(bundle);
-                    startActivity( detail_intent);
-                }
-            });
             AlertDialog dialog = builder.create();
             dialog.show();
 

@@ -79,7 +79,7 @@ public class Today_Detail extends AppCompatActivity {
 
     Bundle bundle;
     Bundle fromBooking = new Bundle();
-
+    Bundle confirm = new Bundle();
 
     String TAG = "Today_Detail";
 
@@ -168,13 +168,13 @@ public class Today_Detail extends AppCompatActivity {
                         });
 
                     }else{
-                        runOnUiThread(()-> check_btn.setVisibility(View.VISIBLE));
+                        runOnUiThread(()-> check_btn.setVisibility(View.GONE));
                     }
                     //顯示資料
                     runOnUiThread(() -> {
                         nameText.setText(name);
-                        if(gender.equals("female")) nameTitleText.setText("小姐");
-                        else if(gender.equals("male")) nameTitleText.setText("先生");
+                        if(gender.equals("女")) nameTitleText.setText("小姐");
+                        else if(gender.equals("男")) nameTitleText.setText("先生");
                         else nameTitleText.setText("");
                         phoneText.setText(phone);
                         movingTimeText.setText(movingTime);
@@ -272,40 +272,21 @@ public class Today_Detail extends AppCompatActivity {
             bundle.putString("memo", memo);
             sign_intent.putExtras(bundle);*/
             //startActivity(sign_intent);
-            Intent sign_intent = new Intent(context, Signature_Pad.class);
-            new AlertDialog.Builder(context)
-                    .setTitle("更新會員資料")
-                    .setMessage("是否同意會員聯絡地址更新為搬入地址？")
-                    .setPositiveButton("是", (dialog, which) -> {
-                        updateAddress();
-                        int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
-                        int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
-                        String moving_fee = String.valueOf(finalPrice);
-                        memo = memoEdit.getText().toString();
-                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-                        bundle.putString("order_id", order_id);
-                        bundle.putString("fee", moving_fee);
-                        bundle.putString("memo", memo);
-                        bundle.putString("deposit", depositFee);
-                        sign_intent.putExtras(bundle);
-                        startActivity(sign_intent);
-                    })
-                    .setNegativeButton("否", (dialog, which) -> {
-                        int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
-                        int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
-                        String moving_fee = String.valueOf(finalPrice);
-                        memo = memoEdit.getText().toString();
-                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-                        bundle.putString("order_id", order_id);
-                        bundle.putString("fee", moving_fee);
-                        bundle.putString("memo", memo);
-                        bundle.putString("deposit", depositFee);
-                        sign_intent.putExtras(bundle);
-                        startActivity(sign_intent);
-                    })
-                    .create()
-                    .show();
-
+            Intent confirm_intent = new Intent(context, Confirm_Detail.class);
+            confirm.putString("name", name);
+            confirm.putString("member_id", member_id);
+            confirm.putString("gender", gender);
+            confirm.putString("phone", phone);
+            confirm.putString("mvTime", movingTime);
+            confirm.putString("mvOut", fromAddress);
+            confirm.putString("mvIn", toAddress);
+            confirm.putString("additional", remainder);
+            confirm.putString("mvFee", finalPriceText.getText().toString());
+            confirm.putString("deposit", depositFee);
+            confirm.putString("memo", memo);//備註
+            confirm.putString("order_id", order_id);
+            confirm_intent.putExtras(confirm);
+            startActivity(confirm_intent);
         });
 
         globalNav();
@@ -335,12 +316,13 @@ public class Today_Detail extends AppCompatActivity {
                             View view = inflater.inflate(R.layout.qrcode_image, null);
                             ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
 
-                            String url = "http://140.117.71.91/598_new/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context);
+                            String url = "https://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context);
                             Log.d(TAG, "website: "+ url);
                             try {
                                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                                 Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
                                 qrcodeView.setImageBitmap(bitmap);
+
                             } catch (WriterException e){
                                 e.printStackTrace();
                             }
@@ -354,6 +336,7 @@ public class Today_Detail extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     if(check){
                                         //change_order_status();
+                                        //receiveResult();
                                         Toast.makeText(context, "完成訂單 - 已收款", Toast.LENGTH_LONG).show();
                                     }
                                     else {
@@ -372,7 +355,43 @@ public class Today_Detail extends AppCompatActivity {
             }
         });
     }
+    private void receiveResult(){
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .build();
 
+        Request request = new Request.Builder()
+                .url("https://598new.ddns.net/598_new_20211026/receive.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of receive_result: " + responseData); //顯示資料
+
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+                    JSONObject company = responseArr.getJSONObject(0);
+                    runOnUiThread(() -> Toast.makeText(context, "付款成功", Toast.LENGTH_LONG).show());
+                    Log.d(TAG, ""+company);
+                } catch (JSONException e) {
+                    if(!responseData.equals("null")) e.printStackTrace();
+                }
+            }
+        });
+    }
     private void getVehicleData(){
         RequestBody body = new FormBody.Builder()
                 .add("order_id", order_id)
@@ -706,7 +725,10 @@ public class Today_Detail extends AppCompatActivity {
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
         back_btn.setOnClickListener(v -> {
+            Intent calendar = new Intent(this, Calendar.class);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            calendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(calendar);
             this.finish();
         });
         //底下nav
