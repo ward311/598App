@@ -81,7 +81,7 @@ public class Signature_Pad extends AppCompatActivity {
         deposit = bundle.getString("deposit");
         Log.d(TAG, "order_id : "+order_id);
         Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo+", deposit: "+deposit);
-        resultView.setText("顧客簽名後視同確認搬家訂單無誤");
+        resultView.setText("顧客簽名後視同已完成搬家服務");
         signPad.setPenColor(Color.BLACK);
         signPad.setOnSignedListener(new SignaturePad.OnSignedListener() {
             @Override
