@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.homerenting_prototype_one" >
+    package="com.example.homerenting_prototype_one">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -20,7 +20,16 @@
         android:textColor="@color/text_chip_state_list"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="n" >
+        tools:targetApi="n">
+        <service
+            android:name=".service.FCMService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".order.Confirm_Detail"
             android:exported="false" />
@@ -38,7 +47,7 @@
             android:screenOrientation="nosensor" />
         <activity
             android:name=".main.MainActivity"
-            android:screenOrientation="nosensor" >
+            android:screenOrientation="nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
