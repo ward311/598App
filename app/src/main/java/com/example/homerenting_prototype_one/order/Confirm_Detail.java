@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,8 @@ import com.example.homerenting_prototype_one.Signature_Pad;
 import com.example.homerenting_prototype_one.adapter.base_adapter.LocationAdapter;
 import com.example.homerenting_prototype_one.adapter.base_adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
+import com.example.homerenting_prototype_one.service.FCMService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -54,6 +57,7 @@ public class Confirm_Detail extends AppCompatActivity {
     String room_name;
     String name, gender, phone, movingTime, fromAddress, toAddress, additional, fee, deposit, memo;
     String order_id, member_id;
+    String paid;
     Button pay;
     TextView nameText, nameTitleText, phoneText,movingTimeText, fromAddressText, toAddressText;
     TextView remainderText, feeText, depositText;
@@ -63,12 +67,15 @@ public class Confirm_Detail extends AppCompatActivity {
     ArrayList<String[]> data = new ArrayList<>();
     Bundle bundle;
     Context context = Confirm_Detail.this;
+    SharedPreferences fcm_SP;
+    FCMService fcmService = new FCMService();
     boolean check = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_detail);
         linking();
+        fcm_SP = getSharedPreferences("fcmToken", Context.MODE_PRIVATE);
         bundle = getIntent().getExtras();
         name = bundle.getString("name");
         gender = bundle.getString("gender");
@@ -339,9 +346,10 @@ public class Confirm_Detail extends AppCompatActivity {
                     builder.setView(view);
                     builder.setPositiveButton("確定", (dialog, which) -> {
                         if(check){
+                            getPaidStatus();
                             //change_order_status();
                             //receiveResult();
-                            Intent sign_intent = new Intent(context, Signature_Pad.class);
+                            /*Intent sign_intent = new Intent(context, Signature_Pad.class);
                             int finalPrice = Integer.parseInt(fee);
                             String moving_fee = String.valueOf(finalPrice);
                             memo = memoEdit.getText().toString();
@@ -352,8 +360,8 @@ public class Confirm_Detail extends AppCompatActivity {
                             bundle.putString("deposit", deposit);
                             sign_intent.putExtras(bundle);
                             startActivity(sign_intent);
-                            Toast.makeText(context, "完成訂單 - 已收款", Toast.LENGTH_LONG).show();
-                            startActivity(sign_intent);
+                            Toast.makeText(context, "完成訂單 - 已收款", Toast.LENGTH_LONG).show();*/
+
                         }
                         else {
                             Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
@@ -366,7 +374,50 @@ public class Confirm_Detail extends AppCompatActivity {
             }
         });
     }
+    private void getPaidStatus(){
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .build();
+        //Log.d(TAG, order_id);
+        Request request = new Request.Builder()
+                .url("https://598new.ddns.net/598_new_20211026/receiveResult.php")
+                .post(body)
+                .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, responseData);
+
+                    if(responseData.equals("paid")){
+                        Intent sign_intent = new Intent(context, Signature_Pad.class);
+                        int finalPrice = Integer.parseInt(fee);
+                        String moving_fee = String.valueOf(finalPrice);
+                        memo = memoEdit.getText().toString();
+                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                        bundle.putString("order_id", order_id);
+                        bundle.putString("fee", moving_fee);
+                        bundle.putString("memo", memo);
+                        bundle.putString("deposit", deposit);
+                        sign_intent.putExtras(bundle);
+                        startActivity(sign_intent);
+                        runOnUiThread(() -> Toast.makeText(context, "已確認收款", Toast.LENGTH_LONG).show());
+                    }else{
+                        runOnUiThread(() -> Toast.makeText(context, "尚未付款或付款失敗", Toast.LENGTH_LONG).show());
+                    }
+
+            }
+        });
+    }
     private void update_today_order(){
         String function_name = "update_todayOrder";
         RequestBody body = new FormBody.Builder()

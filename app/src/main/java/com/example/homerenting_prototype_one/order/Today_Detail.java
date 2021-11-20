@@ -163,8 +163,8 @@ public class Today_Detail extends AppCompatActivity {
                     if(isWeb.equals("0")){
                         runOnUiThread(()-> {
                             check_btn.setVisibility(View.GONE);
-                            sign_btn.setX(500);
-                            sign_btn.setText("收取款項確認工單");
+                            sign_btn.setX(450);
+                            sign_btn.setText("確認工單");
                         });
 
                     }else{

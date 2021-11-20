@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -17,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.Signature_Pad;
 import com.example.homerenting_prototype_one.calendar.Calendar;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.system.System_Data;
@@ -31,6 +33,7 @@ public class FCMService extends FirebaseMessagingService {
     public static final String TAG = "FCM";
     private String CHANNEL_ID = "Coder";
     SharedPreferences fcm_SP;
+
     public FCMService() { }
 
     @Override
@@ -59,15 +62,6 @@ public class FCMService extends FirebaseMessagingService {
 
             }
             Map<String,String> s = remoteMessage.getData();
-            if(remoteMessage.getNotification().getBody().contains("已收到款項")){
-                Intent intent = new Intent(this, Calendar.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-
-            }
-
-
-
 
             /**建置通知欄位的內容*/
             NotificationCompat.Builder builder
