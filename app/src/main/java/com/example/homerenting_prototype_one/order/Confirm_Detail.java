@@ -375,12 +375,14 @@ public class Confirm_Detail extends AppCompatActivity {
         });
     }
     private void getPaidStatus(){
+        String function_name = "get_payment_result";
         RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
                 .add("order_id", order_id)
                 .build();
         //Log.d(TAG, order_id);
         Request request = new Request.Builder()
-                .url("https://598new.ddns.net/598_new_20211026/receiveResult.php")
+                .url(BuildConfig.SERVER_URL+"/functional.php")
                 .post(body)
                 .build();
 
@@ -397,8 +399,9 @@ public class Confirm_Detail extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG, responseData);
-
-                    if(responseData.equals("paid")){
+                try {
+                    JSONObject payment = new JSONObject(responseData);
+                    if(payment.getString("status").equals("order_paid")){
                         Intent sign_intent = new Intent(context, Signature_Pad.class);
                         int finalPrice = Integer.parseInt(fee);
                         String moving_fee = String.valueOf(finalPrice);
@@ -414,6 +417,9 @@ public class Confirm_Detail extends AppCompatActivity {
                     }else{
                         runOnUiThread(() -> Toast.makeText(context, "尚未付款或付款失敗", Toast.LENGTH_LONG).show());
                     }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
 
             }
         });
