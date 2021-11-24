@@ -92,6 +92,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
 
     String order_id;
     String name, gender, phone, contactTime, valuationTime, fromAddress, toAddress, estimate_fee, remainder, memo, isAuto;
+    String email;
     String program;
     String mvfopt, mvtopt;
     String sugCars;
@@ -488,6 +489,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     name = order.getString("member_name");
                     gender = order.getString("gender");
                     phone = order.getString("phone");
+                    email = order.getString("email");
                     contactTime = order.getString("contact_time");
                     valuationTime = getDate(order.getString("valuation_date"));
                     if(!order.getString("valuation_time").equals("null"))
@@ -747,19 +749,73 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             updateValuation(moving_date, estimate_worktime, fee);
             updateCarDemand();
             updateSugCars();
+            if(isAuto.equals("1")){
+                sendEmail();
+            }else{
+                callDialog();
+            }
 
-            new AlertDialog.Builder(context)
-                    .setTitle("媒合中")
-                    .setMessage("到府估價單媒合中，成功媒\n合會成為訂單，請公司注意\n新訂單通知。")
-                    .setPositiveButton( "確認", (dialog, which) -> {
-                        Handler handler = new Handler();
-                        handler.postDelayed(() -> {
-                            Intent intent = new Intent(context, Valuation.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        }, 1000);
-                    })
-                    .show();
+
+
+        });
+    }
+    private void callDialog(){
+        new AlertDialog.Builder(context)
+                .setTitle("媒合中")
+                .setMessage("到府估價單媒合中，成功媒\n合會成為訂單，請公司注意\n新訂單通知。")
+                .setPositiveButton( "確認", (dialog, which) -> {
+                    Handler handler = new Handler();
+                    handler.postDelayed(() -> {
+                        Intent intent = new Intent(context, Valuation.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }, 1000);
+                })
+                .show();
+    }
+
+    private void sendEmail(){
+        RequestBody body = new FormBody.Builder()
+                .add("email", email)
+                .build();
+        Log.i(TAG, "email has been sent to: " + email);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/sendmail.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "email send failure", Toast.LENGTH_LONG).show());
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData: " + responseData);
+                try{
+                    JSONObject sending = new JSONObject(responseData);
+                   if(sending.getString("status").equals("Email Sent")){
+                       runOnUiThread(() -> new AlertDialog.Builder(context)
+                               .setTitle("通知信件")
+                               .setMessage("\n        到府估價完成通知已寄出給客戶")
+                               .setPositiveButton( "確認", (dialog, which) -> callDialog())
+                               .show());
+                   }else{
+                       runOnUiThread(() -> runOnUiThread(() -> new AlertDialog.Builder(context)
+                               .setTitle("通知信件")
+                               .setMessage("\n        到府估價完成通知寄出失敗")
+                               .setPositiveButton( "確認", (dialog, which) -> callDialog())
+                               .show()));
+                   }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
         });
     }
 
