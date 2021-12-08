@@ -223,6 +223,7 @@ public class Order_Detail extends AppCompatActivity {
                     //additional_fee +=" 元";
                     depositFee = order.getString("deposit_fee");
                     if(depositFee.equals("null")) depositFee = "0 元";
+                    else depositFee+=" 元";
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
 

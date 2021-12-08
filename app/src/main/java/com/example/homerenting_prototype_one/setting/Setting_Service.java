@@ -139,7 +139,7 @@ public class Setting_Service extends AppCompatActivity {
     }
 
     private void getCarData(){
-        String function_name = "all_vehicle_data";
+        String function_name = "all_vehicle_verified_data";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
@@ -182,9 +182,9 @@ public class Setting_Service extends AppCompatActivity {
 
                         String carTypeStr = vehicle_weight+"噸"+vehicle_type;
                         float wf =  Float.parseFloat(vehicle_weight);
-                        if(wf <= 1.75) carTypeStr = "1.75噸以下"+vehicle_type;
-                        else if (wf >= 3.45 && wf <= 3.5) carTypeStr = "3.49噸"+vehicle_type;
-                        else if (wf >= 6.5 && wf <= 7.7) carTypeStr = "6.5~7.7噸"+vehicle_type;
+                        if(wf >=1 && wf <= 1.75) carTypeStr = "1.75噸以下"+vehicle_type;
+                        else if (wf >= 3 && wf <= 3.5) carTypeStr = "3.49噸"+vehicle_type;
+                        else if (wf >= 5 && wf <= 7.7) carTypeStr = "5.5~7.7噸"+vehicle_type;
                         else if (wf >= 10) carTypeStr = "10噸以上"+vehicle_type;
 
                         Log.d(TAG, "carTypeStr: "+carTypeStr);
@@ -192,12 +192,8 @@ public class Setting_Service extends AppCompatActivity {
                             ArrayList<String[]> newCarTypeList = new ArrayList<>();
                             newCarTypeList.add(row_data);
                             carItems.put(carTypeStr, newCarTypeList);
-                            Chip chip = addChip(carType, carTypeStr, false);
-                            if(vehicle.getInt("verified") == 0) {
-                                chip.setCheckable(false);
-                                chip.setTextColor(Color.parseColor("#7B7B7B"));
-                                chip.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.frame_background, null));
-                            }
+                            addChip(carType, carTypeStr+"("+plate_num+")", true);
+
                         }
                         else{
                             carItems.get(carTypeStr).add(row_data);

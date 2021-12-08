@@ -49,9 +49,6 @@ import com.example.homerenting_prototype_one.valuation.Valuation;
 import com.example.homerenting_prototype_one.valuation.ValuationBooking_Detail;
 import com.example.homerenting_prototype_one.valuation.ValuationCancel_Detail;
 import com.example.homerenting_prototype_one.valuation.Valuation_Detail;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -119,16 +116,6 @@ public class Calendar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         init();
-        fcm_SP = getSharedPreferences("fcmToken", Context.MODE_PRIVATE);
-        FirebaseMessaging.getInstance().subscribeToTopic("news");
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (!task.isSuccessful())return;
-            String fcm_token = task.getResult();
-            fcm_SP.edit().putString("fcmToken", fcm_token).apply();
-            Log.d(TAG, "onComplete: "+fcm_token);
-            Log.d("SharedPref", "fcmDeviceToken: "+fcm_SP.getString("fcmToken", null) );
-        });
-
         onBackPressed();
         dbHelper = new DatabaseHelper(this);
         runOnUiThread(()->setmCalendar());

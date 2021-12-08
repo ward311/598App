@@ -2,12 +2,10 @@ package com.example.homerenting_prototype_one;
 
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,24 +13,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
-
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.homerenting_prototype_one.calendar.Calendar;
-import com.example.homerenting_prototype_one.furniture.Furniture_Location;
-import com.example.homerenting_prototype_one.order.Confirm_Detail;
 import com.example.homerenting_prototype_one.order.Order_Today;
 import com.example.homerenting_prototype_one.order.Today_Detail;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 
 import org.jetbrains.annotations.NotNull;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,42 +40,45 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class Signature_Pad extends AppCompatActivity {
+public class Signature_Pad_employee extends AppCompatActivity {
     SignaturePad signPad ;
     Button clearBtn, checkBtn;
     TextView detailBtn;
     ImageView backBtn;
     Context context = this;
-    String TAG = "Signature_Pad";
+    String TAG = "Signature_Pad_Employee";
     String base64Image;
-    Bundle bundle;
+    Bundle bundle_employee;
     String order_id, fee, memo, deposit;
     Boolean check = false;
     TextView resultView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signature_pad);
-        signPad = findViewById(R.id.signaturePad);
-        checkBtn = findViewById(R.id.confirm_sign_btn);
-        clearBtn = findViewById(R.id.clear_btn);
-        backBtn = findViewById(R.id.back_ImgBtn);
-        resultView = findViewById(R.id.finalView);
-        detailBtn = findViewById(R.id.detailBtn);
+        setContentView(R.layout.activity_signature_pad_employee);
+        bundle_employee = new Bundle();
+        signPad = findViewById(R.id.signaturePad_employee);
+        checkBtn = findViewById(R.id.confirm_sign_btn_employee);
+        clearBtn = findViewById(R.id.clear_btn_employee);
+        backBtn = findViewById(R.id.back_ImgBtn_employee);
+        resultView = findViewById(R.id.finalView_employee);
+        detailBtn = findViewById(R.id.detailBtn_employee);
         checkBtn.setEnabled(false);
         checkBtn.setAlpha(.5f);
         clearBtn.setEnabled(false);
         clearBtn.setAlpha(.5f);
 
-        bundle = getIntent().getExtras();
-        order_id = bundle.getString("order_id");
-        fee = bundle.getString("fee");
-        memo = bundle.getString("memo");
-        deposit = bundle.getString("deposit");
+        bundle_employee = getIntent().getExtras();
+        order_id = bundle_employee.getString("order_id");
+        fee = bundle_employee.getString("fee");
+        memo = bundle_employee.getString("memo");
+        deposit = bundle_employee.getString("deposit");
+
         Log.d(TAG, "order_id : "+order_id);
         Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo+", deposit: "+deposit);
-        resultView.setText("顧客簽名後視同已完成搬家服務");
+        resultView.setText("簽名後代表已收到正確款項");
         signPad.setPenColor(Color.BLACK);
+
         signPad.setOnSignedListener(new SignaturePad.OnSignedListener() {
             @Override
             public void onStartSigning() {
@@ -162,7 +158,7 @@ public class Signature_Pad extends AppCompatActivity {
         Log.d(TAG, "encode : "+base64Image);
 
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL+"/signature_image.php")
+                .url(BuildConfig.SERVER_URL+"/signature_image_employee.php")
                 .post(body)
                 .build();
 
@@ -193,20 +189,14 @@ public class Signature_Pad extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Handler handler = new Handler();
                             handler.postDelayed(() -> {
-                                Intent intent = new Intent(context, Signature_Pad_employee.class);
+                                Intent intent = new Intent(context, Calendar.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 Log.d(TAG, "responseData of change_status: " + responseData);
-                                //Toast.makeText(context, "訂單完成", Toast.LENGTH_LONG).show();
-
-                                bundle.putString("order_id",order_id);
-                                bundle.putString("fee",fee);
-                                bundle.putString("memo",memo);
-                                bundle.putString("deposit",deposit);
-                                intent.putExtras(bundle);
+                                Toast.makeText(context, "訂單完成", Toast.LENGTH_LONG).show();
                                 startActivity(intent);
                             }, 500);
                         });
-                        //change_order_status(); /*更改訂單狀態 -> done */
+                        change_order_status(); /*更改訂單狀態 -> done */
                     }
                     //顯示資料
                 } catch (JSONException e) {
@@ -299,4 +289,5 @@ public class Signature_Pad extends AppCompatActivity {
         super.onBackPressed();
         this.finish();
     }
+
 }

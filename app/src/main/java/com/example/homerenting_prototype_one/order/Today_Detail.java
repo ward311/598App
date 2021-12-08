@@ -156,6 +156,7 @@ public class Today_Detail extends AppCompatActivity {
                     //additional_price = order.getString("additional_price");
                     //if(additional_price.equals("null")) additional_price = "0";
                     depositFee = order.getString("deposit_fee");
+                    if(depositFee.equals("null")) depositFee = "0";
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
                     status = order.getString("order_status");

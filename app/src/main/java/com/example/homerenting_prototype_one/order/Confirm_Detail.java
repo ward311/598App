@@ -27,8 +27,6 @@ import com.example.homerenting_prototype_one.Signature_Pad;
 import com.example.homerenting_prototype_one.adapter.base_adapter.LocationAdapter;
 import com.example.homerenting_prototype_one.adapter.base_adapter.NoDataAdapter;
 import com.example.homerenting_prototype_one.furniture.Furniture_Location;
-import com.example.homerenting_prototype_one.service.FCMService;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -67,15 +65,13 @@ public class Confirm_Detail extends AppCompatActivity {
     ArrayList<String[]> data = new ArrayList<>();
     Bundle bundle;
     Context context = Confirm_Detail.this;
-    SharedPreferences fcm_SP;
-    FCMService fcmService = new FCMService();
+
     boolean check = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_detail);
         linking();
-        fcm_SP = getSharedPreferences("fcmToken", Context.MODE_PRIVATE);
         bundle = getIntent().getExtras();
         name = bundle.getString("name");
         gender = bundle.getString("gender");

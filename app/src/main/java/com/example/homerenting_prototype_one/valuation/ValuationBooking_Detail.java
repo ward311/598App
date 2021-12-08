@@ -749,11 +749,8 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             updateValuation(moving_date, estimate_worktime, fee);
             updateCarDemand();
             updateSugCars();
-            if(isAuto.equals("1")){
-                sendEmail();
-            }else{
-                callDialog();
-            }
+
+            finishValuation();
 
 
 
@@ -773,10 +770,53 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 })
                 .show();
     }
+    private void finishValuation(){
+        String function_name = "update_Valuation_Done";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id", getCompany_id(context))
+                .build();
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "email send failure", Toast.LENGTH_LONG).show());
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "responseData: " + responseData);
+                try{
+                    JSONObject finish = new JSONObject(responseData);
+                    if(finish.getString("status").equals("success")){
+                        if(isAuto.equals("1")){
+                            sendEmail();
+                        }else{
+                            callDialog();
+                        }
+
+                    }else{
+                        runOnUiThread(() -> Toast.makeText(context,"Valuation done status failed",Toast.LENGTH_LONG).show());
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     private void sendEmail(){
         RequestBody body = new FormBody.Builder()
                 .add("email", email)
+                .add("order_id", order_id)
                 .build();
         Log.i(TAG, "email has been sent to: " + email);
 

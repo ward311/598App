@@ -2,14 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/signature_confirm"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/edittext_rectanngle"
-    tools:context=".Signature_Pad">
+    tools:context=".Signature_Pad_employee">
 
     <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/text_signHere"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="請在此處簽名"
@@ -19,16 +17,16 @@
         app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        app:layout_constraintTop_toBottomOf="@+id/text_confirm_sign_employee" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/text_confirm_sign_employee"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#19B0ED"
         android:gravity="center_horizontal|center_vertical"
         android:padding="10dp"
-        android:text="完工確認簽名"
+        android:text="確認收款簽名"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,27 +38,27 @@
         tools:ignore="TextContrastCheck" />
 
     <com.github.gcacace.signaturepad.views.SignaturePad
-        android:id="@+id/signaturePad"
+        android:id="@+id/signaturePad_employee"
         android:layout_width="0dp"
         android:layout_height="500dp"
         android:alpha="0.4"
         android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10"
+        app:layout_constraintTop_toBottomOf="@+id/text_confirm_sign_employee"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
-        android:id="@+id/back_ImgBtn"
+        android:id="@+id/back_ImgBtn_employee"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView10"
-        app:layout_constraintEnd_toEndOf="@+id/textView10"
+        app:layout_constraintBottom_toBottomOf="@+id/text_confirm_sign_employee"
+        app:layout_constraintEnd_toEndOf="@+id/text_confirm_sign_employee"
         app:layout_constraintHorizontal_bias="0.05"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toTopOf="@+id/textView10"
+        app:layout_constraintStart_toStartOf="@+id/text_confirm_sign_employee"
+        app:layout_constraintTop_toTopOf="@+id/text_confirm_sign_employee"
         app:srcCompat="@drawable/back_white" />
 
     <EditText
@@ -70,27 +68,27 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="@+id/signaturePad"
+        app:layout_constraintBottom_toBottomOf="@+id/signaturePad_employee"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10"
+        app:layout_constraintTop_toBottomOf="@+id/text_confirm_sign_employee"
         app:layout_constraintVertical_bias="0.65" />
 
     <TextView
-        android:id="@+id/finalView"
+        android:id="@+id/finalView_employee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="訂單訊息"
         android:textColor="#FF0000"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/signaturePad"
+        app:layout_constraintBottom_toBottomOf="@+id/signaturePad_employee"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName"
         app:layout_constraintVertical_bias="0.19999999" />
 
     <TextView
-        android:id="@+id/detailBtn"
+        android:id="@+id/detailBtn_employee"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@drawable/system_schedule_btn_drawable"
@@ -98,10 +96,10 @@
         android:text="費用詳情"
         android:textColor="#000000"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/signaturePad"
+        app:layout_constraintBottom_toBottomOf="@+id/signaturePad_employee"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/finalView"
+        app:layout_constraintTop_toBottomOf="@+id/finalView_employee"
         app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
@@ -112,11 +110,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signaturePad"
+        app:layout_constraintTop_toBottomOf="@+id/signaturePad_employee"
         app:layout_constraintVertical_bias="0.6">
 
         <Button
-            android:id="@+id/clear_btn"
+            android:id="@+id/clear_btn_employee"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
@@ -133,7 +131,7 @@
             android:layout_weight="0.5" />
 
         <Button
-            android:id="@+id/confirm_sign_btn"
+            android:id="@+id/confirm_sign_btn_employee"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="40dp"
@@ -144,5 +142,4 @@
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
