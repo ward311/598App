@@ -59,6 +59,7 @@ public class Confirm_Detail extends AppCompatActivity {
     Button pay;
     TextView nameText, nameTitleText, phoneText,movingTimeText, fromAddressText, toAddressText;
     TextView remainderText, feeText, depositText;
+    TextView totalAmount;
     EditText memoEdit;
     ImageView back_btn;
     ListView furniture_list;
@@ -86,44 +87,47 @@ public class Confirm_Detail extends AppCompatActivity {
         order_id = bundle.getString("order_id");
         member_id = bundle.getString("member_id");
         setText();
+        int numFee = Integer.parseInt(fee);
+        int numDeposit = Integer.parseInt(deposit);
+        int finalAmount = numFee - numDeposit;
+
+        totalAmount.setText(String.valueOf(finalAmount));
         back_btn.setOnClickListener(v -> this.finish());
         getFurniture();
         pay.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("選擇付款方式");
 
-            builder.setPositiveButton("線上付款", (dialog, which) -> {
-                new AlertDialog.Builder(context)
-                        .setTitle("更新會員資料")
-                        .setMessage("是否同意會員聯絡地址更新為搬入地址？")
-                        .setPositiveButton("是", (dialog1, which1) -> {
-                            updateAddress();
-                            int finalPrice = Integer.parseInt(fee);
-                            String moving_fee = String.valueOf(finalPrice);
-                            memo = memoEdit.getText().toString();
-                            Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-                            bundle.putString("order_id", order_id);
-                            bundle.putString("fee", moving_fee);
-                            bundle.putString("memo", memo);
-                            bundle.putString("deposit", deposit);
-                            update_today_order();
-                            checkTotalPrice();
-                        })
-                        .setNegativeButton("否", (dialog1, which1) -> {
-                            int finalPrice = Integer.parseInt(fee);
-                            String moving_fee = String.valueOf(finalPrice);
-                            memo = memoEdit.getText().toString();
-                            Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-                            bundle.putString("order_id", order_id);
-                            bundle.putString("fee", moving_fee);
-                            bundle.putString("memo", memo);
-                            bundle.putString("deposit", deposit);
-                            update_today_order();
-                            checkTotalPrice();
-                        })
-                        .create()
-                        .show();
-            });
+            builder.setPositiveButton("線上付款", (dialog, which) -> new AlertDialog.Builder(context)
+                    .setTitle("更新會員資料")
+                    .setMessage("是否同意會員聯絡地址更新為搬入地址？")
+                    .setPositiveButton("是", (dialog1, which1) -> {
+                        updateAddress();
+                        int finalPrice = Integer.parseInt(fee);
+                        String moving_fee = String.valueOf(finalPrice);
+                        memo = memoEdit.getText().toString();
+                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                        bundle.putString("order_id", order_id);
+                        bundle.putString("fee", moving_fee);
+                        bundle.putString("memo", memo);
+                        bundle.putString("deposit", deposit);
+                        update_today_order();
+                        checkTotalPrice();
+                    })
+                    .setNegativeButton("否", (dialog1, which1) -> {
+                        int finalPrice = Integer.parseInt(fee);
+                        String moving_fee = String.valueOf(finalPrice);
+                        memo = memoEdit.getText().toString();
+                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                        bundle.putString("order_id", order_id);
+                        bundle.putString("fee", moving_fee);
+                        bundle.putString("memo", memo);
+                        bundle.putString("deposit", deposit);
+                        update_today_order();
+                        checkTotalPrice();
+                    })
+                    .create()
+                    .show());
             builder.setNeutralButton("取消", null);
 
             builder.setNegativeButton("現金付款", (dialog, which) ->{
@@ -165,6 +169,7 @@ public class Confirm_Detail extends AppCompatActivity {
         });
     }
 
+
     private void linking(){
         nameText = findViewById(R.id.name_OTD);
         nameTitleText = findViewById(R.id.nameTitle_OTD);
@@ -179,6 +184,7 @@ public class Confirm_Detail extends AppCompatActivity {
         back_btn = findViewById(R.id.confirm_back_btn);
         furniture_list = findViewById(R.id.confirm_location);
         pay = findViewById(R.id.pay_btn);
+        totalAmount = findViewById(R.id.needPay_text);
     }
     private void setText(){
         nameText.setText(name);
@@ -411,7 +417,17 @@ public class Confirm_Detail extends AppCompatActivity {
                         startActivity(sign_intent);
                         runOnUiThread(() -> Toast.makeText(context, "已確認收款", Toast.LENGTH_LONG).show());
                     }else{
-                        runOnUiThread(() -> Toast.makeText(context, "尚未付款或付款失敗", Toast.LENGTH_LONG).show());
+                        runOnUiThread(() ->{
+                            Toast.makeText(context, "尚未付款或付款失敗", Toast.LENGTH_LONG).show();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setTitle("尚未收到款項，是否重新檢查");
+                            builder.setPositiveButton("是，重新檢查", (dialog, which) -> {
+                                getPaidStatus();
+                            });
+                            builder.setNegativeButton("否，略過",(dialog, which)->{});
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        });
                     }
                 }catch(JSONException e){
                     e.printStackTrace();

@@ -181,7 +181,7 @@
                     android:id="@+id/FurnitureText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="fill_vertical"
@@ -194,8 +194,8 @@
 
                 <ListView
                     android:id="@+id/confirm_location"
-                    android:layout_width="330dp"
-                    android:layout_height="200dp"
+                    android:layout_width="315dp"
+                    android:layout_height="150dp"
                     android:layout_marginEnd="16dp"
                     app:layout_constraintBottom_toTopOf="@+id/view2"
                     app:layout_constraintEnd_toStartOf="@+id/GL_V3"
@@ -206,7 +206,7 @@
                     android:id="@+id/view2"
                     android:layout_width="416dp"
                     android:layout_height="2dp"
-                    android:layout_marginTop="180dp"
+                    android:layout_marginTop="150dp"
                     android:background="#F2F2F2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -262,6 +262,35 @@
                     app:layout_constraintTop_toTopOf="@+id/priceText" />
 
                 <TextView
+                    android:id="@+id/textView27"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="應付金額"
+                    android:textColor="#FF0000"
+                    app:layout_constraintStart_toStartOf="@+id/GL_V1"
+                    app:layout_constraintTop_toBottomOf="@+id/textExtra" />
+
+                <TextView
+                    android:id="@+id/needPay_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView27"
+                    app:layout_constraintStart_toStartOf="@+id/GL_V2"
+                    app:layout_constraintTop_toTopOf="@+id/textView27" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:text="元"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView27"
+                    app:layout_constraintStart_toEndOf="@+id/needPay_text"
+                    app:layout_constraintTop_toTopOf="@+id/textView27" />
+
+                <TextView
                     android:id="@+id/toPrice_OTD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -304,7 +333,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="已付訂金"
-                    android:textColor="#FF0000"
+                    android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="@+id/GL_V1"
                     app:layout_constraintTop_toBottomOf="@+id/priceText" />
 
@@ -342,14 +371,14 @@
                     android:id="@+id/PS_OTD"
                     android:layout_width="0dp"
                     android:layout_height="110dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="40dp"
                     android:background="#F2F2F2"
                     android:ems="10"
                     android:inputType="textPersonName"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/GL_V2"
                     app:layout_constraintTop_toBottomOf="@+id/priceText"
-                    app:layout_constraintVertical_bias="0.3" />
+                    app:layout_constraintVertical_bias="0.302" />
 
                 <Button
                     android:id="@+id/check_btn_OTD"
