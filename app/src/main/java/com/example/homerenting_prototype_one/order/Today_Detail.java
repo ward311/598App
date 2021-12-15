@@ -63,7 +63,7 @@ public class Today_Detail extends AppCompatActivity {
 
     TextView nameText, nameTitleText, phoneText, movingTimeText, fromAddressText, toAddressText;
     TextView remainderText, carText, staffText, worktimeText, feeText, toPriceText, finalPriceText, priceUnitText, extraPriceText;
-
+    TextView today_pay;
     EditText changePriceText, memoEdit;
 
     String name, gender, phone, contact_address, movingTime, fromAddress, toAddress;
@@ -156,7 +156,9 @@ public class Today_Detail extends AppCompatActivity {
                     //additional_price = order.getString("additional_price");
                     //if(additional_price.equals("null")) additional_price = "0";
                     depositFee = order.getString("deposit_fee");
-                    if(depositFee.equals("null")) depositFee = "0";
+                    if(depositFee.equals("null")){
+                        depositFee = "0";
+                    }
                     memo = order.getString("memo");
                     if(memo.equals("null")) memo = "";
                     status = order.getString("order_status");
@@ -187,6 +189,9 @@ public class Today_Detail extends AppCompatActivity {
                         extraPriceText.setText(depositFee);
                         finalPriceText.setText(fee);
                         memoEdit.setText(memo);
+                        int paymentToday = Integer.parseInt(fee) - Integer.parseInt(depositFee);
+                        today_pay.setText(String.valueOf(paymentToday));
+
                     });
 
                     setFurniture_btn();
@@ -505,7 +510,7 @@ public class Today_Detail extends AppCompatActivity {
                 if(changePriceBtn.getText().toString().equals("+"))
                     price = price_origin+Integer.parseInt(changeprice);
                 else
-                    price = price_origin-Integer.parseInt(changeprice);
+                    price = price_origin - Integer.parseInt(changeprice);
                 finalPriceText.setText(String.valueOf(price));
             }
         });
@@ -532,12 +537,18 @@ public class Today_Detail extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String changeprice = changePriceText.getText().toString();
+                int payment;
                 if(!changeprice.isEmpty()){
-                    if(changePriceBtn.getText().toString().equals("+"))
-                        price = price_origin+Integer.parseInt(changeprice);
-                    else
-                        price = price_origin-Integer.parseInt(changeprice);
+                    if(changePriceBtn.getText().toString().equals("+")) {
+                        price = price_origin + Integer.parseInt(changeprice);
+                        payment = price - Integer.parseInt(depositFee);
+                    }
+                    else{
+                        price = price_origin - Integer.parseInt(changeprice);
+                        payment = price - Integer.parseInt(depositFee);
+                    }
                     finalPriceText.setText(String.valueOf(price));
+                    today_pay.setText(String.valueOf(payment));
                     if(!change){
                         change = true;
                         setPriceUnitPlace();
@@ -625,6 +636,7 @@ public class Today_Detail extends AppCompatActivity {
         check_btn = findViewById(R.id.check_btn_OTD);
         sign_btn = findViewById(R.id.signature_btn);
         change_furniture = findViewById(R.id.furniture_btn);
+        today_pay = findViewById(R.id.today_needPay);
     }
 
     private void setFurniture_btn(){

@@ -182,9 +182,9 @@ public class Setting_Service extends AppCompatActivity {
 
                         String carTypeStr = vehicle_weight+"噸"+vehicle_type;
                         float wf =  Float.parseFloat(vehicle_weight);
-                        if(wf >=1 && wf <= 1.75) carTypeStr = "1.75噸以下"+vehicle_type;
-                        else if (wf >= 3 && wf <= 3.5) carTypeStr = "3.49噸"+vehicle_type;
-                        else if (wf >= 5 && wf <= 7.7) carTypeStr = "5.5~7.7噸"+vehicle_type;
+                        if(wf <= 1.75) carTypeStr = "1.75噸以下"+vehicle_type;
+                        else if (wf >= 3.45 && wf <= 3.5) carTypeStr = "3.49噸"+vehicle_type;
+                        else if (wf >= 5.5 && wf <= 7.7) carTypeStr = "5.5~7.7噸"+vehicle_type;
                         else if (wf >= 10) carTypeStr = "10噸以上"+vehicle_type;
 
                         Log.d(TAG, "carTypeStr: "+carTypeStr);
@@ -193,7 +193,12 @@ public class Setting_Service extends AppCompatActivity {
                             newCarTypeList.add(row_data);
                             carItems.put(carTypeStr, newCarTypeList);
                             addChip(carType, carTypeStr+"("+plate_num+")", true);
-
+                            //Chip chip = addChip(carType, carTypeStr, true);
+                            /*if(vehicle.getInt("verified") == ) {
+                                chip.setCheckable(false);
+                                chip.setTextColor(Color.parseColor("#7B7B7B"));
+                                chip.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.frame_background, null));
+                            }*/
                         }
                         else{
                             carItems.get(carTypeStr).add(row_data);
@@ -374,6 +379,7 @@ public class Setting_Service extends AppCompatActivity {
         Log.d(TAG, "add new chip:"+newItem);
         lock = false;
         //新chip
+
         final Chip chip = new Chip(chipGroup.getContext());
         chip.setId(R.id.added_chip_id);
         chip.setText(newItem);

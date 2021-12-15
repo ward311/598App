@@ -396,9 +396,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="已付訂金"
-                    android:textColor="#FF0000"
+                    android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="@+id/GL_V1"
                     app:layout_constraintTop_toBottomOf="@+id/priceText" />
+
+                <TextView
+                    android:id="@+id/textView29"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="應付金額"
+                    android:textColor="#FF0000"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@+id/GL_V1"
+                    app:layout_constraintTop_toBottomOf="@+id/textExtra" />
+
+                <TextView
+                    android:id="@+id/today_needPay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView29"
+                    app:layout_constraintStart_toStartOf="@+id/GL_V2"
+                    app:layout_constraintTop_toTopOf="@+id/textView29" />
 
                 <TextView
                     android:id="@+id/extra_Price"
@@ -408,6 +429,17 @@
                     app:layout_constraintBottom_toBottomOf="@+id/textExtra"
                     app:layout_constraintStart_toStartOf="@+id/GL_V2"
                     app:layout_constraintTop_toTopOf="@+id/textExtra" />
+
+                <TextView
+                    android:id="@+id/extraPrice_unit3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="元"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView29"
+                    app:layout_constraintStart_toEndOf="@+id/today_needPay"
+                    app:layout_constraintTop_toTopOf="@+id/textView29" />
 
                 <TextView
                     android:id="@+id/extraPrice_unit"

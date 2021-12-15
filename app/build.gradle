@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "SERVER_URL", '"https://598new.ddns.net/598_new_20211026/app"'
+            buildConfigField "String", "SERVER_URL", '"http://598new.ddns.net/598_new_20211026/app"'
             //http://54.166.177.4
         }
         release {
@@ -47,5 +47,8 @@ dependencies {
     implementation 'com.applandeo:material-calendar-view:1.7.0' //行事曆
     implementation "androidx.sqlite:sqlite:2.1.0" //sqlite
     implementation 'com.github.gcacace:signature-pad:1.2.1'//簽名板
+    //implementation platform('com.google.firebase:firebase-bom:29.0.0')
+    //implementation 'com.google.firebase:firebase-analytics'
+    //implementation 'com.google.firebase:firebase-messaging:23.0.0'
     implementation 'com.android.support:multidex:1.0.3'
 }

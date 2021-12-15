@@ -133,8 +133,8 @@ public class Signature_Pad extends AppCompatActivity {
             mTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
             mTitle.setGravity(Gravity.CENTER);
             builder.setCustomTitle(mTitle);
-            builder.setMessage("搬家費用: "+fee+"\n已付訂金:"+deposit+
-                    "\n應付費用:"+toPay);
+            builder.setMessage("搬家費用: "+fee+"\n已付訂金: "+deposit+
+                    "\n應付費用: "+toPay+"元");
             builder.setPositiveButton("確定", null);
             AlertDialog dialog = builder.create();
             dialog.show();

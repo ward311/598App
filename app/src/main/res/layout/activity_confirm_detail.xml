@@ -181,26 +181,22 @@
                     android:id="@+id/FurnitureText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
                     android:gravity="fill_vertical"
-                    android:text="家具\n清單"
+                    android:text="家具清單"
                     android:textColor="#000000"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toStartOf="@+id/confirm_location"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/GL_V1"
-                    app:layout_constraintTop_toBottomOf="@+id/ToAddressText" />
+                    app:layout_constraintTop_toBottomOf="@+id/view" />
 
                 <ListView
                     android:id="@+id/confirm_location"
                     android:layout_width="315dp"
                     android:layout_height="150dp"
-                    android:layout_marginEnd="16dp"
                     app:layout_constraintBottom_toTopOf="@+id/view2"
-                    app:layout_constraintEnd_toStartOf="@+id/GL_V3"
-                    app:layout_constraintStart_toStartOf="@+id/GL_V2"
-                    app:layout_constraintTop_toBottomOf="@+id/view" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view"
+                    app:layout_constraintVertical_bias="1.0" />
 
                 <View
                     android:id="@+id/view2"

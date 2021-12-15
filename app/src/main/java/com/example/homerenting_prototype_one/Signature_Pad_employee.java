@@ -76,7 +76,7 @@ public class Signature_Pad_employee extends AppCompatActivity {
 
         Log.d(TAG, "order_id : "+order_id);
         Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo+", deposit: "+deposit);
-        resultView.setText("簽名後代表已收到正確款項");
+        resultView.setText("師傅簽名後代表已收到正確款項");
         signPad.setPenColor(Color.BLACK);
 
         signPad.setOnSignedListener(new SignaturePad.OnSignedListener() {
