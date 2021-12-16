@@ -418,9 +418,22 @@ public class Confirm_Detail extends AppCompatActivity {
                         runOnUiThread(() -> Toast.makeText(context, "已確認收款", Toast.LENGTH_LONG).show());
                     }else{
                         runOnUiThread(() ->{
+                            LayoutInflater inflater = getLayoutInflater();
+                            View view = inflater.inflate(R.layout.qrcode_image, null);
+                            ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
+                            String url = "http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context);
+                            try {
+                                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                                Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
+                                qrcodeView.setImageBitmap(bitmap);
+
+                            } catch (WriterException e){
+                                e.printStackTrace();
+                            }
                             Toast.makeText(context, "尚未付款或付款失敗", Toast.LENGTH_LONG).show();
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setTitle("尚未收到款項，是否重新檢查");
+                            builder.setView(view);
+                            builder.setTitle("尚未收到款項，請再次檢查");
                             builder.setPositiveButton("是，重新檢查", (dialog, which) -> getPaidStatus());
                             builder.setNegativeButton("否，略過",(dialog, which)->{});
                             AlertDialog dialog = builder.create();

@@ -191,43 +191,43 @@ public class Calendar extends AppCompatActivity {
                                 estimate_worktime, confirm, isNew, status};
                         choose_data.add(row_data);
 
-                        int success_counter = 0, fail_counter = 0;
-
-                            db = dbHelper.getWritableDatabase();
-                            ContentValues values = new ContentValues();
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_ORDER_ID, order_id);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_COMPANY_ID, company_id);
-                        values.put(TableContract.ChooseTable.COLUMN_PREFER_VALUATION_DATE, prefer_valuation_date);
-                        values.put(TableContract.ChooseTable.COLUMN_PREFER_VALUATION_TIME, prefer_valuation_time);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_DATE, valuation_date);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_TIME, valuation_time);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_MOVING_DATE, moving_date);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_ESTIMATE_FEE, estimate_fee);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_ACCURATE_FEE, accurate_fee);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_ESTIMATE_WORKTIME, estimate_worktime);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_CONFIRM, confirm);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_NEW, isNew);
-                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_STATUS,valuation_status);
-//                      Log.d(TAG, (i+1)+". "+values.toString());
-
-                        try {
-                                long newRowId = db.insertOrThrow(TableContract.ChooseTable.TABLE_NAME, null, values);
-                                if (newRowId != -1) {
-                                    success_counter = success_counter + 1;
-                                    Log.d(TAG, "create choose successfully");
-                                } else {
-                                    fail_counter = fail_counter + 1;
-                                    Log.d(TAG, "create choose failed");
-                                }
-                            } catch (SQLException e) {
-                                if (e.getMessage().contains("no such table")) break;
-                                if (Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
-                                    success_counter = success_counter + 1;
-                                else {
-                                    e.printStackTrace();
-                                    Log.d(TAG, "insert furniture data: " + e.getMessage());
-                                }
-                            }
+//                        int success_counter = 0, fail_counter = 0;
+//
+//                            db = dbHelper.getWritableDatabase();
+//                            ContentValues values = new ContentValues();
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_ORDER_ID, order_id);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_COMPANY_ID, company_id);
+//                        values.put(TableContract.ChooseTable.COLUMN_PREFER_VALUATION_DATE, prefer_valuation_date);
+//                        values.put(TableContract.ChooseTable.COLUMN_PREFER_VALUATION_TIME, prefer_valuation_time);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_DATE, valuation_date);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_TIME, valuation_time);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_MOVING_DATE, moving_date);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_ESTIMATE_FEE, estimate_fee);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_ACCURATE_FEE, accurate_fee);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_ESTIMATE_WORKTIME, estimate_worktime);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_CONFIRM, confirm);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_NEW, isNew);
+//                        values.put(TableContract.ChooseTable.COLUMN_NAME_VALUATION_STATUS,valuation_status);
+////                      Log.d(TAG, (i+1)+". "+values.toString());
+//
+//                        try {
+//                                long newRowId = db.insertOrThrow(TableContract.ChooseTable.TABLE_NAME, null, values);
+//                                if (newRowId != -1) {
+//                                    success_counter = success_counter + 1;
+//                                    Log.d(TAG, "create choose successfully");
+//                                } else {
+//                                    fail_counter = fail_counter + 1;
+//                                    Log.d(TAG, "create choose failed");
+//                                }
+//                            } catch (SQLException e) {
+//                                if (e.getMessage().contains("no such table")) break;
+//                                if (Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+//                                    success_counter = success_counter + 1;
+//                                else {
+//                                    e.printStackTrace();
+//                                    Log.d(TAG, "insert furniture data: " + e.getMessage());
+//                                }
+//                            }
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
@@ -292,8 +292,10 @@ public class Calendar extends AppCompatActivity {
                         else time = getTime(time);
                         if(time.equals("null")) time = "";
                         String address = "";
+                        String address_split = "";
                         if(!order.has("from_address") || order.getString("from_address").equals("null")){
                             address = order.getString("outcity")+order.getString("outdistrict")+order.getString("address1");
+                            address_split = address.substring(3);
                         }
                         else if(order.has("from_address"))  address = order.getString("from_address");
 
@@ -301,7 +303,7 @@ public class Calendar extends AppCompatActivity {
                         String valuation_status = order.getString("valuation_status");
                         String newicon = order.getString("new");
 
-                        String[] row_data = {order_id, time, address, order_status, valuation_status, newicon};
+                        String[] row_data = {order_id, time, address_split, order_status, valuation_status, newicon};
                         data.add(row_data);
                         if (order_status.equals("evaluating")) data_v.add(row_data);
                         else{
@@ -651,78 +653,78 @@ public class Calendar extends AppCompatActivity {
                     return;
                 }
 
-                int success_counter = 0, fail_counter = 0;
-                for (int i = 0; i < responseArr.length(); i++) {
-                    JSONObject order;
-                    try {
-                        order = responseArr.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        return;
-                    }
+//                int success_counter = 0, fail_counter = 0;
+//                for (int i = 0; i < responseArr.length(); i++) {
+//                    JSONObject order;
+//                    try {
+//                        order = responseArr.getJSONObject(i);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        return;
+//                    }
 //                    Log.d(TAG, (i+1)+". order: "+order);
-
-                    db = dbHelper.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    try {
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID, order.getString(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_MEMBER_ID, order.getString(TableContract.OrdersTable.COLUMN_NAME_MEMBER_ID));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_ADDITIONAL, order.getString(TableContract.OrdersTable.COLUMN_NAME_ADDITIONAL));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_MEMO, order.getString(TableContract.OrdersTable.COLUMN_NAME_MEMO));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_CITY, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_CITY));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_DISTRICT, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_DISTRICT));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_ADDRESS));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_CITY, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_CITY));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_DISTRICT, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_DISTRICT));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR));
-                        //values.put(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE, order.getString(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE));
-                        //values.put(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM, order.getString(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_PROGRAM, order.getString(TableContract.OrdersTable.COLUMN_NAME_PROGRAM));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS, order.getString(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_AUTO, order.getString(TableContract.OrdersTable.COLUMN_NAME_AUTO));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_LAST_UPDATE, order.getString(TableContract.OrdersTable.COLUMN_NAME_LAST_UPDATE));
-                        values.put(TableContract.OrdersTable.COLUMN_NAME_IS_WEB, order.getString(TableContract.OrdersTable.COLUMN_NAME_IS_WEB));
-//                        Log.d(TAG, (i+1)+". "+values.toString())
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        continue;
-                    }
-
-                    try{
-                        long newRowId = db.insertOrThrow(TableContract.OrdersTable.TABLE_NAME, null, values);
-                        if(newRowId != -1){
-                            success_counter = success_counter + 1;
-                            Log.d(TAG, "create orders successfully");
-                        }
-                        else{
-                            fail_counter = fail_counter + 1;
-                            Log.d(TAG, "create orders failed");
-                        }
-                    } catch (SQLException e){
-                        if(e.getMessage().contains("no such table")) break;
-                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
-                            String selection = TableContract.OrdersTable.COLUMN_NAME_ORDER_ID+" = ?";
-                            String[] selectionArgs = {values.getAsString(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID)};
-
-                            int count = db.update(
-                                    TableContract.OrdersTable.TABLE_NAME,
-                                    values,
-                                    selection,
-                                    selectionArgs
-                            );
-                            if(count != -1) success_counter = success_counter + 1;
-                            else fail_counter = fail_counter + 1;
-                        }
-                        else{
-                            e.printStackTrace();
-                            Log.d(TAG, "insert order data: "+e.getMessage());
-                        }
-                    }
-                }
-                Log.d(TAG, "orders data:\n success data: "+success_counter+", fail data: "+fail_counter);
-            }
+//
+//                    db = dbHelper.getWritableDatabase();
+//                    ContentValues values = new ContentValues();
+//                    try {
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID, order.getString(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_MEMBER_ID, order.getString(TableContract.OrdersTable.COLUMN_NAME_MEMBER_ID));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_ADDITIONAL, order.getString(TableContract.OrdersTable.COLUMN_NAME_ADDITIONAL));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_MEMO, order.getString(TableContract.OrdersTable.COLUMN_NAME_MEMO));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_CITY, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_CITY));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_DISTRICT, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_DISTRICT));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_OUT_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_OUT_ADDRESS));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_CITY, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_CITY));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_DISTRICT, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_DISTRICT));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS, order.getString(TableContract.OrdersTable.COLUMN_NAME_IN_ADDRESS));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_FROM_ELEVATOR));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR, order.getString(TableContract.OrdersTable.COLUMN_NAME_TO_ELEVATOR));
+//                        //values.put(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE, order.getString(TableContract.OrdersTable.COLUMN_NAME_STORAGE_SPACE));
+//                        //values.put(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM, order.getString(TableContract.OrdersTable.COLUMN_NAME_CARTON_NUM));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_PROGRAM, order.getString(TableContract.OrdersTable.COLUMN_NAME_PROGRAM));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS, order.getString(TableContract.OrdersTable.COLUMN_NAME_ORDER_STATUS));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_AUTO, order.getString(TableContract.OrdersTable.COLUMN_NAME_AUTO));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_LAST_UPDATE, order.getString(TableContract.OrdersTable.COLUMN_NAME_LAST_UPDATE));
+//                        values.put(TableContract.OrdersTable.COLUMN_NAME_IS_WEB, order.getString(TableContract.OrdersTable.COLUMN_NAME_IS_WEB));
+////                        Log.d(TAG, (i+1)+". "+values.toString())
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        continue;
+//                    }
+//
+//                    try{
+//                        long newRowId = db.insertOrThrow(TableContract.OrdersTable.TABLE_NAME, null, values);
+//                        if(newRowId != -1){
+//                            success_counter = success_counter + 1;
+//                            Log.d(TAG, "create orders successfully");
+//                        }
+//                        else{
+//                            fail_counter = fail_counter + 1;
+//                            Log.d(TAG, "create orders failed");
+//                        }
+//                    } catch (SQLException e){
+//                        if(e.getMessage().contains("no such table")) break;
+//                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
+//                            String selection = TableContract.OrdersTable.COLUMN_NAME_ORDER_ID+" = ?";
+//                            String[] selectionArgs = {values.getAsString(TableContract.OrdersTable.COLUMN_NAME_ORDER_ID)};
+//
+//                            int count = db.update(
+//                                    TableContract.OrdersTable.TABLE_NAME,
+//                                    values,
+//                                    selection,
+//                                    selectionArgs
+//                            );
+//                            if(count != -1) success_counter = success_counter + 1;
+//                            else fail_counter = fail_counter + 1;
+//                        }
+//                        else{
+//                            e.printStackTrace();
+//                            Log.d(TAG, "insert order data: "+e.getMessage());
+//                        }
+//                    }
+//                }
+//                Log.d(TAG, "orders data:\n success data: "+success_counter+", fail data: "+fail_counter);
+           }
         });
     }
 
@@ -760,54 +762,54 @@ public class Calendar extends AppCompatActivity {
                     return;
                 }
 
-                int success_counter = 0, fail_counter = 0;
-                for (int i = 0; i < responseArr.length(); i++) {
-                    JSONObject member;
-                    try {
-                        member = responseArr.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        return;
-                    }
-//                    Log.d(TAG, (i+1)+". member: "+member);
-
-                    db = dbHelper.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    try {
-                        values.put(TableContract.MemberTable.COLUMN_NAME_MEMBER_ID, member.getString(TableContract.MemberTable.COLUMN_NAME_MEMBER_ID));
-                        values.put(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME, member.getString(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME));
-                        values.put(TableContract.MemberTable.COLUMN_NAME_GENDER, member.getString(TableContract.MemberTable.COLUMN_NAME_GENDER));
-                        values.put(TableContract.MemberTable.COLUMN_NAME_PHONE, member.getString(TableContract.MemberTable.COLUMN_NAME_PHONE));
-                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_ADDRESS, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_ADDRESS));
-                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_WAY, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_WAY));
-                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_TIME, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_TIME));
-//                        Log.d(TAG, (i+1)+". "+values.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        continue;
-                    }
-
-                    try{
-                        long newRowId = db.insertOrThrow(TableContract.MemberTable.TABLE_NAME, null, values);
-                        if(newRowId != -1){
-                            success_counter = success_counter + 1;
-                            Log.d(TAG, "create member successfully");
-                        }
-                        else{
-                            fail_counter = fail_counter + 1;
-                            Log.d(TAG, "create member failed");
-                        }
-                    } catch (SQLException e){
-                        if(e.getMessage().contains("no such table")) break;
-                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
-                            success_counter = success_counter + 1;
-                        else{
-                            e.printStackTrace();
-                            Log.d(TAG, "insert member data: "+e.getMessage());
-                        }
-                    }
-                }
-                Log.d(TAG, "member data:\n success data: "+success_counter+", fail data: "+fail_counter);
+//                int success_counter = 0, fail_counter = 0;
+//                for (int i = 0; i < responseArr.length(); i++) {
+//                    JSONObject member;
+//                    try {
+//                        member = responseArr.getJSONObject(i);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        return;
+//                    }
+////                    Log.d(TAG, (i+1)+". member: "+member);
+//
+//                    db = dbHelper.getWritableDatabase();
+//                    ContentValues values = new ContentValues();
+//                    try {
+//                        values.put(TableContract.MemberTable.COLUMN_NAME_MEMBER_ID, member.getString(TableContract.MemberTable.COLUMN_NAME_MEMBER_ID));
+//                        values.put(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME, member.getString(TableContract.MemberTable.COLUMN_NAME_MEMBER_NAME));
+//                        values.put(TableContract.MemberTable.COLUMN_NAME_GENDER, member.getString(TableContract.MemberTable.COLUMN_NAME_GENDER));
+//                        values.put(TableContract.MemberTable.COLUMN_NAME_PHONE, member.getString(TableContract.MemberTable.COLUMN_NAME_PHONE));
+//                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_ADDRESS, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_ADDRESS));
+//                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_WAY, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_WAY));
+//                        values.put(TableContract.MemberTable.COLUMN_NAME_CONTACT_TIME, member.getString(TableContract.MemberTable.COLUMN_NAME_CONTACT_TIME));
+////                        Log.d(TAG, (i+1)+". "+values.toString());
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        continue;
+//                    }
+//
+//                    try{
+//                        long newRowId = db.insertOrThrow(TableContract.MemberTable.TABLE_NAME, null, values);
+//                        if(newRowId != -1){
+//                            success_counter = success_counter + 1;
+//                            Log.d(TAG, "create member successfully");
+//                        }
+//                        else{
+//                            fail_counter = fail_counter + 1;
+//                            Log.d(TAG, "create member failed");
+//                        }
+//                    } catch (SQLException e){
+//                        if(e.getMessage().contains("no such table")) break;
+//                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+//                            success_counter = success_counter + 1;
+//                        else{
+//                            e.printStackTrace();
+//                            Log.d(TAG, "insert member data: "+e.getMessage());
+//                        }
+//                    }
+//                }
+//                Log.d(TAG, "member data:\n success data: "+success_counter+", fail data: "+fail_counter);
             }
         });
     }
