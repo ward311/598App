@@ -445,7 +445,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }*/
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
 
-                getOverlap(datetime, endtime);
+                //getOverlap(datetime, endtime);
 
                 Looper.prepare();
                 Handler handler = new Handler();

@@ -612,7 +612,6 @@ public class Calendar extends AppCompatActivity {
     }
 
     private void getAllOrdersData(){
-        Log.d(TAG, "start getAllOrdersData and write in sqlite db");
         RequestBody body = new FormBody.Builder()
                 .add("company_id", getCompany_id(context))
                 .build();
