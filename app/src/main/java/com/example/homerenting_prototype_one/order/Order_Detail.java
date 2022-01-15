@@ -65,7 +65,7 @@ public class Order_Detail extends AppCompatActivity {
     TextView carDemand;
     String name, gender, phone, contact_address, movingDatetime, movingTime;
     String fromAddress, toAddress, remainder, car, staff, worktime, fee, memo, status, additional_fee;
-    String order_id;
+    String order_id, plan;
     String depositFee;
     Button call_btn, furniture_btn, check_btn, goOrderDetail;
 
@@ -84,6 +84,7 @@ public class Order_Detail extends AppCompatActivity {
 
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
+        plan = bundle.getString("plan");
         if(bundle.getBoolean("btn")){
             call_btn.setVisibility(View.GONE);
             check_btn.setVisibility(View.GONE);
@@ -100,6 +101,7 @@ public class Order_Detail extends AppCompatActivity {
             Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
             Bundle bundle = new Bundle();
             bundle.putString("order_id", order_id);
+            bundle.putString("plan", plan);
             bundle.putString("order_detail", "true");
             intent.putExtras(bundle);
             startActivity(intent);
@@ -120,6 +122,7 @@ public class Order_Detail extends AppCompatActivity {
                             Intent intent = new Intent(Order_Detail.this, New_Schedule_Detail.class);
                             Bundle bundle = new Bundle();
                             bundle.putString("order_id", order_id);
+                            bundle.putString("plan", plan);
                             bundle.putString("order_detail", "true");
                             intent.putExtras(bundle);
                             startActivity(intent);
@@ -129,6 +132,7 @@ public class Order_Detail extends AppCompatActivity {
                         .show();
             }else{
                 bundle.putString("order_id", order_id);
+                bundle.putString("plan", plan);
                 Intent order_detail = new Intent(this, Today_Detail.class);
                 order_detail.putExtras(bundle);
                 startActivity(order_detail);
@@ -147,8 +151,9 @@ public class Order_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(context))
+                .add("plan", plan)
                 .build();
-        Log.d(TAG, "order_id:"+order_id);
+        Log.d(TAG, "order_id:"+order_id+", company_id:"+getCompany_id(context)+"plan:"+plan);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/user_data.php")

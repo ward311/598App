@@ -125,8 +125,8 @@ public class Fragment_Valuation_Match_Making extends Fragment {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
-                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, auto, newicon};
+                        String plan = member.getString("plan");
+                        String[] row_data = {order_id, name, nameTitle, phone, contact_address, auto, newicon, plan};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {
@@ -156,11 +156,11 @@ public class Fragment_Valuation_Match_Making extends Fragment {
                                 String[] row_data = (String[])parent.getItemAtPosition(position);
                                 Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
                                 String order_id = row_data[0];
-
+                                String plan = row_data[7];
                                 Bundle bundle = new Bundle();
                                 bundle.putString("order_id", order_id);
-
-                                removeNew(order_id, mContext);
+                                bundle.putString("plan", plan);
+                                removeNew(order_id, mContext,plan);
 
                                 Intent intent = new Intent();
                                 intent.setClass(mContext, MatchMaking_Detail.class);

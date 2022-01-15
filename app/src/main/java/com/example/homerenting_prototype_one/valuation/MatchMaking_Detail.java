@@ -50,7 +50,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
     String order_id;
     String name, gender, phone, valuationTime, fromAddress, toAddress, notice, movingTime;
     String demandCar, worktime, price;
-
+    String plan;
     Button confirmBtn;
 
     OkHttpClient okHttpClient = new OkHttpClient();
@@ -65,7 +65,8 @@ public class MatchMaking_Detail extends AppCompatActivity {
 
         final Bundle bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
-        Log.d(TAG, "order_id: " + order_id);
+        plan = bundle.getString("plan");
+        Log.d(TAG, "order_id: " + order_id + ", plan: " + plan);
 
         linking();
         getData();
@@ -140,6 +141,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id",company_id)
+                .add("plan", plan)
                 .build();
 
         Request request = new Request.Builder()

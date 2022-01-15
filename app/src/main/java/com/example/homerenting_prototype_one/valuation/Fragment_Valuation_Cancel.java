@@ -53,6 +53,7 @@ public class Fragment_Valuation_Cancel extends Fragment {
     OkHttpClient okHttpClient = new OkHttpClient();
 
     String TAG = "Valuation_CancelFragment";
+    String plan;
     private final String PHP = "/user_data.php";
 
     @Override
@@ -123,7 +124,7 @@ public class Fragment_Valuation_Cancel extends Fragment {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
+                        plan = member.getString("plan");
                         String[] row_data = {order_id, name, nameTitle, phone, contact_address, auto, newicon, "cancel"};
                         data.add(row_data);
                     }
@@ -149,11 +150,10 @@ public class Fragment_Valuation_Cancel extends Fragment {
                             String[] row_data = (String[]) parent.getItemAtPosition(position);
                             Log.d(TAG, "row_data: " + Arrays.toString(row_data));
                             String order_id = row_data[0];
-
                             Bundle bundle = new Bundle();
                             bundle.putString("order_id", order_id);
-
-                            removeNew(order_id, mContext);
+                            bundle.putString("plan", plan);
+                            removeNew(order_id, mContext,plan);
 
                             Intent intent = new Intent();
                             intent.setClass(mContext, ValuationCancel_Detail.class);

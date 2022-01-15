@@ -272,7 +272,7 @@ public class Fragment_Order extends Fragment {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
+                        String plan = member.getString("plan");
                         //取消過期單
                         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
                         Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
@@ -289,7 +289,7 @@ public class Fragment_Order extends Fragment {
                         }
 
                         //將資料存進陣列裡
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, plan};
                         data.add(row_data);
                         addDatalist(order_id);
                     }

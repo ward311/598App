@@ -39,7 +39,7 @@ public class global_function {
 
     static OkHttpClient okHttpClient = new OkHttpClient();
 
-    public static void removeNew(String order_id, final Context context){
+    public static void removeNew(String order_id, final Context context, String plan){
         Log.d(TAG, "removeNew");
         String function_name = "update_new";
         RequestBody body = new FormBody.Builder()
@@ -47,6 +47,7 @@ public class global_function {
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(context))
                 .add("new", "FALSE")
+                .add("plan", plan)
                 .build();
 
         Request request = new Request.Builder()

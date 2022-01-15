@@ -69,7 +69,7 @@ public class Valuation extends AppCompatActivity {
     ListAdapter listAdapter = new ListAdapter(data);
 
     OkHttpClient okHttpClient = new OkHttpClient();
-
+    String plan;
     String TAG = "Valuation";
     Context context = this;
     private final String PHP = "/user_data.php";
@@ -292,7 +292,7 @@ public class Valuation extends AppCompatActivity {
                         final String contact_address = member.getString("contact_address");
                         String auto = member.getString("auto");
                         final String newicon = member.getString("new");
-
+                        plan = member.getString("plan");
                         String[] row_data = {order_id, name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
                     }
@@ -321,7 +321,7 @@ public class Valuation extends AppCompatActivity {
                             Bundle bundle = new Bundle();
                             bundle.putString("order_id", order_id);
 
-                            removeNew(order_id, Valuation.this);
+                            removeNew(order_id, Valuation.this, plan);
 
                             Intent intent = new Intent();
                             intent.setClass(Valuation.this, Valuation_Detail.class);

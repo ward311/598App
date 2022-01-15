@@ -58,6 +58,7 @@ public class Fragment_Order_Cancel extends Fragment {
     ListView orderList;
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Order_CancelFragment";
+    String plan;
     private final String PHP = "/user_data.php";
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -141,7 +142,7 @@ public class Fragment_Order_Cancel extends Fragment {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
+                        plan = member.getString("plan");
                         //將資料放入陣列
                         String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, "cancel"};
                         data.add(row_data);
@@ -171,9 +172,10 @@ public class Fragment_Order_Cancel extends Fragment {
 
                             Bundle bundle = new Bundle();
                             bundle.putString("order_id", order_id);
+                            bundle.putString("plan", plan);
                             bundle.putBoolean("btn", true);
 
-                            removeNew(order_id, mContext);
+                            removeNew(order_id, mContext, plan);
 
                             Intent intent = new Intent();
                             intent.setClass(mContext, Order_Detail.class);

@@ -137,6 +137,7 @@ public class Fragment_Order_Booking extends Fragment {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
+                        String plan = member.getString("plan");
                         Log.d(TAG,"order_id: "+order_id);
 
                         //取消過期單
@@ -155,7 +156,7 @@ public class Fragment_Order_Booking extends Fragment {
                         }
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, plan};
                         data.add(row_data);
                         addDatalist(order_id);
                     }

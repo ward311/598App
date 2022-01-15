@@ -153,6 +153,7 @@ public class Order_Today extends AppCompatActivity {
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
                         String status = member.getString("order_status");
+                        String plan = member.getString("plan");
                         if(status.equals("done")) status = "done_today";
 
                         //取消過期單
@@ -171,7 +172,7 @@ public class Order_Today extends AppCompatActivity {
                         }
 
                         //將資料放入陣列
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, status};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, status, plan};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式

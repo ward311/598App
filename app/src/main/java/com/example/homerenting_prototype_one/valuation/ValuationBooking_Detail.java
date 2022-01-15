@@ -99,6 +99,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String estimateDis, estimateTime;
     String fixDiscount, fixEnable;
     String lowPrice, middlePrice, highPrice;
+    String plan;
     Spinner memoSpinner;
     Boolean isDiscount;
     CarAdapter carAdapter;
@@ -126,6 +127,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         fromBooking = getIntent().getExtras();
         getFromEdit = getIntent().getExtras();
         order_id = bundle.getString("order_id");
+        plan = bundle.getString("plan");
         Log.i(TAG, "order_id: "+order_id);
 
         linking(); //將xml裡的元件連至此java
@@ -291,7 +293,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         }
         float suggest = Integer.parseInt(getFromEdit.getString("suggestPrice")); /*API回傳方案是一般方案*/
 
-        switch (program){
+        switch (plan){
             case "超值方案":
                 if(suggest<=5000){
                     least = Math.round((suggest-600) * 8/10);
@@ -455,6 +457,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id", company_id)
+                .add("plan", plan)
                 .build();
         Log.d(TAG, "order_id: "+order_id);
 
@@ -544,7 +547,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         }
                         if(!estimate_fee.equals("null")){
                             valPriceText.setText(estimate_fee+" (原)");
-                            switch(program){
+                            switch(plan){
                                 case("一般方案"):
                                     float original = Integer.parseInt(middlePrice);
                                     String lowString = String.valueOf(Math.round(original*8/10));
@@ -570,7 +573,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                             valPriceText.setText("3600~8000");
                         }
                         memoEdit.setText(memo);
-                        program_type.setText(program);
+                        program_type.setText(plan);
                         //Toast.makeText(context, "program: "+program,Toast.LENGTH_LONG).show();
                     });
 
@@ -776,6 +779,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(context))
+                .add("plan", plan)
                 .build();
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")
@@ -817,6 +821,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("email", email)
                 .add("order_id", order_id)
+                .add("plan", plan)
                 .build();
         Log.i(TAG, "email has been sent to: " + email);
 
@@ -1052,12 +1057,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -1096,9 +1096,10 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 .add("moving_date",moving_date+":00")
                 .add("estimate_worktime", estimate_worktime)
                 .add("fee", fee)
+                .add("plan", plan)
                 .build();
         Log.d(TAG, "check_btn: order_id: "+order_id+", moving_date:  "+moving_date+":00"+
-                ", estimate_worktime: "+estimate_worktime+", fee: "+fee);
+                ", estimate_worktime: "+estimate_worktime+", fee: "+fee+", plan: "+plan);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")

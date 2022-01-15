@@ -70,7 +70,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
     String name, nameTitle, movingDate, fromAddress, toAddress, demandCar;
     String staff, car;
-
+    String plan;
     boolean lock;
     int overlap_counter_s = 0, overlap_counter_c = 0;
 
@@ -91,7 +91,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
-
+        plan = bundle.getString("plan");
         linking(); //將xml裡的元件連至此java
 
         Handler handler = new Handler();
@@ -350,8 +350,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(context))
                 .add("assign", "true")
+                .add("plan", plan)
                 .build();
-        Log.i(TAG, "order_id: "+order_id+", company_id: "+getCompany_id(context)+", assign: true");
+        Log.i(TAG, "order_id: "+order_id+", company_id: "+getCompany_id(context)+", assign: true, plan: "+plan);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/user_data.php")
@@ -968,13 +969,15 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .add("staff_assign", String.valueOf(staffs))
                 .add("vehicle_transform", arrayToString(new_cars_l))
                 .add("staff_transform", arrayToString(new_staffs_l))
+                .add("plan", plan)
                 .build();
 
         Log.i(TAG, "order_id: "+order_id
                 +", vehicle_assign: "+cars+cars_text
                 +", staff_assign: "+staffs+staffs_text
                 +", vehicle_transform: "+arrayToString(new_cars_l)+new_cars_lap
-                +", staff_transform: "+arrayToString(new_staffs_l)+new_staffs_lap);
+                +", staff_transform: "+arrayToString(new_staffs_l)+new_staffs_lap
+                +", plan: "+plan);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/functional.php")

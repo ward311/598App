@@ -49,7 +49,7 @@ public class Signature_Pad_employee extends AppCompatActivity {
     String TAG = "Signature_Pad_Employee";
     String base64Image;
     Bundle bundle_employee;
-    String order_id, fee, memo, deposit;
+    String order_id, fee, memo, deposit, plan;
     Boolean check = false;
     TextView resultView;
     @Override
@@ -73,9 +73,9 @@ public class Signature_Pad_employee extends AppCompatActivity {
         fee = bundle_employee.getString("fee");
         memo = bundle_employee.getString("memo");
         deposit = bundle_employee.getString("deposit");
-
+        plan = bundle_employee.getString("plan");
         Log.d(TAG, "order_id : "+order_id);
-        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo+", deposit: "+deposit);
+        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo+", deposit: "+deposit+", plan: "+plan);
         resultView.setText("師傅簽名後代表已收到正確款項");
         signPad.setPenColor(Color.BLACK);
 
@@ -185,7 +185,7 @@ public class Signature_Pad_employee extends AppCompatActivity {
                         runOnUiThread(() -> Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show());
                     }else{
                         Log.d(TAG, ""+result.getString("status")+" "+result.getString("message"));
-                        update_today_order(); /*金額費用上傳*/
+                        //update_today_order(); /*金額費用上傳*/
                         runOnUiThread(() -> {
                             Handler handler = new Handler();
                             handler.postDelayed(() -> {
@@ -195,8 +195,9 @@ public class Signature_Pad_employee extends AppCompatActivity {
                                 Toast.makeText(context, "訂單完成", Toast.LENGTH_LONG).show();
                                 startActivity(intent);
                             }, 500);
+                            change_order_status(); /*更改訂單狀態 -> done */
                         });
-                        change_order_status(); /*更改訂單狀態 -> done */
+
                     }
                     //顯示資料
                 } catch (JSONException e) {
@@ -214,6 +215,7 @@ public class Signature_Pad_employee extends AppCompatActivity {
                 .add("company_id", getCompany_id(context))
                 .add("accurate_fee", fee)
                 .add("memo", memo)
+                .add("plan", plan)
                 .build();
 
         Request request = new Request.Builder()
@@ -241,7 +243,7 @@ public class Signature_Pad_employee extends AppCompatActivity {
     }
 
     private void change_order_status(){
-        String function_name = "change_status";
+        String function_name = "change_stat";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))

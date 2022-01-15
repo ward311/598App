@@ -163,20 +163,20 @@ public class System_Bonus extends AppCompatActivity {
                         String[] row_data = {order_id, staff_id, pay};
                         staff_assignments.add(row_data);
 
-                        db = dbHelper.getWritableDatabase();
-                        ContentValues values = new ContentValues();
-                        values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_ORDER_ID), order_id);
-                        values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_STAFF_ID), staff_id);
-                        values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_PAY), pay);
+                        //db = dbHelper.getWritableDatabase();
+                        //ContentValues values = new ContentValues();
+                        //values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_ORDER_ID), order_id);
+                        //values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_STAFF_ID), staff_id);
+                        //values.put((TableContract.StaffAssignmentTable.COLUMN_NAME_PAY), pay);
 
-                        try{
+                        /*try{
                             long newRowId = db.replace(TableContract.StaffAssignmentTable.TABLE_NAME, null, values);
                             if(newRowId != -1) {
                                 Log.d(TAG,"create successfully");}
                             else Log.d(TAG, "create failed");
                         }catch (SQLException e){
                             e.printStackTrace();
-                        }
+                        }*/
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

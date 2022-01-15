@@ -61,7 +61,7 @@ public class Order_Cancel extends AppCompatActivity {
     TextView week_text, month_text;
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView orderList;
-
+    String plan ;
     OkHttpClient okHttpClient = new OkHttpClient();
     String TAG = "Order_Cancel";
     private final String PHP = "/user_data.php";
@@ -257,7 +257,7 @@ public class Order_Cancel extends AppCompatActivity {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
+                        plan = member.getString("plan");
                         //將資料放入陣列
                         String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon, "cancel"};
                         data.add(row_data);
@@ -281,30 +281,27 @@ public class Order_Cancel extends AppCompatActivity {
                     for (int i = 0; i < data.size(); i++)
                         Log.i(TAG, "data: " + Arrays.toString(data.get(i)));
                     final ListAdapter listAdapter = new ListAdapter(data);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            orderList.setAdapter(listAdapter);
-                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[]) parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: " + Arrays.toString(row_data));
-                                    String order_id = row_data[0];
+                    runOnUiThread(() -> {
+                        orderList.setAdapter(listAdapter);
+                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[]) parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: " + Arrays.toString(row_data));
+                                String order_id = row_data[0];
 
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
-                                    bundle.putBoolean("btn", true);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
+                                bundle.putBoolean("btn", true);
 
-                                    removeNew(order_id, Order_Cancel.this);
+                                removeNew(order_id, Order_Cancel.this, plan);
 
-                                    Intent intent = new Intent();
-                                    intent.setClass(Order_Cancel.this, Order_Detail.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
+                                Intent intent = new Intent();
+                                intent.setClass(Order_Cancel.this, Order_Detail.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
                     });
                 }
             }

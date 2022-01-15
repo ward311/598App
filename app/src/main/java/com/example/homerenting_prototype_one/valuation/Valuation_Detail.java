@@ -85,8 +85,9 @@ public class Valuation_Detail extends AppCompatActivity {
 
         final Bundle bundle = getIntent().getExtras();
         final String order_id = bundle.getString("order_id");
+        String plan = bundle.getString("plan");
         Log.d(TAG, "order_id: " + order_id);
-
+        Log.d(TAG, "plan: " + plan);
         linking();
 
 
@@ -97,6 +98,7 @@ public class Valuation_Detail extends AppCompatActivity {
 //                .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id",company_id)
+                .add("plan", plan)
                 .build();
 
         //連線要求
@@ -257,11 +259,13 @@ public class Valuation_Detail extends AppCompatActivity {
                     .add("company_id", getCompany_id(context))
                     .add("valuation_date", valDate)
                     .add("valuation_time", valTime)
+                    .add("plan", plan)
                     .build();
             Log.d(TAG,"check_price_btn: order_id: " + order_id +
                     ", company_id: " + getCompany_id(context) +
                     ", valuation_date: " + valDate +
-                    ", valuation_time: " + valTime);
+                    ", valuation_time: " + valTime +
+                    ", plan: " + plan);
 
             Request request1 = new Request.Builder()
                     .url(BuildConfig.SERVER_URL+"/functional.php")

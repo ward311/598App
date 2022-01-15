@@ -70,7 +70,7 @@ public class Today_Detail extends AppCompatActivity {
     String remainder, car, staff, worktime, fee, memo, status, isWeb, additional_price;
     String depositFee;
     String order_id, member_id;
-
+    String plan;
     Button furnitureBtn, changePriceBtn, check_btn, sign_btn, change_furniture, cash_btn;
     AlertDialog.Builder dialog;
     boolean change = false, check = false, result = false;
@@ -93,7 +93,7 @@ public class Today_Detail extends AppCompatActivity {
 //        bundle.putString("order_id", "74");
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
-
+        plan = bundle.getString("plan");
         linking(); //將xml裡的元件連至此java
         changePriceMark(); //讓+-按鈕可以按
         changePrice();
@@ -104,6 +104,7 @@ public class Today_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(context))
+                .add("plan", plan)
                 .build();
         Log.d(TAG, "order_id:"+order_id);
 
@@ -291,6 +292,7 @@ public class Today_Detail extends AppCompatActivity {
             confirm.putString("deposit", depositFee);
             confirm.putString("memo", memo);//備註
             confirm.putString("order_id", order_id);
+            confirm.putString("plan", plan);
             confirm_intent.putExtras(confirm);
             startActivity(confirm_intent);
         });

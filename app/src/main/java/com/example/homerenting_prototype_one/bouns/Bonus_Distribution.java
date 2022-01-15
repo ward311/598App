@@ -51,7 +51,7 @@ public class Bonus_Distribution extends AppCompatActivity {
 
     ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter;
-
+    String plan;
     OkHttpClient okHttpClient = new OkHttpClient();
     private Context context = this;
     private String TAG = "Bonus_Distribution";
@@ -166,7 +166,7 @@ public class Bonus_Distribution extends AppCompatActivity {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
+                        plan = member.getString("plan");
                         //將資料存進陣列裡
                         String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
@@ -201,12 +201,12 @@ public class Bonus_Distribution extends AppCompatActivity {
                                     String[] row_data = (String[])parent.getItemAtPosition(position);
                                     Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
                                     String order_id = row_data[0];
-
+                                    String planned = plan;
                                     Bundle bundle = new Bundle();
                                     bundle.putString("order_id", order_id);
-
+                                    bundle.putString("plan", planned);
                                     String newicon = row_data[row_data.length-1];
-                                    if(newicon.equals("1")) removeNew(order_id, context);
+                                    if(newicon.equals("1")) removeNew(order_id, context, plan);
 
                                     Intent intent = new Intent();
                                     intent.setClass(context, Distribution_Detail.class);

@@ -54,7 +54,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
     TextView week_text;
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView valuationMatchMakingList;
-
+    String plan;
     ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter = new ListAdapter(data);
 
@@ -223,7 +223,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
+                        plan = member.getString("plan");
                         String[] row_data = {order_id, name, nameTitle, phone, contact_address, auto, newicon};
                         data.add(row_data);
                     }
@@ -258,7 +258,7 @@ public class Valuation_MatchMaking extends AppCompatActivity {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("order_id", order_id);
 
-                                removeNew(order_id, Valuation_MatchMaking.this);
+                                removeNew(order_id, Valuation_MatchMaking.this, plan);
 
                                 Intent intent = new Intent();
                                 intent.setClass(Valuation_MatchMaking.this, MatchMaking_Detail.class);

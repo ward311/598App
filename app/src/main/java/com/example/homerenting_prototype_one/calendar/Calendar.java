@@ -100,7 +100,8 @@ public class Calendar extends AppCompatActivity {
     New_CalendarAdapter calendarAdapter, calendarAdapter_v, calendarAdapter_o;
     ArrayList<String[]> data, data_v, data_o, choose_data;
     ArrayList<Integer> checkedMonth = new ArrayList<>();
-
+    String plan;
+    String plan1;
     SharedPreferences fcm_SP;
     private static DatabaseHelper dbHelper;
     private static SQLiteDatabase db;
@@ -184,11 +185,11 @@ public class Calendar extends AppCompatActivity {
                         String confirm = choose.getString("confirm");
                         String isNew = choose.getString("new");
                         String status = choose.getString("valuation_status");
-
+                        plan = choose.getString("plan");
                         String[] row_data = {order_id, company_id, prefer_valuation_date,
                                 prefer_valuation_time, valuation_date, valuation_time,
                                 valuation_status, moving_date, estimate_fee, accurate_fee,
-                                estimate_worktime, confirm, isNew, status};
+                                estimate_worktime, confirm, isNew, status, plan};
                         choose_data.add(row_data);
 
 //                        int success_counter = 0, fail_counter = 0;
@@ -302,8 +303,8 @@ public class Calendar extends AppCompatActivity {
                         String order_status = order.getString("order_status");
                         String valuation_status = order.getString("valuation_status");
                         String newicon = order.getString("new");
-
-                        String[] row_data = {order_id, time, address_split, order_status, valuation_status, newicon};
+                        String plan = order.getString("plan");
+                        String[] row_data = {order_id, time, address_split, order_status, valuation_status, newicon, plan};
                         data.add(row_data);
                         if (order_status.equals("evaluating")) data_v.add(row_data);
                         else{
@@ -329,13 +330,13 @@ public class Calendar extends AppCompatActivity {
                             String[] row_data = (String[]) parent.getItemAtPosition(position);
                             Log.i(TAG, "row_data: " + Arrays.toString(row_data));
                             String order_id = row_data[0];
-
+                            String plan = row_data[row_data.length - 1];
                             Bundle bundle = new Bundle();
                             bundle.putString("order_id", order_id);
-
-                            String newicon = row_data[row_data.length - 1];
+                            bundle.putString("plan", plan);
+                            String newicon = row_data[row_data.length - 2];
                             if (newicon.equals("1"))
-                                removeNew(order_id, context);
+                                removeNew(order_id, context, plan);
 
                             Intent intent = new Intent();
                             String order_status = row_data[3];

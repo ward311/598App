@@ -72,7 +72,7 @@ public class Distribution_Detail extends AppCompatActivity {
     DatabaseHelper dbHelper;
     private DistributionAdapter distributionAdapter;
 
-    private String order_id, name, gender, movingTime, fromAddress, toAddress, fee;
+    private String order_id, name, gender, movingTime, fromAddress, toAddress, fee, plan;
     private String TAG = "Distribution_Detail";
 
     private ArrayList<String> staffs, staffIds;
@@ -96,6 +96,7 @@ public class Distribution_Detail extends AppCompatActivity {
 //        bundle.putString("order_id", "147");
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
+        plan = bundle.getString("plan");
         fee = "0";
 
         staffs = new ArrayList<>();
@@ -121,6 +122,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id", getCompany_id(this))
+                .add("plan", plan)
                 .build();
         Log.d(TAG, "order_id:"+order_id);
 
@@ -205,8 +207,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getStaffData(), 3000);
+
             }
 
             @Override
@@ -425,8 +426,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getCompanyDetail(), 3000);
+
             }
 
             @Override
@@ -782,6 +782,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 .add("company_id", getCompany_id(context))
                 .add("table", "orders")
                 .add("status", "paid")
+                .add("plan", plan)
                 .build();
         Log.d(TAG, "order_id: "+order_id+", table: orders, status: paid");
 

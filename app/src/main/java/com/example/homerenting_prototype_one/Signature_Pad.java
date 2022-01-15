@@ -56,7 +56,7 @@ public class Signature_Pad extends AppCompatActivity {
     String TAG = "Signature_Pad";
     String base64Image;
     Bundle bundle;
-    String order_id, fee, memo, deposit;
+    String order_id, fee, memo, deposit, plan;
     Boolean check = false;
     TextView resultView;
     @Override
@@ -79,8 +79,11 @@ public class Signature_Pad extends AppCompatActivity {
         fee = bundle.getString("fee");
         memo = bundle.getString("memo");
         deposit = bundle.getString("deposit");
+        plan = bundle.getString("plan");
         Log.d(TAG, "order_id : "+order_id);
-        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo+", deposit: "+deposit);
+        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo
+                        + ", deposit: "+deposit
+                        +", plan: "+plan);
         resultView.setText("顧客簽名後視同已完成搬家服務");
         signPad.setPenColor(Color.BLACK);
         signPad.setOnSignedListener(new SignaturePad.OnSignedListener() {
@@ -193,15 +196,17 @@ public class Signature_Pad extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Handler handler = new Handler();
                             handler.postDelayed(() -> {
+
                                 Intent intent = new Intent(context, Signature_Pad_employee.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 Log.d(TAG, "responseData of change_status: " + responseData);
                                 //Toast.makeText(context, "訂單完成", Toast.LENGTH_LONG).show();
-
+                                change_order_status();
                                 bundle.putString("order_id",order_id);
                                 bundle.putString("fee",fee);
                                 bundle.putString("memo",memo);
                                 bundle.putString("deposit",deposit);
+                                bundle.putString("plan",plan);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                             }, 500);
@@ -224,6 +229,7 @@ public class Signature_Pad extends AppCompatActivity {
                 .add("company_id", getCompany_id(context))
                 .add("accurate_fee", fee)
                 .add("memo", memo)
+                .add("plan", plan)
                 .build();
 
         Request request = new Request.Builder()
@@ -258,6 +264,7 @@ public class Signature_Pad extends AppCompatActivity {
                 .add("table", "orders")
                 .add("order_id", order_id)
                 .add("status", "done")
+                .add("plan", plan)
                 .build();
 
         Request request = new Request.Builder()
@@ -282,11 +289,11 @@ public class Signature_Pad extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Handler handler = new Handler();
                         handler.postDelayed(() -> {
-                            Intent intent = new Intent(context, Order_Today.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            //Intent intent = new Intent(context, Order_Today.class);
+                            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             Log.d(TAG, "responseData of change_status: " + responseData);
-                            Toast.makeText(context, "完成訂單", Toast.LENGTH_LONG).show();
-                            startActivity(intent);
+                            //Toast.makeText(context, "完成訂單", Toast.LENGTH_LONG).show();
+                            //startActivity(intent);
                         }, 500);
 
                     });

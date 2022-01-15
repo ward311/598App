@@ -163,7 +163,7 @@ public class Fragment_Valuation_Booking extends Fragment {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
+                        String plan = member.getString("plan");
                         //取消過期單
                         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
                         Log.d(TAG, "now: "+now.getYear()+"-"+monthToInt(String.valueOf(now.getMonth()))+"-"+now.getDayOfMonth());
@@ -180,7 +180,7 @@ public class Fragment_Valuation_Booking extends Fragment {
                         }
 
                         //呈現在app上
-                        String[] row_data = {order_id, getDate(date), getStartTime(time), name, nameTitle, phone, contact_address, auto, newicon};
+                        String[] row_data = {order_id, getDate(date), getStartTime(time), name, nameTitle, phone, contact_address, auto, newicon, plan };
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式

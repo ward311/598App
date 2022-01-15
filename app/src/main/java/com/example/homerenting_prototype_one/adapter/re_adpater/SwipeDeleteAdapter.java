@@ -89,11 +89,12 @@ public class SwipeDeleteAdapter extends RecyclerView.Adapter<SwipeDeleteAdapter.
                 String[] row_data = data.get(holder.getAdapterPosition());
 
                 String order_id = row_data[0];
+                String plan = row_data[row_data.length-1];
                 Bundle bundle = new Bundle();
                 bundle.putString("order_id", order_id);
-
+                bundle.putString("plan", plan);
                 String newicon = row_data[row_data.length-1];
-                if(newicon.equals("1")) removeNew(order_id, context);
+                if(newicon.equals("1")) removeNew(order_id, context, plan);
 
                 Intent intent = new Intent();
                 intent.setClass(context, mTarget);

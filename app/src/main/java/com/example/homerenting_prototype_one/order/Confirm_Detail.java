@@ -56,6 +56,7 @@ public class Confirm_Detail extends AppCompatActivity {
     String name, gender, phone, movingTime, fromAddress, toAddress, additional, fee, deposit, memo;
     String order_id, member_id;
     String paid;
+    String plan;
     Button pay;
     TextView nameText, nameTitleText, phoneText,movingTimeText, fromAddressText, toAddressText;
     TextView remainderText, feeText, depositText;
@@ -86,6 +87,7 @@ public class Confirm_Detail extends AppCompatActivity {
         memo = bundle.getString("memo");
         order_id = bundle.getString("order_id");
         member_id = bundle.getString("member_id");
+        plan = bundle.getString("plan");
         setText();
         int numFee = Integer.parseInt(fee);
         int numDeposit = Integer.parseInt(deposit);
@@ -111,7 +113,7 @@ public class Confirm_Detail extends AppCompatActivity {
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
                         bundle.putString("deposit", deposit);
-                        update_today_order();
+                        //update_today_order();
                         checkTotalPrice();
                     })
                     .setNegativeButton("否", (dialog1, which1) -> {
@@ -123,7 +125,7 @@ public class Confirm_Detail extends AppCompatActivity {
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
                         bundle.putString("deposit", deposit);
-                        update_today_order();
+                        //update_today_order();
                         checkTotalPrice();
                     })
                     .create()
@@ -309,9 +311,11 @@ public class Confirm_Detail extends AppCompatActivity {
     }
     private void checkTotalPrice(){
         Request request = new Request.Builder()
-                .url("http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context))
+                .url("http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context)+"&plan="+plan)
                 .build();
-        Log.d(TAG, "order_id: "+ order_id+ " company_id: "+getCompany_id(context));
+        Log.d(TAG, "order_id: " + order_id+
+                        " company_id: "+getCompany_id(context)+
+                        " plan: "+plan);
         OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -331,7 +335,7 @@ public class Confirm_Detail extends AppCompatActivity {
                     View view = inflater.inflate(R.layout.qrcode_image, null);
                     ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
 
-                    String url = "http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context);
+                    String url = "http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context)+"&plan="+plan;
                     Log.d(TAG, "website: "+ url);
                     try {
                         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -347,8 +351,8 @@ public class Confirm_Detail extends AppCompatActivity {
 //               builder.setMessage("請掃描QR CODE");
                     builder.setView(view);
                     builder.setPositiveButton("確定", (dialog, which) -> {
-                        if(check){
-                            getPaidStatus();
+                        getPaidStatus();
+                        /*if(check){
                             //change_order_status();
                             //receiveResult();
                             /*Intent sign_intent = new Intent(context, Signature_Pad.class);
@@ -362,12 +366,11 @@ public class Confirm_Detail extends AppCompatActivity {
                             bundle.putString("deposit", deposit);
                             sign_intent.putExtras(bundle);
                             startActivity(sign_intent);
-                            Toast.makeText(context, "完成訂單 - 已收款", Toast.LENGTH_LONG).show();*/
-
-                        }
-                        else {
+                            Toast.makeText(context, "完成訂單 - 已收款", Toast.LENGTH_LONG).show();
+                        }*/
+                        /*else {
                             Toast.makeText(context, "資料上傳失敗", Toast.LENGTH_LONG).show();
-                        }
+                        }*/
                     });
                     builder.setNegativeButton("取消", (dialog, which) -> { });
                     AlertDialog dialog = builder.create();
@@ -408,11 +411,13 @@ public class Confirm_Detail extends AppCompatActivity {
                         int finalPrice = Integer.parseInt(fee);
                         String moving_fee = String.valueOf(finalPrice);
                         memo = memoEdit.getText().toString();
-                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo+", plan: "+plan);
                         bundle.putString("order_id", order_id);
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
                         bundle.putString("deposit", deposit);
+                        bundle.putString("plan", plan);
+                        check = true;
                         sign_intent.putExtras(bundle);
                         startActivity(sign_intent);
                         runOnUiThread(() -> Toast.makeText(context, "已確認收款", Toast.LENGTH_LONG).show());
@@ -421,7 +426,7 @@ public class Confirm_Detail extends AppCompatActivity {
                             LayoutInflater inflater = getLayoutInflater();
                             View view = inflater.inflate(R.layout.qrcode_image, null);
                             ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
-                            String url = "http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context);
+                            String url = "http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context)+"&plan="+plan;
                             try {
                                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                                 Bitmap bitmap = barcodeEncoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 600, 600);
@@ -455,6 +460,7 @@ public class Confirm_Detail extends AppCompatActivity {
                 .add("company_id", getCompany_id(context))
                 .add("accurate_fee", fee) /*只有搬家費用*/
                 .add("memo", memo)
+                .add("plan", plan)
                 .build();
 
         Request request = new Request.Builder()

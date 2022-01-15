@@ -50,7 +50,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
     String name, gender, phone, valuationtime, movingTime, fromAddress, toAddress;
     String remainder, movedate, demandCar, worktime, fee;
 
-    String order_id;
+    String order_id, plan;
 
     String TAG = "Valuation_Cancel_Detail";
     Context context = this;
@@ -63,7 +63,8 @@ public class ValuationCancel_Detail extends AppCompatActivity {
 
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
-        Log.d(TAG, "order_id: " + order_id);
+        plan = bundle.getString("plan");
+        Log.d(TAG, "order_id: " + order_id + ", plan: " + plan);
 
         linking();
 
@@ -73,6 +74,7 @@ public class ValuationCancel_Detail extends AppCompatActivity {
                 .add("function_name", function_name)
                 .add("order_id", order_id)
                 .add("company_id",company_id)
+                .add("plan", plan)
                 .build();
 
         Request request = new Request.Builder()

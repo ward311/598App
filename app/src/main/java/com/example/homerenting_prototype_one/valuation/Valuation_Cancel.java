@@ -54,7 +54,7 @@ public class Valuation_Cancel extends AppCompatActivity {
     TextView week_text;
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView valuationCancelList;
-
+    String plan;
     ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter;
 
@@ -191,7 +191,7 @@ public class Valuation_Cancel extends AppCompatActivity {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
-
+                        plan = member.getString("plan");
                         String[] row_data = {order_id, name, nameTitle, phone, contact_address, auto, newicon, "cancel"};
                         data.add(row_data);
                     }
@@ -221,7 +221,7 @@ public class Valuation_Cancel extends AppCompatActivity {
                             Bundle bundle = new Bundle();
                             bundle.putString("order_id", order_id);
 
-                            removeNew(order_id, Valuation_Cancel.this);
+                            removeNew(order_id, Valuation_Cancel.this, plan);
 
                             Intent intent = new Intent();
                             intent.setClass(Valuation_Cancel.this, ValuationCancel_Detail.class);
