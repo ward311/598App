@@ -302,7 +302,7 @@ public class Today_Detail extends AppCompatActivity {
 
     private void checkTotalPrice(){
         Request request = new Request.Builder()
-                .url("https://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context))
+                .url("http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context))
                 .build();
         Log.d(TAG, "order_id: "+ order_id+ " company_id: "+getCompany_id(context));
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -324,7 +324,7 @@ public class Today_Detail extends AppCompatActivity {
                             View view = inflater.inflate(R.layout.qrcode_image, null);
                             ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
 
-                            String url = "https://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context);
+                            String url = "http://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context);
                             Log.d(TAG, "website: "+ url);
                             try {
                                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -369,7 +369,7 @@ public class Today_Detail extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://598new.ddns.net/598_new_20211026/receive.php")
+                .url("http://598new.ddns.net/598_new_20211026/receive.php")
                 .post(body)
                 .build();
 

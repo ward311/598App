@@ -51,6 +51,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.homerenting_prototype_one.show.global_function.changeStat;
 import static com.example.homerenting_prototype_one.show.global_function.changeStatus;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
 import static com.example.homerenting_prototype_one.show.global_function.getDate;
@@ -167,7 +168,7 @@ public class Order_Today extends AppCompatActivity {
                                         Integer.parseInt(getMonth(datetime))<=monthToInt(String.valueOf(now.getMonth())) &&
                                         Integer.parseInt(getDay(datetime))<now.getDayOfMonth())) {
                             Log.d(TAG, "moving_date "+datetime+" of order_id "+order_id+" is over time");
-                            changeStatus(order_id, "orders", "cancel", context);
+                            changeStat(order_id, "orders", "cancel", context);
                             continue;
                         }
 

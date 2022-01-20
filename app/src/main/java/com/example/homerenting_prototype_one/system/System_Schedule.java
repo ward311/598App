@@ -69,6 +69,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.homerenting_prototype_one.show.global_function.addDatalist;
+import static com.example.homerenting_prototype_one.show.global_function.changeStat;
 import static com.example.homerenting_prototype_one.show.global_function.changeStatus;
 import static com.example.homerenting_prototype_one.show.global_function.clearDatalist;
 import static com.example.homerenting_prototype_one.show.global_function.getCompany_id;
@@ -238,7 +239,7 @@ public class System_Schedule extends AppCompatActivity {
                                         Integer.parseInt(getMonth(date))<=monthToInt(String.valueOf(now.getMonth())) &&
                                         Integer.parseInt(getDay(date))<now.getDayOfMonth())) {
                             Log.d(TAG, "moving_date "+date+" of order_id "+order_id+" is over time");
-                            changeStatus(order_id, "orders", "cancel", context);
+                            changeStat(order_id, "orders", "cancel", context);
                             continue;
                         }
 

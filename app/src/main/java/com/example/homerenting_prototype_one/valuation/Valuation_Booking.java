@@ -234,6 +234,7 @@ public class Valuation_Booking extends AppCompatActivity {
                         if(contact_address.equals("null")) contact_address = "";
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
+                        String plan = member.getString("plan");
 
                         //取消過期單
                         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
@@ -246,7 +247,7 @@ public class Valuation_Booking extends AppCompatActivity {
                                         Integer.parseInt(getMonth(date))<=monthToInt(String.valueOf(now.getMonth())) &&
                                         Integer.parseInt(getDay(date))<now.getDayOfMonth())) {
                             Log.d(TAG, "valuation_date "+date+" of order_id "+order_id+" is over time");
-                            changeStatus(order_id, "choose", "cancel", context);
+                            changeStatus(order_id, "choose", "cancel", context, plan);
                             continue;
                         }
 

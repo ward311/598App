@@ -103,9 +103,42 @@ public class global_function {
         });
     }
 
-    public static void changeStatus(String order_id, String table, String status, Context context) {
+    public static void changeStatus(String order_id, String table, String status, Context context, String plan) {
         Log.d(TAG, "change status: order_id "+order_id+" "+status);
         String function_name = "change_status";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id", getCompany_id(context))
+                .add("table", table)
+                .add("status", status)
+                .add("plan", plan)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "respneseData of change_status: "+responseData);
+            }
+        });
+    }
+
+    public static void changeStat(String order_id, String table, String status, Context context) {
+        Log.d(TAG, "change status: order_id "+order_id+" "+status);
+        String function_name = "change_stat";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)

@@ -174,8 +174,8 @@ public class Fragment_Valuation_Booking extends Fragment {
                                 (Integer.parseInt(getYear(date))<=now.getYear() &&
                                         Integer.parseInt(getMonth(date))<=monthToInt(String.valueOf(now.getMonth())) &&
                                         Integer.parseInt(getDay(date))<now.getDayOfMonth())) {
-                            Log.d(TAG, "valuation_date "+date+" of order_id "+order_id+" is over time");
-                            changeStatus(order_id, "choose", "cancel", mContext);
+                            Log.d(TAG, "valuation_date "+date+" of order_id "+order_id+" which "+plan+" is over time");
+                            changeStatus(order_id, "choose", "cancel", mContext, plan);
                             continue;
                         }
 
