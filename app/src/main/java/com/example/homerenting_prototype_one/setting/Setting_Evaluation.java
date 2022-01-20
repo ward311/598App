@@ -99,9 +99,9 @@ public class Setting_Evaluation extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         });
-        dbHelper = new DatabaseHelper(this);
+        //dbHelper = new DatabaseHelper(this);
 
-        readData();
+        //readData();
         globalNav();
     }
 
@@ -186,12 +186,18 @@ public class Setting_Evaluation extends AppCompatActivity {
                 Log.i(TAG,"responseData: "+responseData); //顯示資料
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
-                    numOfComments = responseArr.length();
-                    db = dbHelper.getWritableDatabase();
+                    //numOfComments = responseArr.length();
+                    //db = dbHelper.getWritableDatabase();
                     for (int i = 0; i < responseArr.length(); i++) {
                         JSONObject comment = responseArr.getJSONObject(i);
                         Log.i(TAG, "comment: "+comment);
                         String comment_id = comment.getString("comment_id");
+                        String company_id = comment.getString("company_id");
+                        if(getCompany_id(context).equals(company_id)){
+                            numOfComments++;
+                        }else{
+                            break;
+                        }
                         String name = comment.getString("member_name");
                         String nameTitle;
                         if(comment.getString("gender").equals("女")) nameTitle = "小姐";
@@ -219,26 +225,26 @@ public class Setting_Evaluation extends AppCompatActivity {
                         Log.d(TAG, "comment_data"+Arrays.toString(comment_data));
                         comments.add(comment_data);
                         data.add(row_data);
-                        db = dbHelper.getWritableDatabase();
-                        ContentValues values = new ContentValues();
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID), comment_id);
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_ORDER_ID), comment.getString(TableContract.CommentsTable.COLUMN_NAME_ORDER_ID));
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID), comment.getString(TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID));
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID), getCompany_id(context));
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE), date);
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY), service_star);
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE), work_star);
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE), price_star);
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT),commentStr);
-                        values.put((TableContract.CommentsTable.COLUMN_NAME_REPLY), reply);
-                        try{
+                        //db = dbHelper.getWritableDatabase();
+                        //ContentValues values = new ContentValues();
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT_ID), comment_id);
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_ORDER_ID), comment.getString(TableContract.CommentsTable.COLUMN_NAME_ORDER_ID));
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID), comment.getString(TableContract.CommentsTable.COLUMN_NAME_MEMBER_ID));
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_COMPANY_ID), getCompany_id(context));
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE), date);
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_SERVICE_QUALITY), service_star);
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_WORK_ATTITUDE), work_star);
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_PRICE_GRADE), price_star);
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_COMMENT),commentStr);
+                        //values.put((TableContract.CommentsTable.COLUMN_NAME_REPLY), reply);
+                        /*try{
                             long newRowId = db.replace(TableContract.CommentsTable.TABLE_NAME, null, values);
                             if(newRowId != -1) {
                                 Log.d(TAG,"create successfully");}
                             else Log.d(TAG, "create failed");
                         }catch (SQLException e){
                             e.printStackTrace();
-                        }
+                        }*/
 
                     }
                 } catch (JSONException e) {
@@ -286,7 +292,7 @@ public class Setting_Evaluation extends AppCompatActivity {
 
         Runnable runnable = () -> {
             commentAdapter.setCommentCount(numOfComments);
-            commentCount.setText("共"+data.size()+"則評論");
+            commentCount.setText("共"+numOfComments+"則評論");
         };
         Handler handler = new Handler();
         handler.postDelayed(runnable, 500);

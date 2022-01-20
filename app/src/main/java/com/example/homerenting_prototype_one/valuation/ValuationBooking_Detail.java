@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -545,31 +546,36 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         }else{
                             sugCarsText.setText(sugCars);
                         }
-                        if(!estimate_fee.equals("null")){
-                            valPriceText.setText(estimate_fee+" (原)");
-                            switch(plan){
-                                case("一般方案"):
-                                    float original = Integer.parseInt(middlePrice);
-                                    String lowString = String.valueOf(Math.round(original*8/10));
-                                    String originalStr = String.valueOf((int)original);
-                                    valRangeText.setText(lowString+"~"+originalStr);
-                                    break;
-                                case("超值方案"):
-                                    original = Integer.parseInt(lowPrice);
-                                    lowString = String.valueOf(Math.round(original*8/10));
-                                    originalStr = String.valueOf((int)original);
-                                    valRangeText.setText(lowString+"~"+originalStr);
-                                    break;
-                                case("升等方案"):
-                                    original = Integer.parseInt(highPrice);
-                                    lowString = String.valueOf(Math.round(original*8/10));
-                                    originalStr = String.valueOf((int)original);
-                                    valRangeText.setText(lowString+"~"+originalStr);
-                                    break;
+                        if(isAuto.equals("1")){
+                            if(!estimate_fee.equals("null")){
+                                valPriceText.setText(estimate_fee+" (原)");
+                                switch(plan){
+                                    case("一般方案"):
+                                        float original = Integer.parseInt(middlePrice);
+                                        String lowString = String.valueOf(Math.round(original*8/10));
+                                        String originalStr = String.valueOf((int)original);
+                                        valRangeText.setText(lowString+"~"+originalStr);
+                                        break;
+                                    case("超值方案"):
+                                        original = Integer.parseInt(lowPrice);
+                                        lowString = String.valueOf(Math.round(original*8/10));
+                                        originalStr = String.valueOf((int)original);
+                                        valRangeText.setText(lowString+"~"+originalStr);
+                                        break;
+                                    case("升等方案"):
+                                        original = Integer.parseInt(highPrice);
+                                        lowString = String.valueOf(Math.round(original*8/10));
+                                        originalStr = String.valueOf((int)original);
+                                        valRangeText.setText(lowString+"~"+originalStr);
+                                        break;
 
+                                }
                             }
-
-                        }else{
+                            else{
+                                valPriceText.setText("3600~8000");
+                            }
+                        }
+                        else{
                             valPriceText.setText("3600~8000");
                         }
                         memoEdit.setText(memo);
@@ -804,7 +810,9 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                         if(isAuto.equals("1")){
                             sendEmail();
                         }else{
+                            Looper.prepare();
                             callDialog();
+                            Looper.loop();
                         }
 
                     }else{

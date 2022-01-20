@@ -85,14 +85,14 @@ public class Evaluation_Detail extends AppCompatActivity {
 
         linking();
 
-        dbHelper = new DatabaseHelper(this);
-        readData();
-        DecimalFormat df = new DecimalFormat("##.0");
-        serviceStar = Double.parseDouble(df.format(serviceStar));
+        //dbHelper = new DatabaseHelper(this);
+        //readData();
+
+        //serviceStar = Double.parseDouble(df.format(serviceStar));
         commentCountText.setText("共"+commentCount+"則評論");
         allStarText.setText("評價 "+serviceStar);
         Log.d(TAG, "commentCount: "+commentCount);
-    //   getData();
+        getData();
 
         reply_edit.addTextChangedListener( new TextWatcher() {
             @Override
@@ -136,7 +136,7 @@ public class Evaluation_Detail extends AppCompatActivity {
 
         back_btn.setOnClickListener(v -> {
             Intent myIntent = new Intent(this, Setting_Evaluation.class);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
             startActivity(myIntent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
@@ -255,21 +255,24 @@ public class Evaluation_Detail extends AppCompatActivity {
 
                 try {
 
-
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject comment = responseArr.getJSONObject(0);
-
+                    commentCount = responseArr.length();
                     final String name = comment.getString("member_name");
                     final String nameTitle;
                     if(comment.getString("gender").equals("女")) nameTitle = "小姐";
                     else nameTitle = "先生";
-                    final String fromAddress = comment.getString("from_address");
-                    final String toAddress = comment.getString("to_address");
+                    final String fromAddress = comment.getString("outcity")+
+                                                comment.getString("outdistrict")
+                                                +comment.getString("address1");
+                    final String toAddress = comment.getString("incity")+
+                            comment.getString("indistrict")
+                            +comment.getString("address2");
                     final String commentStr = comment.getString("comment");
                     replyStr = comment.getString("reply");
-                    final int service_star = comment.getInt("service_quality");
-                    final int work_star = comment.getInt("work_attitude");
-                    final int price_star = comment.getInt("price_grade");
+                     int service_star = comment.getInt("service_quality");
+                     int work_star = comment.getInt("work_attitude");
+                     int price_star = comment.getInt("price_grade");
 
                     runOnUiThread(() -> {
                         nameText.setText(name);
@@ -280,7 +283,11 @@ public class Evaluation_Detail extends AppCompatActivity {
                         setStars(serviceStars, service_star);
                         setStars(workStars, work_star);
                         setStars(priceStars, price_star);
-
+                        DecimalFormat df = new DecimalFormat("##.0");
+                        serviceStar = (service_star + work_star + price_star)/3.0;
+                        serviceStar = Double.parseDouble(df.format(serviceStar));
+                        commentCountText.setText("共"+commentCount+"則評論");
+                        allStarText.setText("評價 "+serviceStar);
                         if(!replyStr.equals("null")){
                             replyText.setVisibility(View.VISIBLE);
                             reply_text.setText(replyStr);
@@ -308,7 +315,7 @@ public class Evaluation_Detail extends AppCompatActivity {
     private void updateReply(){
         String function_name = "update_reply";
         String reply = reply_text.getText().toString();
-            db = dbHelper.getWritableDatabase();
+            /*db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(TableContract.CommentsTable.COLUMN_NAME_REPLY,reply);
             values.put(TableContract.CommentsTable.COLUMN_NAME_COMMENT_DATE, time_press.getText().toString());
@@ -324,7 +331,7 @@ public class Evaluation_Detail extends AppCompatActivity {
             );
             Log.d(TAG,""+count);
             if(count != -1) Log.d(TAG, "update successfully");
-            else Log.d(TAG, "update failed");
+            else Log.d(TAG, "update failed");*/
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("comment_id", comment_id)

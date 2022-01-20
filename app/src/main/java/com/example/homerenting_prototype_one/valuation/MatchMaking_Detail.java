@@ -280,6 +280,7 @@ public class MatchMaking_Detail extends AppCompatActivity {
                     .add("function_name", function_name)
                     .add("order_id", order_id)
                     .add("company_id", getCompany_id(context))
+                    .add("plan", plan)
                     .build();
 
             Request request = new Request.Builder()

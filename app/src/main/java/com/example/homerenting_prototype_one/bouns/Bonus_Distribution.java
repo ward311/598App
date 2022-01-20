@@ -168,21 +168,18 @@ public class Bonus_Distribution extends AppCompatActivity {
                         String newicon = member.getString("new");
                         plan = member.getString("plan");
                         //將資料存進陣列裡
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, newicon};
+                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, plan, newicon};
                         data.add(row_data);
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(responseData.equals("null")){
-                                Log.d(TAG, "NO DATA");
-                                NoDataAdapter noData = new NoDataAdapter();
-                                orderList.setAdapter(noData);
-                            }
-                            //else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> {
+                        if(responseData.equals("null")){
+                            Log.d(TAG, "NO DATA");
+                            NoDataAdapter noData = new NoDataAdapter();
+                            orderList.setAdapter(noData);
                         }
+                        //else Toast.makeText(Order.this, "Toast onResponse failed because JSON", Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -191,31 +188,29 @@ public class Bonus_Distribution extends AppCompatActivity {
                     for(int i=0; i < data.size(); i++)
                         Log.i(TAG, "data: "+ Arrays.toString(data.get(i)));
                     listAdapter = new ListAdapter(data);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            orderList.setAdapter(listAdapter);
-                            orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String[] row_data = (String[])parent.getItemAtPosition(position);
-                                    Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
-                                    String order_id = row_data[0];
-                                    String planned = plan;
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("order_id", order_id);
-                                    bundle.putString("plan", planned);
-                                    String newicon = row_data[row_data.length-1];
-                                    if(newicon.equals("1")) removeNew(order_id, context, plan);
+                    runOnUiThread(() -> {
+                        orderList.setAdapter(listAdapter);
+                        orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String[] row_data = (String[])parent.getItemAtPosition(position);
+                                Log.d(TAG, "row_data: "+ Arrays.toString(row_data));
+                                String order_id = row_data[0];
+                                String plan = row_data[row_data.length-2];
+                                Log.d(TAG, "plan: "+plan);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("order_id", order_id);
+                                bundle.putString("plan", plan);
+                                String newicon = row_data[row_data.length-1];
+                                if(newicon.equals("1")) removeNew(order_id, context, plan);
 
-                                    Intent intent = new Intent();
-                                    intent.setClass(context, Distribution_Detail.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
+                                Intent intent = new Intent();
+                                intent.setClass(context, Distribution_Detail.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
                     });
                 }
             }

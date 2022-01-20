@@ -98,13 +98,15 @@ public class Distribution_Detail extends AppCompatActivity {
         order_id = bundle.getString("order_id");
         plan = bundle.getString("plan");
         fee = "0";
-
+        Log.d(TAG, "bundle of plan: "+plan);
         staffs = new ArrayList<>();
         staffIds = new ArrayList<>();
         salaries = new ArrayList<>();
 
         //傳值
-        getData();
+        Handler handler = new Handler();
+        handler.postDelayed(() -> getData(),2000);
+
         getStaffData();
 
         backBtn.setOnClickListener(v -> {
@@ -124,7 +126,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 .add("company_id", getCompany_id(this))
                 .add("plan", plan)
                 .build();
-        Log.d(TAG, "order_id:"+order_id);
+        Log.d(TAG, "order_id:"+order_id+ ", plan: "+plan );
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/user_data.php")
@@ -249,9 +251,9 @@ public class Distribution_Detail extends AppCompatActivity {
 
                 lock = true;
                 setCsalaryEdit();
-                for(int i = 0; lock; i++){ //lock
+                /*for(int i = 0; lock; i++){ //lock
                     if(i%1000000 == 0) Log.d(TAG, "waiting for company distribution: "+csalaryText.getText().toString());
-                }
+                }*/
                 for(int i = 0; i < distributionAdapter.getItemCount(); i++)
                     getItem(i); //取得分配薪水的edittext
             }
@@ -325,8 +327,8 @@ public class Distribution_Detail extends AppCompatActivity {
                 }
                 csalaryText.setText(salaryStr); //顯示根據百分比連動的數值
 
-                salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
-//                setFeeText(); //修改金額的算式
+                //salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
+                //setFeeText(); //修改金額的算式
 
                 dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
 
@@ -369,7 +371,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 }
                 Log.d(TAG, "(s) salary: "+csalary);
                 salaries.set(salaries.size()-1, csalary); //修改arraylist中的公司金額
-//                        setFeeText(); //修改金額的算式
+//              setFeeText(); //修改金額的算式
 
                 String csalaryPStr = "0";
                 if(csalary != -1 && csalary != 0) {
@@ -462,7 +464,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         csalaryText.setText(salaryStr); //顯示根據百分比連動的數值
                         csalaryEdit.setText(salaryStr);
 
-                        salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
+                        //salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
                         dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額
                         lock = false;
                     });
