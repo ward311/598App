@@ -85,6 +85,7 @@ public class RecordAdapter extends BaseAdapter {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
             bundle.putString("order_id", data.get(position)[0]);
+            bundle.putString("plan", data.get(position)[5]);
             Log.d(TAG, "finalStatus:"+finalStatus);
             switch (finalStatus) {
                 case "自助估價":

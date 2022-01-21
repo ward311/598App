@@ -162,8 +162,8 @@ public class Record_Detail extends AppCompatActivity {
                         if(date.equals("null") || valuation_status.equals("self")) date = order.getString("last_update");
                         date = getDate(date);
                         String member = order.getString("member_name");
-
-                        String[] row_data = {order_id, date, member, valuation_status, order_status};
+                        String plan = order.getString("plan");
+                        String[] row_data = {order_id, date, member, valuation_status, order_status, plan};
                         data.add(row_data);
                     }
                 } catch (JSONException e) {
