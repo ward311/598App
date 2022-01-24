@@ -105,7 +105,7 @@ public class Setting_Discount extends AppCompatActivity {
         editFixDiscount = findViewById(R.id.editTextFixDiscount);
         period_discounts = new ArrayList<>();
         delete_discounts = new ArrayList<>();
-        dbHelper = new DatabaseHelper(this);
+        //dbHelper = new DatabaseHelper(this);
         getFreeRow();
         getPeriodRow(true);
         getFreeData();
@@ -130,13 +130,38 @@ public class Setting_Discount extends AppCompatActivity {
             EditText fixEdit = (EditText) fixTermItem.getChildAt(DISCOUNT_INDEX);
             TableRow shortTermItem = (TableRow) discountTable.getChildAt(4);
             EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
+            TextView end = (TextView) shortTermItem.getChildAt(END_INDEX);
+            Switch on = (Switch) shortTermItem.getChildAt(SWITCH_INDEX);
+            String endDate = end.getText().toString();
+            LocalDate nowTime = LocalDate.now();
+            LocalDate end_Time = LocalDate.of(Integer.parseInt(getYear(endDate)), Integer.parseInt(getMonth(endDate)), Integer.parseInt(getDay(endDate)));
             TableRow longTermItem = (TableRow) discountTable.getChildAt(5);
             EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
             fixDiscount = editFixDiscount.getText().toString();
             if(checkShortDiscount() + checkFixDiscount() <=20){
-                updateDiscount();
-                update_fixDiscount();
-                finish();
+                if(nowTime.isBefore(end_Time) && !on.isChecked()){
+                    new AlertDialog.Builder(context)
+                            .setTitle("現在進行折扣中，要強制取消嗎？")
+                            .setPositiveButton("確認", (dialog, which) -> runOnUiThread(() -> {
+                                disable = true;
+                                on.setChecked(false);
+                                disable = false;
+                                updateDiscount();
+                                update_fixDiscount();
+                                finish();
+                            }))
+                            .setNegativeButton("取消", (dialog, which) -> on.setChecked(true))
+                            .create()
+                            .show();
+                    update_short();
+                }else{
+                    updateDiscount();
+                    update_fixDiscount();
+                    update_short();
+                    finish();
+                }
+
+
             }else {
                 fixEdit.setText("10");
                 shortEdit.setText("10");
@@ -147,35 +172,35 @@ public class Setting_Discount extends AppCompatActivity {
 
 
         backBtn.setOnClickListener(v -> {
-            Log.d(TAG, "valuate is "+valuate.isChecked());
-            Log.d(TAG, "deposit is "+deposit.isChecked());
-            Log.d(TAG, "cancel is "+cancel.isChecked());
-
-            getPeriodRow(false);
-
-            Log.d(TAG, "size of period discount: "+period_discounts.size());
-            Log.d(TAG, "period discount: "+itemsToString(period_discounts));
-
-            Log.d(TAG, "size of delete discount: "+delete_discounts.size());
-            Log.d(TAG, "delete discount: "+delete_discounts);
-            TableRow shortTermItem = (TableRow) discountTable.getChildAt(4);
-            EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
-            TableRow longTermItem = (TableRow) discountTable.getChildAt(5);
-            EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
-            fixDiscount = editFixDiscount.getText().toString();
-            if(checkShortDiscount() + checkFixDiscount() <=20){
-                updateDiscount();
-                update_fixDiscount();
+            //Log.d(TAG, "valuate is "+valuate.isChecked());
+            //Log.d(TAG, "deposit is "+deposit.isChecked());
+            //Log.d(TAG, "cancel is "+cancel.isChecked());
+//
+            //getPeriodRow(false);
+//
+            //Log.d(TAG, "size of period discount: "+period_discounts.size());
+            //Log.d(TAG, "period discount: "+itemsToString(period_discounts));
+//
+            //Log.d(TAG, "size of delete discount: "+delete_discounts.size());
+            //Log.d(TAG, "delete discount: "+delete_discounts);
+            //TableRow shortTermItem = (TableRow) discountTable.getChildAt(4);
+            //EditText shortEdit = (EditText) shortTermItem.getChildAt(DISCOUNT_INDEX);
+            //TableRow longTermItem = (TableRow) discountTable.getChildAt(5);
+            //EditText longEdit = (EditText) longTermItem.getChildAt(DISCOUNT_INDEX);
+            //fixDiscount = editFixDiscount.getText().toString();
+            //if(checkShortDiscount() + checkFixDiscount() <=20){
+            //    updateDiscount();
+            //    update_fixDiscount();
                 Intent intent = new Intent(this, Setting.class);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
 
-            }else {
-                shortEdit.setText("90");
-                longEdit.setText("90");
-                Toast.makeText(context, "已超過優惠額度上限，請重新調整", Toast.LENGTH_LONG).show();
-            }
+           //}else {
+           //    shortEdit.setText("90");
+           //    longEdit.setText("90");
+           //    Toast.makeText(context, "已超過優惠額度上限，請重新調整", Toast.LENGTH_LONG).show();
+           //}
 
         });
 
@@ -285,7 +310,7 @@ public class Setting_Discount extends AppCompatActivity {
                 LocalDate start = LocalDate.of(Integer.parseInt(getYear(startDate)), Integer.parseInt(getMonth(startDate)), Integer.parseInt(getDay(startDate)));
                 LocalDate end = LocalDate.of(Integer.parseInt(getYear(endDate)), Integer.parseInt(getMonth(endDate)), Integer.parseInt(getDay(endDate)));
 
-                if(start.isBefore(disableTime) && end.isAfter(disableTime) && !disable){
+                /*if(start.isBefore(disableTime) || end.isAfter(disableTime)){
                     runOnUiThread(() -> switcher.setChecked(true));
 
                     Log.d(TAG, start+" < "+disableTime+" < "+end);
@@ -300,7 +325,7 @@ public class Setting_Discount extends AppCompatActivity {
                             .create()
                             .show();
                 }
-                else Log.d(TAG, "start: "+start+", end: "+end+", disableTime: "+disableTime);
+                else Log.d(TAG, "start: "+start+", end: "+end+", disableTime: "+disableTime);*/
             }
         });
     }
@@ -408,38 +433,38 @@ public class Setting_Discount extends AppCompatActivity {
                         cancel.setChecked(cancelBl);
                     });
 
-                    db = dbHelper.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    try {
-                        values.put(TableContract.DiscountTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
-                        values.put(TableContract.DiscountTable.COLUMN_NAME_VALUATE, valuateBl);
-                        values.put(TableContract.DiscountTable.COLUMN_NAME_DEPOSIT, depositBl);
-                        values.put(TableContract.DiscountTable.COLUMN_NAME_CANCEL, cancelBl);
-                        values.put(TableContract.DiscountTable.COLUMN_NAME_UPDATE_TIME, freeItems.getString(TableContract.DiscountTable.COLUMN_NAME_UPDATE_TIME));
-
-//                        Log.d(TAG, (i+1)+". "+values.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try{
-                        long newRowId = db.insertOrThrow(TableContract.DiscountTable.TABLE_NAME, null, values);
-                        if(newRowId != -1){
-                            success_counter = success_counter + 1;
-                            Log.d(TAG, "create freeDiscount successfully");
-                        }
-                        else{
-                            fail_counter = fail_counter + 1;
-                            Log.d(TAG, "create freeDiscountDiscount failed");
-                        }
-                    } catch (SQLException e){
-                        if(e.getMessage().contains("no such table"))
-                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
-                            success_counter = success_counter + 1;
-                        else{
-                            e.printStackTrace();
-                            Log.d(TAG, "insert freeDiscountDiscount data: "+e.getMessage());
-                        }
-                    }
+                    //db = dbHelper.getWritableDatabase();
+                    //ContentValues values = new ContentValues();
+                    //try {
+                    //    values.put(TableContract.DiscountTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
+                    //    values.put(TableContract.DiscountTable.COLUMN_NAME_VALUATE, valuateBl);
+                    //    values.put(TableContract.DiscountTable.COLUMN_NAME_DEPOSIT, depositBl);
+                    //    values.put(TableContract.DiscountTable.COLUMN_NAME_CANCEL, cancelBl);
+                    //    values.put(TableContract.DiscountTable.COLUMN_NAME_UPDATE_TIME, freeItems.getString(TableContract.DiscountTable.COLUMN_NAME_UPDATE_TIME));
+//
+//                  //      Log.d(TAG, (i+1)+". "+values.toString());
+                    //} catch (JSONException e) {
+                    //    e.printStackTrace();
+                    //}
+                    //try{
+                    //    long newRowId = db.insertOrThrow(TableContract.DiscountTable.TABLE_NAME, null, values);
+                    //    if(newRowId != -1){
+                    //        success_counter = success_counter + 1;
+                    //        Log.d(TAG, "create freeDiscount successfully");
+                    //    }
+                    //    else{
+                    //        fail_counter = fail_counter + 1;
+                    //        Log.d(TAG, "create freeDiscountDiscount failed");
+                    //    }
+                    //} catch (SQLException e){
+                    //    if(e.getMessage().contains("no such table"))
+                    //    if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                    //        success_counter = success_counter + 1;
+                    //    else{
+                    //        e.printStackTrace();
+                    //        Log.d(TAG, "insert freeDiscountDiscount data: "+e.getMessage());
+                    //    }
+                    //}
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -603,12 +628,16 @@ public class Setting_Discount extends AppCompatActivity {
                         final int percent = discountItem.getInt("discount");
                         final String startTime = discountItem.getString("start_date");
                         final String endTime = discountItem.getString("end_date");
-                        String disableTime = discountItem.getString("disable_time");
                         boolean enable = discountItem.getString("enable").equals("1");
+
+                        //String short_discount = discountItem.getString("short_discount");
+                        //boolean is_enable = discountItem.getString("short_isenable").equals("1");
+                        //String short_startTime = discountItem.getString("short_discount_date");
+                        //String short_endTime = discountItem.getString("short_discount_date_end");
 //                        if(!disableTime.isEmpty()) enable = true;
 
                         String[] period_discount = {discountId, discountName, String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
-
+                        //String[] period_discount = {String.valueOf(percent), startTime, endTime, String.valueOf(enable)};
                         final boolean finalEnable = enable;
                         runOnUiThread(() -> {
                             int row_index = 0;
@@ -643,57 +672,57 @@ public class Setting_Discount extends AppCompatActivity {
                                 discountTable.addView(newAddBtn());
                             }
                         });
-                        db = dbHelper.getWritableDatabase();
-                        ContentValues values = new ContentValues();
-                        try {
-
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_ID, discountId);
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_NAME, discountName);
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT, percent);
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_START_DATE, startTime);
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_END_DATE, endTime);
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE, enable );
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_IS_DELETE, discountItem.getString(TableContract.PeriodDiscountTable.COLUMN_NAME_IS_DELETE));
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE_TIME, discountItem.getString(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE_TIME));
-                            values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISABLE_TIME, disableTime);
-
-//                        Log.d(TAG, (i+1)+". "+values.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            continue;
-                        }
-                        try{
-                            long newRowId = db.insertOrThrow(TableContract.PeriodDiscountTable.TABLE_NAME, null, values);
-                            if(newRowId != -1){
-                                success_counter = success_counter + 1;
-                                Log.d(TAG, "create periodDiscount successfully");
-                                String selection = TableContract.PeriodDiscountTable.COLUMN_NAME_COMPANY_ID+" = ?";
-                                String[] selectionArgs = {getCompany_id(context)};
-
-                                int count = db.update(
-                                        TableContract.PeriodDiscountTable.TABLE_NAME,
-                                        values,
-                                        selection,
-                                        selectionArgs
-                                );
-                                Log.d(TAG,""+count);
-                                if(count != -1) Log.d(TAG, "update successfully");
-                                else Log.d(TAG, "update failed");
-                            }
-                            else{
-                                fail_counter = fail_counter + 1;
-                                Log.d(TAG, "create periodDiscount failed");
-                            }
-                        } catch (SQLException e){
-                            if(e.getMessage().contains("no such table")) break;
-                            if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
-                                success_counter = success_counter + 1;
-                            else{
-                                e.printStackTrace();
-                                Log.d(TAG, "insert periodDiscount data: "+e.getMessage());
-                            }
-                        }
+                        //db = dbHelper.getWritableDatabase();
+                        //ContentValues values = new ContentValues();
+                        //try {
+//
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_ID, discountId);
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT_NAME, discountName);
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISCOUNT, percent);
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_START_DATE, startTime);
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_END_DATE, endTime);
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE, enable );
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_IS_DELETE, discountItem.getString(TableContract.PeriodDiscountTable.COLUMN_NAME_IS_DELETE));
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE_TIME, discountItem.getString(TableContract.PeriodDiscountTable.COLUMN_NAME_ENABLE_TIME));
+                        //    values.put(TableContract.PeriodDiscountTable.COLUMN_NAME_DISABLE_TIME, disableTime);
+//
+//                      //  Log.d(TAG, (i+1)+". "+values.toString());
+                        //} catch (JSONException e) {
+                        //    e.printStackTrace();
+                        //    continue;
+                        //}
+                        //try{
+                        //    long newRowId = db.insertOrThrow(TableContract.PeriodDiscountTable.TABLE_NAME, null, values);
+                        //    if(newRowId != -1){
+                        //        success_counter = success_counter + 1;
+                        //        Log.d(TAG, "create periodDiscount successfully");
+                        //        String selection = TableContract.PeriodDiscountTable.COLUMN_NAME_COMPANY_ID+" = ?";
+                        //        String[] selectionArgs = {getCompany_id(context)};
+//
+                        //        int count = db.update(
+                        //                TableContract.PeriodDiscountTable.TABLE_NAME,
+                        //                values,
+                        //                selection,
+                        //                selectionArgs
+                        //        );
+                        //        Log.d(TAG,""+count);
+                        //        if(count != -1) Log.d(TAG, "update successfully");
+                        //        else Log.d(TAG, "update failed");
+                        //    }
+                        //    else{
+                        //        fail_counter = fail_counter + 1;
+                        //        Log.d(TAG, "create periodDiscount failed");
+                        //    }
+                        //} catch (SQLException e){
+                        //    if(e.getMessage().contains("no such table")) break;
+                        //    if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY"))
+                        //        success_counter = success_counter + 1;
+                        //    else{
+                        //        e.printStackTrace();
+                        //        Log.d(TAG, "insert periodDiscount data: "+e.getMessage());
+                        //    }
+                        //}
                     }
                     if(i <= 0) Log.i(TAG, "no period discount");
                 } catch (JSONException e) {
@@ -908,7 +937,54 @@ public class Setting_Discount extends AppCompatActivity {
                 return 0;
             }
     }*/
+    private void update_short(){
+        TableRow discountItem = (TableRow) discountTable.getChildAt(4);
+        //0 : X
+        Switch enableSw = (Switch) discountItem.getChildAt(SWITCH_INDEX);
+        int isEnable = enableSw.isChecked() ? 1 : 0 ;
 
+        EditText discountEdit = (EditText) discountItem.getChildAt(DISCOUNT_INDEX);
+        int discount = Integer.valueOf(discountEdit.getText().toString());
+
+        //4 : %
+        TextView startView = (TextView) discountItem.getChildAt(START_INDEX);
+        String startDate = startView.getText().toString();
+        //6 : ─
+
+        TextView endView = (TextView) discountItem.getChildAt(END_INDEX);
+        String endDate = endView.getText().toString();
+
+        String function_name = "update_short";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .add("short_discount", String.valueOf(discount))
+                .add("is_enable", String.valueOf(isEnable))
+                .add("start_date", startDate)
+                .add("end_date", endDate)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                runOnUiThread(()->Toast.makeText(context, "短期優惠已修改", Toast.LENGTH_LONG).show());
+                Log.d(TAG, "responseData of update_short: " + responseData);
+            }
+        });
+    }
     private void updateDiscount(){
         String function_name = "modify_discount";
         RequestBody body = new FormBody.Builder()
