@@ -147,13 +147,13 @@ public class Setting_Discount extends AppCompatActivity {
                                 on.setChecked(false);
                                 disable = false;
                                 updateDiscount();
+                                update_short();
                                 update_fixDiscount();
                                 finish();
                             }))
                             .setNegativeButton("取消", (dialog, which) -> on.setChecked(true))
                             .create()
                             .show();
-                    update_short();
                 }else{
                     updateDiscount();
                     update_fixDiscount();
@@ -980,7 +980,6 @@ public class Setting_Discount extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
-                runOnUiThread(()->Toast.makeText(context, "短期優惠已修改", Toast.LENGTH_LONG).show());
                 Log.d(TAG, "responseData of update_short: " + responseData);
             }
         });
