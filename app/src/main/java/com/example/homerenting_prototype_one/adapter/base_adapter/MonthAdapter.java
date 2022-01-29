@@ -119,6 +119,7 @@ public class MonthAdapter extends BaseAdapter {
         if(!has){
             btn.setTextColor(Color.rgb(122, 164, 179));
             btn.setBackgroundResource(R.drawable.frame_background);
+            btn.setClickable(false);
         }
         else{
             btn.setTextColor(Color.parseColor("#19B0ED"));
