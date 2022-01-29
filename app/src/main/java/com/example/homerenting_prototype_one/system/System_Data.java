@@ -100,10 +100,10 @@ public class System_Data extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         //getAllStaffData(dbHelper, context);
         //getAllVehicleData(dbHelper, context);
-        readStaffData();
-//        getStaffData();
-        readVehicleData();
-//        getVehicleData();
+        //readStaffData();
+        getStaffData();
+        //readVehicleData();
+        getVehicleData();
 
         back_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(System_Data.this, System.class);
