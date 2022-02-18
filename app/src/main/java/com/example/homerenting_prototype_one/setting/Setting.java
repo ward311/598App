@@ -75,6 +75,7 @@ public class Setting extends AppCompatActivity {
         LinearLayout customer_evaluation = findViewById(R.id.customerEvaluation_LL_S);
         LinearLayout system_announcement = findViewById(R.id.announce_LL_S);
         LinearLayout history_record = findViewById(R.id.btn_logout);
+        LinearLayout add_account = findViewById(R.id.btn_add_acct);
         companyImage = findViewById(R.id.companyImage);
         dbHelper = new DatabaseHelper(this);
         TableContract.ServiceClassTable.getServiceClass(dbHelper);
@@ -100,6 +101,9 @@ public class Setting extends AppCompatActivity {
             history_record.setEnabled(false);
             history_record.setBackgroundColor(Color.parseColor("#f2f2f2"));
             history_record.setAlpha(.3F);
+            add_account.setEnabled(false);
+            add_account.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            add_account.setAlpha(.3F);
 
         }else{
             company_information.setEnabled(true);
@@ -108,6 +112,7 @@ public class Setting extends AppCompatActivity {
             customer_evaluation.setEnabled(true);
             system_announcement.setEnabled(true);
             history_record.setEnabled(true);
+            add_account.setEnabled(true);
         }
         company_email = findViewById(R.id.company_email_S);
         user_auth = findViewById(R.id.authorization);
@@ -151,6 +156,11 @@ public class Setting extends AppCompatActivity {
         history_record.setOnClickListener(v -> {
             Intent record_intent = new Intent(Setting.this, Setting_Record.class);
             startActivity(record_intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
+        add_account.setOnClickListener(v -> {
+            Intent account_intent = new Intent(Setting.this, Setting_Account.class);
+            startActivity(account_intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         sign_out.setOnClickListener(view -> {

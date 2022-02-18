@@ -24,8 +24,6 @@
         <activity
             android:name=".Signature_Pad_employee"
             android:exported="false" />
-
-
         <activity
             android:name=".order.Confirm_Detail"
             android:exported="false" />
@@ -46,6 +44,7 @@
             android:screenOrientation="nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -174,6 +173,9 @@
             android:screenOrientation="nosensor" />
         <activity
             android:name=".setting.Record_Detail"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".setting.Setting_Account"
             android:screenOrientation="nosensor" />
         <activity
             android:name=".Register_Company"

@@ -93,12 +93,7 @@ public class ForgetPassword extends AppCompatActivity {
                 }
             }
         });
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(LoginIntent);
-            }
-        });
+        back_btn.setOnClickListener(view -> startActivity(LoginIntent));
         veriCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
