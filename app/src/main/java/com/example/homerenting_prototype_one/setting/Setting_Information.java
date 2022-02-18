@@ -85,7 +85,7 @@ public class Setting_Information extends AppCompatActivity {
         finish_btn = findViewById(R.id.companyInfo_finished_btn_SIF);
 
         ImageButton back_btn = findViewById(R.id.back_imgBtn);
-
+        getData();
         back_btn.setOnClickListener(v -> {
             Intent intent = new Intent(this, Setting.class);
             startActivity(intent);
@@ -95,8 +95,8 @@ public class Setting_Information extends AppCompatActivity {
 
 
 
-        dbHelper = new DatabaseHelper(this);
-        readData();
+        //dbHelper = new DatabaseHelper(this);
+        //readData();
 
         edit_btn.setOnClickListener(v -> {
             companyIdea_text.setGravity(Gravity.CENTER_VERTICAL);

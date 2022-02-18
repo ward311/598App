@@ -285,7 +285,7 @@ public class System extends AppCompatActivity {
                     return;
                 }
 
-                int success_counter = 0, fail_counter = 0;
+                /*int success_counter = 0, fail_counter = 0;
                 for (int i = 0; i < responseArr.length(); i++) {
                     JSONObject vehicle;
                     try {
@@ -333,7 +333,7 @@ public class System extends AppCompatActivity {
                         }
                     }
                 }
-                Log.d(TAG, "vehicle data:\n success data: "+success_counter+", fail data: "+fail_counter);
+                Log.d(TAG, "vehicle data:\n success data: "+success_counter+", fail data: "+fail_counter);*/
             }
         });
     }

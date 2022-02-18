@@ -194,7 +194,7 @@ public class Distribution_Detail extends AppCompatActivity {
         RequestBody body = new FormBody.Builder()
                 .add("order_id", order_id)
                 .build();
-
+        Log.i(TAG, order_id);
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/get_data/staff_detail.php")
                 .post(body)
@@ -327,7 +327,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 }
                 csalaryText.setText(salaryStr); //顯示根據百分比連動的數值
 
-                //salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
+                salaries.set(salaries.size()-1, salary); //修改arraylist中的公司金額
                 //setFeeText(); //修改金額的算式
 
                 dsalaryText.setText(String.valueOf(ds)); //顯示剩餘可分配金額

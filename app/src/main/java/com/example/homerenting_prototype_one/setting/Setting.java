@@ -254,7 +254,7 @@ public class Setting extends AppCompatActivity {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject company = responseArr.getJSONObject(0);
                     String email = company.getString("email");
-                    imageUrl = "http://140.117.71.91/598_new/"+company.getString("img");
+                    imageUrl = "https://598new.ddns.net/598_new_20211026/"+company.getString("img");
                     Log.d(TAG, imageUrl);
                     runOnUiThread(() -> company_email.setText(email));
 

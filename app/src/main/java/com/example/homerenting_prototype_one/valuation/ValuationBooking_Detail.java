@@ -758,7 +758,6 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             updateValuation(moving_date, estimate_worktime, fee);
             updateCarDemand();
             updateSugCars();
-
             finishValuation();
 
 
