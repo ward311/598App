@@ -13,6 +13,7 @@
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_checkable_spinner_item.xml" value="0.18" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_confirm_detail.xml" value="0.25" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_confrim_detail.xml" value="0.182518115942029" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_distribution__detail.xml" value="0.32083333333333336" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_edit__furniture.xml" value="0.15539858728557013" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_forget_password.xml" value="0.1" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_furniture__detail.xml" value="0.25" />
@@ -20,6 +21,7 @@
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_match_making__detail.xml" value="0.11203703703703703" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_new_schedule_detail.xml" value="0.33" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_order__detail.xml" value="0.5" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_record__detail.xml" value="0.2658514492753623" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting.xml" value="0.25" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting__discount.xml" value="0.30104166666666665" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_setting__service.xml" value="0.25" />
@@ -39,10 +41,13 @@
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/calendar_layout.xml" value="0.15539858728557013" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/car_dialog.xml" value="0.14581231079717458" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/car_item.xml" value="0.25" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/distribution_item.xml" value="0.32083333333333336" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/fragment_valuation__cancel.xml" value="0.14581231079717458" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/furniture_item.xml" value="0.33" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/furniture_location_item.xml" value="0.22644927536231885" />
-        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/row_item.xml" value="0.21" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/list.xml" value="0.13546922300706357" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/record_item.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/row_item.xml" value="0.25" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/text_item.xml" value="0.33" />
         <entry key="..\:/Users/SH4DY/AppData/Local/Android/Sdk/platforms/android-29/data/res/layout/alert_dialog.xml" value="0.21" />
         <entry key="..\:/Users/Wardell/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_add__order.xml" value="0.35052083333333334" />

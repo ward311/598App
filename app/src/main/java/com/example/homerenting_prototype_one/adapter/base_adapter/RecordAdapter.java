@@ -63,11 +63,13 @@ public class RecordAdapter extends BaseAdapter {
         viewHolder.day_text = convertView.findViewById(R.id.day_R);
         viewHolder.day_text.setTag(position);
         viewHolder.name_text = convertView.findViewById(R.id.name_R);
+        viewHolder.plan_text = convertView.findViewById(R.id.plan_R);
         viewHolder.status_text = convertView.findViewById(R.id.status_R);
         convertView.setTag( viewHolder );
 
         viewHolder.day_text.setText(data.get(position)[1]);
         viewHolder.name_text.setText(data.get(position)[2]);
+        viewHolder.plan_text.setText(data.get(position)[5]);
         String status = "";
         if(data.get(position)[3].equals("chosen")){
             viewHolder.day_text.setBackgroundColor(Color.parseColor("#19B0ED"));
@@ -139,6 +141,6 @@ public class RecordAdapter extends BaseAdapter {
 
     static class RecordViewHolder{
         LinearLayout record;
-        TextView day_text, name_text, status_text;
+        TextView day_text, name_text, status_text, plan_text;
     }
 }

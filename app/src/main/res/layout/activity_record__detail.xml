@@ -68,7 +68,7 @@
             android:id="@+id/name_RD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.7"
+            android:layout_weight="0.8"
             android:gravity="center"
             android:paddingLeft="0dp"
             android:text="客戶"
@@ -76,10 +76,20 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_RD"
+            android:id="@+id/plan_RD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center"
+            android:text="方案"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/status_RD"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.9"
             android:gravity="center"
             android:text="狀態"
             android:textSize="18sp"

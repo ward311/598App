@@ -15,21 +15,21 @@
         android:gravity="center"
         android:text="01/01"
         android:textColor="#FFFFFF"
-        android:textSize="30sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/name_R"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.7"
+        android:layout_weight="0.8"
         android:gravity="center"
         android:paddingLeft="0dp"
         android:text="名字"
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/status_R"
+        android:id="@+id/plan_R"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -37,6 +37,19 @@
         android:gravity="center"
         android:paddingTop="5dp"
         android:paddingBottom="10dp"
+        android:text="方案"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/status_R"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0.9"
+        android:gravity="center"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
         android:text="狀態"
         android:textSize="18sp" />
+
 </LinearLayout>

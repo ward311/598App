@@ -3,6 +3,7 @@ package com.example.homerenting_prototype_one.bouns;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -71,7 +72,7 @@ public class Bonus_Distribution extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
 
-        getOrder();
+        new Handler().postDelayed((Runnable) () -> getOrder(),500) ;
 
         backBtn.setOnClickListener(v -> {
             super.onBackPressed();

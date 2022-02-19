@@ -105,7 +105,7 @@ public class Distribution_Detail extends AppCompatActivity {
 
         //傳值
         Handler handler = new Handler();
-        handler.postDelayed(() -> getData(),2000);
+        handler.postDelayed(this::getData,500);
 
         getStaffData();
 
@@ -320,6 +320,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 String salaryStr = "0"; //會顯示出來的值，沒有值預設是0
                 if(!salaryPStr.equals("0")){
                     float salaryP = Float.parseFloat(salaryPStr); //取得百分比的值(float)
+                    if(salaryP>100) salaryP = 100;
                     salary = Math.round((Integer.parseInt(fee))*salaryP/100); //算出數值
                     ds = Integer.parseInt(fee)-salary; //取得剩餘可分配金額
                     if(salary == 0) salary = -1; //如果salary是0，就回復原狀
@@ -371,11 +372,12 @@ public class Distribution_Detail extends AppCompatActivity {
                 }
                 Log.d(TAG, "(s) salary: "+csalary);
                 salaries.set(salaries.size()-1, csalary); //修改arraylist中的公司金額
-//              setFeeText(); //修改金額的算式
+              //setFeeText(); //修改金額的算式
 
                 String csalaryPStr = "0";
                 if(csalary != -1 && csalary != 0) {
                     float salaryP =  ((float) csalary/(Integer.parseInt(fee)))*100; //算出百分比
+                    if(salaryP > 100) salaryP = 100;
                     NumberFormat nf = NumberFormat.getInstance();
                     nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
                     csalaryPStr = nf.format(salaryP); //取得百分比(string)
@@ -456,6 +458,7 @@ public class Distribution_Detail extends AppCompatActivity {
                         String salaryStr = "0"; //會顯示出來的值，沒有值預設是0
                         if(!salaryPStr.equals("0")){
                             float salaryP = Float.parseFloat(salaryPStr); //取得百分比的值(float)
+                            if(salaryP>100) salaryP = 100;
                             salary = Math.round((Integer.parseInt(fee))*salaryP/100); //算出數值
                             ds = Integer.parseInt(fee)-salary; //取得剩餘可分配金額
                             if(salary == 0) salary = -1; //如果salary是0，就回復原狀
@@ -492,6 +495,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 String salaryPStr = "0";
                 if (salary != -1 && salary != 0) {
                     float salaryP = ((float) salary / ds) * 100; //算出百分比
+                    if(salaryP>100) salaryP = 100;
                     NumberFormat nf = NumberFormat.getInstance();
                     nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
                     salaryPStr = nf.format(salaryP); //取得百分比(string)
@@ -505,6 +509,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 if(!salaryPStr.isEmpty()) salaryP = Float.parseFloat(salaryPStr+"f");
                 String salaryStr = "0";
                 if(salaryP != 0){
+                    if(salaryP > 100) salaryP = 100;
                     salary = Math.round(salaryP*ds/100);
                     salaryStr = String.valueOf(salary);
                     Log.d(TAG, (position+1)+". salary: "+salaryP+" * "+ds+" = "+salaryStr);
@@ -512,7 +517,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 salaryEdit.setText(salaryStr);
             }
             salaries.set(position, salary); //修改arraylist中的員工金額
-//            setFeeText(); //修改金額的算式
+            //setFeeText(); //修改金額的算式
         }
         else{
             Log.d(TAG, "view "+position+" is null");
@@ -538,6 +543,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 String salaryStr = "0"; //會顯示出來的值，沒有值預設是0
                 if(!salaryPStr.equals("0")){
                     float salaryP = Float.parseFloat(salaryPStr); //取得百分比的值(float)
+                    if(salaryP > 100) salaryP = 100;
                     int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
                     salary = Math.round(ds*salaryP/100);
                     if(salary == 0) salary = -1; //如果salary是0，就回復原狀
@@ -545,7 +551,7 @@ public class Distribution_Detail extends AppCompatActivity {
                 }
                 salaryText.setText(salaryStr); //顯示根據百分比連動的數值
                 salaries.set(position, salary); //修改arraylist中的員工金額
-//                setFeeText(); //修改金額的算式
+                //setFeeText(); //修改金額的算式
             }
         }));
 
@@ -577,12 +583,13 @@ public class Distribution_Detail extends AppCompatActivity {
                 if(!salaryStr.isEmpty()) salary = Integer.parseInt(salaryStr); //將數值轉換成integer
                 Log.d(TAG, "(s) salary: "+salary);
                 salaries.set(position, salary); //修改arraylist中的員工金額
-//                setFeeText(); //修改金額的算式
+                //setFeeText(); //修改金額的算式
 
                 String salaryPStr = "0";
                 if(salary != -1 && salary != 0) {
                     int ds = Integer.parseInt(dsalaryText.getText().toString()); //取得剩餘可分配金額
                     float salaryP =  ((float) salary/ds)*100; //算出百分比
+                    if(salaryP>100) salaryP = 100;
                     NumberFormat nf = NumberFormat.getInstance();
                     nf.setMaximumFractionDigits(2); //只顯示到小數點後兩位
                     salaryPStr = nf.format(salaryP); //取得百分比(string)
