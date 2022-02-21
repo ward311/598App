@@ -246,38 +246,38 @@ public class Setting_Information extends AppCompatActivity {
                     runOnUiThread(() -> setTexts());
 
                     Log.d(TAG, "start create database");
-                    db = dbHelper.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME, company.getString(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME));
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_IMG, company.getString(TableContract.CompanyTable.COLUMN_NAME_IMG));
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_ADDRESS, address);
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_PHONE, phone);
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM, staff_num);
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_URL, url);
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_EMAIL, email);
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_LINE_ID, line);
-                    values.put(TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY, idea);
-                    try {
-                        long newRowId = db.insertOrThrow(TableContract.CompanyTable.TABLE_NAME, null, values);
-                        if(newRowId != -1) Log.d(TAG, "create successfully");
-                        else Log.d(TAG, "create failed");
-                    } catch (SQLException e){
-                        if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
-                            Log.d(TAG, "start update database");
-                            String selection = TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID+" = ?";
-                            String[] seletctionArgs = {getCompany_id(context)};
-
-                            int count = db.update(
-                                    TableContract.CompanyTable.TABLE_NAME,
-                                    values,
-                                    selection,
-                                    seletctionArgs
-                            );
-                            if(count != -1) Log.d(TAG, "update successfully");
-                            else Log.d(TAG, "update failed");
-                        }
-                    }
+                    //db = dbHelper.getWritableDatabase();
+                    //ContentValues values = new ContentValues();
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME, company.getString(TableContract.CompanyTable.COLUMN_NAME_COMPANY_NAME));
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_IMG, company.getString(TableContract.CompanyTable.COLUMN_NAME_IMG));
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_ADDRESS, address);
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_PHONE, phone);
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_STAFF_NUM, staff_num);
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_URL, url);
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_EMAIL, email);
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_LINE_ID, line);
+                    //values.put(TableContract.CompanyTable.COLUMN_NAME_PHILOSOPHY, idea);
+                    //try {
+                    //    long newRowId = db.insertOrThrow(TableContract.CompanyTable.TABLE_NAME, null, values);
+                    //    if(newRowId != -1) Log.d(TAG, "create successfully");
+                    //    else Log.d(TAG, "create failed");
+                    //} catch (SQLException e){
+                    //    if(Objects.requireNonNull(e.getMessage()).contains("PRIMARYKEY")){
+                    //        Log.d(TAG, "start update database");
+                    //        String selection = TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID+" = ?";
+                    //        String[] seletctionArgs = {getCompany_id(context)};
+//
+                    //        int count = db.update(
+                    //                TableContract.CompanyTable.TABLE_NAME,
+                    //                values,
+                    //                selection,
+                    //                seletctionArgs
+                    //        );
+                    //        if(count != -1) Log.d(TAG, "update successfully");
+                    //        else Log.d(TAG, "update failed");
+                    //    }
+                    //}
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
