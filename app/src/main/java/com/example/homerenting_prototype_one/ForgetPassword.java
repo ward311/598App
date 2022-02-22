@@ -280,9 +280,9 @@ public class ForgetPassword extends AppCompatActivity {
                         Log.d(TAG, ""+resetData.getString("status")+" "+resetData.getString("message"));
                         runOnUiThread(() -> {
                             Intent goLogin = new Intent(context, Login.class);
-                            goLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            //goLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(goLogin);
-                            finish();
+                            //finish();
                             Toast.makeText(context, "新密碼設定成功，請重新登入 ", Toast.LENGTH_LONG).show();
 
                         });

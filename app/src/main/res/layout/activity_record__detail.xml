@@ -43,7 +43,8 @@
             android:layout_weight="2"
             android:background="@drawable/addorder_btn_drawable"
             android:text="匯出報表"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
