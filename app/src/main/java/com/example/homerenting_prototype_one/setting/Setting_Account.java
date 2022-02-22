@@ -45,9 +45,9 @@ import okhttp3.Response;
 public class Setting_Account extends AppCompatActivity {
     Spinner company_list;
     Context context = Setting_Account.this;
-    EditText email_edit, password_edit, confirm_password_edit;
+    EditText email_edit, password_edit, confirm_password_edit, phone_edit;
     TextView origin;
-    String name, account, password, title;
+    String name, account, password, title, phone;
     Button cancel, add_account;
     final String TAG = "Setting_Account";
     @Override
@@ -63,7 +63,7 @@ public class Setting_Account extends AppCompatActivity {
         email_edit = findViewById(R.id.email_text);
         password_edit = findViewById(R.id.new_pwd_text);
         confirm_password_edit = findViewById(R.id.new_pwd_con_text);
-
+        phone_edit = findViewById(R.id.phone_addText);
         String[] companies= {"請選擇帳號類型", "管理者帳號", "員工帳號"};
         getData();
         ArrayAdapter<String> companiesList = new ArrayAdapter<>(context,
@@ -98,6 +98,25 @@ public class Setting_Account extends AppCompatActivity {
                 if(email_edit.getText().length()==0){
                     email_edit.setError("請輸入電子郵件");
                 }else email_edit.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        phone_edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(phone_edit.getText().length()==0){
+                    phone_edit.setError("請輸入手機號碼");
+                }else phone_edit.setError(null);
             }
 
             @Override
@@ -147,10 +166,7 @@ public class Setting_Account extends AppCompatActivity {
         });
         add_account.setOnClickListener(v -> {
             if(checkEmpty()){
-                //setAccount();
-                Toast.makeText(context, "帳號新增成功", Toast.LENGTH_SHORT).show();
-                Intent setting = new Intent(this, Setting.class);
-                startActivity(setting);
+                setAccount();
             }else{
                 Toast.makeText(context, "資料有誤，請再次檢查", Toast.LENGTH_SHORT).show();
             }
@@ -165,9 +181,14 @@ public class Setting_Account extends AppCompatActivity {
         });
     }
     private boolean checkEmpty(){
-        if(email_edit.getText().length()!=0 && password_edit.getText().length()!=0){
+        if(email_edit.getText().length()!=0 && phone_edit.getText().length()!=0 && password_edit.getText().length()!=0){
             if(password_edit.getText().toString().equals(confirm_password_edit.getText().toString())){
-                if(title.length()!=0) return true;
+                if(title.length()!=0) {
+                    account = email_edit.getText().toString();
+                    password = confirm_password_edit.getText().toString();
+                    phone = phone_edit.getText().toString();
+                    return true;
+                }
                 else return false;
             }else{
                 return false;
@@ -229,11 +250,12 @@ public class Setting_Account extends AppCompatActivity {
                 .add("account", account)
                 .add("password", password)
                 .add("title", title)
+                .add("phone", phone)
                 .build();
 
         //連線要求
         Request request = new Request.Builder()
-                .url(BuildConfig.SERVER_URL + "/user_data.php")
+                .url(BuildConfig.SERVER_URL + "/functional.php")
                 .post(body)
                 .build();
 
@@ -254,13 +276,16 @@ public class Setting_Account extends AppCompatActivity {
                 Log.i(TAG,"responseData: "+responseData); //顯示資料
 
                 try {
-                    JSONArray responseArr = new JSONArray(responseData);
-                    JSONObject company = responseArr.getJSONObject(0);
+                    JSONObject adding = new JSONObject(responseData);
+                    if(adding.getString("status").equals("success")){
+                        runOnUiThread(()-> Toast.makeText(context, "新增帳號成功", Toast.LENGTH_SHORT).show());
+                        Intent setting = new Intent(context, Setting.class);
+                        startActivity(setting);
+                        finish();
+                    }else{
+                        runOnUiThread(()-> Toast.makeText(context, "新增帳號失敗", Toast.LENGTH_SHORT).show());
 
-                    name = company.getString("company_name");
-
-
-                    runOnUiThread(() -> origin.setText(name));
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
