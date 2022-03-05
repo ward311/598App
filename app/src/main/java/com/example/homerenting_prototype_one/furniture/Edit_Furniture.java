@@ -144,8 +144,8 @@ public class Edit_Furniture extends AppCompatActivity {
             newFurnitureLock = true;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("家具名稱");
-            builder.setMessage("請輸入家具名稱");
+            builder.setTitle("選擇家具");
+            builder.setMessage("請在下方選擇家具");
             builder.setView(view);
             builder.setPositiveButton("確定", (dialog, which) -> {
                 int i = 0;

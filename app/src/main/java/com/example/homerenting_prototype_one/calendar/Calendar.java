@@ -104,8 +104,8 @@ public class Calendar extends AppCompatActivity {
     String plan;
     String plan1;
     SharedPreferences fcm_SP;
-    private static DatabaseHelper dbHelper;
-    private static SQLiteDatabase db;
+    //private static DatabaseHelper dbHelper;
+    //private static SQLiteDatabase db;
 
     Boolean VB, OB;
     Boolean isOvertime = true;
@@ -119,7 +119,7 @@ public class Calendar extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
         init();
         onBackPressed();
-        dbHelper = new DatabaseHelper(this);
+        //dbHelper = new DatabaseHelper(this);
         runOnUiThread(()->setmCalendar());
         Handler handler = new Handler();
         handler.postDelayed(() -> new AsyncRetrieve().execute(), 3000);

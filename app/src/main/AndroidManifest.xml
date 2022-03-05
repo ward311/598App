@@ -24,16 +24,20 @@
         tools:targetApi="n">
         <activity
             android:name=".Signature_Pad_employee"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".order.Confirm_Detail"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".system.System_License"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".Signature_Pad"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".ChangePassword"
             android:screenOrientation="nosensor" /> <!-- Main -->

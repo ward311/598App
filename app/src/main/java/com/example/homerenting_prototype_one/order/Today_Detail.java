@@ -79,7 +79,7 @@ public class Today_Detail extends AppCompatActivity {
 
     Bundle bundle;
     Bundle fromBooking = new Bundle();
-    Bundle confirm = new Bundle();
+
 
     String TAG = "Today_Detail";
 
@@ -94,6 +94,7 @@ public class Today_Detail extends AppCompatActivity {
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         plan = bundle.getString("plan");
+        memo = bundle.getString("memo");
         linking(); //將xml裡的元件連至此java
         changePriceMark(); //讓+-按鈕可以按
         changePrice();
@@ -206,39 +207,40 @@ public class Today_Detail extends AppCompatActivity {
         getVehicleData();
         getStaffData();
         cash_btn.setOnClickListener(v -> {
-            Intent sign_intent = new Intent(context, Signature_Pad.class);
-            new AlertDialog.Builder(context)
-                    .setTitle("更新會員資料")
-                    .setMessage("是否同意會員聯絡地址更新為搬入地址？")
-                    .setPositiveButton("是", (dialog, which) -> {
-                        updateAddress();
-                        int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
-                        int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
-                        String moving_fee = String.valueOf(finalPrice);
-                        memo = memoEdit.getText().toString();
-                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-                        bundle.putString("order_id", order_id);
-                        bundle.putString("fee", moving_fee);
-                        bundle.putString("memo", memo);
-                        bundle.putString("deposit", depositFee);
-                        sign_intent.putExtras(bundle);
-                        startActivity(sign_intent);
-                    })
-                    .setNegativeButton("否", (dialog, which) -> {
-                        int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
-                        int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
-                        String moving_fee = String.valueOf(finalPrice);
-                        memo = memoEdit.getText().toString();
-                        Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
-                        bundle.putString("order_id", order_id);
-                        bundle.putString("fee", moving_fee);
-                        bundle.putString("memo", memo);
-                        bundle.putString("deposit", depositFee);
-                        sign_intent.putExtras(bundle);
-                        startActivity(sign_intent);
-                    })
-                    .create()
-                    .show();
+                Intent sign_intent = new Intent(context, Signature_Pad.class);
+                new AlertDialog.Builder(context)
+                        .setTitle("更新會員資料")
+                        .setMessage("是否同意會員聯絡地址更新為搬入地址？")
+                        .setPositiveButton("是", (dialog, which) -> {
+                            updateAddress();
+                            int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+                            int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
+                            String moving_fee = String.valueOf(finalPrice);
+                            memo = memoEdit.getText().toString();
+                            Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                            bundle.putString("order_id", order_id);
+                            bundle.putString("fee", moving_fee);
+                            bundle.putString("memo", memoEdit.getText().toString());
+                            bundle.putString("deposit", depositFee);
+                            sign_intent.putExtras(bundle);
+                            startActivity(sign_intent);
+                        })
+                        .setNegativeButton("否", (dialog, which) -> {
+                            int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+                            int additional_fee = Integer.parseInt(extraPriceText.getText().toString());
+                            String moving_fee = String.valueOf(finalPrice);
+                            memo = memoEdit.getText().toString();
+                            Log.d(TAG,"check_price_btn, fee: "+fee+", memo: "+memo);
+                            bundle.putString("order_id", order_id);
+                            bundle.putString("fee", moving_fee);
+                            bundle.putString("memo", memo);
+                            bundle.putString("deposit", depositFee);
+                            sign_intent.putExtras(bundle);
+                            startActivity(sign_intent);
+                        })
+                        .create()
+                        .show();
+
         });
         /*收款按鈕*/
         check_btn.setOnClickListener(v -> {
@@ -279,22 +281,32 @@ public class Today_Detail extends AppCompatActivity {
             bundle.putString("memo", memo);
             sign_intent.putExtras(bundle);*/
             //startActivity(sign_intent);
-            Intent confirm_intent = new Intent(context, Confirm_Detail.class);
-            confirm.putString("name", name);
-            confirm.putString("member_id", member_id);
-            confirm.putString("gender", gender);
-            confirm.putString("phone", phone);
-            confirm.putString("mvTime", movingTime);
-            confirm.putString("mvOut", fromAddress);
-            confirm.putString("mvIn", toAddress);
-            confirm.putString("additional", remainder);
-            confirm.putString("mvFee", finalPriceText.getText().toString());
-            confirm.putString("deposit", depositFee);
-            confirm.putString("memo", memo);//備註
-            confirm.putString("order_id", order_id);
-            confirm.putString("plan", plan);
-            confirm_intent.putExtras(confirm);
-            startActivity(confirm_intent);
+            int price = Integer.parseInt(feeText.getText().toString());
+            int finalPrice = Integer.parseInt(finalPriceText.getText().toString());
+            if(finalPrice == 0){
+                changePriceText.setError("搬家費用不得為0");
+            }else if(price != finalPrice && memoEdit.getText().length() == 0){
+                memoEdit.setError("價格若有變動請備註");
+            }else{
+                Intent confirm_intent = new Intent(context, Confirm_Detail.class);
+                Bundle confirm = new Bundle();
+                confirm.putString("name", name);
+                confirm.putString("member_id", member_id);
+                confirm.putString("gender", gender);
+                confirm.putString("phone", phone);
+                confirm.putString("mvTime", movingTime);
+                confirm.putString("mvOut", fromAddress);
+                confirm.putString("mvIn", toAddress);
+                confirm.putString("additional", remainder);
+                confirm.putString("mvFee", finalPriceText.getText().toString());
+                confirm.putString("deposit", depositFee);
+                confirm.putString("memo", memoEdit.getText().toString());//備註
+                confirm.putString("order_id", order_id);
+                confirm.putString("plan", plan);
+                confirm_intent.putExtras(confirm);
+                startActivity(confirm_intent);
+            }
+
         });
 
         globalNav();
@@ -547,7 +559,10 @@ public class Today_Detail extends AppCompatActivity {
                     }
                     else{
                         price = price_origin - Integer.parseInt(changeprice);
+                        if(price < 0) price = 0;
                         payment = price - Integer.parseInt(depositFee);
+                        if(payment < 0) payment = 0;
+
                     }
                     finalPriceText.setText(String.valueOf(price));
                     today_pay.setText(String.valueOf(payment));

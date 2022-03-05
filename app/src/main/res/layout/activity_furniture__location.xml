@@ -69,7 +69,7 @@
                         android:id="@+id/textView2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="6"
+                        android:layout_weight="5"
                         android:gravity="center"
                         android:text="房間"
                         android:textColor="@android:color/background_light" />
@@ -77,8 +77,9 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="6"
-                        android:gravity="left"
+                        android:layout_marginLeft="30dp"
+                        android:layout_weight="6.5"
+                        android:gravity="center_vertical"
                         android:text="      品項名稱"
                         android:textColor="#FFFFFF" />
 

@@ -115,8 +115,11 @@ public class Furniture_Detail extends AppCompatActivity {
                             final String num = furniture.getString("num");
                             final String furniture_memo = " ";
 
+
                             String[] row_data = {furniture_name, num, furniture_memo};
                             data.add(row_data);
+
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -183,6 +186,7 @@ public class Furniture_Detail extends AppCompatActivity {
                             final String num = furniture.getString("num");
                             final String furniture_memo = " ";
 
+                            if(num.equals("0")) continue;
                             String[] row_data = {furniture_name, num, furniture_memo};
                             data.add(row_data);
                         }

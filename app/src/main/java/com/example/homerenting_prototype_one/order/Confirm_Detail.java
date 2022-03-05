@@ -311,7 +311,7 @@ public class Confirm_Detail extends AppCompatActivity {
     }
     private void checkTotalPrice(){
         Request request = new Request.Builder()
-                .url("https://140.117.68.146/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context)+"&plan="+plan)
+                .url("https://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context)+"&plan="+plan)
                 .build();
         Log.d(TAG, "order_id: " + order_id+
                         " company_id: "+getCompany_id(context)+
@@ -335,7 +335,7 @@ public class Confirm_Detail extends AppCompatActivity {
                     View view = inflater.inflate(R.layout.qrcode_image, null);
                     ImageView qrcodeView = view.findViewById(R.id.qrcode_img_QI);
 
-                    String url = "https://140.117.68.146/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context)+"&plan="+plan;
+                    String url = "https://598new.ddns.net/598_new_20211026/appecpay.php?order_id="+order_id+"&company_id="+getCompany_id(context)+"&plan="+plan;
                     Log.d(TAG, "website: "+ url);
                     try {
                         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();

@@ -247,12 +247,15 @@
         android:id="@+id/car_demanding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
+        android:layout_marginTop="24dp"
         android:text="偏好需求車輛"
+        android:textColor="#000000"
         android:textSize="12sp"
         android:visibility="visible"
-        app:layout_constraintStart_toEndOf="@+id/car_OD"
-        app:layout_constraintTop_toTopOf="@+id/car_OD" />
+        app:layout_constraintEnd_toStartOf="@+id/right_margin_GL"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tablel_GL"
+        app:layout_constraintTop_toBottomOf="@+id/view3" />
 
     <TextView
         android:id="@+id/staffText"
@@ -267,7 +270,7 @@
         android:id="@+id/staff_OD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="24dp"
         android:text="人員分配"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/car_OD" />
@@ -280,13 +283,14 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/worktime_OD"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toTopOf="@+id/worktime_OD" />
+        app:layout_constraintTop_toTopOf="@+id/worktime_OD"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/worktime_OD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="12dp"
         android:text="工時"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/staff_OD" />
@@ -299,13 +303,14 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/price_OD"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toTopOf="@+id/price_OD" />
+        app:layout_constraintTop_toTopOf="@+id/price_OD"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/price_OD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="費用"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/worktime_OD" />
@@ -318,13 +323,14 @@
         android:textColor="#FF0000"
         app:layout_constraintBottom_toBottomOf="@+id/extraFeeText"
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
-        app:layout_constraintTop_toTopOf="@+id/extraFeeText" />
+        app:layout_constraintTop_toTopOf="@+id/extraFeeText"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/extraFeeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="訂金費用"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/price_OD" />
@@ -333,7 +339,7 @@
         android:id="@+id/view4"
         android:layout_width="wrap_content"
         android:layout_height="2dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:background="#F2F2F2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price_OD" />
@@ -348,18 +354,18 @@
         app:layout_constraintStart_toStartOf="@+id/left_margin_GL"
         app:layout_constraintTop_toTopOf="@+id/PS_OD"/>
 
+
     <EditText
         android:id="@+id/PS_OD"
         android:layout_width="0dp"
         android:layout_height="110dp"
         android:layout_marginTop="16dp"
         android:background="#F2F2F2"
-        android:textColor="#989898"
         android:ems="10"
         android:inputType="textPersonName"
+        android:textColor="#989898"
         app:layout_constraintStart_toStartOf="@+id/tablel_GL"
         app:layout_constraintTop_toBottomOf="@+id/view4" />
-
 
     <Button
         android:id="@+id/check_order_btn"

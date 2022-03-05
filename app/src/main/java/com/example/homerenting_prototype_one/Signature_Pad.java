@@ -201,7 +201,7 @@ public class Signature_Pad extends AppCompatActivity {
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 Log.d(TAG, "responseData of change_status: " + responseData);
                                 //Toast.makeText(context, "訂單完成", Toast.LENGTH_LONG).show();
-                                change_order_status();
+                                //change_order_status();
                                 bundle.putString("order_id",order_id);
                                 bundle.putString("fee",fee);
                                 bundle.putString("memo",memo);

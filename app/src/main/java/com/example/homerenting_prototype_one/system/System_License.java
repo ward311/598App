@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +23,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -73,7 +75,8 @@ public class System_License extends AppCompatActivity {
     String new_plateNum;
     Bitmap selectedImage;
     TextView title;
-    private String uploadServerUri = "http://140.117.71.91/598_new/app/uploadImage.php";
+    ProgressDialog dialog ;
+    private String uploadServerUri = "http://598new.ddns.net/598_new_20211026/app/uploadImage.php";
     private int serverResponseCode = 0;
     String img_src;
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -82,12 +85,22 @@ public class System_License extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system_license);
         linking();
+        dialog = new ProgressDialog(this);
         if (shouldAskPermissions()) {
             askPermissions();
         }
         back.setOnClickListener(v -> finish());
 
-        uploadPic.setOnClickListener(v -> uploadImage());
+        uploadPic.setOnClickListener(v -> {
+
+            /**設置UI形式為轉圈圈*/
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setTitle("上傳照片中...");
+
+            dialog.show();
+            uploadImage();
+
+        });
 
         takePic.setOnClickListener(v -> {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -267,6 +280,7 @@ public class System_License extends AppCompatActivity {
                     String path = new_data [0];
                     Log.d(TAG, "path: "+path);
                     String base64 = Base64.encodeToString(path.getBytes(), Base64.DEFAULT);
+                    Log.d(TAG, base64);
                     updateLicense(base64);
                 }
 
@@ -349,6 +363,7 @@ public class System_License extends AppCompatActivity {
 
                         runOnUiThread(() -> {
                             Toast.makeText(context, "資料已上傳，請等待審核完畢", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
                             Intent intent = new Intent(context, System_Data.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);

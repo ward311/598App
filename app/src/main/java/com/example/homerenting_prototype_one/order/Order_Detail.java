@@ -133,6 +133,7 @@ public class Order_Detail extends AppCompatActivity {
             }else{
                 bundle.putString("order_id", order_id);
                 bundle.putString("plan", plan);
+                bundle.putString("memo", memoText.getText().toString());
                 Intent order_detail = new Intent(this, Today_Detail.class);
                 order_detail.putExtras(bundle);
                 startActivity(order_detail);
@@ -365,7 +366,8 @@ public class Order_Detail extends AppCompatActivity {
                         JSONObject vehicle_demand = responseArr.getJSONObject(i);
                         if(!vehicle_demand.has("num")) break;
                         Log.i(TAG, "vehicle_demand:" + vehicle_demand);
-                        if(i != 0) demandCar = demandCar + "\n";
+                        if(i != 0) demandCar = demandCar+"" ;
+
                         demandCar = demandCar+vehicle_demand.getString("vehicle_weight")
                                 +vehicle_demand.getString("vehicle_type")
                                 +vehicle_demand.getString("num")+"輛";
