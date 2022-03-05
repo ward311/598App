@@ -71,6 +71,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
     String name, nameTitle, movingDate, fromAddress, toAddress, demandCar;
     String staff, car;
     String plan;
+    String datetime = null;
+    String endtime = "";
+
     boolean lock;
     int overlap_counter_s = 0, overlap_counter_c = 0;
 
@@ -89,13 +92,14 @@ public class New_Schedule_Detail extends AppCompatActivity {
         lock = false;
         initArray();
 
+
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         plan = bundle.getString("plan");
         linking(); //將xml裡的元件連至此java
 
         Handler handler = new Handler();
-        handler.postDelayed(() -> getStaffChip(), 500);
+        handler.postDelayed(this::getStaffChip, 500);
 
         //getOrder();
         new MyAsyncTask().execute();
@@ -379,8 +383,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 Log.d(TAG,"responseData of getOrder: "+responseData); //顯示資料
 
                 String movingDateWithoutTime = null;
-                String datetime = null;
-                String endtime = "";
+
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
                     JSONObject order = responseArr.getJSONObject(0);
@@ -401,7 +404,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         toAddress = order.getString("incity")+order.getString("indistrict")+order.getString("address2");
                     }
                     else if(order.has("to_address")) toAddress = order.getString("to_address");
-                    datetime= order.getString("moving_date");
+                    datetime = order.getString("moving_date");
                     String[] date = datetime.split(" ");
                     movingDateWithoutTime = date[0];
                     int estimate_worktime;
@@ -441,22 +444,25 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 getStaffVacation(movingDateWithoutTime);
                 getVehicleVacation(movingDateWithoutTime);
                 int ii = 0;
-                /*while (lock){
+                while (lock){
                     if((++ii)%5000000 == 0) Log.d(TAG, (ii/50000000)+". waiting for lock in getOrder...");
-                }*/
+                }
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
 
-                //getOverlap(datetime, endtime);
 
                 Looper.prepare();
                 Handler handler = new Handler();
                 Runnable runnable = () -> {
+                    //getOverlap(datetime, endtime);
                     getVehicleData();
                     getStaffData();
                     Log.d(TAG, "finish getting data.");
                 };
-                handler.postDelayed(runnable, 500);
+                handler.postDelayed(runnable, 1500);
+
                 Looper.loop();
+
+
             }
         });
     }
@@ -679,7 +685,6 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         staffs_vacation.add(staff_vacation.getString("staff_name"));
                         staffs_v.add(Integer.parseInt(staff_vacation.getString("staff_id")));
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     if(!responseData.equals("null") && !responseData.equals("function_name not found.")) {
@@ -692,7 +697,16 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getStaffVacation...");
                 }*/
                 Log.d(TAG, "getStaffVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                setChipCheck(staffGroup, staffs_vacation, "vacation");
+                Log.d(TAG, "SET chip check");
+                Looper.prepare();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
+                    setChipCheck(staffGroup, staffs_vacation, "vacation");
+                    Log.d(TAG, "SET staff_chip check done");
+                },1000);
+                Looper.loop();
+
+
             }
         });
     }
@@ -755,15 +769,22 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 }
 
                 int ii = 0;
-                while (lock){
+                /*while (lock){
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVehicleVacation...");
                 }
-                Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                setChipCheck(carGroup, cars_vacation, "vacation");
+                Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());*/
+
+
+                Looper.prepare();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
+                    setChipCheck(carGroup, cars_vacation, "vacation");
+                    Log.d(TAG, "SET car_chip check done");
+                },1000);
+                Looper.loop();
             }
         });
     }
-
     private void getOverlap(String date, String endtime){
         if(date == null){
             Log.d(TAG, "date is null in getOvelap");
@@ -787,9 +808,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.newBuilder().connectTimeout(3, TimeUnit.MINUTES)
-                .writeTimeout(3, TimeUnit.MINUTES)
-                .readTimeout(3, TimeUnit.MINUTES);
+        okHttpClient.newBuilder().connectTimeout(10, TimeUnit.MINUTES)
+                .writeTimeout(10, TimeUnit.MINUTES)
+                .readTimeout(10, TimeUnit.MINUTES);
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -797,11 +818,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                Looper.prepare();
-                runOnUiThread(() -> Toast.makeText(context, "連線錯誤", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                handler.postDelayed(() -> getOverlap(date, endtime), 3000);
-                Looper.loop();
+                runOnUiThread(() -> Toast.makeText(context, "Overlap連線錯誤", Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -825,7 +842,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                             cars_l.add(row_data);
                         }
 
-                        for (; i < responseArr.length(); i++) {
+                        for (i=0; i < responseArr.length(); i++) {
                             JSONObject staff_overlap = responseArr.getJSONObject(i);
                             if(!staff_overlap.has("staff_id")) break;
                             if(staff_overlap.getString("order_id").equals(order_id)) continue;
@@ -848,14 +865,20 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getOverlap...");
                 }*/
                 Log.d(TAG, "getOverlap: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                setChipCheck(staffGroup, staffs_lap, "overlap");
-                setChipCheck(carGroup, cars_lap, "overlap");
+                Looper.prepare();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
+                    setChipCheck(staffGroup, staffs_lap, "overlap");
+                    setChipCheck(carGroup, cars_lap, "overlap");
+                },2000);
+                Looper.loop();
+
             }
         });
     }
 
     private void setChipCheck(final ChipGroup chipGroup, final ArrayList<String> items_text, final String type){
-        for(int i = 1; i < chipGroup.getChildCount(); i++){
+        for(int i = 0; i < chipGroup.getChildCount(); i++){
             final Chip chip = (Chip) chipGroup.getChildAt(i);
             runOnUiThread(() -> {
                 if(items_text.contains(chip.getText().toString())){
