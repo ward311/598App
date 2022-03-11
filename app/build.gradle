@@ -14,6 +14,7 @@ android {
         debug {
             buildConfigField "String", "SERVER_URL", '"http://140.117.68.146/598_new_20211026/app"'
             //http://54.166.177.4
+            //default http://140.117.68.146/598_new_20211026/app
         }
         release {
             minifyEnabled false

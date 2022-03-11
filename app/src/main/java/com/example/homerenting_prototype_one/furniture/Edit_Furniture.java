@@ -149,9 +149,9 @@ public class Edit_Furniture extends AppCompatActivity {
             builder.setView(view);
             builder.setPositiveButton("確定", (dialog, which) -> {
                 int i = 0;
-                while (newFurnitureLock){
+                /*while (newFurnitureLock){
                     if(i++%10000000 == 0) Log.d(TAG, "waiting for new furniture lock...");
-                }
+                }*/
                 if(isNew(new_furniture[0])){
                     String[] row_data = {new_furniture[0], new_furniture[1], "0", "1", spaceAL.get(Integer.parseInt(new_furniture[2])+1), getCompany_id(context)};
                     Log.d(TAG, "add new furniture row_data: "+Arrays.toString(row_data));
