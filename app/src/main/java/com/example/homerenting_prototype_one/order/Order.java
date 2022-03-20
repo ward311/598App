@@ -32,6 +32,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
 import com.example.homerenting_prototype_one.adapter.re_adpater.NoDataRecyclerAdapter;
+import com.example.homerenting_prototype_one.add_order.Add_Order;
+import com.example.homerenting_prototype_one.add_order.Add_Valuation;
 import com.example.homerenting_prototype_one.helper.DatabaseHelper;
 import com.example.homerenting_prototype_one.helper.RecyclerViewAction;
 import com.example.homerenting_prototype_one.adapter.re_adpater.SwipeDeleteAdapter;
@@ -92,6 +94,7 @@ public class Order extends AppCompatActivity {
     ListView orderList;
     RecyclerView orderRList;
 
+
     ArrayList<String[]> data = new ArrayList<>();
     ArrayList<String[]> furniture_data = new ArrayList<>();
     ListAdapter listAdapter;
@@ -122,6 +125,7 @@ public class Order extends AppCompatActivity {
         Button booking_order = findViewById(R.id.bookingOrder_btn);
         Button today_order = findViewById(R.id.todayOrder_btn);
         Button cancel_order = findViewById(R.id.cancelOrder_btn);
+        Button addOrder = findViewById(R.id.addOrder_btn);
         ImageButton valuation_btn = findViewById(R.id.valuationBlue_Btn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
@@ -186,7 +190,9 @@ public class Order extends AppCompatActivity {
             //getOrder();
             //new AsyncRetrieve().execute();
         });
-
+        addOrder.setOnClickListener(v -> {
+            startActivity(new Intent(context, Add_Order.class));
+        });
         //上方nav
         order_btn.setOnClickListener(v->{
             replaceFragment(new Fragment_Order());

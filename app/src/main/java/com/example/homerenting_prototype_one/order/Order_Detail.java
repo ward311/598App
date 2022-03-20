@@ -2,6 +2,7 @@ package com.example.homerenting_prototype_one.order;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -436,6 +437,7 @@ public class Order_Detail extends AppCompatActivity {
 
                 runOnUiThread(() ->{
                     staffText.setText(staff);
+                    if(staff.equals("尚未安排人員")) staffText.setTextColor(Color.RED);
                 } );
             }
         });

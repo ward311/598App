@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -21,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.homerenting_prototype_one.BuildConfig;
 import com.example.homerenting_prototype_one.R;
+import com.example.homerenting_prototype_one.add_order.Add_Valuation;
 import com.example.homerenting_prototype_one.setting.Setting;
 import com.example.homerenting_prototype_one.system.System;
 import com.example.homerenting_prototype_one.adapter.base_adapter.ListAdapter;
@@ -65,6 +67,7 @@ public class Valuation extends AppCompatActivity {
     ImageButton lastWeek_btn, nextWeek_btn;
     ListView valuationList;
 
+
     ArrayList<String[]> data = new ArrayList<>();
     ListAdapter listAdapter = new ListAdapter(data);
 
@@ -92,6 +95,7 @@ public class Valuation extends AppCompatActivity {
         Button booking_btn = findViewById(R.id.bookingEvaluation_btn);
         Button matchMaking_btn = findViewById(R.id.matchMaking_Evaluation_btn);
         Button cancel_btn = findViewById(R.id.cancelEvaluation_btn);
+        Button addValuation = findViewById(R.id.addValu_btn);
         ImageButton order_btn = findViewById(R.id.order_imgBtn);
         ImageButton calendar_btn = findViewById(R.id.calendar_imgBtn);
         ImageButton system_btn = findViewById(R.id.system_imgBtn);
@@ -152,7 +156,9 @@ public class Valuation extends AppCompatActivity {
             }
             //new AsyncRetrieve().execute();
         });
-
+        addValuation.setOnClickListener(v -> {
+            startActivity(new Intent(context, Add_Valuation.class));
+        });
         //上方nav
         self_btn.setOnClickListener(v->{
             replaceFragment(new Fragment_Valuation());
