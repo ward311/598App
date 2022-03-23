@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    tools:context=".valuation.ValuationBooking_Detail">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:context=".valuation.ConfirmValuation_Detail">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="44dp"
@@ -13,7 +13,7 @@
         android:background="#00BFFF">
 
         <ImageView
-            android:id="@+id/back_imgBtn_VBD"
+            android:id="@+id/conVal_back_imgBtn_VBD"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:paddingLeft="16dp"
@@ -23,7 +23,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="到府預約估價單"
+        android:text="確認到府預約估價單"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:gravity="center"
@@ -36,23 +36,26 @@
         android:orientation="vertical"
         android:layout_gravity="top"
         android:background="#FFFFFF">
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/name_VBD"
+                        android:id="@+id/conVal_name_VBD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="姓名"
@@ -60,22 +63,23 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/nameTitle_VBD"
+                        android:id="@+id/conVal_nameTitle_VBD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:text="稱謂" />
 
                     <TextView
-                        android:id="@+id/setProgram"
+                        android:id="@+id/conVal_setProgram"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -87,7 +91,7 @@
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/phone_VBD"
+                        android:id="@+id/conVal_phone_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
@@ -95,7 +99,7 @@
                         android:text="電話號碼" />
 
                     <Button
-                        android:id="@+id/call_btn_VBD"
+                        android:id="@+id/conVal_call_btn_VBD"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -119,7 +123,7 @@
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/contactTime_VBD"
+                        android:id="@+id/conVal_contactTime_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
@@ -139,12 +143,13 @@
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/valuationTime_VBD"
+                        android:id="@+id/conVal_valuationTime_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
                         android:text="日期時間" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -158,12 +163,13 @@
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/FromAddress_VBD"
+                        android:id="@+id/conVal_FromAddress_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
                         android:text="搬出地址內容" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -177,45 +183,52 @@
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/ToAddress_VBD"
+                        android:id="@+id/conVal_ToAddress_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
                         android:text="搬入地址內容" />
                 </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#989898"/>
+                    android:background="#989898" />
 
                 <LinearLayout
-                    android:id="@+id/furniture_LL_VBD"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_weight="1"
+                        android:text="家具清單"
+                        android:textColor="#000000" />
+
+                    <ListView
+                        android:id="@+id/conVal_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_weight="3" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/conVal_furniture_LL_VBD"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_gravity="center_vertical"
-                        android:text="家具清單"
-                        android:textColor="#000000" />
 
-                    <Button
-                        android:id="@+id/edit_furniture_btn_VBD"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:background="#FFFFFFFF"
-                        android:gravity="center_vertical"
-                        android:text="修改家具"
-                        android:textColor="#FB8527" />
                 </LinearLayout>
+
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#989898"/>
+                    android:background="#989898" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -230,14 +243,15 @@
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/notice_VBD"
+                        android:id="@+id/conVal_notice_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:text="無內容"
-                        android:background="#F2F2F2" />
+                        android:background="#F2F2F2"
+                        android:text="無內容" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -245,74 +259,19 @@
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="36dp"
+                        android:layout_height="25dp"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="搬家日期"
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/movingDate_VBD"
+                        android:id="@+id/conVal_movingDate"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:gravity="center"
-                        android:hint="選擇日期"
-                        android:inputType="date"
-                        android:textColorHint="#FB8527"/>
-
-                    <TextView
-                        android:id="@+id/movingTime_VBD"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:gravity="center"
-                        android:hint="選擇時間"
-                        android:inputType="time"
-                        android:textColorHint="#FB8527"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView28"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="建議車輛"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:id="@+id/sugText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="無建議車輛"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="安排車輛"
-                        android:textColor="#000000" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/car_assign_VBD"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3" />
+                        android:text="搬家日期"
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 
@@ -329,13 +288,13 @@
                         android:text="預計工時"
                         android:textColor="#000000" />
 
-                    <EditText
-                        android:id="@+id/worktime_VBD"
+                    <TextView
+                        android:id="@+id/conVal_estTime"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="25dp"
                         android:layout_weight="2.4"
-                        android:hint="輸入數字"
-                        android:inputType="number" />
+                        android:text="預計工時"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/textView11"
@@ -361,7 +320,7 @@
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/valPrice_VBD"
+                        android:id="@+id/conVal_valPrice_VBD"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
@@ -395,7 +354,7 @@
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/range_text"
+                        android:id="@+id/conVal_range_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
@@ -403,7 +362,7 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/cur_dis"
+                        android:id="@+id/conVal_cur_dis"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
@@ -425,13 +384,13 @@
                         android:text="估價費用"
                         android:textColor="#000000" />
 
-                    <EditText
-                        android:id="@+id/price_VBD"
+                    <TextView
+                        android:id="@+id/conVal_price"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="25dp"
                         android:layout_weight="2.4"
-                        android:hint="輸入數字"
-                        android:inputType="numberDecimal" />
+                        android:text="估價費用"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/textView12"
@@ -440,6 +399,7 @@
                         android:layout_weight="0.6"
                         android:gravity="center"
                         android:text="元" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -448,7 +408,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="16dp"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
@@ -461,14 +421,8 @@
                         android:layout_weight="3"
                         android:orientation="vertical">
 
-                        <Spinner
-                            android:id="@+id/memoSpr"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3" />
-
                         <EditText
-                            android:id="@+id/PS_VBD"
+                            android:id="@+id/conVal_PS_VBD"
                             android:layout_width="match_parent"
                             android:layout_height="80dp"
                             android:layout_weight="3"
@@ -477,18 +431,19 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/check_evaluation_btn"
+                        android:id="@+id/conVal_check_evaluation_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:background="@drawable/roundedbutton"
-                        android:text="確認估價單"
+                        android:text="完成估價單"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
             </LinearLayout>
@@ -507,7 +462,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageButton
-                    android:id="@+id/valuationBlue_Btn"
+                    android:id="@+id/conVal_valuationBlue_Btn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/valuation_blue"
@@ -527,7 +482,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageButton
-                    android:id="@+id/order_imgBtn"
+                    android:id="@+id/conVal_order_imgBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/order_btn_drawable"
@@ -547,7 +502,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageButton
-                    android:id="@+id/calendar_imgBtn"
+                    android:id="@+id/conVal_calendar_imgBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/calendar_btn_drawable"
@@ -567,7 +522,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageButton
-                    android:id="@+id/system_imgBtn"
+                    android:id="@+id/conVal_system_imgBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/system_btn_drawable"
@@ -587,7 +542,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageButton
-                    android:id="@+id/setting_imgBtn"
+                    android:id="@+id/conVal_setting_imgBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/setting_btn_drawable"

@@ -13,6 +13,7 @@
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_change_password.xml" value="0.182518115942029" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_checkable_spinner_item.xml" value="0.18" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_confirm_detail.xml" value="0.25" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_confirm_valuation_detail.xml" value="0.33" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_confrim_detail.xml" value="0.182518115942029" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_distribution__detail.xml" value="0.32083333333333336" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_edit__furniture.xml" value="0.15539858728557013" />
@@ -35,7 +36,7 @@
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation.xml" value="0.14581231079717458" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation__cancel.xml" value="0.1358695652173913" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation__detail.xml" value="0.33" />
-        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_booking__detail.xml" value="0.33" />
+        <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_booking__detail.xml" value="0.25" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/activity_valuation_cancel__detail.xml" value="0.5" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/calendar_day_layout.xml" value="0.25" />
         <entry key="..\:/Users/SH4DY/AndroidStudioProjects/598_movingApp/app/src/main/res/layout/calendar_dialog.xml" value="0.1838768115942029" />

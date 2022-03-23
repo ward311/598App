@@ -87,6 +87,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
     String result = "";
     String suggestStr;
     String lowestStr;
+    String originalStr;
     RecyclerView carAssignRList;
 
     Button check_btn, furniture_btn, phoneCall_btn;
@@ -163,7 +164,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 Log.d(TAG, "discount get: "+ discount+
                         " isDis: "+isDiscount);
                 calculate();
-                newValPriceText.setText(suggestStr);
+                newValPriceText.setText(getFromEdit.getString("suggestPrice"));
             } , 1500);
 
         }
@@ -375,14 +376,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                     break;
                 }
         }
-        suggestStr = String.valueOf((int)most);
+        originalStr = String.valueOf((int)most);
         lowestStr = String.valueOf((int)least);
         Log.d(TAG, ""+ (int)least +" "+ (int)most);
 
         Handler handler = new Handler();
         //newValPriceText.setText("到府估價");
         handler.postDelayed(() -> {
-            valRangeText.setText(lowestStr +"~"+suggestStr);
+            valRangeText.setText(lowestStr +"~"+originalStr);
             valRangeText.setTextColor(Color.RED);
         }, 2000);
 
@@ -553,7 +554,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                                     case("一般方案"):
                                         float original = Integer.parseInt(middlePrice);
                                         String lowString = String.valueOf(Math.round(original*8/10));
-                                        String originalStr = String.valueOf((int)original);
+                                        originalStr = String.valueOf((int)original);
                                         valRangeText.setText(lowString+"~"+originalStr);
                                         break;
                                     case("超值方案"):
@@ -572,11 +573,14 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                                 }
                             }
                             else{
-                                valPriceText.setText("3600~8000");
+                                valPriceText.setText("現場估價");
                             }
                         }
                         else{
-                            valPriceText.setText("3600~8000");
+                            valPriceText.setText("現場估價");
+                            valPriceText.setTextColor(Color.RED);
+                            valRangeText.setText("無價格區間");
+                            valRangeText.setTextColor(Color.RED);
                         }
                         memoEdit.setText(memo);
                         program_type.setText(plan);
@@ -755,10 +759,41 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             if(checkCarsViewEmpty()) check = false;
             if(!check) return;
 
-            updateValuation(moving_date, estimate_worktime, fee);
+            //updateValuation(moving_date, estimate_worktime, fee);
             updateCarDemand();
             updateSugCars();
-            finishValuation();
+            //finishValuation();
+            bundle.putString("name", name);
+            bundle.putString("gender",gender);
+            bundle.putString("program", plan);
+            bundle.putString("phone", phone);
+            bundle.putString("contactTime", contactTime);
+            bundle.putString("valuationTime", valuationTime);
+            bundle.putString("fromAddress", fromAddress);
+            bundle.putString("toAddress", toAddress);
+            bundle.putString("moving_date", moving_date);
+            bundle.putString("estimate_worktime", estimate_worktime);
+            bundle.putString("fee", fee);
+            bundle.putString("valRange", valRangeText.getText().toString());
+            bundle.putString("valPrice", valPriceText.getText().toString());
+            bundle.putString("remainder", remainder);
+            bundle.putString("memo", memo);
+            bundle.putString("isAuto", isAuto);
+            bundle.putString("remainder", remainder);
+            bundle.putString("isAuto", isAuto);
+            bundle.putString("order_id", order_id);
+            bundle.putString("discount", current_discount.getText().toString());
+            bundle.putString("memo", memoEdit.getText().toString());
+            bundle.putString("email", email);
+            bundle.putString("plan", plan);
+            bundle.putString("isAuto", isAuto);
+            if(newValPriceText.getText().length()!=0) bundle.putString("newPrice", newValPriceText.getText().toString());
+
+            Intent intent = new Intent(context, ConfirmValuation_Detail.class);
+
+            intent.putExtras(bundle);
+            startActivity(intent);
+
 
 
 
@@ -883,24 +918,59 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             Log.d(TAG, "時間為空");
             check = true;
         }
-        if(TextUtils.isEmpty(estimate_worktime)){
+        if(TextUtils.isEmpty(estimate_worktime) || estimate_worktime.length() == 0){
             worktimeEdit.setError("請輸入工時");
             Log.d(TAG, "工時為空");
             check = true;
         }
-        if(TextUtils.isEmpty(fee)){
+        if(TextUtils.isEmpty(fee) || fee.length() == 0){
             priceEdit.setError("請輸入搬家價格");
             Log.d(TAG, "搬家價格為空");
             check = true;
         }
-        if(getFromEdit.getString("suggestPrice")==null){
-            //setValPrice();
-            valPriceText.setText("3600~8000");
-            if(Integer.valueOf(fee)>Integer.valueOf("8000") && memo.isEmpty()){
+        if(isAuto.equals("1")){
+            if(priceEdit.getText().length()!=0 ){
+                if(priceEdit.getText().toString().equals("0")){
+                    priceEdit.setError("所輸入之搬家價格不得為0");
+                    check = true;
+                }
+                Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
+                if(Integer.parseInt(fee) < getValPrice(0)){
+                    priceEdit.setError("所輸入之搬家價格不得低於"+getValPrice(0));
+                    Log.d(TAG, "搬家價格過低");
+                    check = true;
+                }
+
+
+            }
+            if(priceEdit.getText().length()!=0 && originalStr.length()!=0){
+
+                if(Integer.valueOf(fee)>Integer.valueOf(originalStr) && memo.length() ==0){
+                    memoEdit.setError("請新增備註");
+                    check = true;
+                }
+            }else{
+                if(priceEdit.getText().length()!=0 && fee.length()!=0){
+                    if(Integer.valueOf(fee)>Integer.valueOf(originalStr) && memo.length() ==0){
+                        memoEdit.setError("請新增備註");
+                        check = true;
+                    }
+                }
+
+            }
+        }
+            if(getFromEdit.getString("suggestPrice")==null){
+                //setValPrice();
+                //valPriceText.setText("3600~8000");
+            /*if(Integer.valueOf(fee)>Integer.valueOf("8000") && memo.isEmpty()){
                 memoEdit.setError("請新增備註");
                 check = true;
-            }
-            if(valPriceText.getText().length()!=0){
+            }*/
+                if(valPriceText.getText().length()==0){
+                    priceEdit.setError("所輸入之搬家價格不得為空");
+                    check = true;
+                }
+            /*if(valPriceText.getText().length()!=0){
                 Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
                 if(Integer.parseInt(fee) < getValPrice(0)){
                     priceEdit.setError("所輸入之搬家價格不得低於"+getValPrice(0));
@@ -909,34 +979,13 @@ public class ValuationBooking_Detail extends AppCompatActivity {
                 }
 
             }else{
-                if(valPriceText.getText().length()==0){
-                    priceEdit.setError("所輸入之搬家價格不得為空");
-                    check = true;
-                }
-            }
-        }else{
-            if(Integer.valueOf(fee)>Integer.valueOf(suggestStr) && memo.isEmpty()){
-                memoEdit.setError("請新增備註");
-                check = true;
-            }
-            else{
-                if(valPriceText.getText().length()!=0){
-                    Log.d(TAG, "valPrice:"+getValPrice(0)+"~"+getValPrice(1));
-                    if(Integer.parseInt(fee) < getValPrice(0)){
-                        priceEdit.setError("所輸入之搬家價格不得低於"+getValPrice(0));
-                        Log.d(TAG, "搬家價格過低");
-                        check = true;
-                    }
 
-                }else{
-                    if(valPriceText.getText().length()==0){
-                        priceEdit.setError("所輸入之搬家價格不得為空");
-                        check = true;
-                    }
-                }
-
+            }*/
             }
-        }
+
+
+
+
 
         return check;
     }

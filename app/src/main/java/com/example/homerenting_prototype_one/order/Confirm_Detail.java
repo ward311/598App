@@ -243,7 +243,6 @@ public class Confirm_Detail extends AppCompatActivity {
 
     private void getFurniture(){
         String function_name = "furniture_web_room_detail";
-        String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("order_id", order_id)

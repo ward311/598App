@@ -71,7 +71,7 @@ public class Fragment_Valuation_Booking extends Fragment {
 
     OkHttpClient okHttpClient = new OkHttpClient();
 
-    String TAG = "Valuation_Booking";
+    String TAG = "Fragment_Valuation_Booking";
     Activity mContext;
     private final String PHP = "/user_data.php";
 
@@ -160,7 +160,9 @@ public class Fragment_Valuation_Booking extends Fragment {
                         else nameTitle = "先生";
                         String phone = member.getString("phone");
                         String contact_address = member.getString("contact_address");
-                        if(contact_address.equals("null")) contact_address = "";
+                        if(contact_address.equals("null"))  contact_address = member.getString("outcity")
+                                +member.getString("outdistrict")
+                                +member.getString("address1");
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
                         String plan = member.getString("plan");

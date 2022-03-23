@@ -121,7 +121,9 @@ public class Fragment_Valuation_Cancel extends Fragment {
                         else nameTitle = "先生";
                         String phone = member.getString("phone");
                         String contact_address = member.getString("contact_address");
-                        if(contact_address.equals("null")) contact_address = "";
+                        if(contact_address.equals("null")) contact_address = member.getString("outcity")
+                                +member.getString("outdistrict")
+                                +member.getString("address1");
                         String auto = member.getString("auto");
                         String newicon = member.getString("new");
                         plan = member.getString("plan");
