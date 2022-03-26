@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -116,7 +117,7 @@ public class Order_Detail extends AppCompatActivity {
         });
 
         goOrderDetail.setOnClickListener(v -> {
-            if(carText.getText().toString().equals("無填寫需求車輛")||staffText.getText().toString().equals("尚未安排人員")){
+            if(carText.getText().toString().equals("尚未安排車輛")||staffText.getText().toString().equals("尚未安排人員")){
                 new AlertDialog.Builder(context)
                         .setTitle("尚未派遣人車，是否前往派遣？")
                         .setPositiveButton("前往派遣", (dialog, which) -> {
@@ -172,6 +173,9 @@ public class Order_Detail extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.prepare();
+                    getOrder();
+                Looper.loop();
             }
 
             @Override
@@ -296,6 +300,9 @@ public class Order_Detail extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.prepare();
+                    getVehicleData();
+                Looper.loop();
             }
 
             @Override
@@ -318,6 +325,11 @@ public class Order_Detail extends AppCompatActivity {
                     runOnUiThread(() -> carText.setText(car));
 
                 } catch (JSONException e) {
+                    car = "尚未安排車輛";
+                    runOnUiThread(() -> {
+                        carText.setText(car);
+                        carText.setTextColor(Color.RED);
+                    });
                     e.printStackTrace();
                 }
                 getVehicleDemandData();
@@ -406,6 +418,9 @@ public class Order_Detail extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.prepare();
+                getStaffData();
+                Looper.loop();
             }
 
             @Override

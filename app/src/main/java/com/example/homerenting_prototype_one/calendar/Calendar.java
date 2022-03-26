@@ -124,13 +124,14 @@ public class Calendar extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(() -> new AsyncRetrieve().execute(), 3000);
         handler.postDelayed(() -> {
-            getAllMemberData();
+            //getAllMemberData();
             getChoose();
         }, 4500);
 
         //getAllOrdersData();
         //getAllMemberData();
         globalNav();
+
     }
 
     private void getChoose(){
@@ -496,6 +497,9 @@ public class Calendar extends AppCompatActivity {
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newBuilder().connectTimeout(5, TimeUnit.MINUTES)
+                .writeTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(5, TimeUnit.MINUTES);
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

@@ -616,7 +616,7 @@ public class System_Schedule extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData of getStaffVocation: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of getStaffVacation: "+responseData); //顯示資料
                 if(responseData.equals("null")) return;
 
                 try {
@@ -684,7 +684,7 @@ public class System_Schedule extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d(TAG,"responseData of getVehicleVocation: "+responseData); //顯示資料
+                Log.d(TAG,"responseData of getVehicleVacation: "+responseData); //顯示資料
                 if(responseData.equals("null")) return;
 
                 try {

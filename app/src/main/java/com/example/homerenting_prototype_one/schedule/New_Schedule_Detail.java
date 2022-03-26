@@ -73,6 +73,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
     String plan;
     String datetime = null;
     String endtime = "";
+    String movingDateWithoutTime = null;
 
     boolean lock;
     int overlap_counter_s = 0, overlap_counter_c = 0;
@@ -365,6 +366,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
         OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
+        okHttpClient.newBuilder().connectTimeout(3, TimeUnit.MINUTES)
+                .writeTimeout(3, TimeUnit.MINUTES)
+                .readTimeout(3, TimeUnit.MINUTES);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -372,8 +376,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
+                Looper.prepare();
                 Handler handler = new Handler();
                 handler.postDelayed(() -> getOrder(), 3000);
+                Looper.loop();
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -382,7 +388,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 final String responseData = response.body().string();
                 Log.d(TAG,"responseData of getOrder: "+responseData); //顯示資料
 
-                String movingDateWithoutTime = null;
+
 
                 try {
                     JSONArray responseArr = new JSONArray(responseData);
@@ -448,12 +454,11 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     if((++ii)%5000000 == 0) Log.d(TAG, (ii/50000000)+". waiting for lock in getOrder...");
                 }
                 Log.d(TAG, "getOrder: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-
+                getOverlapStaff(movingDateWithoutTime);
 
                 Looper.prepare();
                 Handler handler = new Handler();
                 Runnable runnable = () -> {
-                    //getOverlap(datetime, endtime);
                     getVehicleData();
                     getStaffData();
                     Log.d(TAG, "finish getting data.");
@@ -659,6 +664,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newBuilder().connectTimeout(3, TimeUnit.MINUTES)
+                .writeTimeout(3, TimeUnit.MINUTES)
+                .readTimeout(3, TimeUnit.MINUTES);
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -731,6 +739,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
 
         OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
+        okHttpClient.newBuilder().connectTimeout(3, TimeUnit.MINUTES)
+                .writeTimeout(3, TimeUnit.MINUTES)
+                .readTimeout(3, TimeUnit.MINUTES);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -785,22 +796,17 @@ public class New_Schedule_Detail extends AppCompatActivity {
             }
         });
     }
-    private void getOverlap(String date, String endtime){
-        if(date == null){
-            Log.d(TAG, "date is null in getOvelap");
-            return;
-        }
+    private void getOverlapStaff(String date){
 
         Log.d(TAG, "start getOverlap()");
 
-        String function_name = "overlap_order";
+        String function_name = "overlap_staff";
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
-                .add("datetime", date)
-                .add("endtime", endtime)
+                .add("date", date)
                 .build();
-        Log.d(TAG, "overlap_order. datetime: "+date+", endtime: "+endtime);
+        Log.d(TAG, "overlap_staff. datetime: "+date);
 
         Request request = new Request.Builder()
                 .url(BuildConfig.SERVER_URL+"/user_data.php")
@@ -829,18 +835,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 if(!responseData.equals("no data")){
                     try {
                         JSONArray responseArr = new JSONArray(responseData);
-
                         int i;
-                        for (i = 0; i < responseArr.length(); i++) {
-                            JSONObject vehicle_overlap = responseArr.getJSONObject(i);
-                            if(!vehicle_overlap.has("vehicle_id")) break;
-                            if(vehicle_overlap.getString("order_id").equals(order_id)) continue;
-                            Log.i(TAG, "vehicle_overlap:" + vehicle_overlap);
-                            if(vehicle_overlap.getString("vehicle_id").equals("null")) break;
-                            cars_lap.add(vehicle_overlap.getString("plate_num"));
-                            int[] row_data = {Integer.parseInt(vehicle_overlap.getString("order_id")), Integer.parseInt(vehicle_overlap.getString("vehicle_id"))};
-                            cars_l.add(row_data);
-                        }
 
                         for (i=0; i < responseArr.length(); i++) {
                             JSONObject staff_overlap = responseArr.getJSONObject(i);
@@ -869,8 +864,83 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 Handler handler = new Handler();
                 handler.postDelayed(() -> {
                     setChipCheck(staffGroup, staffs_lap, "overlap");
-                    setChipCheck(carGroup, cars_lap, "overlap");
+                    getOverlapVehicle(movingDateWithoutTime);
+                    //setChipCheck(carGroup, cars_lap, "overlap");
                 },2000);
+                Looper.loop();
+
+            }
+        });
+    }
+
+    private void getOverlapVehicle(String date){
+
+        Log.d(TAG, "start getOverlap()");
+
+        String function_name = "overlap_vehicle";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("company_id", getCompany_id(context))
+                .add("date", date)
+                .build();
+        Log.d(TAG, "overlap_vehicle. datetime: "+date);
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/user_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newBuilder().connectTimeout(10, TimeUnit.MINUTES)
+                .writeTimeout(10, TimeUnit.MINUTES)
+                .readTimeout(10, TimeUnit.MINUTES);
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Overlap連線錯誤", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG,"responseData of getOverlapV: "+responseData); //顯示資料
+
+                if(!responseData.equals("no data")){
+                    try {
+                        JSONArray responseArr = new JSONArray(responseData);
+                        int i;
+                        for (i = 0; i < responseArr.length(); i++) {
+                            JSONObject vehicle_overlap = responseArr.getJSONObject(i);
+                            if(!vehicle_overlap.has("vehicle_id")) break;
+                            if(vehicle_overlap.getString("order_id").equals(order_id)) continue;
+                            Log.i(TAG, "vehicle_overlap:" + vehicle_overlap);
+                            if(vehicle_overlap.getString("vehicle_id").equals("null")) break;
+                            cars_lap.add(vehicle_overlap.getString("plate_num"));
+                            int[] row_data = {Integer.parseInt(vehicle_overlap.getString("order_id")), Integer.parseInt(vehicle_overlap.getString("vehicle_id"))};
+                            cars_l.add(row_data);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        if(!responseData.equals("null") && !responseData.equals("function_name not found."))
+                            runOnUiThread(() -> Toast.makeText(context, "Toast onResponse failed because JSON in getOverlap", Toast.LENGTH_LONG).show());
+                    }
+                }
+
+                int ii = 0;
+                /*while (lock){
+                    if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getOverlap...");
+                }*/
+                Log.d(TAG, "getOverlap: carGroup:"+carGroup.getChildCount());
+                Looper.prepare();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
+                    //setChipCheck(staffGroup, staffs_lap, "overlap");
+                    setChipCheck(carGroup, cars_lap, "overlap");
+                },500);
                 Looper.loop();
 
             }
@@ -887,12 +957,12 @@ public class New_Schedule_Detail extends AppCompatActivity {
                         setChipBackGround(chip);
                         String message = null;
                         if(type.equals("vacation")) {
-                            message = chip.getText().toString()+"當日不能出動，請問依舊要選擇？";
+                            message = chip.getText().toString()+"當日不能出動，是否依舊要選擇？";
                             if(chipGroup == staffGroup) setVacationChipCheckedListener(chip, staffs, staffs_text, message);
                             else setVacationChipCheckedListener(chip, cars, cars_text, message);
                         }
                         if(type.equals("overlap")) {
-                            message = chip.getText().toString()+"已被其他訂單選用，請問依舊要選擇？";
+                            message = chip.getText().toString()+"當日已被其他訂單選用，是否依舊要選擇？";
                             if(chipGroup == staffGroup) {
                                 chip.setTag(overlap_counter_s);
                                 overlap_counter_s++;
