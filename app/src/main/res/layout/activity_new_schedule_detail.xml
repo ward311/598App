@@ -172,7 +172,7 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="#19B0ED"
                 android:paddingBottom="10dp">
 
@@ -185,7 +185,7 @@
                     android:paddingRight="8dp"
                     android:text="需求車輛"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"  />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/demandCar_SD"

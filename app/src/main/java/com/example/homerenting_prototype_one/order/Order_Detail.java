@@ -383,7 +383,7 @@ public class Order_Detail extends AppCompatActivity {
 
                         demandCar = demandCar+vehicle_demand.getString("vehicle_weight")
                                 +vehicle_demand.getString("vehicle_type")
-                                +vehicle_demand.getString("num")+"輛";
+                                +vehicle_demand.getString("num")+"輛 ";
                     }
                     Log.d(TAG, "demandCar: "+demandCar);
                     car = demandCar;

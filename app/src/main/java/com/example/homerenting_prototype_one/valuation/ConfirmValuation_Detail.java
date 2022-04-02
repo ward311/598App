@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,7 +57,7 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
     TextView valRangeText, newValPriceText;
     TextView program_type;
     TextView current_discount;
-    TextView carsText;
+    EditText carsText;
     Button check;
     EditText memoEdit;
     ListView list;
@@ -64,6 +65,7 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
     String floor;
     String room_name;
     String email, plan, isAuto;
+    String demandCar;
     ArrayList<String[]> data = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +91,17 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
         newValPriceText = findViewById(R.id.newValPrice_VBD);
         check = findViewById(R.id.conVal_check_evaluation_btn);
         list = findViewById(R.id.conVal_location);
+        carsText = findViewById(R.id.conVal_carDemand);
+        carsText.setSingleLine(false);
+
+
         ImageView back_btn = findViewById(R.id.conVal_back_imgBtn_VBD);
         setBundle();
 
         back_btn.setOnClickListener(v -> this.finish());
 
         getFurniture();
+        new Handler().postDelayed(() -> getVehicleDemandData(),500);
 
         check.setOnClickListener(v -> {
             updateValuation(bundle.getString("moving_date"), bundle.getString("estimate_worktime"), bundle.getString("fee"));
@@ -120,7 +127,9 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
         movingDateText.setText(bundle.getString("moving_date"));
         estimateTimeText.setText(bundle.getString("estimate_worktime"));
         valPriceText.setText(bundle.getString("valPrice"));
+        if(valPriceText.getText().equals("現場估價")) valPriceText.setTextColor(Color.RED);
         valRangeText.setText(bundle.getString("valRange"));
+        if(valRangeText.getText().equals("無價格區間")) valRangeText.setTextColor(Color.RED);
         newValPriceText.setText(bundle.getString("newPrice"));
         if(newValPriceText.getText().length()!=0){
            valPriceText.setPaintFlags(valPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -274,6 +283,65 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
                     }, 1000);
                 })
                 .show();
+    }
+
+    private void getVehicleDemandData(){
+        String company_id = getCompany_id(this);
+        RequestBody body = new FormBody.Builder()
+                .add("order_id", order_id)
+                .add("company_id",company_id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/get_data/vehicle_demand_data.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
+                //在app畫面上呈現錯誤訊息
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+                Handler handler = new Handler();
+                Looper.prepare();
+                handler.postDelayed(() -> getVehicleDemandData(), 3000);
+                Looper.loop();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d(TAG, "responseData of vehicle_demand_data: " + responseData); //顯示資料
+
+
+                demandCar = "無填寫需求車輛";
+                try {
+                    JSONArray responseArr = new JSONArray(responseData);
+
+                    int i;
+                    demandCar = "";
+                    for (i = 0; i < responseArr.length(); i++) {
+                        JSONObject vehicle_demand = responseArr.getJSONObject(i);
+                        if(!vehicle_demand.has("num")) break;
+                        Log.i(TAG, "vehicle_demand:" + vehicle_demand);
+                        if(i != 0) demandCar = demandCar + "\n";
+                        demandCar = demandCar+vehicle_demand.getString("vehicle_weight")
+                                +vehicle_demand.getString("vehicle_type")
+                                +vehicle_demand.getString("num")+"輛";
+                    }
+                    Log.d(TAG, "demandCar: "+demandCar);
+
+                } catch (JSONException e) {
+                    if(!responseData.equals("null")) e.printStackTrace();
+                }
+
+                runOnUiThread(() -> carsText.setText(demandCar));
+            }
+        });
     }
 
     private void getFurniture(){
