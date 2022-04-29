@@ -480,7 +480,7 @@ public class Setting_Service extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d(TAG,"responseData of deleteItem: "+responseData); //顯示資料
-//                runOnUiThread(() -> Toast.makeText(context, "response!", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(context, "修改服務項目成功", Toast.LENGTH_SHORT).show());
             }
         });
     }
