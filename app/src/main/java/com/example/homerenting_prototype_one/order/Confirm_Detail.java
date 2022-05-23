@@ -113,7 +113,7 @@ public class Confirm_Detail extends AppCompatActivity {
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
                         bundle.putString("deposit", deposit);
-                        //update_today_order();
+                        update_today_order();
                         checkTotalPrice();
                     })
                     .setNegativeButton("否", (dialog1, which1) -> {
@@ -125,7 +125,7 @@ public class Confirm_Detail extends AppCompatActivity {
                         bundle.putString("fee", moving_fee);
                         bundle.putString("memo", memo);
                         bundle.putString("deposit", deposit);
-                        //update_today_order();
+                        update_today_order();
                         checkTotalPrice();
                     })
                     .create()

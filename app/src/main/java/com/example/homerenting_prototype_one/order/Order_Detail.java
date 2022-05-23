@@ -228,6 +228,8 @@ public class Order_Detail extends AppCompatActivity {
                     if(worktime.equals("null")) worktime = "未預計工時";
                     fee = order.getString("estimate_fee");
                     if(fee.isEmpty() || fee.equals("null")) fee = order.getString("estimate_fee");
+                    String order_status = order.getString("order_status");
+                    if(order_status.equals("done"))fee = order.getString("accurate_fee");
                     fee = fee+" 元";
                     //additional_fee = order.getString("additional_price");
                     //if(additional_fee.equals("null")) additional_fee = "0 元";
