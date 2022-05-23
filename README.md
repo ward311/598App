@@ -1,6 +1,6 @@
 ## 598App
 
-##The app contains 4 main sections: 
+## The app contains 4 main sections: 
 * Evaluations(including booking detail, and etc)
 * Orders(including orders detail, today order, and etc)
 * Systems(including staffs and vehicles, off-duty calendar, bonus distribution, and etc)
