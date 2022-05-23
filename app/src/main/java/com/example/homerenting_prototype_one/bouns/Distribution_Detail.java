@@ -344,6 +344,9 @@ public class Distribution_Detail extends AppCompatActivity {
             csalaryPEdit.setText(salaryPStr);  //同步Edit版版分比
             String salaryStr = csalaryEdit.getText().toString(); //取得數值
             if(salaryStr.isEmpty()) salaryStr = "0";
+            if(Integer.parseInt(salaryStr) > Integer.parseInt(feeText.getText().toString())){
+                salaryStr = feeText.getText().toString();
+            }
             csalaryText.setText(salaryStr); //同步文字版數值
 
             //改為修改百分比模式
@@ -491,6 +494,7 @@ public class Distribution_Detail extends AppCompatActivity {
             if (salaryPEdit.getVisibility() == View.VISIBLE) {
                 String salaryStr = salaryEdit.getText().toString();
                 if(salaryStr.isEmpty()) salary = 0;
+
                 else salary = Integer.parseInt(salaryStr);
                 String salaryPStr = "0";
                 if (salary != -1 && salary != 0) {
@@ -548,6 +552,7 @@ public class Distribution_Detail extends AppCompatActivity {
                     salary = Math.round(ds*salaryP/100);
                     if(salary == 0) salary = -1; //如果salary是0，就回復原狀
                     else salaryStr = String.valueOf(salary); //否則取得salary的值(string)
+
                 }
                 salaryText.setText(salaryStr); //顯示根據百分比連動的數值
                 salaries.set(position, salary); //修改arraylist中的員工金額
@@ -574,7 +579,10 @@ public class Distribution_Detail extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(salaryEdit.getText().toString().isEmpty()) salaryEdit.setText("0");
+                if(Integer.parseInt(salaryEdit.getText().toString())>Integer.parseInt(dsalaryText.getText().toString())) salaryEdit.setText(dsalaryText.getText().toString());
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
