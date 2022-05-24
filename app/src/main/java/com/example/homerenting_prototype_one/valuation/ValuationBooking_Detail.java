@@ -770,7 +770,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             if(!check) return;
 
             //updateValuation(moving_date, estimate_worktime, fee);
-            updateCarDemand();
+            //updateCarDemand();
             updateSugCars();
             //finishValuation();
             bundle.putString("name", name);
@@ -797,6 +797,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
             bundle.putString("email", email);
             bundle.putString("plan", plan);
             bundle.putString("isAuto", isAuto);
+            bundle.putString("carDemand", carsToString());
             if(newValPriceText.getText().length()!=0) bundle.putString("newPrice", newValPriceText.getText().toString());
 
             Intent intent = new Intent(context, ConfirmValuation_Detail.class);
@@ -1151,6 +1152,7 @@ public class ValuationBooking_Detail extends AppCompatActivity {
         str = str + "]";
         return str;
     }
+
 
     private void updateValuation(String moving_date, String estimate_worktime, String fee){
         String function_name = "update_bookingValuation";

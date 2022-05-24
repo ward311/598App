@@ -101,10 +101,11 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
         back_btn.setOnClickListener(v -> this.finish());
 
         getFurniture();
-        new Handler().postDelayed(() -> getVehicleDemandData(),500);
+        //new Handler().postDelayed(() -> getVehicleDemandData(),500);
 
         check.setOnClickListener(v -> {
             updateValuation(bundle.getString("moving_date"), bundle.getString("estimate_worktime"), bundle.getString("fee"));
+            updateCarDemand();
             finishValuation();
         });
 
@@ -115,6 +116,7 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
         plan = bundle.getString("plan");
         email = bundle.getString("email");
         isAuto = bundle.getString("isAuto");
+        demandCar = bundle.getString("carDemand");
         nameText.setText(bundle.getString("name"));
         nameTitleText.setText(bundle.getString("gender"));
         program_type.setText(bundle.getString("program"));
@@ -137,6 +139,7 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
         feeText.setText(bundle.getString("fee"));
         current_discount.setText(bundle.getString("discount"));
         memoEdit.setText(bundle.getString("memo"));
+        carsText.setText(demandCar);
 
     }
     private void updateValuation(String moving_date, String estimate_worktime, String fee){
@@ -284,8 +287,40 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
                 })
                 .show();
     }
+    private void updateCarDemand(){
+        String function_name = "add_vehicleDemands";
+        RequestBody body = new FormBody.Builder()
+                .add("function_name", function_name)
+                .add("order_id", order_id)
+                .add("company_id", getCompany_id(context))
+                .add("vehicleItems", demandCar)
+                .build();
+        Log.i(TAG, "carDamand. order_id: "+order_id+", 'vehicleItems: "+demandCar);
 
-    private void getVehicleDemandData(){
+        Request request = new Request.Builder()
+                .url(BuildConfig.SERVER_URL+"/functional.php")
+                .post(body)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "submit update_carDemand responseData: " + responseData);
+            }
+        });
+    }
+
+
+    /*private void getVehicleDemandData(){
         String company_id = getCompany_id(this);
         RequestBody body = new FormBody.Builder()
                 .add("order_id", order_id)
@@ -342,7 +377,7 @@ public class ConfirmValuation_Detail extends AppCompatActivity {
                 runOnUiThread(() -> carsText.setText(demandCar));
             }
         });
-    }
+    }*/
 
     private void getFurniture(){
         String function_name = "furniture_web_room_detail";

@@ -1,5 +1,6 @@
 package com.example.homerenting_prototype_one.schedule;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -74,7 +75,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
     String datetime = null;
     String endtime = "";
     String movingDateWithoutTime = null;
-
+    ProgressDialog dialog;
     boolean lock;
     int overlap_counter_s = 0, overlap_counter_c = 0;
 
@@ -89,7 +90,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_schedule_detail);
-
+         dialog = new ProgressDialog(context);
         lock = false;
         initArray();
 
@@ -100,8 +101,10 @@ public class New_Schedule_Detail extends AppCompatActivity {
         linking(); //將xml裡的元件連至此java
 
         Handler handler = new Handler();
-        handler.postDelayed(this::getStaffChip, 500);
-
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setTitle("確認員工車輛出勤狀況");
+        handler.postDelayed(this::getStaffChip, 1000);
+        dialog.show();
         //getOrder();
         new MyAsyncTask().execute();
 
@@ -614,7 +617,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 //在app畫面上呈現錯誤訊息
                 runOnUiThread(() -> Toast.makeText(context, "連線失敗", Toast.LENGTH_LONG).show());
                 Handler handler = new Handler();
+                Looper.prepare();
                 handler.postDelayed(() -> getStaffData(), 3000);
+                Looper.loop();
             }
 
             @Override
@@ -866,6 +871,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 Looper.prepare();
                 Handler handler = new Handler();
                 handler.postDelayed(() -> {
+
                     setChipCheck(staffGroup, staffs_lap, "overlap");
                     getOverlapVehicle(movingDateWithoutTime);
                     //setChipCheck(carGroup, cars_lap, "overlap");
@@ -943,7 +949,7 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 handler.postDelayed(() -> {
                     //setChipCheck(staffGroup, staffs_lap, "overlap");
                     setChipCheck(carGroup, cars_lap, "overlap");
-                },500);
+                },1500);
                 Looper.loop();
 
             }
@@ -951,38 +957,43 @@ public class New_Schedule_Detail extends AppCompatActivity {
     }
 
     private void setChipCheck(final ChipGroup chipGroup, final ArrayList<String> items_text, final String type){
-        for(int i = 0; i < chipGroup.getChildCount(); i++){
-            final Chip chip = (Chip) chipGroup.getChildAt(i);
-            runOnUiThread(() -> {
-                if(items_text.contains(chip.getText().toString())){
-                    if(type.equals("assign")) clearChipBackGround(chip);
-                    else if(type.equals("vacation") || type.equals("overlap")){
-                        setChipBackGround(chip);
-                        String message = null;
-                        if(type.equals("vacation")) {
-                            message = chip.getText().toString()+"當日不能出動，是否依舊要選擇？";
-                            if(chipGroup == staffGroup) setVacationChipCheckedListener(chip, staffs, staffs_text, message);
-                            else setVacationChipCheckedListener(chip, cars, cars_text, message);
-                        }
-                        if(type.equals("overlap")) {
-                            message = chip.getText().toString()+"當日已被其他訂單選用，是否依舊要選擇？";
-                            if(chipGroup == staffGroup) {
-                                chip.setTag(overlap_counter_s);
-                                overlap_counter_s++;
-                                setOverlapChipCheckedListener(chip, staffs_l, new_staffs_l, new_staffs_lap, message);
+        runOnUiThread(() -> {
+            for(int i = 0; i < chipGroup.getChildCount(); i++){
+                final Chip chip = (Chip) chipGroup.getChildAt(i);
+                runOnUiThread(() -> {
+                    if(items_text.contains(chip.getText().toString())){
+                        if(type.equals("assign")) clearChipBackGround(chip);
+                        else if(type.equals("vacation") || type.equals("overlap")){
+                            setChipBackGround(chip);
+                            String message = null;
+                            if(type.equals("vacation")) {
+                                message = chip.getText().toString()+"當日不能出動，是否依舊要選擇？";
+                                if(chipGroup == staffGroup) setVacationChipCheckedListener(chip, staffs, staffs_text, message);
+                                else setVacationChipCheckedListener(chip, cars, cars_text, message);
                             }
-                            else {
-                                chip.setTag(overlap_counter_c);
-                                overlap_counter_c++;
-                                setOverlapChipCheckedListener(chip, cars_l, new_cars_l, new_cars_lap, message);
+                            if(type.equals("overlap")) {
+                                message = chip.getText().toString()+"當日已被其他訂單選用，是否依舊要選擇？";
+                                if(chipGroup == staffGroup) {
+                                    chip.setTag(overlap_counter_s);
+                                    overlap_counter_s++;
+                                    setOverlapChipCheckedListener(chip, staffs_l, new_staffs_l, new_staffs_lap, message);
+                                }
+                                else {
+                                    chip.setTag(overlap_counter_c);
+                                    overlap_counter_c++;
+                                    setOverlapChipCheckedListener(chip, cars_l, new_cars_l, new_cars_lap, message);
+                                }
                             }
                         }
+                        chip.setChecked(true); //把本單有的員工列為已點擊
+                        Log.d(TAG, chip.getText().toString()+"("+type+") check");
+                        new Handler().postDelayed((Runnable) () -> dialog.dismiss(),1500);
+
                     }
-                    chip.setChecked(true); //把本單有的員工列為已點擊
-                    Log.d(TAG, chip.getText().toString()+"("+type+") check");
-                }
-            });
-        }
+                });
+            }
+        });
+
     }
 
     private void setVacationChipCheckedListener(final Chip chip, final ArrayList<Integer> items, final ArrayList<String> items_text, final String message){
