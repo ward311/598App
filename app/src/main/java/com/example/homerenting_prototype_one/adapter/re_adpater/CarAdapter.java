@@ -103,7 +103,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             holder.num.setError(null);
             cars.remove(holder.getAdapterPosition());
 //                notifyItemInserted(cars.size()-1);
-            notifyDataSetChanged();
+            //notifyDataSetChanged();
 
             for(int i = holder.getAdapterPosition(); i < getItemCount(); i++){
                 setCarStr(holder.weight, i, 0);

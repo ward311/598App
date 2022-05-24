@@ -549,11 +549,14 @@ public class New_Schedule_Detail extends AppCompatActivity {
                 e.printStackTrace();
                 Log.d("Fail", "Failed: " + e.getMessage()); //顯示錯誤訊息
                 //在app畫面上呈現錯誤訊息
-                runOnUiThread(() -> Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show());
-                Handler handler = new Handler();
-                Looper.prepare();
-                handler.postDelayed(() -> getVehicleDemandData(), 3000);
-                Looper.loop();
+                runOnUiThread(() -> {
+                    Handler handler = new Handler();
+                    Looper.prepare();
+                    Toast.makeText(context, "Toast onFailure.", Toast.LENGTH_LONG).show();
+                    handler.postDelayed(() -> getVehicleDemandData(), 3000);
+                    Looper.loop();
+                });
+
             }
 
             @Override
