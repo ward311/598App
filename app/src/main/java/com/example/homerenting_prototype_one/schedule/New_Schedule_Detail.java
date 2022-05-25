@@ -992,6 +992,9 @@ public class New_Schedule_Detail extends AppCompatActivity {
                     }
                 });
             }
+            if(dialog.isShowing()){
+                dialog.dismiss();
+            }
         });
 
     }
