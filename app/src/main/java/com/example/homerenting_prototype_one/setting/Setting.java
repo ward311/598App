@@ -98,9 +98,9 @@ public class Setting extends AppCompatActivity {
             system_announcement.setEnabled(false);
             system_announcement.setBackgroundColor(Color.parseColor("#f2f2f2"));
             system_announcement.setAlpha(.3F);
-            history_record.setEnabled(false);
-            history_record.setBackgroundColor(Color.parseColor("#f2f2f2"));
-            history_record.setAlpha(.3F);
+            //history_record.setEnabled(false);
+           //history_record.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            //history_record.setAlpha(.3F);
             add_account.setEnabled(false);
             add_account.setBackgroundColor(Color.parseColor("#f2f2f2"));
             add_account.setAlpha(.3F);
