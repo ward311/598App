@@ -774,8 +774,8 @@ public class Edit_Furniture extends AppCompatActivity {
                 Log.d(TAG, "responseData of calculate_furniture: " + responseData);
                 try {
                     JSONObject jsonObject = new JSONObject(responseData);
-                    JSONObject data = jsonObject.getJSONObject("Data");
-                    String data_status = jsonObject.getString("Status");
+                    JSONObject data = jsonObject.getJSONObject("data");
+                    String data_status = jsonObject.getString("status");
                     if(!data_status.equals("200")){
                         runOnUiThread(()->{
                             Intent intent = new Intent();
@@ -786,8 +786,8 @@ public class Edit_Furniture extends AppCompatActivity {
                             startActivity(intent);
                         });
                     }else{
-                        suggestCar = data.getString("SugCars");
-                        totalPrice = data.getString("TotalPrice");
+                        suggestCar = data.getString("sugCars");
+                        totalPrice = data.getString("totalPrice");
                         Log.d(TAG, "api sugcars: "+suggestCar+", Price: "+totalPrice);
                         runOnUiThread(()->{
                             fromBooking.putString("suggestCars", suggestCar);
