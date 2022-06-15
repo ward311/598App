@@ -171,11 +171,11 @@ public class Bonus_List extends AppCompatActivity {
                 //顯示資料
                 if(!responseData.equals("null")) {
                     int totalmonth = 0;
-                    Log.i(TAG, "data: ");
+                    //Log.i(TAG, "data: ");
                     for (int i = 0; i < data.size(); i++) {
-                        Log.i(TAG, "(" + data.get(i).get(0) + ")");
+                        //Log.i(TAG, "(" + data.get(i).get(0) + ")");
                         for (int ii = 1; ii < data.get(i).size(); ii++) {
-                            Log.i(TAG, data.get(i).get(ii) + " ");
+                            //Log.i(TAG, data.get(i).get(ii) + " ");
                             totalmonth = totalmonth+1;
                         }
                     }

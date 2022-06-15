@@ -154,7 +154,7 @@ public class Fragment_Order extends Fragment {
                     Log.d(TAG, "getAllFurnitureData: " + e.getMessage());
                     return;
                 }
-                int success_counter = 0, fail_counter = 0;
+                /*int success_counter = 0, fail_counter = 0;
                 for (int i = 0; i < responseArr.length(); i++) {
                     JSONObject furniture;
                     try {
@@ -195,7 +195,7 @@ public class Fragment_Order extends Fragment {
                             Log.d(TAG, "insert furniture data: " + e.getMessage());
                         }
                     }
-                }
+                }*/
                 if (!responseData.equals("null")) {
                     for (int i = 0; i < furniture_data.size(); i++)
                         Log.i(TAG, "furniture data: " + Arrays.toString(furniture_data.get(i)));

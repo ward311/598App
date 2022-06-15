@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -78,8 +79,8 @@ public class Setting extends AppCompatActivity {
         LinearLayout add_account = findViewById(R.id.btn_add_acct);
         companyImage = findViewById(R.id.companyImage);
         dbHelper = new DatabaseHelper(this);
-        TableContract.ServiceClassTable.getServiceClass(dbHelper);
-        TableContract.ServiceItemTable.getServiceItem(dbHelper, context);
+        //TableContract.ServiceClassTable.getServiceClass(dbHelper);
+        //TableContract.ServiceItemTable.getServiceItem(dbHelper, context);
 
         if(sp.getString("title", null).contains("staff")){
             company_information.setEnabled(false);
@@ -233,6 +234,9 @@ public class Setting extends AppCompatActivity {
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newBuilder().connectTimeout(5, TimeUnit.MINUTES)
+                .writeTimeout(5,TimeUnit.MINUTES)
+                .readTimeout(5,TimeUnit.MINUTES);
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

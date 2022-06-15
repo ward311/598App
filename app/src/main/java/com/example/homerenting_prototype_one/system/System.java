@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -163,7 +164,7 @@ public class System extends AppCompatActivity {
 
     private void getAllStaffData(){
         String function_name = "all_staff_data";
-        Log.d(TAG, "start getAllStaffData and write in sqlite db");
+        //Log.d(TAG, "start getAllStaffData and write in sqlite db");
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
@@ -175,6 +176,9 @@ public class System extends AppCompatActivity {
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newBuilder().connectTimeout(3, TimeUnit.MINUTES)
+                .writeTimeout(3,TimeUnit.MINUTES)
+                .readTimeout(3,TimeUnit.MINUTES);
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -197,7 +201,7 @@ public class System extends AppCompatActivity {
                     return;
                 }
 
-                int success_counter = 0, fail_counter = 0;
+                /*int success_counter = 0, fail_counter = 0;
                 for (int i = 0; i < responseArr.length(); i++) {
                     JSONObject staff;
                     try {
@@ -241,15 +245,15 @@ public class System extends AppCompatActivity {
                             Log.d(TAG, "insert staff data: "+e.getMessage());
                         }
                     }
-                }
-                Log.d(TAG, "staff data:\n success data: "+success_counter+", fail data: "+fail_counter);
+                }*/
+                //Log.d(TAG, "staff data:\n success data: "+success_counter+", fail data: "+fail_counter);
             }
         });
     }
 
     private void getAllVehicleData(){
         String function_name = "all_vehicle_data";
-        Log.d(TAG, "start getAllVehicleData and write in sqlite db");
+        //Log.d(TAG, "start getAllVehicleData and write in sqlite db");
         RequestBody body = new FormBody.Builder()
                 .add("function_name", function_name)
                 .add("company_id", getCompany_id(context))
@@ -261,6 +265,9 @@ public class System extends AppCompatActivity {
                 .build();
 
         OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newBuilder().connectTimeout(3,TimeUnit.MINUTES)
+                .writeTimeout(3,TimeUnit.MINUTES)
+                .readTimeout(3,TimeUnit.MINUTES);
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

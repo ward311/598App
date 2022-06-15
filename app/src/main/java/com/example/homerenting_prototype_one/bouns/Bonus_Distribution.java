@@ -151,7 +151,7 @@ public class Bonus_Distribution extends AppCompatActivity {
                     //Log.i(TAG,"responseObj: "+ responseArr);
 
                     //一筆一筆的取JSONArray中的json資料
-                    for (int i = 0; i < responseArr.length(); i++) {
+                    for (int i = 0; i < responseArr.length()/2; i++) {// dunno why the data duplicates by double...
                         JSONObject member = responseArr.getJSONObject(i);
                         Log.i(TAG,"member: "+member);
 

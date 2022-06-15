@@ -245,7 +245,7 @@ public class Setting_Information extends AppCompatActivity {
 
                     runOnUiThread(() -> setTexts());
 
-                    Log.d(TAG, "start create database");
+                    //Log.d(TAG, "start create database");
                     //db = dbHelper.getWritableDatabase();
                     //ContentValues values = new ContentValues();
                     //values.put(TableContract.CompanyTable.COLUMN_NAME_COMPANY_ID, getCompany_id(context));
