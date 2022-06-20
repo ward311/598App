@@ -497,10 +497,10 @@
 
                 <Button
                     android:id="@+id/add_valuation_btn_AV"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/roundedbutton"
-                    android:text="完成新增到府估價單"
+                    android:background="@drawable/addvaluation_btn_drawable"
+                    android:text="新增到府估價單"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
         </LinearLayout>

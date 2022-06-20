@@ -131,9 +131,11 @@ public class RecordAdapter extends BaseAdapter {
             case "assigned":
                 return "已排班訂單";
             case "done":
-                return "完成";
+                return "搬家完成";
             case "paid":
                 return "已付款";
+            case "finished":
+                return "完成評價";
             default:
                 return status;
         }

@@ -27,6 +27,7 @@
         <LinearLayout
             android:layout_width="100dp"
             android:layout_height="0dp"
+            android:layout_gravity="right"
             android:layout_marginLeft="290dp"
             android:layout_weight="1"
             android:gravity="center|center_horizontal"
@@ -37,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/orderlist_btn_drawable"
+                android:background="@drawable/system_schedule_btn_drawable"
                 android:text="新增估價單"
                 android:textSize="16sp" />
         </LinearLayout>

@@ -506,10 +506,10 @@
 
                 <Button
                     android:id="@+id/addOrder_btn_AO"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundedbutton"
-                    android:text="完成新增搬家訂單"
+                    android:text="新增搬家訂單"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
         </LinearLayout>
