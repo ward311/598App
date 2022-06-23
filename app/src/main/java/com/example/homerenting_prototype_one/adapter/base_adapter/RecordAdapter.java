@@ -104,8 +104,18 @@ public class RecordAdapter extends BaseAdapter {
                     break;
                 case "訂單":
                 case "已排班訂單":
-                case "完成":
+                case "搬家完成":
+                    intent.setClass(context, Order_Detail.class);
+                    bundle.putBoolean("fromRecord", true);
+                    break;
                 case "已付款":
+                    intent.setClass(context, Order_Detail.class);
+                    bundle.putBoolean("fromRecord", true);
+                    break;
+                case "完成評價":
+                    intent.setClass(context, Order_Detail.class);
+                    bundle.putBoolean("fromRecord", true);
+                    break;
                 case "已取消(訂)":
                 default:
                     intent.setClass(context, Order_Detail.class);

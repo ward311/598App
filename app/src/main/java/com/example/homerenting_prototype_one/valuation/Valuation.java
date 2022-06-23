@@ -208,24 +208,28 @@ public class Valuation extends AppCompatActivity {
             order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(order_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+            finish();
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Valuation.this, Calendar.class);
             calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(calender_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+            finish();
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Valuation.this, System.class);
             system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(system_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+            finish();
         });
         setting_btn.setOnClickListener(v -> {
             Intent setting_intent = new Intent(Valuation.this, Setting.class);
             setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(setting_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+            finish();
         });
     }
 

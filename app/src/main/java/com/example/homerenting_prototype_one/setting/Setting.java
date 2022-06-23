@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -78,7 +79,7 @@ public class Setting extends AppCompatActivity {
         LinearLayout history_record = findViewById(R.id.btn_logout);
         LinearLayout add_account = findViewById(R.id.btn_add_acct);
         companyImage = findViewById(R.id.companyImage);
-        dbHelper = new DatabaseHelper(this);
+        //dbHelper = new DatabaseHelper(this);
         //TableContract.ServiceClassTable.getServiceClass(dbHelper);
         //TableContract.ServiceItemTable.getServiceItem(dbHelper, context);
 
@@ -127,7 +128,7 @@ public class Setting extends AppCompatActivity {
         sign_out = findViewById(R.id.signout_btn);
 
         getCompanyDetail();
-        new Handler().postDelayed(() -> new ImageLoadTask(imageUrl, companyImage).execute(), 500);
+        new Handler().postDelayed(() -> new ImageLoadTask(imageUrl, companyImage).execute(), 1000);
 
         company_information.setOnClickListener(v -> {
             Intent information_intent = new Intent(Setting.this, Setting_Information.class);
@@ -203,6 +204,8 @@ public class Setting extends AppCompatActivity {
                 connection.connect();
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                myBitmap.compress(Bitmap.CompressFormat.JPEG,50/100, byteArrayOutputStream);
                 return myBitmap;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -350,24 +353,28 @@ public class Setting extends AppCompatActivity {
             valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(valuation_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+            finish();
         });
         order_btn.setOnClickListener(v -> {
             Intent order_intent = new Intent(Setting.this, Order.class);
             order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(order_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+            finish();
         });
         calendar_btn.setOnClickListener(v -> {
             Intent calender_intent = new Intent(Setting.this, Calendar.class);
             calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(calender_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+            finish();
         });
         system_btn.setOnClickListener(v -> {
             Intent system_intent = new Intent(Setting.this, System.class);
             system_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(system_intent);
             overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+            finish();
         });
         /*setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override

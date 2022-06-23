@@ -72,7 +72,7 @@ public class Order_Detail extends AppCompatActivity {
     Button call_btn, furniture_btn, check_btn, goOrderDetail;
 
     Bundle bundle;
-
+    Boolean fromRecord = false;
 
     Context context = Order_Detail.this;
     String TAG = "Order_Detail";
@@ -87,6 +87,7 @@ public class Order_Detail extends AppCompatActivity {
         bundle = getIntent().getExtras();
         order_id = bundle.getString("order_id");
         plan = bundle.getString("plan");
+        fromRecord = bundle.getBoolean("fromRecord");
         if(bundle.getBoolean("btn")){
             call_btn.setVisibility(View.GONE);
             check_btn.setVisibility(View.GONE);
@@ -226,8 +227,11 @@ public class Order_Detail extends AppCompatActivity {
                     remainder = order.getString("additional");
                     worktime = order.getString("estimate_worktime")+"小時";
                     if(worktime.equals("null")) worktime = "未預計工時";
-                    fee = order.getString("estimate_fee");
-                    if(fee.isEmpty() || fee.equals("null")) fee = order.getString("estimate_fee");
+                    if(fromRecord) fee = order.getString("accurate_fee");
+                    else{
+                        fee = order.getString("estimate_fee");
+                        if(fee.isEmpty() || fee.equals("null")) fee = order.getString("estimate_fee");
+                    }
                     String order_status = order.getString("order_status");
                     if(order_status.equals("done")) fee = order.getString("accurate_fee");
                     fee = fee+" 元";

@@ -69,7 +69,7 @@ public class System extends AppCompatActivity {
         ImageButton setting_btn = findViewById(R.id.setting_imgBtn);
 
 
-        dbHelper = new DatabaseHelper(this);
+        //dbHelper = new DatabaseHelper(this);
         getAllStaffData();
         getAllVehicleData();
         if(sp.getString("title", null).contains("staff")){
@@ -118,6 +118,7 @@ public class System extends AppCompatActivity {
                 valuation_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(valuation_intent);
                 overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+                finish();
             }
         });
         order_btn.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +128,7 @@ public class System extends AppCompatActivity {
                 order_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(order_intent);
                 overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+                finish();
             }
         });
         calendar_btn.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +138,7 @@ public class System extends AppCompatActivity {
                 calender_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(calender_intent);
                 overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+                finish();
             }
         });
 //        system_btn.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +155,7 @@ public class System extends AppCompatActivity {
                 setting_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(setting_intent);
                 overridePendingTransition(R.anim.up_from_bottom, R.anim.fade_in);
+                finish();
             }
         });
 
