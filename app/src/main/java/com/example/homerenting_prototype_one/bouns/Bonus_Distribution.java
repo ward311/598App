@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -128,6 +129,9 @@ public class Bonus_Distribution extends AppCompatActivity {
         //http://54.166.177.4/user_data.php
 
         //連線
+        okHttpClient.newBuilder().connectTimeout(3, TimeUnit.MINUTES)
+                .writeTimeout(3,TimeUnit.MINUTES)
+                .readTimeout(3,TimeUnit.MINUTES);
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             //連線失敗
