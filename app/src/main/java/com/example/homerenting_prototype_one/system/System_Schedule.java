@@ -1,5 +1,7 @@
 package com.example.homerenting_prototype_one.system;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -86,7 +88,7 @@ public class System_Schedule extends AppCompatActivity {
     com.applandeo.materialcalendarview.CalendarView mCalendar;
     RecyclerView orderList;
     ChipGroup staffGroup,  carGroup;
-
+    ProgressDialog dialog;
     ArrayList<String[]> data = new ArrayList<>();
     ArrayList<String> staffs_text, cars_text;
     ArrayList<Integer> staffs, cars;
@@ -118,6 +120,10 @@ public class System_Schedule extends AppCompatActivity {
         getStaffChip();
         Handler handler = new Handler();
         handler.postDelayed(() -> getVehicleChip(), 500);
+        dialog = new ProgressDialog(context);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setTitle("確認員工車輛出勤狀況");
+        dialog.show();
 
         new AsyncRetrieve().execute();
         //getStaffVacation(getToday("yyyy-MM-dd"));
@@ -643,7 +649,7 @@ public class System_Schedule extends AppCompatActivity {
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getStaffVacation...");
                 }
                 Log.d(TAG, "getStaffVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                setChipCheck(staffGroup, staffs_text);
+                runOnUiThread(() -> setChipCheck(staffGroup, staffs_text));
             }
         });
     }
@@ -711,7 +717,7 @@ public class System_Schedule extends AppCompatActivity {
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVehicleVacation...");
                 }
                 Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                setChipCheck(carGroup, cars_text);
+                runOnUiThread(() -> setChipCheck(carGroup, cars_text));
             }
         });
     }
@@ -724,6 +730,9 @@ public class System_Schedule extends AppCompatActivity {
             if(items_text.contains(chip.getText().toString())) chip.setChecked(true); //把本單有的員工列為已點擊
             else chip.setChecked(false);
             chip.setCheckable(false);
+        }
+        if(dialog.isShowing()){
+            dialog.dismiss();
         }
     }
 
@@ -823,6 +832,7 @@ public class System_Schedule extends AppCompatActivity {
     public class AsyncRetrieve extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void...Void) {
+
             getStaffVacation(getToday("yyyy-MM-dd"));
             getVehicleVacation(getToday("yyyy-MM-dd"));
             return null;

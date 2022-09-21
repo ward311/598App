@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.CalendarView;
@@ -68,7 +71,7 @@ public class System_Vacation extends AppCompatActivity {
 
     Context context = this;
     String TAG = "System_Vacation";
-
+    ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +91,13 @@ public class System_Vacation extends AppCompatActivity {
 
 
         current_date = getToday("yyyy-MM-dd");
+        dialog = new ProgressDialog(context);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setTitle("確認員工車輛出勤狀況");
+        dialog.show();
         new AsyncRetrieve().execute();
+
+        new Handler().postDelayed(() -> getVehicleVacation(current_date),1500);
         //getStaffVacation(current_date);
         //getVehicleVacation(current_date);
 //        getAssigned(current_date);
@@ -366,7 +375,7 @@ public class System_Vacation extends AppCompatActivity {
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getStaffVacation...");
                 }*/
                 Log.d(TAG, "getStaffVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                setChipCheck(staffGroup, staffs_text);
+                runOnUiThread(() -> setChipCheck(staffGroup, staffs_text));
             }
         });
     }
@@ -429,7 +438,14 @@ public class System_Vacation extends AppCompatActivity {
                     if((++ii)%1000000 == 0) Log.d(TAG, "waiting for lock in getVehicleVacation...");
                 }
                 Log.d(TAG, "getVehicleVacation: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());*/
-                setChipCheck(carGroup, cars_text);
+
+                runOnUiThread(() -> {
+                    setChipCheck(carGroup, cars_text);
+                        if(dialog.isShowing()){
+                            dialog.dismiss();
+                        }
+
+                });
             }
         });
     }
@@ -440,6 +456,7 @@ public class System_Vacation extends AppCompatActivity {
             Chip chip = (Chip) chipGroup.getChildAt(i);
             chip.setChecked(items_text.contains(chip.getText().toString())); //把本單有的員工列為已點擊
         }
+
     }
 
     private void getAssigned(String date){
@@ -517,8 +534,13 @@ public class System_Vacation extends AppCompatActivity {
                     if((++ii)%5000000 == 0) Log.d(TAG, (ii/5000000)+". waiting for lock in getAssigned...");
                 }*/
                 Log.d(TAG, "getAssigned: staffGroup:"+staffGroup.getChildCount()+", carGroup:"+carGroup.getChildCount());
-                setChipCheck(staffGroup, staffs_text);
-                setChipCheck(carGroup, cars_text);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setChipCheck(staffGroup, staffs_text);
+                        setChipCheck(carGroup, cars_text);
+                    }
+                });
             }
         });
     }
@@ -554,6 +576,7 @@ public class System_Vacation extends AppCompatActivity {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseData = response.body().string();
                 Log.d(TAG,"responseData of update_leave("+date+"): "+responseData); //顯示資料
+
             }
         });
     }
@@ -614,7 +637,7 @@ public class System_Vacation extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void...Void) {
             getStaffVacation(current_date);
-            getVehicleVacation(current_date);
+
             return null;
         }
     }
