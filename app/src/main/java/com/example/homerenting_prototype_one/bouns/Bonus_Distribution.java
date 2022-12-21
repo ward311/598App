@@ -161,7 +161,8 @@ public class Bonus_Distribution extends AppCompatActivity {
 
                         //取欄位資料
                         String order_id = member.getString("order_id");
-                        String datetime = member.getString("moving_date");
+                        String date = member.getString("date1");
+                        String time = member.getString("time1");
                         String name = member.getString("member_name");
                         String nameTitle;
                         if(member.getString("gender").equals("女")) nameTitle = "小姐";
@@ -173,8 +174,11 @@ public class Bonus_Distribution extends AppCompatActivity {
                         String newicon = member.getString("new");
                         plan = member.getString("plan");
                         //將資料存進陣列裡
-                        String[] row_data = {order_id, getDate(datetime), getTime(datetime), name, nameTitle, phone, contact_address, auto, plan, newicon};
+
+                        String[] row_data = {order_id, date, time, name, nameTitle, phone, contact_address, auto, plan, newicon};
                         data.add(row_data);
+
+
                     }
                 } catch (JSONException e) { //會到這裡通常表示用錯json格式或網頁的資料不是json格式
                     e.printStackTrace();
